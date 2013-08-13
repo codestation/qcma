@@ -67,8 +67,6 @@ void CmaClient::enterEventLoop()
             break;
         }
 
-        qDebug("Event 0x%04X recieved", event.Code);
-
         switch(event.Code) {
         case PTP_EC_VITA_RequestSendNumOfObject:
             vitaEventSendNumOfObject(&event, event.Param1);
@@ -353,7 +351,7 @@ void CmaClient::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
 
     metadata_t *meta;
     int count = db->filterObjects(browse.ohfiParent, &meta);  // if meta is null, will return empty XML
-    qDebug("Sending %i metadata filtered objects for OHFI %id", count, browse.ohfiParent);
+    qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
     if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
         qWarning("Sending metadata for OHFI parent %d failed", browse.ohfiParent);
@@ -433,6 +431,7 @@ void CmaClient::vitaEventCancelTask(vita_event_t *event, int eventId)
     int eventIdToCancel = event->Param2;
     VitaMTP_CancelTask(device, eventIdToCancel);
     qWarning("Event CancelTask (0x%x) unimplemented!", event->Code);
+    connected = false;
 }
 
 void CmaClient::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)

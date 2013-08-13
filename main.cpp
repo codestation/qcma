@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         qInstallMsgHandler(noMessageOutput);
 #endif
     } else {
-        VitaMTP_Set_Logging(VitaMTP_DEBUG);
+        VitaMTP_Set_Logging(VitaMTP_VERBOSE);
     }
 
     qDebug()<<"From main thread: "<<QThread::currentThreadId();

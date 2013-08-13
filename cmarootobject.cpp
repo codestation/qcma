@@ -34,6 +34,15 @@ void CMARootObject::initObject(const QString &path)
     metadata.type = VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR;
 
     switch(root_ohfi) {
+        case VITA_OHFI_MUSIC:
+            metadata.dataType = Music;
+            this->path = path;
+            num_filters = 1;
+            filters = new metadata_t[1];
+            //createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
+            createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
+            break;
+
         case VITA_OHFI_PHOTO:
             metadata.dataType = Photo;
             this->path = path;
@@ -50,15 +59,6 @@ void CMARootObject::initObject(const QString &path)
             filters = new metadata_t[2];
             createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
             createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
-            break;
-
-        case VITA_OHFI_MUSIC:
-            metadata.dataType = Music;
-            this->path = path;
-            num_filters = 1;
-            filters = new metadata_t[1];
-            //createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
-            createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
             break;
 
         case VITA_OHFI_VITAAPP:

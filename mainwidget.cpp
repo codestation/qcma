@@ -76,7 +76,8 @@ void MainWidget::refreshDatabase()
 {
     db.mutex.lock();
     db.destroy();
-    db.create();
+    int count = db.create();
+    qDebug("Indexed %i elements in the database", count);
     db.mutex.unlock();
 }
 

@@ -172,9 +172,7 @@ void CMAObject::initObject(const QFileInfo &file)
     metadata.name = strdup(file.fileName().toUtf8().data());
     metadata.ohfiParent = parent->metadata.ohfi;
     metadata.ohfi = ohfi_count++;
-    if(metadata.ohfi == 1494) {
-        metadata.ohfi = metadata.ohfi;
-    }
+
     metadata.type = VITA_DIR_TYPE_MASK_REGULAR; // ignored for files
     metadata.dateTimeCreated = file.created().toTime_t();
     metadata.size = file.size();
