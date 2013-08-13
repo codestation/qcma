@@ -1,50 +1,28 @@
-/*
- *  QCMA: Cross-platform content manager assistant for the PS Vita
- *
- *  Copyright (C) 2013  Codestation
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+#ifndef CMACLIENT_H
+#define CMACLIENT_H
 
-#ifndef LISTENERWORKER_H
-#define LISTENERWORKER_H
-
-#include "database.h"
 #include "baseworker.h"
+#include "cmaobject.h"
+#include "database.h"
 
 #include <QObject>
-
-#include <stdint.h>
+#include <QString>
 
 extern "C" {
 #include <vitamtp.h>
 }
 
-class ListenerWorker : public BaseWorker
+class CmaClient : public BaseWorker
 {
     Q_OBJECT
 public:
-    explicit ListenerWorker(QObject *parent = 0);
-
-    void setDevice(vita_device_t *device);
-    bool isConnected();
-    void disconnect();
-    int rebuildDatabase();
-
-    Database db;
+    explicit CmaClient(QObject *parent = 0);
+    explicit CmaClient(Database *database, vita_device_t *device, QObject *parent = 0);
+    ~CmaClient();
 
 private:
+    void enterEventLoop();
+
     uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
     void vitaEventSendObject(vita_event_t *event, int eventId);
     void vitaEventSendObjectMetadata(vita_event_t *event, int eventId);
@@ -68,15 +46,21 @@ private:
     void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
     void vitaEventRequestTerminate(vita_event_t *event, int eventId);
 
+    Database *db;
     vita_device_t *device;
     volatile bool connected;
     static const metadata_t g_thumbmeta;
 
 signals:
+    void deviceConnected(QString);
     void refreshDatabase();
+    void terminate();
+
+public slots:
+    void close();
 
 private slots:
     void process();
 };
 
-#endif // LISTENERWORKER_H
+#endif // CMACLIENT_H

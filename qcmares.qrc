@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/main">
-        <file>psp2-updatelist.xml</file>
+        <file>resources/psp2-updatelist.xml</file>
+        <file>resources/psv_icon.png</file>
     </qresource>
 </RCC>

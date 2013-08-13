@@ -17,32 +17,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "qcma.h"
 #include "wirelessworker.h"
+#include "utils.h"
 
 #include <QTime>
 #include <QHostInfo>
 
 #define QCMA_REQUEST_PORT 9309
 
-wireless_host_info_t WirelessWorker::info = {"00000000-0000-0000-0000-000000000000", "win", NULL, QCMA_REQUEST_PORT};
+wireless_host_info_t BroadcastSignal::info = {"00000000-0000-0000-0000-000000000000", "win", NULL, QCMA_REQUEST_PORT};
 
-WirelessWorker *WirelessWorker::this_object = NULL;
+BroadcastSignal *BroadcastSignal::this_object = NULL;
 
-WirelessWorker::WirelessWorker(QObject *parent) :
+BroadcastSignal::BroadcastSignal(QObject *parent) :
     BaseWorker(parent)
 {
     qsrand(QTime::currentTime().msec());
     this_object = this;
+    started = false;
 }
 
-int WirelessWorker::deviceRegistered(const char *deviceid)
+BroadcastSignal::~BroadcastSignal()
+{
+    VitaMTP_Stop_Broadcast();
+}
+
+int BroadcastSignal::deviceRegistered(const char *deviceid)
 {
     qDebug("Got connection request from %s", deviceid);
     return 1;
 }
 
-int WirelessWorker::generatePin(wireless_vita_info_t *info, int *p_err)
+int BroadcastSignal::generatePin(wireless_vita_info_t *info, int *p_err)
 {
     qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
     int pin = qrand() % 100000000;
@@ -52,25 +58,24 @@ int WirelessWorker::generatePin(wireless_vita_info_t *info, int *p_err)
     return pin;
 }
 
-void WirelessWorker::process()
+void BroadcastSignal::process()
 {
-    qDebug() <<" Wireless thread ID: "<< QThread::currentThreadId();
-
-    wireless_host_info_t broadcast_info = info;
-    QString hostname = QHostInfo::localHostName();
-    broadcast_info.name = hostname.toUtf8().data();
-
+    qDebug() <<"Broadcast thread ID: "<< QThread::currentThreadId();
     qDebug("Starting CMA wireless broadcast...");
-    if(VitaMTP_Broadcast_Host(&broadcast_info, 0) < 0) {
+
+    started = true;
+    if(VitaMTP_Broadcast_Host(&info, 0) < 0) {
         qCritical( "An error occured during broadcast. Exiting.");
     } else {
         qDebug("Broadcast ended.");
     }
-    qDebug("WirelessrWorker thread end.");
+    qDebug("Broadcast thread end.");
     emit finished();
 }
 
-void WirelessWorker::stopBroadcast()
+void BroadcastSignal::stopBroadcast()
 {
+    qDebug("Stopping broadcast");
     VitaMTP_Stop_Broadcast();
+    started = false;
 }

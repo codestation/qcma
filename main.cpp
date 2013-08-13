@@ -18,6 +18,7 @@
  */
 
 #include <QDebug>
+#include <QThread>
 
 #include "singleapplication.h"
 #include "mainwidget.h"
@@ -42,12 +43,17 @@ int main(int argc, char *argv[])
 
     SingleApplication app(argc, argv);
 
+
+
     if(!app.arguments().contains("--with-debug")) {
+        VitaMTP_Set_Logging(VitaMTP_NONE);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qInstallMessageHandler(noMessageOutput);
 #else
         qInstallMsgHandler(noMessageOutput);
 #endif
+    } else {
+        VitaMTP_Set_Logging(VitaMTP_DEBUG);
     }
 
     qDebug()<<"From main thread: "<<QThread::currentThreadId();

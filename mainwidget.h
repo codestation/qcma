@@ -21,18 +21,19 @@
 #define MAINWIDGET_H
 
 #include "configwidget.h"
-#include "qcma.h"
+#include "cmaserver.h"
+#include "database.h"
 
 #include <QAction>
 #include <QWidget>
 #include <QSystemTrayIcon>
 
-class QMenu;
-
-namespace Ui
-{
-class MainWidget;
+extern "C" {
+#include <vitamtp.h>
 }
+
+
+class QMenu;
 
 class MainWidget : public QWidget
 {
@@ -49,13 +50,14 @@ private:
     void connectSignals();
 
     bool first_run;
-    QCMA CmaWorker;
     ConfigWidget dialog;
     QSystemTrayIcon *trayIcon;
     QAction *quit;
     QAction *reload;
     QAction *options;
     QAction *wireless;
+    Database db;
+    CmaServer server;
     const static QStringList path_list;
 
 private slots:
@@ -65,6 +67,9 @@ private slots:
     void setTrayTooltip(QString message);
     void toggleWireless();
     void showPin(int pin);
+    void startClient(vita_device_t *device);
+    void refreshDatabase();
+    void startServer();
 };
 
 #endif // MAINWIDGET_H

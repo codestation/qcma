@@ -18,10 +18,12 @@
  */
 
 #include "mainwidget.h"
-#include "qcma.h"
+#include "cmaclient.h"
+#include "utils.h"
 
 #include <QAction>
 #include <QApplication>
+#include <QDebug>
 #include <QDir>
 #include <QMenu>
 #include <QSettings>
@@ -45,7 +47,7 @@ void MainWidget::checkSettings()
             return;
         }
     }
-    CmaWorker.start();
+    startServer();
 }
 
 void MainWidget::dialogResult(int result)
@@ -53,11 +55,42 @@ void MainWidget::dialogResult(int result)
     if(result == QDialog::Accepted) {
         if(first_run) {
             first_run = false;
-            CmaWorker.start();
+            startServer();
         }
     } else if(first_run) {
         qApp->quit();
     }
+}
+
+void MainWidget::startServer()
+{
+    connect(&server, SIGNAL(newConnection(vita_device_t *)), this, SLOT(startClient(vita_device_t*)));
+    connect(&server, SIGNAL(createdPin(int)), this, SLOT(showPin(int)));
+    //connect(&server, SIGNAL(finished()), qApp, SLOT(quit()));
+
+    qDebug("Starting cma server");
+    server.listen();
+}
+
+void MainWidget::refreshDatabase()
+{
+    db.mutex.lock();
+    db.destroy();
+    db.create();
+    db.mutex.unlock();
+}
+
+void MainWidget::startClient(vita_device_t *device)
+{
+    server.stopProcess();
+    qDebug() << "From startClient: "<< QThread::currentThreadId();
+    qDebug("Starting new client connection");
+    CmaClient *client = new CmaClient(&db, device);
+    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
+    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
+    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+    connect(client, SIGNAL(finished()), &server, SLOT(continueProcess()));
+    client->start();
 }
 
 void MainWidget::deviceDisconnect()
@@ -69,12 +102,6 @@ void MainWidget::deviceDisconnect()
 void MainWidget::connectSignals()
 {
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
-    connect(&CmaWorker, SIGNAL(createdPin(int)), this, SLOT(showPin(int)));
-    connect(&CmaWorker, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
-    connect(&CmaWorker, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
-    connect(&CmaWorker, SIGNAL(statusUpdated(QString)), this, SLOT(receiveMessage(QString)));
-    connect(&CmaWorker, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(&CmaWorker, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
 void MainWidget::showPin(int pin)
@@ -86,7 +113,6 @@ void MainWidget::prepareApplication()
 {
     connectSignals();
     createTrayIcon();
-    trayIcon->show();
     checkSettings();
 }
 
@@ -105,7 +131,6 @@ void MainWidget::toggleWireless()
         wireless->setText(tr("&Wireless disabled"));
         settings.setValue("wireless", false);
     }
-    CmaWorker.reload();
 }
 
 void MainWidget::createTrayIcon()
@@ -126,8 +151,8 @@ void MainWidget::createTrayIcon()
     quit = new QAction(tr("&Quit"), this);
 
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
-    connect(reload, SIGNAL(triggered()), &CmaWorker, SLOT(allowRefresh()), Qt::DirectConnection);
-    connect(quit, SIGNAL(triggered()), &CmaWorker, SLOT(stop()), Qt::DirectConnection);
+    //connect(reload, SIGNAL(triggered()), &CmaWorker, SLOT(allowRefresh()), Qt::DirectConnection);
+    connect(quit, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(wireless, SIGNAL(triggered()), this, SLOT(toggleWireless()));
 
     QMenu *trayIconMenu = new QMenu(this);
@@ -139,7 +164,10 @@ void MainWidget::createTrayIcon()
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->setIcon(QIcon::fromTheme("image-loading"));
+    trayIcon->setIcon(QIcon(":/main/resources/psv_icon.png"));
+    trayIcon->show();
+    // try to avoid the iconTray Qt bug
+    //Sleeper::sleep(1);
 }
 
 void MainWidget::receiveMessage(QString message)

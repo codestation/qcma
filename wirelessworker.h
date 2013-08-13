@@ -29,21 +29,24 @@ extern "C" {
 #include <vitamtp.h>
 }
 
-class WirelessWorker : public BaseWorker
+class BroadcastSignal : public BaseWorker
 {
     Q_OBJECT
 public:
-    explicit WirelessWorker(QObject *parent = 0);
+    explicit BroadcastSignal(QObject *parent = 0);
+    ~BroadcastSignal();
 
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
+    bool isRunning() { return started; }
 
     static wireless_host_info_t info;
 
 
 private:
+    volatile bool started;
     //used to emit a signal from a static method
-    static WirelessWorker *this_object;
+    static BroadcastSignal *this_object;
 
 signals:
     void createdPin(int);

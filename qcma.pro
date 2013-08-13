@@ -14,9 +14,7 @@ TARGET = qcma
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    qcma.cpp \
     wirelessworker.cpp \
-    listenerworker.cpp \
     capability.cpp \
     database.cpp \
     cmaobject.cpp \
@@ -26,12 +24,12 @@ SOURCES += main.cpp \
     configwidget.cpp \
     singleapplication.cpp \
     baseworker.cpp \
-    sforeader.cpp
+    sforeader.cpp \
+    cmaserver.cpp \
+    cmaclient.cpp
 
 HEADERS += \
-    qcma.h \
     wirelessworker.h \
-    listenerworker.h \
     capability.h \
     database.h \
     cmaobject.h \
@@ -41,7 +39,9 @@ HEADERS += \
     configwidget.h \
     singleapplication.h \
     baseworker.h \
-    sforeader.h
+    sforeader.h \
+    cmaserver.h \
+    cmaclient.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libmediainfo
@@ -52,7 +52,8 @@ RESOURCES += \
     qcmares.qrc
 
 OTHER_FILES += \
-    psp2-updatelist.xml
+    resources/psp2-updatelist.xml \
+    resources/psv_icon.png
 
 FORMS += \
     configwidget.ui

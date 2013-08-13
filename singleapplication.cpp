@@ -20,7 +20,6 @@
 #include "singleapplication.h"
 
 #include <QDebug>
-#include <QFile>
 
 const int SingleApplication::timeout = 500;
 const QString SingleApplication::SHARED_KEY = "QCMA_KEY";
@@ -30,15 +29,7 @@ SingleApplication::SingleApplication(int &argc, char **argv) :
 {
     server = new QLocalServer(this);
     connect(server, SIGNAL(newConnection()), this, SLOT(receiveMessage()));
-#ifdef Q_OS_UNIX
-    // Make sure that the socket file is deleted
-    QFile address(QString("/tmp/" +  SHARED_KEY));
-
-    if(address.exists()) {
-        address.remove();
-    }
-
-#endif
+    QLocalServer::removeServer(SHARED_KEY);
     server->listen(SHARED_KEY);
 }
 
