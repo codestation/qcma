@@ -44,12 +44,13 @@ public:
 
 
 private:
-    volatile bool started;
+    volatile bool started;    
+    char hostname[256];
     //used to emit a signal from a static method
     static BroadcastSignal *this_object;
 
 signals:
-    void createdPin(int);
+    void receivedPin(int);
 
 public slots:
     void stopBroadcast();

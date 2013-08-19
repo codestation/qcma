@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QSettings>
 #include <QTimer>
+#include <QSettings>
 
 const QStringList MainWidget::path_list = QStringList() << "photoPath" << "musicPath" << "videoPath" << "appsPath" << "urlPath";
 
@@ -64,34 +65,22 @@ void MainWidget::dialogResult(int result)
 
 void MainWidget::startServer()
 {
-    connect(&server, SIGNAL(newConnection(vita_device_t *)), this, SLOT(startClient(vita_device_t*)));
-    connect(&server, SIGNAL(createdPin(int)), this, SLOT(showPin(int)));
-    //connect(&server, SIGNAL(finished()), qApp, SLOT(quit()));
+    qDebug("Starting cma event loop");
+    clientLoop.start();
+}
 
-    qDebug("Starting cma server");
-    server.listen();
+void MainWidget::stopServer()
+{
+    clientLoop.stop();
 }
 
 void MainWidget::refreshDatabase()
 {
-    db.mutex.lock();
-    db.destroy();
-    int count = db.create();
-    qDebug("Indexed %i elements in the database", count);
-    db.mutex.unlock();
-}
-
-void MainWidget::startClient(vita_device_t *device)
-{
-    server.stopProcess();
-    qDebug() << "From startClient: "<< QThread::currentThreadId();
-    qDebug("Starting new client connection");
-    CmaClient *client = new CmaClient(&db, device);
-    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
-    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
-    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
-    connect(client, SIGNAL(finished()), &server, SLOT(continueProcess()));
-    client->start();
+    clientLoop.db.mutex.lock();
+    clientLoop.db.destroy();
+    int count = clientLoop.db.create();
+    qDebug("Added %i entries to the database", count);
+    clientLoop.db.mutex.unlock();
 }
 
 void MainWidget::deviceDisconnect()
@@ -103,6 +92,12 @@ void MainWidget::deviceDisconnect()
 void MainWidget::connectSignals()
 {
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
+    connect(&clientLoop, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
+    connect(&clientLoop, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
+    connect(&clientLoop, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
+    connect(&clientLoop, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    connect(&clientLoop, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+    connect(&clientLoop, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
 void MainWidget::showPin(int pin)
@@ -115,6 +110,7 @@ void MainWidget::prepareApplication()
     connectSignals();
     createTrayIcon();
     checkSettings();
+    refreshDatabase();
 }
 
 void MainWidget::setTrayTooltip(QString message)
@@ -153,7 +149,7 @@ void MainWidget::createTrayIcon()
 
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
     //connect(reload, SIGNAL(triggered()), &CmaWorker, SLOT(allowRefresh()), Qt::DirectConnection);
-    connect(quit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
     connect(wireless, SIGNAL(triggered()), this, SLOT(toggleWireless()));
 
     QMenu *trayIconMenu = new QMenu(this);

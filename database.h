@@ -62,13 +62,20 @@ private:
     typedef QList<CMAObject *> root_list;
     typedef QMap<int, root_list> map_list;
 
-    int scanRootDirectory(root_list &list);
+    static const QStringList audio_types;
+    static const QStringList image_types;
+    static const QStringList video_types;
+
+    int scanRootDirectory(root_list &list,int ohfi_type);
+    int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
     bool hasFilter(const CMARootObject *object,int ohfi);
     bool removeInternal(root_list &list, const CMAObject *obj);
     bool findInternal(const root_list &list, int ohfi, find_data &data);
     CMAObject *getParent(CMAObject *last_dir, const QString &current_path);
     CMAObject *pathToObjectInternal(const root_list &list, const char *path);
     static bool lessThanComparator(const CMAObject *a, const CMAObject *b);
+    bool checkFileType(const QString path, int ohfi_root);
+    void dumpMetadataList(const metadata_t *p_head);
 
     map_list object_list;    
 

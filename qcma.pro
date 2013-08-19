@@ -25,8 +25,8 @@ SOURCES += main.cpp \
     singleapplication.cpp \
     baseworker.cpp \
     sforeader.cpp \
-    cmaserver.cpp \
-    cmaclient.cpp
+    cmaclient.cpp \
+    cmabroadcast.cpp
 
 HEADERS += \
     wirelessworker.h \
@@ -40,11 +40,11 @@ HEADERS += \
     singleapplication.h \
     baseworker.h \
     sforeader.h \
-    cmaserver.h \
-    cmaclient.h
+    cmaclient.h \
+    cmabroadcast.h
 
 CONFIG += link_pkgconfig
-PKGCONFIG += libvitamtp libmediainfo
+PKGCONFIG += libmediainfo
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall
 
@@ -57,3 +57,11 @@ OTHER_FILES += \
 
 FORMS += \
     configwidget.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvitamtp
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvitamtp
+else:unix: LIBS += $$PWD/../../../../usr/lib/libvitamtp.a -lusb-1.0 -lxml2
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+

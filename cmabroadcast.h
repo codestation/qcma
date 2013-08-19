@@ -17,32 +17,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef CMABROADCAST_H
+#define CMABROADCAST_H
 
-#include <QByteArray>
-#include <QString>
-#include <QThread>
+#include <QMutex>
+#include <QObject>
+#include <QUdpSocket>
 
-extern "C" {
-#include <vitamtp.h>
-}
+#define QCMA_REQUEST_PORT 9309
 
-// Qt4 doesn't have public methods for Thread::*sleep
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    typedef QThread Sleeper;
-#else
-    class Sleeper : QThread
-    {
-    public:
-        static void sleep(unsigned long secs) { QThread::sleep(secs); }
-        static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
-        static void usleep(unsigned long usecs) { QThread::usleep(usecs); }
-    };
-#endif
+class CmaBroadcast : public QObject
+{
+    Q_OBJECT
+public:
+    explicit CmaBroadcast(QObject *parent = 0);
+    
+private:
+    void replyBroadcast(const QByteArray &datagram);
 
-bool removeRecursively(const QString &dirName);
-bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total);
-QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata);
+    QMutex mutex;
+    QString uuid;
+    QString reply;
+    QString hostname;
+    QUdpSocket *socket;
+    static const QString broadcast_reply;
+    static const char *broadcast_query;
+    static const char *broadcast_ok;
+    static const char *broadcast_unavailable;
 
-#endif // UTILS_H
+public slots:
+    void setAvailable();
+    void setUnavailable();
+
+private slots:
+    void readPendingDatagrams();
+};
+
+#endif // CMABROADCAST_H

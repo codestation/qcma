@@ -43,8 +43,6 @@ int main(int argc, char *argv[])
 
     SingleApplication app(argc, argv);
 
-
-
     if(!app.arguments().contains("--with-debug")) {
         VitaMTP_Set_Logging(VitaMTP_NONE);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -56,7 +54,7 @@ int main(int argc, char *argv[])
         VitaMTP_Set_Logging(VitaMTP_VERBOSE);
     }
 
-    qDebug()<<"From main thread: "<<QThread::currentThreadId();
+    qDebug() << "From main thread: "<< QThread::currentThreadId();
 
     // set the organization/application for QSettings to work properly
     app.setOrganizationName("qcma");

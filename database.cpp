@@ -27,9 +27,14 @@
 
 #define OHFI_OFFSET 1000
 
+const QStringList Database::image_types = QStringList() << "jpg" << "jpeg" << "png" << "tif" << "tiff" << "bmp" << "gif" << "mpo";
+const QStringList Database::audio_types = QStringList() << "mp3" << "mp4" << "wav";
+const QStringList Database::video_types = QStringList() << "mp4";
+
 Database::Database(QObject *parent) :
     QObject(parent), mutex(QMutex::Recursive)
 {
+    CMARootObject::uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
 }
 
 Database::~Database()
@@ -40,6 +45,7 @@ Database::~Database()
 void Database::setUUID(const QString uuid)
 {
     CMARootObject::uuid = uuid;
+    QSettings().setValue("lastAccountId", uuid);
 }
 
 int Database::create()
@@ -75,12 +81,13 @@ int Database::create()
             case VITA_OHFI_PSPSAVE:
             case VITA_OHFI_PSXAPP:
             case VITA_OHFI_PSMAPP:
+
                 obj->initObject(settings.value("appsPath").toString());
         }
 
         root_list list;
         list << obj;
-        total_objects += scanRootDirectory(list);
+        total_objects += recursiveScanRootDirectory(list, obj, ohfi_array[i]);
         object_list[ohfi_array[i]] = list;
     }
     return total_objects;
@@ -95,7 +102,7 @@ CMAObject *Database::getParent(CMAObject *last_dir, const QString &current_path)
     return last_dir;
 }
 
-int Database::scanRootDirectory(root_list &list)
+int Database::scanRootDirectory(root_list &list, int ohfi_type)
 {
     int total_objects = 0;
     CMAObject *last_dir = list.first();
@@ -105,8 +112,16 @@ int Database::scanRootDirectory(root_list &list)
 
     while(it.hasNext()) {
         it.next();
-        CMAObject *obj = new CMAObject(getParent(last_dir, it.fileInfo().path()));
-        obj->initObject(it.fileInfo());
+        QFileInfo info = it.fileInfo();
+
+        if(info.isFile() && !checkFileType(info.absoluteFilePath(), ohfi_type)) {
+            //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());
+            continue;
+        }
+
+        CMAObject *obj = new CMAObject(getParent(last_dir, info.path()));
+        obj->initObject(info);
+        qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
         list << obj;
 
         if(obj->metadata.dataType & Folder) {
@@ -115,6 +130,33 @@ int Database::scanRootDirectory(root_list &list)
             total_objects++;
         }
     }
+    return total_objects;
+}
+
+int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
+{
+    int total_objects = 0;
+
+    QDir dir(parent->path);
+    dir.setSorting(QDir::Name | QDir::DirsFirst);
+    QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+
+    foreach(const QFileInfo &info, qsl) {
+        if(info.isFile() && !checkFileType(info.absoluteFilePath(), ohfi_type)) {
+            //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());>
+        } else {
+            CMAObject *obj = new CMAObject(parent);
+            obj->initObject(info);
+            qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
+            list << obj;
+            if(info.isDir()) {
+                total_objects += recursiveScanRootDirectory(list, obj, ohfi_type);
+            } else {
+                total_objects++;
+            }
+        }
+    }
+
     return total_objects;
 }
 
@@ -282,6 +324,14 @@ int Database::acceptFilteredObject(const CMAObject *parent, const CMAObject *cur
     return result;
 }
 
+void Database::dumpMetadataList(const metadata_t *p_head)
+{
+    while(p_head) {
+        qDebug("Metadata: %s with OHFI %d", p_head->name, p_head->ohfi);
+        p_head = p_head->next_metadata;
+    }
+}
+
 int Database::filterObjects(int ohfiParent, metadata_t **p_head)
 {
     QMutexLocker locker(&mutex);
@@ -330,5 +380,38 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head)
         *p_head = temp.next_metadata;
     }
 
+    if(p_head) {
+        dumpMetadataList(*p_head);
+    }
     return numObjects;
+}
+
+bool Database::checkFileType(const QString path, int ohfi_root)
+{
+    switch(ohfi_root) {
+    case VITA_OHFI_MUSIC:
+        foreach(const QString &ext, audio_types) {
+            if(path.endsWith(ext, Qt::CaseInsensitive)) {
+                return true;
+            }
+        }
+        break;
+    case VITA_OHFI_PHOTO:
+        foreach(const QString &ext, image_types) {
+            if(path.endsWith(ext, Qt::CaseInsensitive)) {
+                return true;
+            }
+        }
+        break;
+    case VITA_OHFI_VIDEO:
+        foreach(const QString &ext, video_types) {
+            if(path.endsWith(ext, Qt::CaseInsensitive)) {
+                return true;
+            }
+        }
+        break;
+    default:
+        return true;
+    }
+    return false;
 }

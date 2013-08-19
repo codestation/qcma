@@ -1,12 +1,33 @@
+/*
+ *  QCMA: Cross-platform content manager assistant for the PS Vita
+ *
+ *  Copyright (C) 2013  Codestation
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef CMACLIENT_H
 #define CMACLIENT_H
 
 #include "baseworker.h"
+#include "cmabroadcast.h"
 #include "cmaobject.h"
 #include "database.h"
 
 #include <QObject>
 #include <QString>
+#include <QWaitCondition>
 
 extern "C" {
 #include <vitamtp.h>
@@ -17,11 +38,13 @@ class CmaClient : public BaseWorker
     Q_OBJECT
 public:
     explicit CmaClient(QObject *parent = 0);
-    explicit CmaClient(Database *database, vita_device_t *device, QObject *parent = 0);
     ~CmaClient();
+
+    Database db;
 
 private:
     void enterEventLoop();
+    vita_device_t *getDeviceConnection();
 
     uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
     void vitaEventSendObject(vita_event_t *event, int eventId);
@@ -46,18 +69,23 @@ private:
     void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
     void vitaEventRequestTerminate(vita_event_t *event, int eventId);
 
-    Database *db;
+    QWaitCondition waitCondition;
+    CmaBroadcast broadcast;
     vita_device_t *device;
+    volatile bool active;
     volatile bool connected;
-    static const metadata_t g_thumbmeta;
+    static metadata_t g_thumbmeta;
 
 signals:
+    void receivedPin(int);
+    void deviceDetected();
     void deviceConnected(QString);
+    void deviceDisconnected();
     void refreshDatabase();
-    void terminate();
 
 public slots:
     void close();
+    void stop();
 
 private slots:
     void process();

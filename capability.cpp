@@ -52,7 +52,10 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
             return false;
         }
 
-        VitaMTP_Data_Free_Capability(vita_capabilities); // TODO: Use this data
+        // TODO: vitamtp needs to send the full metadata info to know the expected format
+        // of thumbnails, for example. Until then lets discard the received info.
+
+        VitaMTP_Data_Free_Capability(vita_capabilities);
         // Send the host's capabilities
         capability_info_t *pc_capabilities = generate_pc_capability_info();
 

@@ -19,18 +19,19 @@
 
 #include "utils.h"
 
+#include <QBuffer>
+#include <QDebug>
 #include <QDir>
 #include <QImage>
-
-extern "C" {
-#include <vitamtp.h>
-}
 
 #ifdef Q_OS_WIN32
 #include <windows.h>
 #else
 #include <sys/statvfs.h>
 #endif
+
+#include <MediaInfo/MediaInfo.h>
+#include <MediaInfo/File__Analyse_Automatic.h>
 
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
 {
@@ -78,4 +79,84 @@ bool removeRecursively(const QString &dirName)
 
     return result;
 #endif
+}
+
+QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
+{
+    QByteArray data;
+    QDir folder(path);
+
+    QStringList files = folder.entryList(QDir::Files | QDir::Readable);
+    const QStringList cover_list = QStringList() << "album" << "cover" << "front";
+    const QStringList ext_list = QStringList() << "jpg" << "jpeg" << "png" << "gif";
+
+    foreach(const QString &file, files) {
+        foreach(const QString &cover, cover_list) {
+            foreach(const QString &ext, ext_list) {
+                if(file.compare(QString("%1.%2").arg(cover, ext), Qt::CaseInsensitive) == 0) {
+                    qDebug() << "Trying to load album art from" << folder.absoluteFilePath(file);
+                    QImage img;
+                    if(img.load(folder.absoluteFilePath(file))) {
+                        QBuffer buffer(&data);
+                        buffer.open(QIODevice::WriteOnly);
+                        QImage result = img.scaled(256, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                        result.save(&buffer, "JPEG");
+                        metadata->data.thumbnail.width = result.width();
+                        metadata->data.thumbnail.height = result.height();
+                    }
+                    // only try with the first match
+                    break;
+                }
+            }
+        }
+    }
+    return data;
+}
+
+QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata)
+{
+    QByteArray data;
+
+    if(MASK_SET(type, SaveData)) {
+        QFile file(QDir(path).absoluteFilePath("ICON0.PNG"));
+
+        if(file.open(QIODevice::ReadOnly)) {
+            data = file.readAll();
+        }
+    } else if(MASK_SET(type, Photo)) {
+        QImage img;
+
+        if(img.load(path)) {
+            QBuffer buffer(&data);
+            buffer.open(QIODevice::WriteOnly);
+            QImage result = img.scaled(213, 120, Qt::KeepAspectRatio, Qt::FastTransformation);
+            result.save(&buffer, "JPEG");
+            metadata->data.thumbnail.width = result.width();
+            metadata->data.thumbnail.height = result.height();
+        }
+    } else if(MASK_SET(type, Music)) {
+        if(MASK_SET(type, Folder)) {
+            // TODO: try to load an album cover from one of the audio files.
+            data = findFolderAlbumArt(path, metadata);
+        } else {
+            MediaInfoLib::MediaInfo media;
+
+            if(media.Open(path.toStdWString())) {
+                QString base64 = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Cover_Data));
+                QImage img;
+
+                if(base64.size() > 0 && img.loadFromData(QByteArray::fromBase64(base64.toUtf8()))) {
+                    QBuffer buffer(&data);
+                    buffer.open(QIODevice::WriteOnly);
+                    // use smooth transformation for the ambum art since is important to display correctly
+                    QImage result = img.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    result.save(&buffer, "JPEG");
+                    metadata->data.thumbnail.width = result.width();
+                    metadata->data.thumbnail.height = result.height();
+                }
+            }
+        }
+    }
+    //TODO: implement thumbnails for videos
+    return data;
 }

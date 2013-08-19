@@ -21,8 +21,7 @@
 #define MAINWIDGET_H
 
 #include "configwidget.h"
-#include "cmaserver.h"
-#include "database.h"
+#include "cmaclient.h"
 
 #include <QAction>
 #include <QWidget>
@@ -56,8 +55,7 @@ private:
     QAction *reload;
     QAction *options;
     QAction *wireless;
-    Database db;
-    CmaServer server;
+    CmaClient clientLoop;
     const static QStringList path_list;
 
 private slots:
@@ -67,9 +65,9 @@ private slots:
     void setTrayTooltip(QString message);
     void toggleWireless();
     void showPin(int pin);
-    void startClient(vita_device_t *device);
     void refreshDatabase();
     void startServer();
+    void stopServer();
 };
 
 #endif // MAINWIDGET_H

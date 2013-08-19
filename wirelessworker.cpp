@@ -35,6 +35,8 @@ BroadcastSignal::BroadcastSignal(QObject *parent) :
     qsrand(QTime::currentTime().msec());
     this_object = this;
     started = false;
+    strcpy(hostname, QHostInfo::localHostName().toStdString().c_str());
+    BroadcastSignal::info.name = hostname;
 }
 
 BroadcastSignal::~BroadcastSignal()
@@ -54,7 +56,7 @@ int BroadcastSignal::generatePin(wireless_vita_info_t *info, int *p_err)
     int pin = qrand() % 100000000;
     qDebug("Your registration PIN for %s is: %08d", info->name, pin);
     *p_err = 0;
-    emit this_object->createdPin(pin);
+    emit this_object->receivedPin(pin);
     return pin;
 }
 

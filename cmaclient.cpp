@@ -1,7 +1,28 @@
+/*
+ *  QCMA: Cross-platform content manager assistant for the PS Vita
+ *
+ *  Copyright (C) 2013  Codestation
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "cmaclient.h"
 #include "capability.h"
 #include "utils.h"
+#include "wirelessworker.h"
 
+#include "QApplication"
 #include <QBuffer>
 #include <QDateTime>
 #include <QDebug>
@@ -10,55 +31,76 @@
 #include <QSettings>
 #include <QUrl>
 
-const metadata_t CmaClient::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{18, 144, 80, 0, 1, 1.0f, 2}}, NULL};
+#include <MediaInfo/MediaInfo.h>
+#include <MediaInfo/File__Analyse_Automatic.h>
+
+metadata_t CmaClient::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{18, 144, 80, 0, 1, 1.0f, 2}}, NULL};
 
 CmaClient::CmaClient(QObject *parent) :
     BaseWorker(parent)
 {
 }
 
-CmaClient::CmaClient(Database *database, vita_device_t *device, QObject *parent) :
-    BaseWorker(parent), db(database), device(device)
+vita_device_t *CmaClient::getDeviceConnection()
 {
-}
+    int num_tries = 0;
+    vita_device_t *vita;
+    typedef BroadcastSignal BS;
 
-CmaClient::~CmaClient()
-{
-    if(device) {
-        close();
+    while(active) {
+        vita = VitaMTP_Get_First_USB_Vita();
+        if(vita || !active) {
+            break;
+        }
+        qDebug("No Vita detected via USB, attempt %i", ++num_tries);
+        vita = VitaMTP_Get_First_Wireless_Vita(&BS::info, 0, 2, BS::deviceRegistered, BS::generatePin);
+        if(vita || !active) {
+            break;
+        }
+        qDebug("No Vita detected via wireless, attempt %i", ++num_tries);
     }
-}
 
-void CmaClient::close()
-{
-    VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
-    VitaMTP_Release_Device(device);
-    device = NULL;
+    return vita;
 }
 
 void CmaClient::process()
 {
-    qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
+    qDebug() << "Starting CmaClient:" << QThread::currentThreadId();
 
-    DeviceCapability *vita_info = new DeviceCapability();
+    connect(&broadcast, SIGNAL(receivedPin(int)), this, SIGNAL(receivedPin(int)));
 
-    if(!vita_info->exchangeInfo(device)) {
-        qCritical("Error while exchanging info with the vita");
-        close();
+    active = true;
+
+    while(active) {
+
+        if((device = getDeviceConnection()) == NULL) {
+            break;
+        }
+        broadcast.setUnavailable();
+        qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
+        DeviceCapability *vita_info = new DeviceCapability();
+
+        if(!vita_info->exchangeInfo(device)) {
+            qCritical("Error while exchanging info with the vita");
+            close();
+            broadcast.setAvailable();
+            continue;
+        }
+
+        // Conection successful, inform the user
+        emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
+        connected = true;
+        enterEventLoop();
+        broadcast.setAvailable();
     }
-
-    // Conection successful, inform the user
-    emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
-    connected = true;
-    enterEventLoop();
+    emit finished();
 }
-
 
 void CmaClient::enterEventLoop()
 {
     vita_event_t event;
 
-    qDebug() << "From listener:"<< QThread::currentThreadId();
+    qDebug("Starting event loop");
 
     while(connected) {
         if(VitaMTP_Read_Event(device, &event) < 0) {
@@ -134,9 +176,10 @@ void CmaClient::enterEventLoop()
         default:
             vitaEventUnimplementated(&event, event.Param1);
         }
+        qDebug("Ended event, code: 0x%x, id: %d", event.Code, event.Param1);
     }
-    qDebug() << "Finished event thread for:" << QThread::currentThreadId();
-    emit finished();
+    qDebug("Finished event thread");
+    emit deviceDisconnected();
 }
 
 quint16 CmaClient::processAllObjects(CMAObject *parent, quint32 handle)
@@ -154,12 +197,12 @@ quint16 CmaClient::processAllObjects(CMAObject *parent, quint32 handle)
         return PTP_RC_VITA_Invalid_Data;
     }
 
-    CMAObject *object =  db->pathToObject(remote_meta.name, parent->metadata.ohfi);
+    CMAObject *object =  db.pathToObject(remote_meta.name, parent->metadata.ohfi);
 
     if(object) {
         qDebug("Deleting %s", object->path.toStdString().c_str());
         removeRecursively(object->path);
-        db->remove(object);
+        db.remove(object);
     }
 
     QDir dir(parent->path);
@@ -188,7 +231,7 @@ quint16 CmaClient::processAllObjects(CMAObject *parent, quint32 handle)
     object = new CMAObject(parent);
     object->initObject(info);
     object->metadata.handle = remote_meta.handle;
-    db->append(parent->metadata.ohfi, object);
+    db.append(parent->metadata.ohfi, object);
     free(remote_meta.name);
 
     qDebug("Added object %s with OHFI %i to database", object->metadata.path, object->metadata.ohfi);
@@ -199,7 +242,7 @@ quint16 CmaClient::processAllObjects(CMAObject *parent, quint32 handle)
 
             if(ret != PTP_RC_OK) {
                 qDebug("Deleteting object with OHFI %d", object->metadata.ohfi);
-                db->remove(object);
+                db.remove(object);
                 free(data.fileData);
                 return ret;
             }
@@ -221,9 +264,9 @@ void CmaClient::vitaEventGetTreatObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *parent = db->ohfiToObject(treatObject.ohfiParent);
+    CMAObject *parent = db.ohfiToObject(treatObject.ohfiParent);
 
     if(parent == NULL) {
         qWarning("Cannot find parent OHFI %d", treatObject.ohfiParent);
@@ -244,14 +287,14 @@ void CmaClient::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int event
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     quint64 size = 0;
 
     for(quint32 i = 0; i < info->count; i++) {
         CMAObject *object;
 
-        if((object = db->ohfiToObject(info->ohfi[i])) == NULL) {
+        if((object = db.ohfiToObject(info->ohfi[i])) == NULL) {
             qWarning("Cannot find OHFI %d", info->ohfi[i]);
             free(info);
             return;
@@ -279,9 +322,9 @@ void CmaClient::vitaEventSendObjectMetadataItems(vita_event_t *event, int eventI
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *object = db->ohfiToObject(ohfi);
+    CMAObject *object = db.ohfiToObject(ohfi);
 
     if(object == NULL) {
         qWarning("Cannot find OHFI %d in database", ohfi);
@@ -324,10 +367,10 @@ void CmaClient::vitaEventSendNumOfObject(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     uint ohfi = event->Param2;
-    int items = db->filterObjects(ohfi, NULL);
+    int items = db.filterObjects(ohfi, NULL);
 
     if(VitaMTP_SendNumOfObject(device, eventId, items) != PTP_RC_OK) {
         qWarning("Error occured receiving object count for OHFI parent %d", ohfi);
@@ -347,10 +390,10 @@ void CmaClient::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
         qWarning("GetBrowseInfo failed");
         return;
     }
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     metadata_t *meta;
-    int count = db->filterObjects(browse.ohfiParent, &meta);  // if meta is null, will return empty XML
+    int count = db.filterObjects(browse.ohfiParent, &meta);  // if meta is null, will return empty XML
     qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
     if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
@@ -366,10 +409,12 @@ void CmaClient::vitaEventSendObject(vita_event_t *event, int eventId)
 
     int ohfi = event->Param2;
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
+
+    qDebug("Searching object with OHFI %d", ohfi);
 
     Database::find_data iters;
-    if(!db->find(ohfi, iters)) {
+    if(!db.find(ohfi, iters)) {
         qWarning("Failed to find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
@@ -379,6 +424,7 @@ void CmaClient::vitaEventSendObject(vita_event_t *event, int eventId)
     CMAObject *object = *iters.it;
     CMAObject *start = object;
     uint parentHandle = event->Param3;
+    bool send_folder = object->metadata.dataType & Folder;
     uint handle;
 
     do {
@@ -415,12 +461,22 @@ void CmaClient::vitaEventSendObject(vita_event_t *event, int eventId)
         }
 
         object->metadata.handle = handle;
-        file.unmap(data);
-        object = *iters.it++;
+
+        if(object->metadata.dataType & File) {
+            file.unmap(data);
+        }
+
+        // break early if only a file needs to be sent
+        if(!send_folder) {
+            break;
+        }
+
+        object = *++iters.it;
 
     } while(iters.it != iters.end && object->metadata.ohfiParent >= OHFI_OFFSET); // get everything under this "folder"
 
     VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, handle);
+
     VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);  // TODO: Send thumbnail
 }
 
@@ -488,9 +544,9 @@ void CmaClient::vitaEventSendObjectStatus(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *object = db->pathToObject(objectstatus.title, objectstatus.ohfiRoot);
+    CMAObject *object = db.pathToObject(objectstatus.title, objectstatus.ohfiRoot);
 
     if(object == NULL) { // not in database, don't return metadata
         qDebug("Object %s not in database (OHFI: %i). Sending OK response for non-existence", objectstatus.title, objectstatus.ohfiRoot);
@@ -514,10 +570,10 @@ void CmaClient::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    CMAObject *object = db.ohfiToObject(ohfi);
 
     if(object == NULL) {
         qWarning("Cannot find OHFI %d in database.", ohfi);
@@ -525,33 +581,12 @@ void CmaClient::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
         return;
     }
 
-    QByteArray data;
+    QByteArray data = getThumbnail(object->path, object->metadata.dataType, &g_thumbmeta);
 
-    if(MASK_SET(object->metadata.dataType, SaveData)) {
-        QString thumbpath = QDir(object->path).absoluteFilePath("ICON0.PNG");
-        qDebug("Sending savedata thumbnail from %s", thumbpath.toStdString().c_str());
-
-        QFile file(thumbpath);
-        if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("Cannot find thumbnail %s", thumbpath.toStdString().c_str());
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);
-            return;
-        }
-        data = file.readAll();
-
-    } else {
-        QImage img;
-        if(!MASK_SET(object->metadata.dataType, Photo) || !img.load(object->path)) {
-            qWarning("Thumbnail sending for the file %s is not supported", object->metadata.path);
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);
-            return;
-        }
-        qDebug("Creating thumbnail of %s", object->metadata.name);
-
-        QBuffer buffer(&data);
-        buffer.open(QIODevice::WriteOnly);
-        QImage result = img.scaled(256, 256, Qt::KeepAspectRatio, Qt::FastTransformation);
-        result.save(&buffer, "JPEG");
+    if(data.size() == 0) {
+        qWarning("Cannot find/read thumbnail for %s", object->path.toStdString().c_str());
+        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);
+        return;
     }
 
     // workaround for the vitamtp locale bug
@@ -573,10 +608,10 @@ void CmaClient::vitaEventDeleteObject(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    CMAObject *object = db.ohfiToObject(ohfi);
 
     if(object == NULL) {
         qWarning("OHFI %d not found", ohfi);
@@ -586,7 +621,7 @@ void CmaClient::vitaEventDeleteObject(vita_event_t *event, int eventId)
 
     qDebug("Deleting %s, OHFI: %i", object->metadata.path, object->metadata.ohfi);
     removeRecursively(object->path);
-    db->remove(object);
+    db.remove(object);
 
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
 }
@@ -603,10 +638,12 @@ void CmaClient::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
 
     qDebug("Current account id: %s", settingsinfo->current_account.accountId);
 
-    db->setUUID(settingsinfo->current_account.accountId);
 
-    // set the database to be updated ASAP
-    emit refreshDatabase();
+    if(QSettings().value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
+        db.setUUID(settingsinfo->current_account.accountId);
+        // set the database to be updated ASAP
+        emit refreshDatabase();
+    }
 
     // free all the information
     VitaMTP_Data_Free_Settings(settingsinfo);
@@ -660,9 +697,9 @@ void CmaClient::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *object = db->ohfiToObject(part_init.ohfi);
+    CMAObject *object = db.ohfiToObject(part_init.ohfi);
 
     if(object == NULL) {
         qWarning("Cannot find object for OHFI %d", part_init.ohfi);
@@ -700,9 +737,9 @@ void CmaClient::vitaEventOperateObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *root = db->ohfiToObject(operateobject.ohfi);
+    CMAObject *root = db.ohfiToObject(operateobject.ohfi);
 
     // end for renaming only
     if(root == NULL) {
@@ -721,7 +758,7 @@ void CmaClient::vitaEventOperateObject(vita_event_t *event, int eventId)
         } else {
             CMAObject *newobj = new CMAObject(root);
             newobj->initObject(QFileInfo(dir, operateobject.title));
-            db->append(operateobject.ohfi, newobj);
+            db.append(operateobject.ohfi, newobj);
             qDebug("Created folder %s with OHFI %d under parent %s", newobj->metadata.path, newobj->metadata.ohfi, root->metadata.path);
             VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, newobj->metadata.ohfi);
         }
@@ -737,7 +774,7 @@ void CmaClient::vitaEventOperateObject(vita_event_t *event, int eventId)
         } else {
             CMAObject *newobj = new CMAObject(root);
             newobj->initObject(file);
-            db->append(root->metadata.ohfi, newobj);
+            db.append(root->metadata.ohfi, newobj);
             qDebug("Created file %s with OHFI %d under parent %s", newobj->metadata.path, newobj->metadata.ohfi, root->metadata.path);
             VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, newobj->metadata.ohfi);
         }
@@ -752,7 +789,7 @@ void CmaClient::vitaEventOperateObject(vita_event_t *event, int eventId)
         //rename the current object
         root->rename(operateobject.title);
         Database::find_data iters;
-        db->find(root->metadata.ohfi, iters);
+        db.find(root->metadata.ohfi, iters);
 
         // rename the rest of the list only if has the renamed parent in some part of the chain
         while(iters.it != iters.end) {
@@ -796,8 +833,8 @@ void CmaClient::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
-    CMAObject *object = db->ohfiToObject(part_init.ohfi);
+    QMutexLocker locker(&db.mutex);
+    CMAObject *object = db.ohfiToObject(part_init.ohfi);
 
     if(object == NULL) {
         qWarning("Cannot find OHFI %d", part_init.ohfi);
@@ -828,10 +865,10 @@ void CmaClient::vitaEventSendStorageSize(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    CMAObject *object = db.ohfiToObject(ohfi);
 
     if(object == NULL) {
         qWarning("Error: Cannot find OHFI %d", ohfi);
@@ -882,9 +919,9 @@ void CmaClient::vitaEventCheckExistance(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&db.mutex);
 
-    CMAObject *object = db->pathToObject(existance.name, 0);
+    CMAObject *object = db.pathToObject(existance.name, 0);
 
     if(object == NULL) {
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Different_Object);
@@ -893,4 +930,24 @@ void CmaClient::vitaEventCheckExistance(vita_event_t *event, int eventId)
     }
 
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+}
+
+void CmaClient::close()
+{
+    VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
+    VitaMTP_Release_Device(device);
+}
+
+void CmaClient::stop()
+{
+    active = false;
+    connected = false;
+    waitCondition.wakeAll();
+}
+
+CmaClient::~CmaClient()
+{
+    if(device) {
+        close();
+    }
 }

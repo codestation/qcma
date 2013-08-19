@@ -38,9 +38,12 @@ void CMARootObject::initObject(const QString &path)
             metadata.dataType = Music;
             this->path = path;
             num_filters = 1;
-            filters = new metadata_t[1];
-            //createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
-            createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
+            filters = new metadata_t[2];
+            //createFilter(&filters[0], "Artists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS);
+            createFilter(&filters[0], "Albums", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALBUMS);
+            createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
+            //createFilter(&filters[3], "Genres", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_GENRES);
+            //createFilter(&filters[4], "Playlists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
             break;
 
         case VITA_OHFI_PHOTO:
@@ -119,6 +122,7 @@ void CMARootObject::createFilter(metadata_t *filter, const char *name, int type)
     filter->size = 0;
     filter->dataType = static_cast<DataType>(Folder | Special);
     filter->next_metadata = NULL;
+    qDebug("Added filter %s to database with OHFI %d (%s)", name, filter->ohfi, metadata.name);
 }
 
 int CMARootObject::getFilters(metadata_t **p_head)
