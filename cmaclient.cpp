@@ -23,7 +23,6 @@
 #include "wirelessworker.h"
 
 #include "QApplication"
-#include <QBuffer>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -852,8 +851,7 @@ void CmaClient::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
     } else {
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
-        object->metadata.size += part_init.size;
-        object->updateParentSize(part_init.size);
+        object->updateObjectSize(part_init.size);
         qDebug("Written %zu bytes to %s at offset %zu.", part_init.size, object->path.toStdString().c_str(), part_init.offset);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }

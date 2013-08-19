@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     baseworker.cpp \
     sforeader.cpp \
     cmaclient.cpp \
-    cmabroadcast.cpp
+    cmabroadcast.cpp \
+    avdecoder.cpp
 
 HEADERS += \
     wirelessworker.h \
@@ -41,10 +42,11 @@ HEADERS += \
     baseworker.h \
     sforeader.h \
     cmaclient.h \
-    cmabroadcast.h
+    cmabroadcast.h \
+    avdecoder.h
 
 CONFIG += link_pkgconfig
-PKGCONFIG += libvitamtp libmediainfo
+PKGCONFIG += libvitamtp libmediainfo libavformat libavcodec libavutil libswscale
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall
 

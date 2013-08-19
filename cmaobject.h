@@ -39,7 +39,7 @@ public:
     void rename(const QString &name);
     bool removeReferencedObject();
     void initObject(const QFileInfo &file);
-    void updateParentSize(unsigned long size);
+    void updateObjectSize(unsigned long size);
     bool hasParent(const CMAObject *obj);
 
     bool operator==(const CMAObject &obj);

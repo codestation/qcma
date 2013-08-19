@@ -175,7 +175,7 @@ void CMAObject::initObject(const QFileInfo &file)
 
     metadata.type = VITA_DIR_TYPE_MASK_REGULAR; // ignored for files
     metadata.dateTimeCreated = file.created().toTime_t();
-    metadata.size = file.size();
+    metadata.size = 0;
     DataType type = file.isFile() ? File : Folder;
     metadata.dataType = (DataType)(type | (parent->metadata.dataType & ~Folder));
 
@@ -225,7 +225,7 @@ void CMAObject::initObject(const QFileInfo &file)
         metadata.path = strdup(newpath.toUtf8().data());
     }
 
-    updateParentSize(metadata.size);
+    updateObjectSize(file.size());
 }
 
 bool CMAObject::removeReferencedObject()
@@ -237,12 +237,12 @@ bool CMAObject::removeReferencedObject()
     }
 }
 
-void CMAObject::updateParentSize(unsigned long size)
+void CMAObject::updateObjectSize(unsigned long size)
 {
     if(parent) {
-        parent->metadata.size += size;
-        parent->updateParentSize(size);
+        parent->updateObjectSize(size);
     }
+    metadata.size += size;
 }
 
 void CMAObject::rename(const QString &newname)
