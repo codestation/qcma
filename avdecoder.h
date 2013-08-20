@@ -24,7 +24,16 @@ public:
     void getVideoMetadata(metadata_t &metadata);
     void close();
 
-    static void init();
+    class AvInit
+    {
+    public:
+         AvInit()
+         {
+             av_register_all();
+         }
+    };
+
+    static AvInit init;
 
 private:
     void AVFrameToQImage(AVFrame &frame, QImage &image, int width, int height);

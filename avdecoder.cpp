@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QSettings>
 
+AVDecoder::AvInit init;
+
 AVDecoder::AVDecoder() :
     pFormatCtx(NULL)
 {
@@ -16,14 +18,8 @@ AVDecoder::~AVDecoder()
     }
 }
 
-void AVDecoder::init()
-{
-    av_register_all();
-}
-
 bool AVDecoder::open(const QString filename)
 {
-
     if(avformat_open_input(&pFormatCtx, QFile::encodeName(filename).constData(), NULL, NULL) != 0) {
         return false;
     }

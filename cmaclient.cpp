@@ -40,7 +40,6 @@ CmaClient::CmaClient(QObject *parent) :
     BaseWorker(parent)
 {
     this_object = this;
-    AVDecoder::init();
 }
 
 int CmaClient::deviceRegistered(const char *deviceid)

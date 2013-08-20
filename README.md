@@ -12,16 +12,15 @@ official CMA and also offer some features missing in the original one.
 
 #### Implemented features missing in OpenCMA (Yifan Lu CLI application)
 * Metadata for PSP savedatas.
-* Basic metadata for single songs (album, artist, title).
-* Basic metadata for videos (duration, dimensions).
-* Basic metadata for photos (dimensions).
+* Basic metadata for single songs (album, artist, title, cover art).
+* Basic metadata for videos (duration, dimensions, thumbnail).
+* Basic metadata for photos (dimensions, thumbnails).
 * Easy wireless pairing (show PIN to the user when a Vita is detected).
 * Ability to restart the connection if the Vita is reconnected (on test).
-* Ability to change the connection mode (usb/wireless) on the fly (on test).
 
 #### TODO:
 * Fix remaining bugs with thread synchronizations.
-* Implement thumbnails for videos and album art for music.
+* Remove wireless/usb switch and allow both to run.
 * Folder categories for music/videos.
 * SQLite backend for database.
 * Fix wireless streaming for music/videos.
@@ -40,7 +39,7 @@ using the wireless streaming feature.
 
 * [VitaMTP](https://github.com/yifanlu/VitaMTP)
 
-* [MediaInfo](http://mediaarea.net/en/MediaInfo)
+* [Libav](http://www.libav.org/)
 
 
 #### Where do I get the source code?
