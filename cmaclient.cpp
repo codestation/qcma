@@ -30,16 +30,97 @@
 #include <QSettings>
 #include <QUrl>
 
-#include <MediaInfo/MediaInfo.h>
-#include <MediaInfo/File__Analyse_Automatic.h>
+QMutex CmaClient::mutex;
+QMutex CmaClient::runner;
+Database CmaClient::db;
+bool CmaClient::is_running = true;
 
 metadata_t CmaClient::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{18, 144, 80, 0, 1, 1.0f, 2}}, NULL};
 CmaClient *CmaClient::this_object = NULL;
 
 CmaClient::CmaClient(QObject *parent) :
-    BaseWorker(parent)
+    QObject(parent)
 {
     this_object = this;
+    device = NULL;
+}
+
+bool CmaClient::isRunning()
+{
+    QMutexLocker locker(&runner);
+    return is_running;
+}
+
+void CmaClient::setRunning(bool state)
+{
+    QMutexLocker locker(&runner);
+    is_running = state;
+}
+
+void CmaClient::connectUsb()
+{
+    vita_device_t *vita;
+    int num_tries = 0;
+
+    qDebug() << "Starting usb_thread:" << QThread::currentThreadId();
+
+    while(isRunning()) {
+        if((vita = VitaMTP_Get_First_USB_Vita()) !=NULL) {
+            processNewConnection(vita);
+        } else {
+            qDebug("No Vita detected via USB, attempt %i", ++num_tries);
+            if(mutex.tryLock()) {
+                mutex.unlock();
+                Sleeper::msleep(2000);
+            }
+        }
+    }
+
+    qDebug("Finishing usb_thread");
+    emit finished();
+}
+
+void CmaClient::connectWireless()
+{
+    vita_device_t *vita;
+    wireless_host_info_t host;
+    host.port = QCMA_REQUEST_PORT;
+    typedef CmaClient CC;
+
+    qDebug() << "Starting wireless_thread:" << QThread::currentThreadId();
+
+    while(isRunning()) {
+        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, 2, CC::deviceRegistered, CC::generatePin)) != NULL) {
+            processNewConnection(vita);
+        } else {
+            qDebug("Wireless listener was cancelled");
+            mutex.lock();
+            // wait until the event loop of the usb thread is finished
+            mutex.unlock();
+        }
+    }
+    qDebug("Finishing wireless_thread");
+    emit finished();
+}
+
+void CmaClient::processNewConnection(vita_device_t *device)
+{
+    QMutexLocker locker(&mutex);
+
+    broadcast.setUnavailable();
+    this->device = device;
+    qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
+    DeviceCapability *vita_info = new DeviceCapability();
+
+    if(!vita_info->exchangeInfo(device)) {
+        qCritical("Error while exchanging info with the vita");
+    } else {
+        // Conection successful, inform the user
+        emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
+        enterEventLoop();
+    }
+
+    broadcast.setAvailable();
 }
 
 int CmaClient::deviceRegistered(const char *deviceid)
@@ -58,72 +139,16 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     return pin;
 }
 
-vita_device_t *CmaClient::getDeviceConnection()
-{
-    int num_tries = 0;
-    vita_device_t *vita;
-    wireless_host_info_t host;
-    host.port = QCMA_REQUEST_PORT;
-
-    while(active) {
-        vita = VitaMTP_Get_First_USB_Vita();
-        if(vita || !active) {
-            break;
-        }
-        qDebug("No Vita detected via USB, attempt %i", ++num_tries);
-        vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, 3, CmaClient::deviceRegistered, CmaClient::generatePin);
-        if(vita || !active) {
-            break;
-        }
-        qDebug("No Vita detected via wireless, attempt %i", ++num_tries);
-    }
-
-    return vita;
-}
-
-void CmaClient::process()
-{
-    qDebug() << "Starting CmaClient:" << QThread::currentThreadId();
-
-    connect(&broadcast, SIGNAL(receivedPin(int)), this, SIGNAL(receivedPin(int)));
-
-    active = true;
-
-    while(active) {
-
-        if((device = getDeviceConnection()) == NULL) {
-            break;
-        }
-        broadcast.setUnavailable();
-        qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
-        DeviceCapability *vita_info = new DeviceCapability();
-
-        if(!vita_info->exchangeInfo(device)) {
-            qCritical("Error while exchanging info with the vita");
-            close();
-            broadcast.setAvailable();
-            continue;
-        }
-
-        // Conection successful, inform the user
-        emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
-        connected = true;
-        enterEventLoop();
-        broadcast.setAvailable();
-    }
-    emit finished();
-}
-
 void CmaClient::enterEventLoop()
 {
     vita_event_t event;
 
     qDebug("Starting event loop");
 
-    while(connected) {
+    while(isRunning()) {
         if(VitaMTP_Read_Event(device, &event) < 0) {
             qWarning("Error reading event from Vita.");
-            connected = false;
+            setRunning(false);
             break;
         }
 
@@ -372,7 +397,7 @@ void CmaClient::vitaEventRequestTerminate(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
     //qWarning("Event 0x%x unimplemented!", event->Code);
-    connected = false;
+    setRunning(false);
 }
 
 void CmaClient::vitaEventUnimplementated(vita_event_t *event, int eventId)
@@ -505,7 +530,7 @@ void CmaClient::vitaEventCancelTask(vita_event_t *event, int eventId)
     int eventIdToCancel = event->Param2;
     VitaMTP_CancelTask(device, eventIdToCancel);
     qWarning("Event CancelTask (0x%x) unimplemented!", event->Code);
-    connected = false;
+    setRunning(false);
 }
 
 void CmaClient::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
@@ -951,20 +976,19 @@ void CmaClient::vitaEventCheckExistance(vita_event_t *event, int eventId)
 
 void CmaClient::close()
 {
-    VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
-    VitaMTP_Release_Device(device);
+    if(device) {
+        VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
+        VitaMTP_Release_Device(device);
+        device = NULL;
+    }
 }
 
 void CmaClient::stop()
 {
-    active = false;
-    connected = false;
-    waitCondition.wakeAll();
+    CmaClient::setRunning(false);
 }
 
 CmaClient::~CmaClient()
 {
-    if(device) {
-        close();
-    }
+    close();
 }

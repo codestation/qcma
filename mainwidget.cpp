@@ -65,22 +65,46 @@ void MainWidget::dialogResult(int result)
 
 void MainWidget::startServer()
 {
-    qDebug("Starting cma event loop");
-    clientLoop.start("CmaClient");
+    qDebug("Starting cma threads");
+    QThread *thread;
+    CmaClient *client;
+
+    thread = new QThread();
+    client = new CmaClient();
+    thread->setObjectName("usb_thread");
+    connect(thread, SIGNAL(started()), client, SLOT(connectUsb()));
+    connect(client, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+    connectClientSignals(client);
+
+    client->moveToThread(thread);
+    thread->start();
+
+    thread = new QThread();
+    client = new CmaClient();
+    thread->setObjectName("wireless_thread");
+    connect(thread, SIGNAL(started()), client, SLOT(connectWireless()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+    connectClientSignals(client);
+    client->moveToThread(thread);
+    thread->start();
 }
 
 void MainWidget::stopServer()
 {
-    clientLoop.stop();
+    CmaClient::stop();
+    qApp->quit();
 }
 
 void MainWidget::refreshDatabase()
 {
-    clientLoop.db.mutex.lock();
-    clientLoop.db.destroy();
-    int count = clientLoop.db.create();
+    QMutexLocker locker(&CmaClient::db.mutex);
+
+    CmaClient::db.destroy();
+    int count = CmaClient::db.create();
     qDebug("Added %i entries to the database", count);
-    clientLoop.db.mutex.unlock();
 }
 
 void MainWidget::deviceDisconnect()
@@ -89,15 +113,12 @@ void MainWidget::deviceDisconnect()
     receiveMessage(tr("The device has been disconnected"));
 }
 
-void MainWidget::connectSignals()
+void MainWidget::connectClientSignals(CmaClient *client)
 {
-    connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
-    connect(&clientLoop, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
-    connect(&clientLoop, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
-    connect(&clientLoop, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
-    connect(&clientLoop, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(&clientLoop, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
-    connect(&clientLoop, SIGNAL(finished()), qApp, SLOT(quit()));
+    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
+    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
+    connect(client, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 }
 
 void MainWidget::showPin(int pin)
@@ -107,7 +128,7 @@ void MainWidget::showPin(int pin)
 
 void MainWidget::prepareApplication()
 {
-    connectSignals();
+    connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     createTrayIcon();
     checkSettings();
     refreshDatabase();
@@ -118,31 +139,8 @@ void MainWidget::setTrayTooltip(QString message)
     trayIcon->setToolTip(message);
 }
 
-void MainWidget::toggleWireless()
-{
-    QSettings settings;
-    if(wireless->isChecked()) {
-        wireless->setText(tr("&Wireless enabled"));
-        settings.setValue("wireless", true);
-    } else {
-        wireless->setText(tr("&Wireless disabled"));
-        settings.setValue("wireless", false);
-    }
-}
-
 void MainWidget::createTrayIcon()
 {
-    QSettings settings;
-    wireless = new QAction(this);
-    wireless->setCheckable(true);
-
-    if(settings.value("wireless", false).toBool()) {
-        wireless->setText(tr("&Wireless enabled"));
-        wireless->setChecked(true);
-    } else {
-        wireless->setText(tr("&Wireless disabled"));
-    }
-
     options = new QAction(tr("&Settings"), this);
     reload = new QAction(tr("&Refresh database"), this);
     quit = new QAction(tr("&Quit"), this);
@@ -150,12 +148,10 @@ void MainWidget::createTrayIcon()
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
     //connect(reload, SIGNAL(triggered()), &CmaWorker, SLOT(allowRefresh()), Qt::DirectConnection);
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
-    connect(wireless, SIGNAL(triggered()), this, SLOT(toggleWireless()));
 
     QMenu *trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(options);
     trayIconMenu->addAction(reload);
-    trayIconMenu->addAction(wireless);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quit);
 

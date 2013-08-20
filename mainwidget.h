@@ -46,7 +46,7 @@ public:
 private:
     void createTrayIcon();
     void checkSettings();
-    void connectSignals();
+    void connectClientSignals(CmaClient *client);
 
     bool first_run;
     ConfigWidget dialog;
@@ -54,7 +54,6 @@ private:
     QAction *quit;
     QAction *reload;
     QAction *options;
-    QAction *wireless;
     CmaClient clientLoop;
     const static QStringList path_list;
 
@@ -63,7 +62,6 @@ private slots:
     void dialogResult(int result);
     void receiveMessage(QString message);
     void setTrayTooltip(QString message);
-    void toggleWireless();
     void showPin(int pin);
     void refreshDatabase();
     void startServer();

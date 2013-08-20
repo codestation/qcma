@@ -33,18 +33,23 @@ extern "C" {
 #include <vitamtp.h>
 }
 
-class CmaClient : public BaseWorker
+class CmaClient : public QObject
 {
     Q_OBJECT
 public:
     explicit CmaClient(QObject *parent = 0);
     ~CmaClient();
 
-    Database db;
+    void launch();
+
+    static Database db;
 
 private:
+    static bool isRunning();
+    static void setRunning(bool state);
     void enterEventLoop();
-    vita_device_t *getDeviceConnection();
+
+    void processNewConnection(vita_device_t *device);
 
     uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
     void vitaEventSendObject(vita_event_t *event, int eventId);
@@ -72,13 +77,13 @@ private:
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
 
-    QWaitCondition waitCondition;    
     CmaBroadcast broadcast;
     vita_device_t *device;
-    volatile bool active;
-    volatile bool connected;
+    static bool is_running;
     static metadata_t g_thumbmeta;
     static CmaClient *this_object;
+    static QMutex mutex;
+    static QMutex runner;
 
 signals:
     void receivedPin(int);
@@ -86,13 +91,15 @@ signals:
     void deviceConnected(QString);
     void deviceDisconnected();
     void refreshDatabase();
+    void finished();
 
 public slots:
     void close();
-    void stop();
+    static void stop();
 
 private slots:
-    void process();
+    void connectUsb();
+    void connectWireless();
 };
 
 #endif // CMACLIENT_H
