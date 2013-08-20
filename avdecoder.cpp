@@ -1,6 +1,7 @@
 #include "avdecoder.h"
 
 #include <QBuffer>
+#include <QFile>
 #include <QSettings>
 
 AVDecoder::AVDecoder() :
@@ -8,9 +9,22 @@ AVDecoder::AVDecoder() :
 {
 }
 
+AVDecoder::~AVDecoder()
+{
+    if(pFormatCtx) {
+        avformat_close_input(&pFormatCtx);
+    }
+}
+
+void AVDecoder::init()
+{
+    av_register_all();
+}
+
 bool AVDecoder::open(const QString filename)
 {
-    if(avformat_open_input(&pFormatCtx, filename.toStdString().c_str(), NULL, NULL) != 0) {
+
+    if(avformat_open_input(&pFormatCtx, QFile::encodeName(filename).constData(), NULL, NULL) != 0) {
         return false;
     }
 
@@ -45,7 +59,7 @@ void AVDecoder::getAudioMetadata(metadata_t &metadata)
         metadata.data.music.title = strdup("");
     }
 
-    av_dict_free(&file_metadata);
+    metadata.data.music.tracks->data.track_audio.bitrate = pFormatCtx->bit_rate;
 }
 
 void AVDecoder::getVideoMetadata(metadata_t &metadata)
@@ -68,10 +82,33 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
     if((entry = av_dict_get(file_metadata, "title", NULL, 0)) != NULL) {
         metadata.data.video.title = strdup(entry->value);
     } else {
-        metadata.data.video.title = strdup("");
+        metadata.data.video.title = metadata.name;
     }
 
-    av_dict_free(&file_metadata);
+    metadata.data.video.tracks->data.track_video.duration = pFormatCtx->duration / 1000;
+    metadata.data.video.tracks->data.track_video.bitrate = pFormatCtx->bit_rate;
+
+    int stream_index;
+    AVCodec *codec = NULL;
+
+    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) >= 0) {
+        AVCodecContext *pCodecCtx = pFormatCtx->streams[stream_index]->codec;
+        metadata.data.video.tracks->data.track_video.width = pCodecCtx->width;
+        metadata.data.video.tracks->data.track_video.height = pCodecCtx->height;
+    }
+}
+
+void AVDecoder::getPictureMetadata(metadata_t &metadata)
+{
+    int stream_index;
+    AVCodec *codec = NULL;
+
+    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) >= 0) {
+        AVCodecContext *pCodecCtx = pFormatCtx->streams[stream_index]->codec;
+        metadata.data.photo.tracks->data.track_photo.width = pCodecCtx->width;
+        metadata.data.photo.tracks->data.track_photo.height = pCodecCtx->height;
+    }
+    metadata.data.photo.title = strdup(metadata.name);
 }
 
 QByteArray AVDecoder::getAudioThumbnail(int width, int height)
@@ -91,20 +128,6 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
         }
     }
     return data;
-}
-
-void AVDecoder::AVFrameToQImage(AVFrame &frame, QImage &image, int width, int height)
-{
-    quint8 *src = frame.data[0];
-
-    for (int y = 0; y < height; y++) {
-        QRgb *scanLine = (QRgb *)image.scanLine(y);
-
-        for (int x = 0; x < width; x++) {
-            scanLine[x] = qRgb(src[3*x], src[3*x+1], src[3*x+2]);
-        }
-        src += frame.linesize[0];
-    }
 }
 
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index)
@@ -134,6 +157,7 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     QByteArray data;
     int stream_index;
     AVFrame *pFrame;
+    AVDictionary *opts = NULL;
     AVCodec *codec = NULL;
     AVCodecContext *pCodecCtx = NULL;
 
@@ -145,12 +169,15 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
 
     pCodecCtx = pFormatCtx->streams[stream_index]->codec;
 
-    if(avcodec_open2(pCodecCtx, codec, NULL) < 0) {
+    if(avcodec_open2(pCodecCtx, codec, &opts) < 0) {
         avcodec_close(pCodecCtx);
         return data;
     }
 
-    if(av_seek_frame(pFormatCtx, stream_index, pFormatCtx->duration * percentage / 100, 0) < 0) {
+    qint64 seek_pos = pFormatCtx->duration * percentage / (AV_TIME_BASE * 100);
+    qint64 frame = av_rescale(seek_pos,pFormatCtx->streams[stream_index]->time_base.den, pFormatCtx->streams[stream_index]->time_base.num);
+
+    if(avformat_seek_file(pFormatCtx, stream_index, 0, frame, frame, AVSEEK_FLAG_FRAME) < 0) {
         avcodec_close(pCodecCtx);
         return data;
     }
@@ -163,7 +190,7 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     AVFrame *pFrameRGB = avcodec_alloc_frame();
 
     int numBytes = avpicture_get_size(PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
-    uint8_t *buffer = (uint8_t *)av_malloc(numBytes * sizeof(uint8_t));
+    uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
 
     avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
 
@@ -174,17 +201,20 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
         pCodecCtx->width,
         pCodecCtx->height,
         PIX_FMT_RGB24,
-        SWS_BILINEAR,
+        SWS_BICUBIC,
         NULL,
         NULL,
         NULL
     );
 
-    QImage img(pCodecCtx->width, pCodecCtx->height, QImage::Format_RGB32);
+    if(!sws_ctx) {
+        avcodec_close(pCodecCtx);
+        return data;
+    }
 
     sws_scale(
         sws_ctx,
-        (uint8_t const * const *)pFrame->data,
+        pFrame->data,
         pFrame->linesize,
         0,
         pCodecCtx->height,
@@ -192,11 +222,15 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
         pFrameRGB->linesize
     );
 
-    AVFrameToQImage(*pFrame, img, pCodecCtx->width, pCodecCtx->height);
+    QImage image(pCodecCtx->width, pCodecCtx->height, QImage::Format_RGB888);
+
+    for(int y = 0, height = pCodecCtx->height, width = pCodecCtx->width; y < height; y++){
+        memcpy(image.scanLine(y), pFrameRGB->data[0] + y * pFrameRGB->linesize[0], width * 3);
+    }
 
     QBuffer imgbuffer(&data);
     imgbuffer.open(QIODevice::WriteOnly);
-    QImage result = img.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage result = image.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     result.save(&imgbuffer, "JPEG");
 
     av_free(buffer);
@@ -211,4 +245,5 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
 void AVDecoder::close()
 {
     avformat_close_input(&pFormatCtx);
+    pFormatCtx = NULL;
 }

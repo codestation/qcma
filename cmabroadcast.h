@@ -37,7 +37,7 @@ private:
 
     QMutex mutex;
     QString uuid;
-    QString reply;
+    QByteArray reply;
     QString hostname;
     QUdpSocket *socket;
     static const QString broadcast_reply;

@@ -69,12 +69,16 @@ private:
     void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
     void vitaEventRequestTerminate(vita_event_t *event, int eventId);
 
-    QWaitCondition waitCondition;
+    static int deviceRegistered(const char *deviceid);
+    static int generatePin(wireless_vita_info_t *info, int *p_err);
+
+    QWaitCondition waitCondition;    
     CmaBroadcast broadcast;
     vita_device_t *device;
     volatile bool active;
     volatile bool connected;
     static metadata_t g_thumbmeta;
+    static CmaClient *this_object;
 
 signals:
     void receivedPin(int);

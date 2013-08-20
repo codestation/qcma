@@ -19,14 +19,12 @@
 
 #include "cmaobject.h"
 #include "sforeader.h"
+#include "avdecoder.h"
 #include "utils.h"
 
 #include <QDir>
 #include <QDateTime>
 #include <QDebug>
-
-#include <MediaInfo/MediaInfo.h>
-#include <MediaInfo/File__Analyse_Automatic.h>
 
 int CMAObject::ohfi_count = OHFI_OFFSET;
 
@@ -84,21 +82,9 @@ void CMAObject::loadSfoMetadata(const QString &path)
 
 void CMAObject::loadMusicMetadata(const QString &path)
 {
-    MediaInfoLib::MediaInfo media;
-    if(media.Open(path.toStdWString())) {
-        QString data;
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Album));
-        metadata.data.music.album = strdup(!data.isEmpty() ? data.toUtf8().data() : (parent->metadata.name ? parent->metadata.name : ""));
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Performer));
-        metadata.data.music.artist = strdup(data.toUtf8().data());
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Title));
-        metadata.data.music.title = strdup(!data.isEmpty() ? data.toUtf8().data() : metadata.name);
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Audio, 0, MediaInfoLib::Audio_BitRate));
-        bool ok;
-        int bitrate = data.toInt(&ok);
-        if(ok) {
-            metadata.data.music.tracks->data.track_audio.bitrate = bitrate;
-        }
+    AVDecoder decoder;
+    if(decoder.open(path)) {
+        decoder.getAudioMetadata(metadata);
     } else {
         metadata.data.music.album = strdup(parent->metadata.name ? parent->metadata.name : "");
         metadata.data.music.artist = strdup("");
@@ -108,36 +94,9 @@ void CMAObject::loadMusicMetadata(const QString &path)
 
 void CMAObject::loadVideoMetadata(const QString &path)
 {
-    MediaInfoLib::MediaInfo media;
-    if(media.Open(path.toStdWString())) {
-        bool ok;
-        QString data;
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Title));
-        metadata.data.video.title = strdup(!data.isEmpty() ? data.toUtf8().data() : metadata.name);
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Comment));
-        metadata.data.video.explanation = strdup(data.toUtf8().data());
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Copyright));
-        metadata.data.video.copyright = strdup(data.toUtf8().data());
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Video, 0, MediaInfoLib::Video_BitRate));
-        int bitrate = data.toInt(&ok);
-        if(ok) {
-            metadata.data.video.tracks->data.track_video.bitrate = bitrate;
-        }
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Video, 0, MediaInfoLib::Video_Duration));
-        int duration = data.toInt(&ok);
-        if(ok) {
-            metadata.data.video.tracks->data.track_video.duration = duration;
-        }
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Video, 0, MediaInfoLib::Video_Width));
-        int width = data.toInt(&ok);
-        if(ok) {
-            metadata.data.video.tracks->data.track_video.width = width;
-        }
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Video, 0, MediaInfoLib::Video_Height));
-        int height = data.toInt(&ok);
-        if(ok) {
-            metadata.data.video.tracks->data.track_video.height = height;
-        }
+    AVDecoder decoder;
+    if(decoder.open(path)) {
+        decoder.getVideoMetadata(metadata);
     } else {
         metadata.data.video.title = strdup(metadata.name);
         metadata.data.video.explanation = strdup("");
@@ -147,21 +106,9 @@ void CMAObject::loadVideoMetadata(const QString &path)
 
 void CMAObject::loadPhotoMetadata(const QString &path)
 {
-    MediaInfoLib::MediaInfo media;
-    if(media.Open(path.toStdWString())) {
-        bool ok;
-        QString data;
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Title));
-        metadata.data.photo.title = strdup(!data.isEmpty() ? data.toUtf8().data() : metadata.name);
-        data = QString::fromStdWString(media.Get(MediaInfoLib::Stream_Image, 0, MediaInfoLib::Image_Height));
-        int height = data.toInt(&ok);
-        if(ok) {
-            metadata.data.photo.tracks->data.track_photo.height = height;
-        }
-        int width = data.toInt(&ok);
-        if(ok) {
-            metadata.data.photo.tracks->data.track_photo.width = width;
-        }
+    AVDecoder decoder;
+    if(decoder.open(path)) {
+        decoder.getPictureMetadata(metadata);
     } else {
         metadata.data.photo.title = strdup(metadata.name);
     }

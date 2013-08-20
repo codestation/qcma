@@ -18,6 +18,7 @@
  */
 
 #include "utils.h"
+#include "avdecoder.h"
 
 #include <QBuffer>
 #include <QDebug>
@@ -29,9 +30,6 @@
 #else
 #include <sys/statvfs.h>
 #endif
-
-#include <MediaInfo/MediaInfo.h>
-#include <MediaInfo/File__Analyse_Automatic.h>
 
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
 {
@@ -139,24 +137,21 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
             // TODO: try to load an album cover from one of the audio files.
             data = findFolderAlbumArt(path, metadata);
         } else {
-            MediaInfoLib::MediaInfo media;
+            AVDecoder decoder;
 
-            if(media.Open(path.toStdWString())) {
-                QString base64 = QString::fromStdWString(media.Get(MediaInfoLib::Stream_General, 0, MediaInfoLib::General_Cover_Data));
-                QImage img;
-
-                if(base64.size() > 0 && img.loadFromData(QByteArray::fromBase64(base64.toUtf8()))) {
-                    QBuffer buffer(&data);
-                    buffer.open(QIODevice::WriteOnly);
-                    // use smooth transformation for the ambum art since is important to display correctly
-                    QImage result = img.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    result.save(&buffer, "JPEG");
-                    metadata->data.thumbnail.width = result.width();
-                    metadata->data.thumbnail.height = result.height();
-                }
+            if(decoder.open(path)) {
+                data = decoder.getAudioThumbnail(256, 256);
+                metadata->data.thumbnail.width = 256;
+                metadata->data.thumbnail.height = 256;
             }
         }
+    }  else if(MASK_SET(type, Video)) {
+        AVDecoder decoder;
+        if(decoder.open(path)) {
+            data = decoder.getVideoThumbnail(256, 256);
+            metadata->data.thumbnail.width = 256;
+            metadata->data.thumbnail.height = 256;
+        }
     }
-    //TODO: implement thumbnails for videos
     return data;
 }

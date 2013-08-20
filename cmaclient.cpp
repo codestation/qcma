@@ -19,8 +19,8 @@
 
 #include "cmaclient.h"
 #include "capability.h"
+#include "avdecoder.h"
 #include "utils.h"
-#include "wirelessworker.h"
 
 #include "QApplication"
 #include <QDateTime>
@@ -34,17 +34,37 @@
 #include <MediaInfo/File__Analyse_Automatic.h>
 
 metadata_t CmaClient::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{18, 144, 80, 0, 1, 1.0f, 2}}, NULL};
+CmaClient *CmaClient::this_object = NULL;
 
 CmaClient::CmaClient(QObject *parent) :
     BaseWorker(parent)
 {
+    this_object = this;
+    AVDecoder::init();
+}
+
+int CmaClient::deviceRegistered(const char *deviceid)
+{
+    qDebug("Got connection request from %s", deviceid);
+    return 1;
+}
+
+int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
+{
+    qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
+    int pin = qrand() % 100000000;
+    qDebug("Your registration PIN for %s is: %08d", info->name, pin);
+    *p_err = 0;
+    emit this_object->receivedPin(pin);
+    return pin;
 }
 
 vita_device_t *CmaClient::getDeviceConnection()
 {
     int num_tries = 0;
     vita_device_t *vita;
-    typedef BroadcastSignal BS;
+    wireless_host_info_t host;
+    host.port = QCMA_REQUEST_PORT;
 
     while(active) {
         vita = VitaMTP_Get_First_USB_Vita();
@@ -52,7 +72,7 @@ vita_device_t *CmaClient::getDeviceConnection()
             break;
         }
         qDebug("No Vita detected via USB, attempt %i", ++num_tries);
-        vita = VitaMTP_Get_First_Wireless_Vita(&BS::info, 0, 2, BS::deviceRegistered, BS::generatePin);
+        vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, 0, CmaClient::deviceRegistered, CmaClient::generatePin);
         if(vita || !active) {
             break;
         }

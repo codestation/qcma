@@ -48,7 +48,7 @@ CmaBroadcast::CmaBroadcast(QObject *parent) :
     // generate a GUID if doesn't exist yet in settings
     uuid = settings.value("guid").toString();
     if(uuid.isEmpty()) {
-        uuid = QUuid::createUuid().toString();
+        uuid = QUuid::createUuid().toString().mid(1,36);
         settings.setValue("guid", uuid);
     }
 
@@ -73,7 +73,7 @@ void CmaBroadcast::readPendingDatagrams()
 
         if(datagram.contains(broadcast_query)) {
             QMutexLocker locker(&mutex);
-            socket->writeDatagram(reply.toUtf8(), sender, senderPort);
+            socket->writeDatagram(reply, sender, senderPort);
         } else {
             qWarning("Unknown request: %.*s\n", datagram.length(), datagram.constData());
         }
@@ -83,19 +83,23 @@ void CmaBroadcast::readPendingDatagrams()
 void CmaBroadcast::setAvailable()
 {
     QMutexLocker locker(&mutex);
-    reply = broadcast_reply
+    reply.clear();
+    reply.insert(0, broadcast_reply
             .arg(broadcast_ok, uuid, "win", hostname)
             .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
             .arg(QCMA_REQUEST_PORT)
-            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0'));
+            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+    reply.append('\0');
 }
 
 void CmaBroadcast::setUnavailable()
 {
     QMutexLocker locker(&mutex);
-    reply = broadcast_reply
+    reply.clear();
+    reply.insert(0, broadcast_reply
             .arg(broadcast_unavailable, uuid, "win", hostname)
             .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
             .arg(QCMA_REQUEST_PORT)
-            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0'));
+            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+    reply.append('\0');
 }

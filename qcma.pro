@@ -14,7 +14,6 @@ TARGET = qcma
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    wirelessworker.cpp \
     capability.cpp \
     database.cpp \
     cmaobject.cpp \
@@ -30,7 +29,6 @@ SOURCES += main.cpp \
     avdecoder.cpp
 
 HEADERS += \
-    wirelessworker.h \
     capability.h \
     database.h \
     cmaobject.h \
@@ -46,7 +44,7 @@ HEADERS += \
     avdecoder.h
 
 CONFIG += link_pkgconfig
-PKGCONFIG += libvitamtp libmediainfo libavformat libavcodec libavutil libswscale
+PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall
 
@@ -55,7 +53,8 @@ RESOURCES += \
 
 OTHER_FILES += \
     resources/psp2-updatelist.xml \
-    resources/psv_icon.png
+    resources/psv_icon.png \
+    README.md
 
 FORMS += \
     configwidget.ui
