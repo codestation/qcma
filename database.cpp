@@ -165,6 +165,8 @@ void Database::destroy()
     QMutexLocker locker(&mutex);
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+        CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());
+        delete first;
         qDeleteAll(*root);
     }
 

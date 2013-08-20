@@ -71,7 +71,7 @@ vita_device_t *CmaClient::getDeviceConnection()
             break;
         }
         qDebug("No Vita detected via USB, attempt %i", ++num_tries);
-        vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, 0, CmaClient::deviceRegistered, CmaClient::generatePin);
+        vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, 3, CmaClient::deviceRegistered, CmaClient::generatePin);
         if(vita || !active) {
             break;
         }

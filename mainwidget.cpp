@@ -66,7 +66,7 @@ void MainWidget::dialogResult(int result)
 void MainWidget::startServer()
 {
     qDebug("Starting cma event loop");
-    clientLoop.start();
+    clientLoop.start("CmaClient");
 }
 
 void MainWidget::stopServer()

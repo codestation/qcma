@@ -30,7 +30,7 @@ class BaseWorker : public QObject
 public:
     explicit BaseWorker(QObject *parent = 0);
 
-    void start();
+    void start(const char *thread_name = NULL);
 
 private:
     QThread *thread;

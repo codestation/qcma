@@ -78,7 +78,7 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
     if((entry = av_dict_get(file_metadata, "title", NULL, 0)) != NULL) {
         metadata.data.video.title = strdup(entry->value);
     } else {
-        metadata.data.video.title = metadata.name;
+        metadata.data.video.title = strdup(metadata.name);
     }
 
     metadata.data.video.tracks->data.track_video.duration = pFormatCtx->duration / 1000;

@@ -37,7 +37,7 @@ void CMARootObject::initObject(const QString &path)
         case VITA_OHFI_MUSIC:
             metadata.dataType = Music;
             this->path = path;
-            num_filters = 1;
+            num_filters = 2;
             filters = new metadata_t[2];
             //createFilter(&filters[0], "Artists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS);
             createFilter(&filters[0], "Albums", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALBUMS);

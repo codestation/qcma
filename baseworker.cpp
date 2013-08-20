@@ -29,9 +29,13 @@ void BaseWorker::onFinished()
 {
 }
 
-void BaseWorker::start()
+void BaseWorker::start(const char *thread_name)
 {
     thread = new QThread();
+
+    if(thread_name) {
+        thread->setObjectName(thread_name);
+    }
 
     // Move this service to a new thread
     this->moveToThread(thread);
