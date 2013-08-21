@@ -122,7 +122,7 @@ void CMARootObject::createFilter(metadata_t *filter, const char *name, int type)
     filter->size = 0;
     filter->dataType = static_cast<DataType>(Folder | Special);
     filter->next_metadata = NULL;
-    qDebug("Added filter %s to database with OHFI %d (%s)", name, filter->ohfi, metadata.name);
+    //qDebug("Added filter %s to database with OHFI %d (%s)", name, filter->ohfi, metadata.name);
 }
 
 int CMARootObject::getFilters(metadata_t **p_head)

@@ -47,6 +47,8 @@ public:
 private:
     static bool isRunning();
     static void setRunning(bool state);
+    static bool isEventLoopEnabled();
+    static void setEventLoop(bool state);
     void enterEventLoop();
 
     void processNewConnection(vita_device_t *device);
@@ -77,13 +79,16 @@ private:
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
 
+    int cancel_wireless;
     CmaBroadcast broadcast;
     vita_device_t *device;
+    static bool event_loop_enabled;
     static bool is_running;
     static metadata_t g_thumbmeta;
     static CmaClient *this_object;
     static QMutex mutex;
     static QMutex runner;
+    static QMutex eloop;
 
 signals:
     void receivedPin(int);

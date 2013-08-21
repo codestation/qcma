@@ -121,7 +121,7 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
 
         CMAObject *obj = new CMAObject(getParent(last_dir, info.path()));
         obj->initObject(info);
-        qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
+        //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
         list << obj;
 
         if(obj->metadata.dataType & Folder) {
@@ -147,7 +147,7 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
         } else {
             CMAObject *obj = new CMAObject(parent);
             obj->initObject(info);
-            qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
+            //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
             list << obj;
             if(info.isDir()) {
                 total_objects += recursiveScanRootDirectory(list, obj, ohfi_type);
