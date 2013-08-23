@@ -42,8 +42,6 @@ public:
 
     void launch();
 
-    static Database db;
-
 private:
     static bool isRunning();
     static void setRunning(bool state);
@@ -53,29 +51,6 @@ private:
 
     void processNewConnection(vita_device_t *device);
 
-    uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
-    void vitaEventSendObject(vita_event_t *event, int eventId);
-    void vitaEventSendObjectMetadata(vita_event_t *event, int eventId);
-    void vitaEventSendNumOfObject(vita_event_t *event, int eventId);
-    void vitaEventCancelTask(vita_event_t *event, int eventId);
-    void vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId);
-    void vitaEventUnimplementated(vita_event_t *event, int eventId);
-    void vitaEventSendObjectStatus(vita_event_t *event, int eventId);
-    void vitaEventSendObjectThumb(vita_event_t *event, int eventId);
-    void vitaEventDeleteObject(vita_event_t *event, int eventId);
-    void vitaEventGetSettingInfo(vita_event_t *event, int eventId);
-    void vitaEventSendHttpObjectPropFromURL(vita_event_t *event, int eventId);
-    void vitaEventSendPartOfObject(vita_event_t *event, int eventId);
-    void vitaEventOperateObject(vita_event_t *event, int eventId);
-    void vitaEventGetPartOfObject(vita_event_t *event, int eventId);
-    void vitaEventSendStorageSize(vita_event_t *event, int eventId);
-    void vitaEventCheckExistance(vita_event_t *event, int eventId);
-    void vitaEventGetTreatObject(vita_event_t *event, int eventId);
-    void vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventId);
-    void vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId);
-    void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
-    void vitaEventRequestTerminate(vita_event_t *event, int eventId);
-
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
 
@@ -84,7 +59,6 @@ private:
     vita_device_t *device;
     static bool event_loop_enabled;
     static bool is_running;
-    static metadata_t g_thumbmeta;
     static CmaClient *this_object;
     static QMutex mutex;
     static QMutex runner;
@@ -105,6 +79,7 @@ public slots:
 private slots:
     void connectUsb();
     void connectWireless();
+    static void finishEventLoop();
 };
 
 #endif // CMACLIENT_H

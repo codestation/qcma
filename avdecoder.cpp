@@ -138,7 +138,6 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
             QImage img = QImage::fromData(QByteArray((const char *)pkt.data, pkt.size));
             QImage result = img.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             result.save(&imgbuffer, "JPEG");
-            av_free_packet(&pkt);
             break;
         }
     }

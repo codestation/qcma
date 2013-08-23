@@ -19,6 +19,7 @@
 
 #include "mainwidget.h"
 #include "cmaclient.h"
+#include "cmaevent.h"
 #include "utils.h"
 
 #include <QAction>
@@ -100,10 +101,10 @@ void MainWidget::stopServer()
 
 void MainWidget::refreshDatabase()
 {
-    QMutexLocker locker(&CmaClient::db.mutex);
+    QMutexLocker locker(&CmaEvent::db.mutex);
 
-    CmaClient::db.destroy();
-    int count = CmaClient::db.create();
+    CmaEvent::db.destroy();
+    int count = CmaEvent::db.create();
     qDebug("Added %i entries to the database", count);
 }
 
