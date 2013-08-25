@@ -58,6 +58,7 @@ void ClientManager::refreshDatabase()
     db.destroy();
     int count = db.create();
     qDebug("Added %i entries to the database", count);
+    emit databaseUpdated(tr("Added %1 entries to the database").arg(count));
 }
 
 void ClientManager::stop()

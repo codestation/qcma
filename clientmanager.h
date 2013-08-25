@@ -27,6 +27,7 @@ signals:
     void deviceConnected(QString);
     void deviceDisconnected();
     void receivedPin(int);
+    void databaseUpdated(QString);
     void stopped();
 
 private slots:

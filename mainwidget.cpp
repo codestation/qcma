@@ -49,6 +49,7 @@ void MainWidget::checkSettings()
             return;
         }
     }
+    first_run = false;
     manager.start();
 }
 
@@ -94,6 +95,7 @@ void MainWidget::connectSignals()
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
     connect(&manager, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
+    connect(&manager, SIGNAL(databaseUpdated(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
     connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
@@ -111,7 +113,7 @@ void MainWidget::createTrayIcon()
     quit = new QAction(tr("&Quit"), this);
 
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
-    //connect(reload, SIGNAL(triggered()), &CmaWorker, SLOT(allowRefresh()), Qt::DirectConnection);
+    connect(reload, SIGNAL(triggered()), &manager, SLOT(refreshDatabase()));
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
 
     QMenu *trayIconMenu = new QMenu(this);
@@ -125,7 +127,7 @@ void MainWidget::createTrayIcon()
     trayIcon->setIcon(QIcon(":/main/resources/psv_icon.png"));
     trayIcon->show();
     // try to avoid the iconTray Qt bug
-    //Sleeper::sleep(1);
+    Sleeper::sleep(1);
 }
 
 void MainWidget::receiveMessage(QString message)
