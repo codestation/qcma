@@ -49,7 +49,7 @@ void MainWidget::checkSettings()
             return;
         }
     }
-    startServer();
+    manager.start();
 }
 
 void MainWidget::dialogResult(int result)
@@ -57,69 +57,24 @@ void MainWidget::dialogResult(int result)
     if(result == QDialog::Accepted) {
         if(first_run) {
             first_run = false;
-            startServer();
+            manager.start();
         }
     } else if(first_run) {
         qApp->quit();
     }
 }
 
-void MainWidget::startServer()
-{
-    qDebug("Starting cma threads");
-    QThread *thread;
-    CmaClient *client;
-
-    thread = new QThread();
-    client = new CmaClient();
-    thread->setObjectName("usb_thread");
-    connect(thread, SIGNAL(started()), client, SLOT(connectUsb()));
-    connect(client, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), client, SLOT(deleteLater()));
-    connectClientSignals(client);
-
-    client->moveToThread(thread);
-    thread->start();
-
-    thread = new QThread();
-    client = new CmaClient();
-    thread->setObjectName("wireless_thread");
-    connect(thread, SIGNAL(started()), client, SLOT(connectWireless()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), client, SLOT(deleteLater()));
-    connectClientSignals(client);
-    client->moveToThread(thread);
-    thread->start();
-}
-
 void MainWidget::stopServer()
 {
-    CmaClient::stop();
-    qApp->quit();
-}
-
-void MainWidget::refreshDatabase()
-{
-    QMutexLocker locker(&CmaEvent::db.mutex);
-
-    CmaEvent::db.destroy();
-    int count = CmaEvent::db.create();
-    qDebug("Added %i entries to the database", count);
+    setTrayTooltip(tr("Shutting down..."));
+    receiveMessage(tr("Stopping QCMA..."));
+    manager.stop();
 }
 
 void MainWidget::deviceDisconnect()
 {
     setTrayTooltip(tr("Disconnected"));
     receiveMessage(tr("The device has been disconnected"));
-}
-
-void MainWidget::connectClientSignals(CmaClient *client)
-{
-    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
-    connect(client, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
-    connect(client, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 }
 
 void MainWidget::showPin(int pin)
@@ -129,10 +84,19 @@ void MainWidget::showPin(int pin)
 
 void MainWidget::prepareApplication()
 {
-    connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
+    connectSignals();
     createTrayIcon();
     checkSettings();
-    refreshDatabase();
+}
+
+void MainWidget::connectSignals()
+{
+    connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
+    connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
+    connect(&manager, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
+    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
+    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
+    connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
 }
 
 void MainWidget::setTrayTooltip(QString message)

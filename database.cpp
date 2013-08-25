@@ -34,7 +34,8 @@ const QStringList Database::video_types = QStringList() << "mp4";
 Database::Database(QObject *parent) :
     QObject(parent), mutex(QMutex::Recursive)
 {
-    CMARootObject::uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
+    QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
+    CMARootObject::uuid  = uuid;
 }
 
 Database::~Database()
@@ -63,26 +64,26 @@ int Database::create()
         CMARootObject *obj = new CMARootObject(ohfi_array[i]);
 
         switch(ohfi_array[i]) {
-            case VITA_OHFI_MUSIC:
-                obj->initObject(settings.value("musicPath").toString());
-                break;
+        case VITA_OHFI_MUSIC:
+            obj->initObject(settings.value("musicPath").toString());
+            break;
 
-            case VITA_OHFI_PHOTO:
-                obj->initObject(settings.value("photoPath").toString());
-                break;
+        case VITA_OHFI_PHOTO:
+            obj->initObject(settings.value("photoPath").toString());
+            break;
 
-            case VITA_OHFI_VIDEO:
-                obj->initObject(settings.value("videoPath").toString());
-                break;
+        case VITA_OHFI_VIDEO:
+            obj->initObject(settings.value("videoPath").toString());
+            break;
 
-            case VITA_OHFI_BACKUP:
-            case VITA_OHFI_VITAAPP:
-            case VITA_OHFI_PSPAPP:
-            case VITA_OHFI_PSPSAVE:
-            case VITA_OHFI_PSXAPP:
-            case VITA_OHFI_PSMAPP:
+        case VITA_OHFI_BACKUP:
+        case VITA_OHFI_VITAAPP:
+        case VITA_OHFI_PSPAPP:
+        case VITA_OHFI_PSPSAVE:
+        case VITA_OHFI_PSXAPP:
+        case VITA_OHFI_PSMAPP:
 
-                obj->initObject(settings.value("appsPath").toString());
+            obj->initObject(settings.value("appsPath").toString());
         }
 
         root_list list;
@@ -382,9 +383,6 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head)
         *p_head = temp.next_metadata;
     }
 
-    if(p_head) {
-        dumpMetadataList(*p_head);
-    }
     return numObjects;
 }
 

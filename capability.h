@@ -20,9 +20,7 @@
 #ifndef CAPABILITY_H
 #define CAPABILITY_H
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 class DeviceCapability
 {
@@ -31,10 +29,18 @@ public:
     bool exchangeInfo(vita_device_t *device);
 
     //TODO: vita_info_t doesn't retrieve this info, update vitamtp to get it
-    const char *getVersion() { return ""; }
-    const char *getProtocol()  { return ""; }
-    const char *getOnlineId()  { return "PS Vita"; }
-    const char *getModelInfo()  { return ""; }
+    const char *getVersion() {
+        return "";
+    }
+    const char *getProtocol()  {
+        return "";
+    }
+    const char *getOnlineId()  {
+        return "PS Vita";
+    }
+    const char *getModelInfo()  {
+        return "";
+    }
 
 private:
     capability_info_t *generate_pc_capability_info();

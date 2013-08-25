@@ -31,7 +31,7 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
 
     if(vita_info.protocolVersion > VITAMTP_PROTOCOL_MAX_VERSION) {
         qWarning("Vita wants protocol version %08d while we only support %08d. Attempting to continue.",
-            vita_info.protocolVersion, VITAMTP_PROTOCOL_MAX_VERSION);
+                 vita_info.protocolVersion, VITAMTP_PROTOCOL_MAX_VERSION);
     }
 
     QString hostname = QHostInfo::localHostName();

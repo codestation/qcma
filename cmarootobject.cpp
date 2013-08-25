@@ -34,70 +34,70 @@ void CMARootObject::initObject(const QString &path)
     metadata.type = VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR;
 
     switch(root_ohfi) {
-        case VITA_OHFI_MUSIC:
-            metadata.dataType = Music;
-            this->path = path;
-            num_filters = 2;
-            filters = new metadata_t[2];
-            //createFilter(&filters[0], "Artists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS);
-            createFilter(&filters[0], "Albums", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALBUMS);
-            createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
-            //createFilter(&filters[3], "Genres", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_GENRES);
-            //createFilter(&filters[4], "Playlists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
-            break;
+    case VITA_OHFI_MUSIC:
+        metadata.dataType = Music;
+        this->path = path;
+        num_filters = 2;
+        filters = new metadata_t[2];
+        //createFilter(&filters[0], "Artists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS);
+        createFilter(&filters[0], "Albums", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALBUMS);
+        createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_SONGS);
+        //createFilter(&filters[3], "Genres", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_GENRES);
+        //createFilter(&filters[4], "Playlists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS);
+        break;
 
-        case VITA_OHFI_PHOTO:
-            metadata.dataType = Photo;
-            this->path = path;
-            num_filters = 2;
-            filters = new metadata_t[2];
-            createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
-            createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
-            break;
+    case VITA_OHFI_PHOTO:
+        metadata.dataType = Photo;
+        this->path = path;
+        num_filters = 2;
+        filters = new metadata_t[2];
+        createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
+        createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        break;
 
-        case VITA_OHFI_VIDEO:
-            metadata.dataType = Video;
-            this->path = path;
-            num_filters = 2;
-            filters = new metadata_t[2];
-            createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
-            createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
-            break;
+    case VITA_OHFI_VIDEO:
+        metadata.dataType = Video;
+        this->path = path;
+        num_filters = 2;
+        filters = new metadata_t[2];
+        createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
+        createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        break;
 
-        case VITA_OHFI_VITAAPP:
-            metadata.dataType = App;
-            this->path = QDir(QDir(path).absoluteFilePath("APP")).absoluteFilePath(uuid);
-            num_filters = 0;
-            break;
+    case VITA_OHFI_VITAAPP:
+        metadata.dataType = App;
+        this->path = QDir(QDir(path).absoluteFilePath("APP")).absoluteFilePath(uuid);
+        num_filters = 0;
+        break;
 
-        case VITA_OHFI_PSPAPP:
-            metadata.dataType = App;
-            this->path = QDir(QDir(path).absoluteFilePath("PGAME")).absoluteFilePath(uuid);
-            num_filters = 0;
-            break;
+    case VITA_OHFI_PSPAPP:
+        metadata.dataType = App;
+        this->path = QDir(QDir(path).absoluteFilePath("PGAME")).absoluteFilePath(uuid);
+        num_filters = 0;
+        break;
 
-        case VITA_OHFI_PSPSAVE:
-            metadata.dataType = SaveData;
-            this->path = QDir(QDir(path).absoluteFilePath("PSAVEDATA")).absoluteFilePath(uuid);
-            num_filters = 0;
-            break;
+    case VITA_OHFI_PSPSAVE:
+        metadata.dataType = SaveData;
+        this->path = QDir(QDir(path).absoluteFilePath("PSAVEDATA")).absoluteFilePath(uuid);
+        num_filters = 0;
+        break;
 
-        case VITA_OHFI_PSXAPP:
-            metadata.dataType = App;
-            this->path = QDir(QDir(path).absoluteFilePath("PSGAME")).absoluteFilePath(uuid);
-            num_filters = 0;
-            break;
+    case VITA_OHFI_PSXAPP:
+        metadata.dataType = App;
+        this->path = QDir(QDir(path).absoluteFilePath("PSGAME")).absoluteFilePath(uuid);
+        num_filters = 0;
+        break;
 
-        case VITA_OHFI_PSMAPP:
-            metadata.dataType = App;
-            this->path = QDir(QDir(path).absoluteFilePath("PSM")).absoluteFilePath(uuid);
-            num_filters = 0;
-            break;
+    case VITA_OHFI_PSMAPP:
+        metadata.dataType = App;
+        this->path = QDir(QDir(path).absoluteFilePath("PSM")).absoluteFilePath(uuid);
+        num_filters = 0;
+        break;
 
-        case VITA_OHFI_BACKUP:
-            metadata.dataType = App;
-            this->path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
-            num_filters = 0;
+    case VITA_OHFI_BACKUP:
+        metadata.dataType = App;
+        this->path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
+        num_filters = 0;
     }
 }
 

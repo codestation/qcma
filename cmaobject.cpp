@@ -129,7 +129,7 @@ void CMAObject::initObject(const QFileInfo &file)
     // create additional metadata
     if(MASK_SET(metadata.dataType, SaveData | Folder)) {
         metadata.data.saveData.dirName = strdup(metadata.name);
-        metadata.data.saveData.statusType = 1;        
+        metadata.data.saveData.statusType = 1;
         loadSfoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Music | File)) {
         metadata.data.music.fileName = strdup(metadata.name);

@@ -24,47 +24,47 @@
 #include "cmabroadcast.h"
 #include "cmaobject.h"
 #include "database.h"
+#include "cmaevent.h"
 
 #include <QObject>
+#include <QSemaphore>
 #include <QString>
-#include <QWaitCondition>
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 class CmaClient : public QObject
 {
     Q_OBJECT
 public:
     explicit CmaClient(QObject *parent = 0);
-    ~CmaClient();
 
     void launch();
 
 private:
-    static bool isRunning();
-    static void setRunning(bool state);
+    static bool isActive();
+    static void setActive(bool state);
     static bool isEventLoopEnabled();
     static void setEventLoop(bool state);
-    void enterEventLoop();
+    void enterEventLoop(vita_device_t *device);
 
     void processNewConnection(vita_device_t *device);
 
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
+    static int cancelCallback();
 
-    int cancel_wireless;
     CmaBroadcast broadcast;
-    vita_device_t *device;
-    static bool event_loop_enabled;
-    static bool is_running;
+    static bool is_active;
+    static bool in_progress;
+    static int is_cancelled;
     static CmaClient *this_object;
     static QMutex mutex;
     static QMutex runner;
-    static QMutex eloop;
+    static QMutex cancel;
+    static QSemaphore sema;
 
 signals:
+    void newEvent(vita_event_t event);
     void receivedPin(int);
     void deviceDetected();
     void deviceConnected(QString);
@@ -73,13 +73,11 @@ signals:
     void finished();
 
 public slots:
-    void close();
     static void stop();
 
 private slots:
     void connectUsb();
     void connectWireless();
-    static void finishEventLoop();
 };
 
 #endif // CMACLIENT_H

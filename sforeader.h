@@ -37,7 +37,7 @@ private:
         quint32 value_size;
         quint32 value_size_with_padding;
         quint32 data_offset;
-    }__attribute__((packed)) sfo_index;
+    } __attribute__((packed)) sfo_index;
 
     typedef struct {
         char id[4];
@@ -45,7 +45,7 @@ private:
         quint32 key_offset;
         quint32 value_offset;
         quint32 pair_count;
-    }__attribute__((packed)) sfo_header;
+    } __attribute__((packed)) sfo_header;
 
     QByteArray data;
     const char *key_offset;

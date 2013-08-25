@@ -31,7 +31,7 @@ class CmaBroadcast : public QObject
     Q_OBJECT
 public:
     explicit CmaBroadcast(QObject *parent = 0);
-    
+
 private:
     void replyBroadcast(const QByteArray &datagram);
 

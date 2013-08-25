@@ -24,9 +24,7 @@
 
 #include <QList>
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 class CMARootObject : public CMAObject
 {

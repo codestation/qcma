@@ -23,9 +23,7 @@
 #include <QFileInfo>
 #include <QString>
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 #define OHFI_OFFSET 1000
 

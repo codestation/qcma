@@ -24,21 +24,25 @@
 #include <QString>
 #include <QThread>
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 // Qt4 doesn't have public methods for Thread::*sleep
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    typedef QThread Sleeper;
+typedef QThread Sleeper;
 #else
-    class Sleeper : QThread
-    {
-    public:
-        static void sleep(unsigned long secs) { QThread::sleep(secs); }
-        static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
-        static void usleep(unsigned long usecs) { QThread::usleep(usecs); }
-    };
+class Sleeper : QThread
+{
+public:
+    static void sleep(unsigned long secs) {
+        QThread::sleep(secs);
+    }
+    static void msleep(unsigned long msecs) {
+        QThread::msleep(msecs);
+    }
+    static void usleep(unsigned long usecs) {
+        QThread::usleep(usecs);
+    }
+};
 #endif
 
 bool removeRecursively(const QString &dirName);

@@ -21,18 +21,14 @@
 #define MAINWIDGET_H
 
 #include "configwidget.h"
+#include "clientmanager.h"
 #include "cmaclient.h"
 
 #include <QAction>
 #include <QWidget>
 #include <QSystemTrayIcon>
 
-extern "C" {
 #include <vitamtp.h>
-}
-
-
-class QMenu;
 
 class MainWidget : public QWidget
 {
@@ -44,9 +40,9 @@ public:
     void prepareApplication();
 
 private:
+    void connectSignals();
     void createTrayIcon();
     void checkSettings();
-    void connectClientSignals(CmaClient *client);
 
     bool first_run;
     ConfigWidget dialog;
@@ -54,7 +50,7 @@ private:
     QAction *quit;
     QAction *reload;
     QAction *options;
-    CmaClient clientLoop;
+    ClientManager manager;
     const static QStringList path_list;
 
 private slots:
@@ -63,8 +59,6 @@ private slots:
     void receiveMessage(QString message);
     void setTrayTooltip(QString message);
     void showPin(int pin);
-    void refreshDatabase();
-    void startServer();
     void stopServer();
 };
 

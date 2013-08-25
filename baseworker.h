@@ -31,18 +31,19 @@ public:
     explicit BaseWorker(QObject *parent = 0);
 
     void start(const char *thread_name = NULL);
+    bool wait();
 
 private:
     QThread *thread;
-    
+
 signals:
     void finished();
 
+public slots:
+    virtual void onFinished();
+
 protected slots:
     virtual void process() = 0;
-
-private slots:
-    virtual void onFinished();
 };
 
 #endif // BASEWORKER_H

@@ -25,10 +25,6 @@ BaseWorker::BaseWorker(QObject *parent) :
     thread = NULL;
 }
 
-void BaseWorker::onFinished()
-{
-}
-
 void BaseWorker::start(const char *thread_name)
 {
     thread = new QThread();
@@ -37,25 +33,21 @@ void BaseWorker::start(const char *thread_name)
         thread->setObjectName(thread_name);
     }
 
-    // Move this service to a new thread
     this->moveToThread(thread);
 
-    // The main loop will be executed when the thread
-    // signals that it has started.
     connect(thread, SIGNAL(started()), this, SLOT(process()));
-
-    // Make sure that we notify ourselves when the thread
-    // is finished in order to correctly clean-up the thread.
-    connect(thread, SIGNAL(finished()), this, SLOT(onFinished()));
-
-    // The thread will quit when the sercives
-    // signals that it's finished.
-    connect(this, SIGNAL(finished()), thread, SLOT(quit()));
-
-    // The thread will be scheduled for deletion when the
-    // service signals that it's finished
+    connect(this, SIGNAL(finished()), this, SLOT(onFinished()));
+    connect(this, SIGNAL(finished()), thread, SLOT(quit()), Qt::DirectConnection);
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-    // Start the thread
     thread->start();
+}
+
+bool BaseWorker::wait()
+{
+    return thread->wait();
+}
+
+void BaseWorker::onFinished()
+{
 }

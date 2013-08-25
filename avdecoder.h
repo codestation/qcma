@@ -27,8 +27,9 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
-#include <vitamtp.h>
 }
+
+#include <vitamtp.h>
 
 class AVDecoder
 {
@@ -46,10 +47,10 @@ public:
     class AvInit
     {
     public:
-         AvInit()
-         {
-             av_register_all();
-         }
+        AvInit()
+        {
+            av_register_all();
+        }
     };
 
     static AvInit init;

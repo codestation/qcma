@@ -209,17 +209,17 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
 
     SwsContext *sws_ctx = sws_getContext(
-        pCodecCtx->width,
-        pCodecCtx->height,
-        pCodecCtx->pix_fmt,
-        pCodecCtx->width,
-        pCodecCtx->height,
-        PIX_FMT_RGB24,
-        SWS_BICUBIC,
-        NULL,
-        NULL,
-        NULL
-    );
+                              pCodecCtx->width,
+                              pCodecCtx->height,
+                              pCodecCtx->pix_fmt,
+                              pCodecCtx->width,
+                              pCodecCtx->height,
+                              PIX_FMT_RGB24,
+                              SWS_BICUBIC,
+                              NULL,
+                              NULL,
+                              NULL
+                          );
 
     if(!sws_ctx) {
         avcodec_close(pCodecCtx);
@@ -238,8 +238,8 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
 
     QImage image(pCodecCtx->width, pCodecCtx->height, QImage::Format_RGB888);
 
-    for(int y = 0, height = pCodecCtx->height, width = pCodecCtx->width; y < height; y++){
-        memcpy(image.scanLine(y), pFrameRGB->data[0] + y * pFrameRGB->linesize[0], width * 3);
+    for(int y = 0, h = pCodecCtx->height, w = pCodecCtx->width; y < h; y++) {
+        memcpy(image.scanLine(y), pFrameRGB->data[0] + y * pFrameRGB->linesize[0], w * 3);
     }
 
     QBuffer imgbuffer(&data);

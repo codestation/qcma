@@ -28,13 +28,13 @@
 #include <vitamtp.h>
 
 const QString CmaBroadcast::broadcast_reply =
-        "%1\r\n"
-        "host-id:%2\r\n"
-        "host-type:%3\r\n"
-        "host-name:%4\r\n"
-        "host-mtp-protocol-version:%5\r\n"
-        "host-request-port:%6\r\n"
-        "host-wireless-protocol-version:%7\r\n";
+    "%1\r\n"
+    "host-id:%2\r\n"
+    "host-type:%3\r\n"
+    "host-name:%4\r\n"
+    "host-mtp-protocol-version:%5\r\n"
+    "host-request-port:%6\r\n"
+    "host-wireless-protocol-version:%7\r\n";
 
 const char *CmaBroadcast::broadcast_query = "SRCH * HTTP/1.1\r\n";
 
@@ -85,10 +85,10 @@ void CmaBroadcast::setAvailable()
     QMutexLocker locker(&mutex);
     reply.clear();
     reply.insert(0, broadcast_reply
-            .arg(broadcast_ok, uuid, "win", hostname)
-            .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
-            .arg(QCMA_REQUEST_PORT)
-            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+                 .arg(broadcast_ok, uuid, "win", hostname)
+                 .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
+                 .arg(QCMA_REQUEST_PORT)
+                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
     reply.append('\0');
 }
 
@@ -97,9 +97,9 @@ void CmaBroadcast::setUnavailable()
     QMutexLocker locker(&mutex);
     reply.clear();
     reply.insert(0, broadcast_reply
-            .arg(broadcast_unavailable, uuid, "win", hostname)
-            .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
-            .arg(QCMA_REQUEST_PORT)
-            .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+                 .arg(broadcast_unavailable, uuid, "win", hostname)
+                 .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
+                 .arg(QCMA_REQUEST_PORT)
+                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
     reply.append('\0');
 }

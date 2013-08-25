@@ -91,33 +91,33 @@ void ConfigWidget::browseBtnPressed(int btn)
     QLineEdit *lineedit;
 
     switch(btn) {
-        case BTN_PHOTO:
-            lineedit = ui->photoPath;
-            msg = tr("Select the folder to be used as a photo source");
-            break;
+    case BTN_PHOTO:
+        lineedit = ui->photoPath;
+        msg = tr("Select the folder to be used as a photo source");
+        break;
 
-        case BTN_MUSIC:
-            lineedit = ui->musicPath;
-            msg = tr("Select the folder to be used as a music source");
-            break;
+    case BTN_MUSIC:
+        lineedit = ui->musicPath;
+        msg = tr("Select the folder to be used as a music source");
+        break;
 
-        case BTN_VIDEO:
-            lineedit = ui->videoPath;
-            msg = tr("Select the folder to be used as a video source");
-            break;
+    case BTN_VIDEO:
+        lineedit = ui->videoPath;
+        msg = tr("Select the folder to be used as a video source");
+        break;
 
-        case BTN_APPS:
-            lineedit = ui->appPath;
-            msg = tr("Select the folder to be used to save PS Vita games and backups");
-            break;
+    case BTN_APPS:
+        lineedit = ui->appPath;
+        msg = tr("Select the folder to be used to save PS Vita games and backups");
+        break;
 
-        case BTN_URL:
-            lineedit = ui->urlPath;
-            msg = tr("Select the folder to be used to fetch software updates");
-            break;
+    case BTN_URL:
+        lineedit = ui->urlPath;
+        msg = tr("Select the folder to be used to fetch software updates");
+        break;
 
-        default:
-            return;
+    default:
+        return;
     }
 
     QFileDialog dialog;
@@ -144,7 +144,7 @@ void ConfigWidget::savePath(QSettings &settings, const QLineEdit *edit, const QS
 
 void ConfigWidget::accept()
 {
-    QSettings settings;    
+    QSettings settings;
     savePath(settings, ui->photoPath, "photoPath");
     savePath(settings, ui->musicPath, "musicPath");
     savePath(settings, ui->videoPath, "videoPath");

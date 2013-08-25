@@ -42,7 +42,7 @@ const char *SfoReader::value(const char *key, const char *defaultValue) {
     for(uint i = 0; i < header->pair_count; i++) {
         const char *curr_key = base_key + index[i].key_offset;
         if(strcmp(key, curr_key) == 0) {
-           return key_offset + header->value_offset + index[i].data_offset;
+            return key_offset + header->value_offset + index[i].data_offset;
         }
     }
     return defaultValue;

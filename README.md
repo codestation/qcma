@@ -16,14 +16,12 @@ official CMA and also offer some features missing in the original one.
 * Basic metadata for videos (duration, dimensions, thumbnail).
 * Basic metadata for photos (dimensions, thumbnails).
 * Easy wireless pairing (show PIN to the user when a Vita is detected).
-* Ability to restart the connection if the Vita is reconnected (on test).
+* Ability to restart the connection if the Vita is reconnected.
 
 #### TODO:
-* Fix remaining bugs with thread synchronizations.
-* Remove wireless/usb switch and allow both to run.
-* Folder categories for music/videos.
+* Complete categories for music.
 * SQLite backend for database.
-* Fix wireless streaming for music/videos.
+* Fix streaming for music.
 
 ## Planned features
 * **Backup browser**: provide a human readable listing of the games saved on the
@@ -37,7 +35,8 @@ using the wireless streaming feature.
 #### Dependencies
 * [Qt 4.x or 5.x](http://qt-project.org/)
 
-* [VitaMTP](https://github.com/yifanlu/VitaMTP)
+* [VitaMTP](https://github.com/yifanlu/VitaMTP). Use my
+[fork](https://github.com/codestation/VitaMTP) until the patches are merged upstream.
 
 * [Libav](http://www.libav.org/)
 

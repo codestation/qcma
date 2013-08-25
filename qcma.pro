@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     cmaclient.cpp \
     cmabroadcast.cpp \
     avdecoder.cpp \
-    cmaevent.cpp
+    cmaevent.cpp \
+    clientmanager.cpp
 
 HEADERS += \
     capability.h \
@@ -43,7 +44,8 @@ HEADERS += \
     cmaclient.h \
     cmabroadcast.h \
     avdecoder.h \
-    cmaevent.h
+    cmaevent.h \
+    clientmanager.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale

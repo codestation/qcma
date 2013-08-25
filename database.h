@@ -27,9 +27,7 @@
 #include <QMutex>
 #include <QObject>
 
-extern "C" {
 #include <vitamtp.h>
-}
 
 class Database : public QObject
 {
@@ -77,7 +75,7 @@ private:
     bool checkFileType(const QString path, int ohfi_root);
     void dumpMetadataList(const metadata_t *p_head);
 
-    map_list object_list;    
+    map_list object_list;
 
 signals:
     void finished();

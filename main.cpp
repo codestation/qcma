@@ -17,6 +17,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef Q_OS_WIN32
+#include <signal.h>
+#endif
+
 #include <QDebug>
 #include <QThread>
 
@@ -31,8 +35,8 @@ void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString &
 void noMessageOutput(QtMsgType type, const char *msg)
 {
 #endif
-     Q_UNUSED(type);
-     Q_UNUSED(msg);
+    Q_UNUSED(type);
+    Q_UNUSED(msg);
 }
 
 int main(int argc, char *argv[])
@@ -42,6 +46,13 @@ int main(int argc, char *argv[])
     }
 
     SingleApplication app(argc, argv);
+
+#ifndef Q_OS_WIN32
+    // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
+    // the proper fix is to libmtp to handle the cancel properly or ignoring
+    // SIGPIPE on the socket
+    signal(SIGPIPE, SIG_IGN);
+#endif
 
     if(!app.arguments().contains("--with-debug")) {
         VitaMTP_Set_Logging(VitaMTP_NONE);

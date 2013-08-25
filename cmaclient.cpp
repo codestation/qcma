@@ -23,7 +23,7 @@
 #include "cmaevent.h"
 #include "utils.h"
 
-#include "QApplication"
+#include <QApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -33,9 +33,12 @@
 
 QMutex CmaClient::mutex;
 QMutex CmaClient::runner;
-QMutex CmaClient::eloop;
-bool CmaClient::is_running = true;
-bool CmaClient::event_loop_enabled = true;
+QMutex CmaClient::cancel;
+QSemaphore CmaClient::sema;
+
+bool CmaClient::is_active = true;
+bool CmaClient::in_progress = false;
+int CmaClient::is_cancelled = false;
 
 CmaClient *CmaClient::this_object = NULL;
 
@@ -43,43 +46,28 @@ CmaClient::CmaClient(QObject *parent) :
     QObject(parent)
 {
     this_object = this;
-    device = NULL;
-}
-
-bool CmaClient::isRunning()
-{
-    QMutexLocker locker(&runner);
-    return is_running;
-}
-
-void CmaClient::setRunning(bool state)
-{
-    QMutexLocker locker(&runner);
-    is_running = state;
 }
 
 void CmaClient::connectUsb()
 {
     vita_device_t *vita;
-    //int num_tries = 0;
 
     qDebug() << "Starting usb_thread:" << QThread::currentThreadId();
 
-    while(isRunning()) {
+    do {
         if((vita = VitaMTP_Get_First_USB_Vita()) !=NULL) {
-            cancel_wireless = 1;
             processNewConnection(vita);
+            VitaMTP_Close_USB_Vita();
         } else {
-            //qDebug("No Vita detected via USB, attempt %i", +num_tries++);
-            if(mutex.tryLock()) {
-                mutex.unlock();
-                Sleeper::msleep(2000);
-            } else {
-                mutex.lock();
-                mutex.unlock();
+            //TODO: replace this with an event-driven setup
+            Sleeper::msleep(2000);
+            mutex.lock();
+            if(in_progress) {
+                sema.acquire();
             }
+            mutex.unlock();
         }
-    }
+    } while(isActive());
 
     qDebug("Finishing usb_thread");
     emit finished();
@@ -88,24 +76,24 @@ void CmaClient::connectUsb()
 void CmaClient::connectWireless()
 {
     vita_device_t *vita;
-    wireless_host_info_t host;
-    host.port = QCMA_REQUEST_PORT;
+    wireless_host_info_t host = {NULL, NULL, NULL, QCMA_REQUEST_PORT};
     typedef CmaClient CC;
-    cancel_wireless = 0;
 
     qDebug() << "Starting wireless_thread:" << QThread::currentThreadId();
 
-    while(isRunning()) {
-        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, &cancel_wireless, CC::deviceRegistered, CC::generatePin)) != NULL) {
+    do {
+        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::cancelCallback, CC::deviceRegistered, CC::generatePin)) != NULL) {
             processNewConnection(vita);
         } else {
-            qDebug("Wireless listener was cancelled");            
-            // wait until the event loop of the usb thread is finished
+            Sleeper::msleep(2000);
             mutex.lock();
-            cancel_wireless = 0;
-            mutex.unlock();
+            if(in_progress) {
+                sema.acquire();
+            }
+            mutex.unlock();;
         }
-    }
+    } while(isActive());
+
     qDebug("Finishing wireless_thread");
     emit finished();
 }
@@ -113,9 +101,9 @@ void CmaClient::connectWireless()
 void CmaClient::processNewConnection(vita_device_t *device)
 {
     QMutexLocker locker(&mutex);
-
+    in_progress = true;
     broadcast.setUnavailable();
-    this->device = device;
+
     qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
     DeviceCapability *vita_info = new DeviceCapability();
 
@@ -124,10 +112,17 @@ void CmaClient::processNewConnection(vita_device_t *device)
     } else {
         // Conection successful, inform the user
         emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
-        enterEventLoop();
+        enterEventLoop(device);
     }
 
+    VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
+    VitaMTP_Release_Device(device);
+
+    emit deviceDisconnected();
+
     broadcast.setAvailable();
+    in_progress = false;
+    sema.release();
 }
 
 int CmaClient::deviceRegistered(const char *deviceid)
@@ -146,54 +141,67 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     return pin;
 }
 
-void CmaClient::enterEventLoop()
+int CmaClient::cancelCallback()
+{
+    QMutexLocker locker(&cancel);
+    return is_cancelled;
+}
+
+void CmaClient::enterEventLoop(vita_device_t *device)
 {
     vita_event_t event;
 
     qDebug("Starting event loop");
 
-    event_loop_enabled = true;
+    CmaEvent eventLoop(device);
+    eventLoop.start("event_thread");
 
-    while(isEventLoopEnabled()) {
+    while(isActive()) {
         if(VitaMTP_Read_Event(device, &event) < 0) {
             qWarning("Error reading event from Vita.");
             break;
         }
-        CmaEvent *vita_event = new CmaEvent(device, event);
-        connect(vita_event, SIGNAL(finishedEventLoop()), this, SLOT(finishEventLoop()));
-        connect(vita_event, SIGNAL(refreshDatabase()), this, SIGNAL(refreshDatabase()));
-        vita_event->start("cma_event");
+
+        // do not create a event for this since there aren't more events to read
+        if(event.Code == PTP_EC_VITA_RequestTerminate) {
+            qDebug("Terminating event thread");
+            break;
+
+        // this one shuold be processed inmediately
+        } else if(event.Code == PTP_EC_VITA_RequestCancelTask) {
+            quint32 eventIdToCancel = event.Param2;
+            qDebug("Cancelling event %d", eventIdToCancel);
+            VitaMTP_CancelTask(device, eventIdToCancel);
+            continue;
+        }
+
+        // the events are processed synchronously except for cancel/terminate
+        qDebug("Sending new event");
+        eventLoop.setEvent(event);
     }
-}
 
-bool CmaClient::isEventLoopEnabled()
-{
-    QMutexLocker locker(&eloop);
-    return event_loop_enabled;
-}
-
-void CmaClient::finishEventLoop()
-{
-    QMutexLocker locker(&eloop);
-    event_loop_enabled = false;
-}
-
-void CmaClient::close()
-{
-    if(device) {
-        VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
-        VitaMTP_Release_Device(device);
-        device = NULL;
-    }
+    eventLoop.stop();
+    eventLoop.wait();
+    qDebug("Finishing event loop");
 }
 
 void CmaClient::stop()
 {
-    CmaClient::setRunning(false);
-    CmaClient::finishEventLoop();
+    CmaClient::setActive(false);
+    cancel.lock();
+    is_cancelled = true;
+    cancel.unlock();
 }
 
-CmaClient::~CmaClient()
+bool CmaClient::isActive()
 {
-    close();
+    QMutexLocker locker(&runner);
+    return is_active;
 }
+
+void CmaClient::setActive(bool state)
+{
+    QMutexLocker locker(&runner);
+    is_active = state;
+}
+
