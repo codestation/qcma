@@ -61,7 +61,6 @@ void CmaEvent::setEvent(vita_event_t event)
 
 void CmaEvent::processEvent()
 {
-    qDebug() << "Starting event_thread:" << QThread::currentThreadId();
     switch(t_event.Code) {
     case PTP_EC_VITA_RequestSendNumOfObject:
         vitaEventSendNumOfObject(&t_event, t_event.Param1);
