@@ -391,7 +391,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         qDebug("Sending %s of %lu bytes to device", object->metadata.name, len);
         qDebug("OHFI %d with handle 0x%08X", ohfi, parentHandle);
 
-        if(VitaMTP_SendObject(device, &parentHandle, &handle, &object->metadata, data, NULL) != PTP_RC_OK) {
+        if(VitaMTP_SendObject(device, &parentHandle, &handle, &object->metadata, data) != PTP_RC_OK) {
             qWarning("Sending of %s failed.", object->metadata.name);
             file.unmap(data);
             return;
