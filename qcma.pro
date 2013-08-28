@@ -28,7 +28,10 @@ SOURCES += main.cpp \
     cmabroadcast.cpp \
     avdecoder.cpp \
     cmaevent.cpp \
-    clientmanager.cpp
+    clientmanager.cpp \
+    backupmanagerform.cpp \
+    backupitem.cpp \
+    confirmdialog.cpp
 
 HEADERS += \
     capability.h \
@@ -45,7 +48,10 @@ HEADERS += \
     cmabroadcast.h \
     avdecoder.h \
     cmaevent.h \
-    clientmanager.h
+    clientmanager.h \
+    backupmanagerform.h \
+    backupitem.h \
+    confirmdialog.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
@@ -61,6 +67,9 @@ OTHER_FILES += \
     README.md
 
 FORMS += \
-    configwidget.ui
+    configwidget.ui \
+    backupmanagerform.ui \
+    backupitem.ui \
+    confirmdialog.ui
 
 

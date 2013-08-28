@@ -15,11 +15,12 @@ public:
     void start();
     void stop();
 
+     Database db;
+
 private:
     int thread_count;
     QMutex mutex;
 
-    Database db;
     QThread *usb_thread;
     QThread *wireless_thread;
 

@@ -22,6 +22,7 @@
 
 #include "configwidget.h"
 #include "clientmanager.h"
+#include "backupmanagerform.h"
 #include "cmaclient.h"
 
 #include <QAction>
@@ -46,10 +47,12 @@ private:
 
     bool first_run;
     ConfigWidget dialog;
+    BackupManagerForm form;
     QSystemTrayIcon *trayIcon;
     QAction *quit;
     QAction *reload;
     QAction *options;
+    QAction *backup;
     ClientManager manager;
     const static QStringList path_list;
 
@@ -60,6 +63,7 @@ private slots:
     void setTrayTooltip(QString message);
     void showPin(int pin);
     void stopServer();
+    void openManager();
 };
 
 #endif // MAINWIDGET_H

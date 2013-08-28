@@ -15,6 +15,7 @@ official CMA and also offer some features missing in the original one.
 * Basic metadata for single songs (album, artist, title, cover art).
 * Basic metadata for videos (duration, dimensions, thumbnail).
 * Basic metadata for photos (dimensions, thumbnails).
+* Simple backup browser: view and delete the backups on your PC without a Vita.
 * Easy wireless pairing (show PIN to the user when a Vita is detected).
 * Ability to restart the connection if the Vita is reconnected.
 
@@ -24,11 +25,6 @@ official CMA and also offer some features missing in the original one.
 * Fix streaming for music.
 
 ## Planned features
-* **Backup browser**: provide a human readable listing of the games saved on the
-computer (name, icon, side on disk) and provide some actions (delete savedata,
-patches or the whole game without need of the Vita). Also some sort of interface
-to prepare VHBL homebrew in the folder of the exploited savedata.
-
 * **DLNA bridge**: connect an existing DLNA server to interface with the Vita
 using the wireless streaming feature.
 

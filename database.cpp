@@ -279,7 +279,7 @@ CMAObject *Database::pathToObjectInternal(const root_list &list, const char *pat
     root_list::const_iterator skipped_first = ++list.begin();
 
     for(root_list::const_iterator obj = skipped_first; obj != list.end(); ++obj) {
-        if(strcmp(path, (*obj)->metadata.path) == 0) {
+        if(strcasecmp(path, (*obj)->metadata.path) == 0) {
             return (*obj);
         }
     }

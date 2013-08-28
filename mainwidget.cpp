@@ -99,6 +99,7 @@ void MainWidget::connectSignals()
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
     connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    form.db = &manager.db;
 }
 
 void MainWidget::setTrayTooltip(QString message)
@@ -106,19 +107,28 @@ void MainWidget::setTrayTooltip(QString message)
     trayIcon->setToolTip(message);
 }
 
+void MainWidget::openManager()
+{
+    form.loadBackupListing(0);
+    form.show();
+}
+
 void MainWidget::createTrayIcon()
 {
     options = new QAction(tr("&Settings"), this);
     reload = new QAction(tr("&Refresh database"), this);
+    backup = new QAction(tr("Backup Manager"), this);
     quit = new QAction(tr("&Quit"), this);
 
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
+    connect(backup, SIGNAL(triggered()), this, SLOT(openManager()));
     connect(reload, SIGNAL(triggered()), &manager, SLOT(refreshDatabase()));
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
 
     QMenu *trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(options);
     trayIconMenu->addAction(reload);
+    trayIconMenu->addAction(backup);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quit);
 

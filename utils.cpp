@@ -155,3 +155,23 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
     }
     return data;
 }
+
+QString readable_size(quint64 size, bool use_gib)
+{
+    QStringList list;
+    list << "KiB" << "MiB";
+    if(use_gib) {
+        list << "GiB";
+    }
+
+    QStringListIterator i(list);
+    QString unit("bytes");
+
+    float size_f = size;
+
+    while(size_f >= 1024.0 && i.hasNext()) {
+        unit = i.next();
+        size_f /= 1024.0;
+    }
+    return QString().setNum(size_f,'f',2) + " " + unit;
+}
