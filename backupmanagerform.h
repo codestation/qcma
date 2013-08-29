@@ -41,6 +41,7 @@ public:
 
 private:
     void setupForm();
+    void setBackupUsage(quint64 size);
 
     Ui::BackupManagerForm *ui;
 

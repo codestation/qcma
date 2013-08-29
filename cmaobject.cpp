@@ -184,11 +184,12 @@ bool CMAObject::removeReferencedObject()
     }
 }
 
-void CMAObject::updateObjectSize(unsigned long size)
+void CMAObject::updateObjectSize(qint64 size)
 {
     if(parent) {
         parent->updateObjectSize(size);
     }
+    //FIXME: size should be quint64
     metadata.size += size;
 }
 

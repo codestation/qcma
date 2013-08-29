@@ -61,12 +61,7 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     msgBox.setMessageText(tr("Are you sure to remove the backup of the following entry?"), item->title);
     msgBox.setMessagePixmap(*item->getIconPixmap(), item->getIconWidth());
 
-    switch(msgBox.exec()) {
-    case QDialogButtonBox::Ok:
-        break;
-    case QDialogButtonBox::Cancel:
-        return;
-    default:
+    if(msgBox.exec() == 0) {
         return;
     }
 
@@ -78,6 +73,15 @@ void BackupManagerForm::removeEntry(BackupItem *item)
         db->remove(obj);
     }
     ui->tableWidget->removeRow(item->row);
+    obj = db->ohfiToObject(obj->metadata.ohfiParent);
+    if(obj) {
+        setBackupUsage(obj->metadata.size);
+    }
+}
+
+void BackupManagerForm::setBackupUsage(quint64 size)
+{
+    ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(size, true)));
 }
 
 void BackupManagerForm::loadBackupListing(int index)
@@ -138,7 +142,7 @@ void BackupManagerForm::loadBackupListing(int index)
     horiz_header->setResizeMode(QHeaderView::Stretch);
 
     CMAObject *obj = db->ohfiToObject(ohfi);
-    ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(obj->metadata.size, true)));
+    setBackupUsage(obj->metadata.size);
 
     QList<BackupItem *> item_list;
 

@@ -181,6 +181,8 @@ bool Database::removeInternal(root_list &list, const CMAObject *obj)
 
     while(it != list.end()) {
         if(!found && (*it) == obj) {
+            // update the size of the parent objects
+            (*it)->updateObjectSize(-(*it)->metadata.size);
             it = list.erase(it);
             found = true;
         } else if(found && (*it)->metadata.ohfiParent == obj->metadata.ohfi) {
