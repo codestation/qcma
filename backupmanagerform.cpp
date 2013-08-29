@@ -51,7 +51,7 @@ void BackupManagerForm::setupForm()
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
     // the the account name when vitamtp returns this value
-    ui->accountBox->addItem(QSettings().value("lastAccountId", tr("Default account")).toString());
+    ui->accountBox->addItem(QSettings().value("lastOnlineId", tr("Default account")).toString());
 }
 
 void BackupManagerForm::removeEntry(BackupItem *item)

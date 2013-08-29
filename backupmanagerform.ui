@@ -21,7 +21,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Account ID / Username</string>
+          <string>Online ID / Username</string>
          </property>
         </widget>
        </item>
