@@ -120,15 +120,10 @@ void ConfigWidget::browseBtnPressed(int btn)
         return;
     }
 
-    QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::Directory);
-    dialog.setOption(QFileDialog::ShowDirsOnly);
-    dialog.setDirectory(lineedit->text());
-    dialog.setWindowTitle(msg);
+    QString selected = QFileDialog::getExistingDirectory(this, msg, lineedit->text(), QFileDialog::ShowDirsOnly);
 
-    if(dialog.exec()) {
-        QStringList list = dialog.selectedFiles();
-        lineedit->setText(list.first());
+    if(!selected.isEmpty()) {
+        lineedit->setText(selected);
     }
 }
 
