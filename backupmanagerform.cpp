@@ -139,8 +139,11 @@ void BackupManagerForm::loadBackupListing(int index)
     // adjust the table item width to fill all the widget
     QHeaderView *vert_header = ui->tableWidget->verticalHeader();
     QHeaderView *horiz_header = ui->tableWidget->horizontalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    horiz_header->setSectionResizeMode(QHeaderView::Stretch);
+#else
     horiz_header->setResizeMode(QHeaderView::Stretch);
-
+#endif
     CMAObject *obj = db->ohfiToObject(ohfi);
     setBackupUsage(obj->metadata.size);
 
