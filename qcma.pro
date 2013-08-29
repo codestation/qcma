@@ -64,7 +64,8 @@ RESOURCES += \
 OTHER_FILES += \
     resources/psp2-updatelist.xml \
     resources/psv_icon.png \
-    README.md
+    README.md \
+    qcma.desktop
 
 FORMS += \
     configwidget.ui \
@@ -72,4 +73,17 @@ FORMS += \
     backupitem.ui \
     confirmdialog.ui
 
+unix {
+    isEmpty(PREFIX) {
+     PREFIX = /usr/local
+    }
 
+    desktop.path = $$DATADIR/applications/$${TARGET}
+    desktop.files += $${TARGET}.desktop
+
+    icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+    icon64.files += resources/$${TARGET}.png
+
+    target.path = $$PREFIX/bin
+    INSTALLS += target desktop icon64
+}
