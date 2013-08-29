@@ -78,12 +78,15 @@ unix {
      PREFIX = /usr/local
     }
 
+     BINDIR = $$PREFIX/bin
+     DATADIR = $$PREFIX/share
+
     desktop.path = $$DATADIR/applications/$${TARGET}
     desktop.files += $${TARGET}.desktop
 
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps
     icon64.files += resources/$${TARGET}.png
 
-    target.path = $$PREFIX/bin
+    target.path = $$BINDIR
     INSTALLS += target desktop icon64
 }
