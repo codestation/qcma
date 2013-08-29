@@ -435,7 +435,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
     if(!file.open(QIODevice::ReadOnly)) {
         if(basename == "psp2-updatelist.xml") {
             qDebug("Found request for update list. Sending cached data");
-            QFile res(":/main/psp2-updatelist.xml");
+            QFile res(":/main/resources/psp2-updatelist.xml");
             res.open(QIODevice::ReadOnly);
             data = res.readAll();
         } else {
