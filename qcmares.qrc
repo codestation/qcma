@@ -2,5 +2,6 @@
     <qresource prefix="/main">
         <file>resources/psp2-updatelist.xml</file>
         <file>resources/psv_icon.png</file>
+        <file>resources/translations/qcma.es.qm</file>
     </qresource>
 </RCC>

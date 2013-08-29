@@ -73,9 +73,11 @@ FORMS += \
     backupitem.ui \
     confirmdialog.ui
 
+TRANSLATIONS += resources/translations/qcma.es.ts
+
 unix {
     isEmpty(PREFIX) {
-     PREFIX = /usr/local
+        PREFIX = /usr/local
     }
 
      BINDIR = $$PREFIX/bin
