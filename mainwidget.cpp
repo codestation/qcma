@@ -78,11 +78,6 @@ void MainWidget::deviceDisconnect()
     receiveMessage(tr("The device has been disconnected"));
 }
 
-void MainWidget::showPin(int pin)
-{
-    receiveMessage(QString(tr("Received PIN: %1").arg(QString::number(pin), 8, QChar('0'))));
-}
-
 void MainWidget::prepareApplication()
 {
     connectSignals();
@@ -94,11 +89,11 @@ void MainWidget::connectSignals()
 {
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
-    connect(&manager, SIGNAL(receivedPin(int)), this, SLOT(showPin(int)));
-    connect(&manager, SIGNAL(databaseUpdated(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
     connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    connect(&manager, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
+
     form.db = &manager.db;
 }
 

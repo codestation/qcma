@@ -23,6 +23,7 @@
 #include <QDirIterator>
 #include <QSettings>
 #include <QTextStream>
+#include <QThread>
 #include <QDebug>
 
 #define OHFI_OFFSET 1000
@@ -31,16 +32,29 @@ const QStringList Database::image_types = QStringList() << "jpg" << "jpeg" << "p
 const QStringList Database::audio_types = QStringList() << "mp3" << "mp4" << "wav";
 const QStringList Database::video_types = QStringList() << "mp4";
 
-Database::Database(QObject *parent) :
-    QObject(parent), mutex(QMutex::Recursive)
+Database::Database() :
+    mutex(QMutex::Recursive)
 {
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     CMARootObject::uuid  = uuid;
+    thread = new QThread();
+    timer = new QTimer();
+    moveToThread(thread);
+    thread->start();
+
+    timer->setInterval(0);
+    timer->setSingleShot(true);
+    connect(timer, SIGNAL(timeout()), this, SLOT(process()));
 }
 
 Database::~Database()
 {
     destroy();
+    timer->stop();
+    delete timer;
+    thread->quit();
+    thread->wait();
+    delete thread;
 }
 
 void Database::setUUID(const QString uuid)
@@ -49,10 +63,46 @@ void Database::setUUID(const QString uuid)
     QSettings().setValue("lastAccountId", uuid);
 }
 
+bool Database::reload()
+{
+    if(mutex.tryLock()) {
+        timer->start();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void Database::process()
+{
+    destroy();
+    cancel_operation = false;
+    int count = create();
+    cancel_operation = false;
+    qDebug("Added %i entries to the database", count);
+    if(count < 0) {
+        destroy();
+    }
+    emit updated(count);
+    mutex.unlock();
+}
+
+void Database::cancelOperation()
+{
+    QMutexLocker locker(&cancel);
+    cancel_operation = true;
+}
+
+bool Database::continueOperation()
+{
+    QMutexLocker locker(&cancel);
+    return !cancel_operation;
+}
+
 int Database::create()
 {
     int total_objects = 0;
-    QMutexLocker locker(&mutex);
+    //QMutexLocker locker(&mutex);
     const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VIDEO,
                                VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP, VITA_OHFI_PSPAPP,
                                VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP, VITA_OHFI_PSMAPP
@@ -88,7 +138,14 @@ int Database::create()
 
         root_list list;
         list << obj;
-        total_objects += recursiveScanRootDirectory(list, obj, ohfi_array[i]);
+        emit directoryAdded(obj->path);
+        int dir_count = recursiveScanRootDirectory(list, obj, ohfi_array[i]);
+
+        if(dir_count < 0) {
+            return -1;
+        }
+
+        total_objects += dir_count;
         object_list[ohfi_array[i]] = list;
     }
     return total_objects;
@@ -112,6 +169,11 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
     QDirIterator it(dir, QDirIterator::Subdirectories);
 
     while(it.hasNext()) {
+
+        if(!continueOperation()) {
+            return -1;
+        }
+
         it.next();
         QFileInfo info = it.fileInfo();
 
@@ -143,14 +205,21 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
     QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     foreach(const QFileInfo &info, qsl) {
+
+        if(!continueOperation()) {
+            return -1;
+        }
+
         if(info.isFile() && !checkFileType(info.absoluteFilePath(), ohfi_type)) {
             //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());>
         } else {
             CMAObject *obj = new CMAObject(parent);
             obj->initObject(info);
+            emit fileAdded(obj->path);
             //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
             list << obj;
             if(info.isDir()) {
+                emit directoryAdded(obj->path);
                 total_objects += recursiveScanRootDirectory(list, obj, ohfi_type);
             } else {
                 total_objects++;
@@ -163,7 +232,7 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
 
 void Database::destroy()
 {
-    QMutexLocker locker(&mutex);
+    //QMutexLocker locker(&mutex);
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());

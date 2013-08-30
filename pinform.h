@@ -17,37 +17,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "baseworker.h"
+#ifndef PINFORM_H
+#define PINFORM_H
 
-BaseWorker::BaseWorker(QObject *parent) :
-    QObject(parent)
-{
-    thread = NULL;
+#include <QTimer>
+#include <QWidget>
+
+namespace Ui {
+class PinForm;
 }
 
-void BaseWorker::start(const char *thread_name)
+class PinForm : public QWidget
 {
-    thread = new QThread();
+    Q_OBJECT
 
-    if(thread_name) {
-        thread->setObjectName(thread_name);
-    }
+public:
+    explicit PinForm(QWidget *parent = 0);
+    ~PinForm();
 
-    this->moveToThread(thread);
+private:
+    Ui::PinForm *ui;
 
-    connect(thread, SIGNAL(started()), this, SLOT(process()));
-    connect(this, SIGNAL(finished()), this, SLOT(onFinished()));
-    connect(this, SIGNAL(finished()), thread, SLOT(quit()), Qt::DirectConnection);
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    // pin timeout
+    int counter;
+    QTimer timer;
 
-    thread->start();
-}
+    static const QString pinFormat;
 
-bool BaseWorker::wait()
-{
-    return thread->wait();
-}
+public slots:
+    void startCountdown();
+    void setPin(QString name, int pin);
 
-void BaseWorker::onFinished()
-{
-}
+private slots:
+    void decreaseTimer();
+};
+
+#endif // PINFORM_H

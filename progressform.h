@@ -17,33 +17,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BASEWORKER_H
-#define BASEWORKER_H
+#ifndef PROGRESSFORM_H
+#define PROGRESSFORM_H
 
-#include <QObject>
-#include <QThread>
+#include <QWidget>
 
-class BaseWorker : public QObject
+namespace Ui {
+class ProgressForm;
+}
+
+class ProgressForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit BaseWorker(QObject *parent = 0);
-
-    void start(const char *thread_name = NULL);
-    bool wait();
+    explicit ProgressForm(QWidget *parent = 0);
+    ~ProgressForm();
 
 private:
-    QThread *thread;
+    Ui::ProgressForm *ui;
 
 signals:
-    void finished();
+    void canceled();
+
+private slots:
+    void cancelConfirm();
 
 public slots:
-    virtual void onFinished();
-
-protected slots:
-    virtual void process() = 0;
+    void setDirectoryName(QString dir);
+    void setFileName(QString file);
 };
 
-#endif // BASEWORKER_H
+#endif // PROGRESSFORM_H

@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
+#include <QTimer>
 
 #include <vitamtp.h>
 
@@ -38,13 +39,11 @@ public:
         QList<CMAObject *>::const_iterator end;
     } find_data;
 
-    explicit Database(QObject *parent = 0);
+    explicit Database();
     ~Database();
 
-
-    void destroy();
+    bool reload();
     void setUUID(const QString uuid);
-    int create();
     void addEntries(CMAObject *root);
     CMAObject *ohfiToObject(int ohfi);
     bool find(int ohfi, find_data &data);
@@ -64,6 +63,9 @@ private:
     static const QStringList image_types;
     static const QStringList video_types;
 
+
+    int create();
+    void destroy();
     int scanRootDirectory(root_list &list,int ohfi_type);
     int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
     bool hasFilter(const CMARootObject *object,int ohfi);
@@ -74,11 +76,26 @@ private:
     static bool lessThanComparator(const CMAObject *a, const CMAObject *b);
     bool checkFileType(const QString path, int ohfi_root);
     void dumpMetadataList(const metadata_t *p_head);
+    bool continueOperation();
 
+    // control variables
+    QMutex cancel;
+    bool cancel_operation;
+
+    QTimer *timer;
+    QThread *thread;
     map_list object_list;
 
 signals:
-    void finished();
+    void fileAdded(QString);
+    void directoryAdded(QString);
+    void updated(int);
+
+protected slots:
+    void process();
+
+public slots:
+    void cancelOperation();
 };
 
 #endif // DATABASE_H

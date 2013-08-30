@@ -128,6 +128,7 @@ void CmaClient::processNewConnection(vita_device_t *device)
 int CmaClient::deviceRegistered(const char *deviceid)
 {
     qDebug("Got connection request from %s", deviceid);
+    // TODO: check the device to see if is already registered
     return 1;
 }
 
@@ -137,7 +138,7 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     int pin = qrand() % 100000000;
     qDebug("Your registration PIN for %s is: %08d", info->name, pin);
     *p_err = 0;
-    emit this_object->receivedPin(pin);
+    emit this_object->receivedPin(info->name, pin);
     return pin;
 }
 
@@ -153,8 +154,14 @@ void CmaClient::enterEventLoop(vita_device_t *device)
 
     qDebug("Starting event loop");
 
-    CmaEvent eventLoop(device);
-    eventLoop.start("event_thread");
+    CmaEvent eventLoop (device);
+    QThread thread;
+    thread.setObjectName("event_thread");
+
+    eventLoop.moveToThread(&thread);
+    connect(&thread, SIGNAL(started()), &eventLoop, SLOT(process()));
+    connect(&eventLoop, SIGNAL(finishedEventLoop()), &thread, SLOT(quit()), Qt::DirectConnection);
+    thread.start();
 
     while(isActive()) {
         if(VitaMTP_Read_Event(device, &event) < 0) {
@@ -167,7 +174,7 @@ void CmaClient::enterEventLoop(vita_device_t *device)
             qDebug("Terminating event thread");
             break;
 
-        // this one shuold be processed inmediately
+            // this one shuold be processed inmediately
         } else if(event.Code == PTP_EC_VITA_RequestCancelTask) {
             quint32 eventIdToCancel = event.Param2;
             qDebug("Cancelling event %d", eventIdToCancel);
@@ -181,7 +188,7 @@ void CmaClient::enterEventLoop(vita_device_t *device)
     }
 
     eventLoop.stop();
-    eventLoop.wait();
+    thread.wait();
     qDebug("Finishing event loop");
 }
 

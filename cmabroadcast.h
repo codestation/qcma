@@ -40,6 +40,7 @@ private:
     QByteArray reply;
     QString hostname;
     QUdpSocket *socket;
+
     static const QString broadcast_reply;
     static const char *broadcast_query;
     static const char *broadcast_ok;

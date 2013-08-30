@@ -21,9 +21,9 @@
 #include "ui_confirmdialog.h"
 
 const QString ConfirmDialog::messageTemplate = "<html><head/><body>"
-"<p><span style=\"font-size:10pt;\">%1</span></p>"
-"<p><span style=\"font-size:12pt; font-weight:600;\">%2</span></p>"
-"</body></html>";
+        "<p><span style=\"font-size:10pt;\">%1</span></p>"
+        "<p><span style=\"font-size:12pt; font-weight:600;\">%2</span></p>"
+        "</body></html>";
 
 ConfirmDialog::ConfirmDialog(QWidget *parent) :
     QDialog(parent),

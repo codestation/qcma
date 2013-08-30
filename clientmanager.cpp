@@ -1,5 +1,24 @@
-#include "clientmanager.h"
+/*
+ *  QCMA: Cross-platform content manager assistant for the PS Vita
+ *
+ *  Copyright (C) 2013  Codestation
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
+#include "clientmanager.h"
+#include "progressform.h"
 #include "cmaclient.h"
 
 ClientManager::ClientManager(QObject *parent) :
@@ -7,11 +26,31 @@ ClientManager::ClientManager(QObject *parent) :
 {
 }
 
+void ClientManager::databaseUpdated(int count)
+{
+    progress.hide();
+    if(count >= 0) {
+        emit messageSent(tr("Added %1 items to the database").arg(count));
+    } else {
+        emit messageSent(tr("Database indexing aborted by user"));
+    }
+}
+
+void ClientManager::showPinDialog(QString name, int pin)
+{
+    pinForm.setPin(name, pin);
+    pinForm.startCountdown();
+}
+
 void ClientManager::start()
 {
     // initializing database for the first use
     refreshDatabase();
     CmaEvent::db = &db;
+    connect(&db, SIGNAL(fileAdded(QString)), &progress, SLOT(setFileName(QString)));
+    connect(&db, SIGNAL(directoryAdded(QString)), &progress, SLOT(setDirectoryName(QString)));
+    connect(&db, SIGNAL(updated(int)), this, SLOT(databaseUpdated(int)));
+    connect(&progress, SIGNAL(canceled()), &db, SLOT(cancelOperation()), Qt::DirectConnection);
 
     thread_count = 2;
     qDebug("Starting cma threads");
@@ -21,7 +60,6 @@ void ClientManager::start()
     client = new CmaClient();
     usb_thread->setObjectName("usb_thread");
     connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-    connect(client, SIGNAL(receivedPin(int)), this, SIGNAL(receivedPin(int)));
     connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
     connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
     connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
@@ -38,11 +76,13 @@ void ClientManager::start()
     client = new CmaClient();
     wireless_thread->setObjectName("wireless_thread");
     connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
+    connect(client, SIGNAL(receivedPin(QString,int)), this, SLOT(showPinDialog(QString,int)));
     connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
     connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
     connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
     connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
+    connect(client, SIGNAL(deviceConnected(QString)), &pinForm, SLOT(hide()));
     connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
     connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
     connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
@@ -53,12 +93,11 @@ void ClientManager::start()
 
 void ClientManager::refreshDatabase()
 {
-    QMutexLocker locker(&db.mutex);
-
-    db.destroy();
-    int count = db.create();
-    qDebug("Added %i entries to the database", count);
-    emit databaseUpdated(tr("Added %1 entries to the database").arg(count));
+    if(!db.reload()) {
+        emit messageSent(tr("Cannot refresh the database while is in use"));
+    } else {
+        progress.show();
+    }
 }
 
 void ClientManager::stop()

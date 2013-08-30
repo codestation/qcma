@@ -20,11 +20,10 @@
 #ifndef CMACLIENT_H
 #define CMACLIENT_H
 
-#include "baseworker.h"
-#include "cmabroadcast.h"
-#include "cmaobject.h"
 #include "database.h"
 #include "cmaevent.h"
+#include "cmaobject.h"
+#include "cmabroadcast.h"
 
 #include <QObject>
 #include <QSemaphore>
@@ -54,6 +53,8 @@ private:
     static int cancelCallback();
 
     CmaBroadcast broadcast;
+
+    //TODO: move all the control variables to the client manager class
     static bool is_active;
     static bool in_progress;
     static int is_cancelled;
@@ -65,7 +66,7 @@ private:
 
 signals:
     void newEvent(vita_event_t event);
-    void receivedPin(int);
+    void receivedPin(QString, int);
     void deviceDetected();
     void deviceConnected(QString);
     void deviceDisconnected();

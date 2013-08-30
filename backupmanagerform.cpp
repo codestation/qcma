@@ -47,7 +47,7 @@ BackupManagerForm::~BackupManagerForm()
 void BackupManagerForm::setupForm()
 {
     this->resize(800, 480);
-    connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));    
+    connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
     // the the account name when vitamtp returns this value
@@ -133,7 +133,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
     // get the item list
     metadata_t *meta;
-    int row_count = db->filterObjects(ohfi, &meta);    
+    int row_count = db->filterObjects(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);
 
     // adjust the table item width to fill all the widget

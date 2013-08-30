@@ -29,7 +29,7 @@ class BackupItem;
 class BackupItem : public QWidget
 {
     Q_OBJECT
-    
+
 public:
     explicit BackupItem(QWidget *parent = 0);
     ~BackupItem();
@@ -42,8 +42,8 @@ public:
 
     static bool lessThan(const BackupItem *s1, const BackupItem *s2);
 
-    int ohfi;
     int row;
+    int ohfi;
     QString title;
 
 private:

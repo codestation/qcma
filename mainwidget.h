@@ -24,6 +24,7 @@
 #include "clientmanager.h"
 #include "backupmanagerform.h"
 #include "cmaclient.h"
+#include "progressform.h"
 
 #include <QAction>
 #include <QWidget>
@@ -46,24 +47,28 @@ private:
     void checkSettings();
 
     bool first_run;
+
+    // forms
     ConfigWidget dialog;
+    ClientManager manager;
     BackupManagerForm form;
-    QSystemTrayIcon *trayIcon;
+
+    //system tray
     QAction *quit;
     QAction *reload;
     QAction *options;
     QAction *backup;
-    ClientManager manager;
+    QSystemTrayIcon *trayIcon;
+
     const static QStringList path_list;
 
 private slots:
+    void stopServer();
+    void openManager();
     void deviceDisconnect();
     void dialogResult(int result);
     void receiveMessage(QString message);
     void setTrayTooltip(QString message);
-    void showPin(int pin);
-    void stopServer();
-    void openManager();
 };
 
 #endif // MAINWIDGET_H

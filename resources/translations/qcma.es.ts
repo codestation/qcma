@@ -95,9 +95,23 @@
 <context>
     <name>ClientManager</name>
     <message>
-        <location filename="../../clientmanager.cpp" line="61"/>
         <source>Added %1 entries to the database</source>
+        <translation type="obsolete">Agregadas %1 entradas a la base de datos</translation>
+    </message>
+    <message>
+        <location filename="../../clientmanager.cpp" line="33"/>
+        <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
+    </message>
+    <message>
+        <location filename="../../clientmanager.cpp" line="35"/>
+        <source>Database indexing aborted by user</source>
+        <translation>Actualización de la base de datos cancelada por el usuario</translation>
+    </message>
+    <message>
+        <location filename="../../clientmanager.cpp" line="97"/>
+        <source>Cannot refresh the database while is in use</source>
+        <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
 </context>
 <context>
@@ -227,40 +241,130 @@
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="83"/>
         <source>Received PIN: %1</source>
-        <translation>PIN recibido: %1</translation>
+        <translation type="obsolete">PIN recibido: %1</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="118"/>
+        <location filename="../../mainwidget.cpp" line="113"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ajustes</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="119"/>
+        <location filename="../../mainwidget.cpp" line="114"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="120"/>
+        <location filename="../../mainwidget.cpp" line="115"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="121"/>
+        <location filename="../../mainwidget.cpp" line="116"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="146"/>
+        <location filename="../../mainwidget.cpp" line="141"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
 </context>
 <context>
+    <name>PinForm</name>
+    <message>
+        <location filename="../../pinform.ui" line="17"/>
+        <source>Form</source>
+        <translation>Registro de PIN</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="25"/>
+        <source>An unregistered PS Vita system is connecting with QCMA via Wi-Fi</source>
+        <translation>Un sistema PS Vita no registrado se intenta conectar con QCMA mediante Wi-Fi</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="35"/>
+        <source>Device: PS Vita</source>
+        <translation>Dispositivo: PS Vita</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="45"/>
+        <source>Input the following number in the PS Vita system to register it with QCMA</source>
+        <translation>Introduce el siguiente número en el sistema PS Vita para registrarlo con QCMA</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="55"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;12345678&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="65"/>
+        <source>Time remaining: 300 seconds</source>
+        <translation>Tiempo restante: 300 segundos</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="90"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.cpp" line="45"/>
+        <source>Device: %1 (PS Vita)</source>
+        <translation>Dispositivo: %1 (PS Vita)</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.cpp" line="65"/>
+        <source>Time remaining: %1 seconds</source>
+        <translation>Tiempo restante: %1 segundos</translation>
+    </message>
+</context>
+<context>
+    <name>ProgressForm</name>
+    <message>
+        <location filename="../../progressform.ui" line="17"/>
+        <source>Refreshing database...</source>
+        <translation>Actualizando base de datos...</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.ui" line="25"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Reading directory:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.ui" line="32"/>
+        <source>directory name</source>
+        <translation>Cargando nombre de directorio</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.ui" line="39"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Processing file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.ui" line="46"/>
+        <source>file name</source>
+        <translation>Cargando nombre de archivo</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.ui" line="68"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.cpp" line="45"/>
+        <source>Database indexing in progress</source>
+        <translation>Actualización de base de datos en progreso</translation>
+    </message>
+    <message>
+        <location filename="../../progressform.cpp" line="46"/>
+        <source>Are you sure to cancel the database indexing?</source>
+        <translation>¿Estas seguro de cancelar la actualización a la base de datos?</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="54"/>
+        <location filename="../../main.cpp" line="46"/>
         <source>A instance of QCMA is already running</source>
         <translation>Otra instancia de QCMA ya se encuentra en ejecución</translation>
     </message>

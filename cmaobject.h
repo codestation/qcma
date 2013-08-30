@@ -34,21 +34,21 @@ public:
     ~CMAObject();
 
     void refreshPath();
-    void rename(const QString &name);
     bool removeReferencedObject();
-    void initObject(const QFileInfo &file);
+    void rename(const QString &name);
     void updateObjectSize(qint64 size);
     bool hasParent(const CMAObject *obj);
+    void initObject(const QFileInfo &file);
 
     bool operator==(const CMAObject &obj);
     bool operator!=(const CMAObject &obj);
     bool operator<(const CMAObject &obj);
 
-    void setOhfi(int ohfi) {
+    inline void setOhfi(int ohfi) {
         metadata.ohfi = ohfi;
     }
 
-    static void resetOhfiCounter() {
+    inline static void resetOhfiCounter() {
         ohfi_count = OHFI_OFFSET;
     }
 

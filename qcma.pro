@@ -22,7 +22,6 @@ SOURCES += main.cpp \
     mainwidget.cpp \
     configwidget.cpp \
     singleapplication.cpp \
-    baseworker.cpp \
     sforeader.cpp \
     cmaclient.cpp \
     cmabroadcast.cpp \
@@ -31,7 +30,9 @@ SOURCES += main.cpp \
     clientmanager.cpp \
     backupmanagerform.cpp \
     backupitem.cpp \
-    confirmdialog.cpp
+    confirmdialog.cpp \
+    progressform.cpp \
+    pinform.cpp
 
 HEADERS += \
     capability.h \
@@ -42,7 +43,6 @@ HEADERS += \
     mainwidget.h \
     configwidget.h \
     singleapplication.h \
-    baseworker.h \
     sforeader.h \
     cmaclient.h \
     cmabroadcast.h \
@@ -51,7 +51,9 @@ HEADERS += \
     clientmanager.h \
     backupmanagerform.h \
     backupitem.h \
-    confirmdialog.h
+    confirmdialog.h \
+    progressform.h \
+    pinform.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
@@ -71,7 +73,9 @@ FORMS += \
     configwidget.ui \
     backupmanagerform.ui \
     backupitem.ui \
-    confirmdialog.ui
+    confirmdialog.ui \
+    progressform.ui \
+    pinform.ui
 
 TRANSLATIONS += resources/translations/qcma.es.ts
 

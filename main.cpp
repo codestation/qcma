@@ -41,16 +41,6 @@ void noMessageOutput(QtMsgType type, const char *msg)
     Q_UNUSED(msg);
 }
 
-void loadTranslation(QApplication &app)
-{
-    QTranslator* translator = new QTranslator();
-    QString locale = QLocale().system().name();
-    qDebug() << "Current locale:" << locale;
-    if(translator->load("qcma." + locale, ":/main/resources/translations")) {
-        app.installTranslator(translator);
-    }
-}
-
 int main(int argc, char *argv[])
 {
     if(SingleApplication::sendMessage(QObject::tr("A instance of QCMA is already running"))) {
@@ -59,7 +49,12 @@ int main(int argc, char *argv[])
 
     SingleApplication app(argc, argv);
 
-    loadTranslation(app);
+    QTranslator translator;
+    QString locale = QLocale().system().name();
+    qDebug() << "Current locale:" << locale;
+    if(translator.load("qcma." + locale, ":/main/resources/translations")) {
+        app.installTranslator(&translator);
+    }
 
 #ifndef Q_OS_WIN32
     // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
