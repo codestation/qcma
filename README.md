@@ -25,7 +25,7 @@ official CMA and also offer some features missing in the original one.
 * Fix streaming for music.
 
 ## Planned features
-* **DLNA bridge**: connect an existing DLNA server to interface with the Vita
+* **UPNP bridge**: connect an existing UPNP server to interface with the Vita
 using the wireless streaming feature.
 
 #### Dependencies

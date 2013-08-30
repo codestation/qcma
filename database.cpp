@@ -215,7 +215,7 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
         } else {
             CMAObject *obj = new CMAObject(parent);
             obj->initObject(info);
-            emit fileAdded(obj->path);
+            emit fileAdded(obj->metadata.name);
             //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
             list << obj;
             if(info.isDir()) {
