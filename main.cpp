@@ -49,13 +49,6 @@ int main(int argc, char *argv[])
 
     SingleApplication app(argc, argv);
 
-    QTranslator translator;
-    QString locale = QLocale().system().name();
-    qDebug() << "Current locale:" << locale;
-    if(translator.load("qcma." + locale, ":/main/resources/translations")) {
-        app.installTranslator(&translator);
-    }
-
 #ifndef Q_OS_WIN32
     // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
     // the proper fix is to libmtp to handle the cancel properly or ignoring
@@ -63,15 +56,24 @@ int main(int argc, char *argv[])
     signal(SIGPIPE, SIG_IGN);
 #endif
 
-    if(!app.arguments().contains("--with-debug")) {
+    if(app.arguments().contains("--with-debug")) {
+        VitaMTP_Set_Logging(VitaMTP_DEBUG);
+    } else if(app.arguments().contains("--verbose")) {
+        VitaMTP_Set_Logging(VitaMTP_VERBOSE);
+    } else {
         VitaMTP_Set_Logging(VitaMTP_NONE);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qInstallMessageHandler(noMessageOutput);
 #else
         qInstallMsgHandler(noMessageOutput);
 #endif
-    } else {
-        VitaMTP_Set_Logging(VitaMTP_VERBOSE);
+    }
+
+    QTranslator translator;
+    QString locale = QLocale().system().name();
+    qDebug() << "Current locale:" << locale;
+    if(translator.load("qcma." + locale, ":/main/resources/translations")) {
+        app.installTranslator(&translator);
     }
 
     qDebug() << "From main thread: "<< QThread::currentThreadId();
