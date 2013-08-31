@@ -406,7 +406,7 @@ void Database::dumpMetadataList(const metadata_t *p_head)
     }
 }
 
-int Database::filterObjects(int ohfiParent, metadata_t **p_head)
+int Database::filterObjects(int ohfiParent, metadata_t **p_head, int index, int max_number)
 {
     QMutexLocker locker(&mutex);
     CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(ohfiParent));
@@ -430,6 +430,7 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head)
         }
     }
 
+    int offset = 0;
     int numObjects = 0;
     metadata_t temp = metadata_t();
     metadata_t *tail = &temp;
@@ -437,9 +438,16 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head)
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         for(root_list::iterator object = (*root).begin(); object != (*root).end(); ++object) {
             if(acceptFilteredObject(parent, *object, type)) {
-                tail->next_metadata = &(*object)->metadata;
-                tail = tail->next_metadata;
-                numObjects++;
+                if(offset++ >= index)
+                {
+                    tail->next_metadata = &(*object)->metadata;
+                    tail = tail->next_metadata;
+                    numObjects++;
+                }
+
+                if(max_number > 0 && numObjects >= max_number) {
+                    break;
+                }
             }
         }
 

@@ -348,7 +348,7 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
     QMutexLocker locker(&db->mutex);
 
     metadata_t *meta;
-    int count = db->filterObjects(browse.ohfiParent, &meta);  // if meta is null, will return empty XML
+    int count = db->filterObjects(browse.ohfiParent, &meta, browse.index, browse.numObjects);  // if meta is null, will return empty XML
     qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
     if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent

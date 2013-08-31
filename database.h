@@ -49,7 +49,7 @@ public:
     bool find(int ohfi, find_data &data);
     void append(int parent_ohfi, CMAObject *object);
     bool remove(const CMAObject *obj, int ohfi_root = 0);
-    int filterObjects(int ohfiParent, metadata_t **p_head);
+    int filterObjects(int ohfiParent, metadata_t **p_head, int index = 0, int max_number = 0);
     CMAObject *pathToObject(const char *path, int ohfiRoot);
     int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
 

@@ -22,7 +22,6 @@ official CMA and also offer some features missing in the original one.
 #### TODO:
 * Complete categories for music.
 * SQLite backend for database.
-* Fix streaming for music.
 
 ## Planned features
 * **UPNP bridge**: connect an existing UPNP server to interface with the Vita
