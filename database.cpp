@@ -388,7 +388,16 @@ int Database::acceptFilteredObject(const CMAObject *parent, const CMAObject *cur
         result = (current->metadata.dataType & Music);
     }
 
-    if(type & (VITA_DIR_TYPE_MASK_ALL | VITA_DIR_TYPE_MASK_SONGS)) {
+    if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS)) {
+        // unimplemented
+        return 0;
+    } else if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_GENRES)) {
+        // unimplemented
+        return 0;
+    } else if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS)) {
+        // unimplemented
+        return 0;
+    } else if(type & (VITA_DIR_TYPE_MASK_ALL | VITA_DIR_TYPE_MASK_SONGS)) {
         result = result && (current->metadata.dataType & File);
     } else if(type & (VITA_DIR_TYPE_MASK_REGULAR)) {
         result = (parent->metadata.ohfi == current->metadata.ohfiParent);
