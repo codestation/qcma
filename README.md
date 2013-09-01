@@ -33,7 +33,7 @@ using the wireless streaming feature.
 * [VitaMTP](https://github.com/yifanlu/VitaMTP). Use my
 [fork](https://github.com/codestation/VitaMTP) until the patches are merged upstream.
 
-* [Libav](http://www.libav.org/)
+* [FFmpeg](hhttp://www.ffmpeg.org/)
 
 
 #### Where do I get the source code?

@@ -117,7 +117,7 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../cmaclient.cpp" line="114"/>
+        <location filename="../../cmaclient.cpp" line="118"/>
         <source>Connected to </source>
         <translation>Conectado a </translation>
     </message>
@@ -177,6 +177,46 @@
         <location filename="../../configwidget.ui" line="192"/>
         <source>Other</source>
         <translation>Otros</translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="200"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="210"/>
+        <source>Offline Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="223"/>
+        <source>Skip metadata extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="233"/>
+        <source>Update database automatically when files on the PC are changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="243"/>
+        <source>Disable USB monitoring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="253"/>
+        <source>Disable Wi-Fi monitoring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="262"/>
+        <source>Database backend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="273"/>
+        <source>In Memory</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../configwidget.cpp" line="96"/>
@@ -273,9 +313,13 @@
 <context>
     <name>PinForm</name>
     <message>
-        <location filename="../../pinform.ui" line="17"/>
         <source>Form</source>
-        <translation>Registro de PIN</translation>
+        <translation type="obsolete">Registro de PIN</translation>
+    </message>
+    <message>
+        <location filename="../../pinform.ui" line="17"/>
+        <source>Device pairing</source>
+        <translation>Emparejamiento de dispositivo</translation>
     </message>
     <message>
         <location filename="../../pinform.ui" line="25"/>
