@@ -34,6 +34,8 @@ class CmaEvent : public QObject
 public:
     explicit CmaEvent(vita_device_t *s_device);
 
+    void vitaEventCancelTask(vita_event_t *event, int eventId);
+
     // don't make the db reference static
     static Database *db;
 

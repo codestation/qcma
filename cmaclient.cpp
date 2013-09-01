@@ -176,9 +176,8 @@ void CmaClient::enterEventLoop(vita_device_t *device)
 
             // this one shuold be processed inmediately
         } else if(event.Code == PTP_EC_VITA_RequestCancelTask) {
-            quint32 eventIdToCancel = event.Param2;
-            qDebug("Cancelling event %d", eventIdToCancel);
-            VitaMTP_CancelTask(device, eventIdToCancel);
+            eventLoop.vitaEventCancelTask(&event, event.Param1);
+            qDebug("Ended event, code: 0x%x, id: %d", event.Code, event.Param1);
             continue;
         }
 

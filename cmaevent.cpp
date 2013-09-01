@@ -298,8 +298,9 @@ void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId
     metadata->next_metadata = NULL;
     qDebug("Sending metadata for OHFI %d (%s)", ohfi, metadata->path);
 
-    if(VitaMTP_SendObjectMetadata(device, eventId, metadata) != PTP_RC_OK) {
-        qWarning("Error sending metadata");
+    quint16 ret = VitaMTP_SendObjectMetadata(device, eventId, metadata);
+    if(ret != PTP_RC_OK) {
+        qWarning("Error sending metadata. Code: %04X", ret);
     } else {
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
@@ -316,6 +317,24 @@ void CmaEvent::vitaEventUnimplementated(vita_event_t *event, int eventId)
 {
     qWarning("Unknown event not handled, code: 0x%x, id: %d", event->Code, eventId);
     qWarning("Param1: 0x%08X, Param2: 0x%08X, Param3: 0x%08X", event->Param1, event->Param2, event->Param3);
+}
+
+void CmaEvent::vitaEventCancelTask(vita_event_t *event, int eventId)
+{
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+
+    quint32 eventIdToCancel = event->Param2;
+    qDebug("Cancelling event %d", eventIdToCancel);
+    quint16 ret = VitaMTP_CancelTask(device, eventIdToCancel);
+
+    // wait until the current event finishes so we can report the result to the device
+
+    qDebug("Waiting for send event to finish");
+    mutex.lock();
+    if(ret == PTP_RC_OK) {
+        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+    }
+    mutex.unlock();
 }
 
 void CmaEvent::vitaEventSendNumOfObject(vita_event_t *event, int eventId)
@@ -409,8 +428,10 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         qDebug("Sending %s of %lu bytes to device", object->metadata.name, len);
         qDebug("OHFI %d with handle 0x%08X", ohfi, parentHandle);
 
-        if(VitaMTP_SendObject(device, &parentHandle, &handle, &object->metadata, data) != PTP_RC_OK) {
-            qWarning("Sending of %s failed.", object->metadata.name);
+        VitaMTP_RegisterCancelEventId(eventId);
+        quint16 ret = VitaMTP_SendObject(device, &parentHandle, &handle, &object->metadata, data);
+        if(ret != PTP_RC_OK) {
+            qWarning("Sending of %s failed. Code: %04X", object->metadata.name, ret);
             file.unmap(data);
             return;
         }
