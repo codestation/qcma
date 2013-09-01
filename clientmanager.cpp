@@ -82,7 +82,7 @@ void ClientManager::start()
     connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
     connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-    connect(client, SIGNAL(deviceConnected(QString)), &pinForm, SLOT(hide()));
+    connect(client, SIGNAL(pinComplete()), &pinForm, SLOT(hide()));
     connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
     connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
     connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));

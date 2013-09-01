@@ -51,6 +51,7 @@ private:
     static int deviceRegistered(const char *deviceid);
     static int generatePin(wireless_vita_info_t *info, int *p_err);
     static int cancelCallback();
+    static void registrationComplete();
 
     CmaBroadcast broadcast;
 
@@ -67,6 +68,7 @@ private:
 signals:
     void newEvent(vita_event_t event);
     void receivedPin(QString, int);
+    void pinComplete();
     void deviceDetected();
     void deviceConnected(QString);
     void deviceDisconnected();

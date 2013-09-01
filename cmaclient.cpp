@@ -28,6 +28,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QImage>
+#include <QTime>
 #include <QSettings>
 #include <QUrl>
 
@@ -79,10 +80,13 @@ void CmaClient::connectWireless()
     wireless_host_info_t host = {NULL, NULL, NULL, QCMA_REQUEST_PORT};
     typedef CmaClient CC;
 
+    QTime now = QTime::currentTime();
+    qsrand(now.msec());
+
     qDebug() << "Starting wireless_thread:" << QThread::currentThreadId();
 
     do {
-        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::cancelCallback, CC::deviceRegistered, CC::generatePin)) != NULL) {
+        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::cancelCallback, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
             processNewConnection(vita);
         } else {
             Sleeper::msleep(2000);
@@ -123,6 +127,12 @@ void CmaClient::processNewConnection(vita_device_t *device)
     broadcast.setAvailable();
     in_progress = false;
     sema.release();
+}
+
+void CmaClient::registrationComplete()
+{
+    qDebug("Registration completed");
+    emit this_object->pinComplete();
 }
 
 int CmaClient::deviceRegistered(const char *deviceid)
