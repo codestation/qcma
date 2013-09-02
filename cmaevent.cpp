@@ -20,13 +20,14 @@
 #include "cmaevent.h"
 #include "utils.h"
 
-#include <inttypes.h>
-
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QSettings>
 #include <QUrl>
+
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 
 Database *CmaEvent::db = NULL;
 
@@ -822,7 +823,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
         object->updateObjectSize(part_init.size);
-        qDebug("Written %zu bytes to %s at offset %"PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
+        qDebug("Written %"PRIu64" bytes to %s at offset %"PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
 
