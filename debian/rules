@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/qmake.mk
+
+DEB_QMAKE_ARGS += PREFIX=/usr
+
+pre-build::
+	lrelease-qt4 resources/translations/*.ts
