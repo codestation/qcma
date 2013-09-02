@@ -129,18 +129,24 @@ void AVDecoder::getPictureMetadata(metadata_t &metadata)
 QByteArray AVDecoder::getAudioThumbnail(int width, int height)
 {
     QByteArray data;
-    for (uint i = 0; i < pFormatCtx->nb_streams; i++) {
-        if(pFormatCtx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
-            AVPacket pkt = pFormatCtx->streams[i]->attached_pic;
 
-            QBuffer imgbuffer(&data);
-            imgbuffer.open(QIODevice::WriteOnly);
-            QImage img = QImage::fromData(QByteArray((const char *)pkt.data, pkt.size));
-            QImage result = img.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            result.save(&imgbuffer, "JPEG");
-            break;
-        }
+    int stream_index;
+    AVCodec *codec = NULL;
+    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) < 0) {
+        // no thumbnail
+        return data;
     }
+
+    AVPacket pkt;
+    if(av_read_frame(pFormatCtx, &pkt) >= 0) {
+        // first frame == first thumbnail (hopefully)
+        QBuffer imgbuffer(&data);
+        imgbuffer.open(QIODevice::WriteOnly);
+        QImage img = QImage::fromData(QByteArray((const char *)pkt.data, pkt.size));
+        QImage result = img.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        result.save(&imgbuffer, "JPEG");
+    }
+
     return data;
 }
 

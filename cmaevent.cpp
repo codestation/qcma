@@ -20,6 +20,8 @@
 #include "cmaevent.h"
 #include "utils.h"
 
+#include <inttypes.h>
+
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -683,7 +685,7 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
     } else {
         file.seek(part_init.offset);
         QByteArray data = file.read(part_init.size);
-        qDebug("Sending %s at file offset %zu for %zu bytes", object->metadata.path, part_init.offset, part_init.size);
+        qDebug("Sending %s at file offset %"PRIu64" for %"PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
 
         if(VitaMTP_SendPartOfObject(device, eventId, (unsigned char *)data.data(), data.size()) != PTP_RC_OK) {
             qWarning("Failed to send part of object OHFI %d", part_init.ohfi);
@@ -810,7 +812,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    qDebug("Receiving %s at offset %zu for %zu bytes", object->metadata.path, part_init.offset, part_init.size);
+    qDebug("Receiving %s at offset %"PRIu64" for %"PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
 
     QFile file(object->path);
     if(!file.open(QIODevice::ReadWrite)) {
@@ -820,7 +822,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
         object->updateObjectSize(part_init.size);
-        qDebug("Written %zu bytes to %s at offset %zu.", part_init.size, object->path.toStdString().c_str(), part_init.offset);
+        qDebug("Written %zu bytes to %s at offset %"PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
 

@@ -58,7 +58,7 @@ HEADERS += \
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
 
-QMAKE_CXXFLAGS += -Wno-write-strings -Wall
+QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS
 
 RESOURCES += \
     qcmares.qrc
