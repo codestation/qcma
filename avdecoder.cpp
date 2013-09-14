@@ -18,7 +18,9 @@
  */
 
 #include "avdecoder.h"
+#include "cmaobject.h"
 
+#include <QDebug>
 #include <QBuffer>
 #include <QFile>
 #include <QSettings>
@@ -110,6 +112,13 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
         AVCodecContext *pCodecCtx = pFormatCtx->streams[stream_index]->codec;
         metadata.data.video.tracks->data.track_video.width = pCodecCtx->width;
         metadata.data.video.tracks->data.track_video.height = pCodecCtx->height;
+        if(strcmp(codec->name, "h264") == 0) {
+            metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_AVC;
+        } else if(strcmp(codec->name, "mpeg4") == 0) {
+            metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_MPEG4;
+        } else {
+            metadata.data.video.tracks->data.track_video.codecType = 0;
+        }
     }
 }
 

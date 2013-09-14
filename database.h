@@ -74,7 +74,7 @@ private:
     CMAObject *getParent(CMAObject *last_dir, const QString &current_path);
     CMAObject *pathToObjectInternal(const root_list &list, const char *path);
     static bool lessThanComparator(const CMAObject *a, const CMAObject *b);
-    bool checkFileType(const QString path, int ohfi_root);
+    int checkFileType(const QString path, int ohfi_root);
     void dumpMetadataList(const metadata_t *p_head);
     bool continueOperation();
 

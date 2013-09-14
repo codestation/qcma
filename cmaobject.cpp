@@ -28,6 +28,24 @@
 
 int CMAObject::ohfi_count = OHFI_OFFSET;
 
+const CMAObject::file_type CMAObject::audio_list[] = {
+    {"mp3", FILE_FORMAT_MP3, CODEC_TYPE_MP3},
+    {"mp4", FILE_FORMAT_MP4, CODEC_TYPE_AAC},
+    {"wav", FILE_FORMAT_WAV, CODEC_TYPE_PCM}
+};
+
+const CMAObject::file_type CMAObject::photo_list[] = {
+    {"jpg",  FILE_FORMAT_JPG, CODEC_TYPE_JPG},
+    {"jpeg", FILE_FORMAT_JPG, CODEC_TYPE_JPG},
+    {"png",  FILE_FORMAT_PNG, CODEC_TYPE_PNG},
+    {"tif",  FILE_FORMAT_TIF, CODEC_TYPE_TIF},
+    {"tiff", FILE_FORMAT_TIF, CODEC_TYPE_TIF},
+    {"bmp",  FILE_FORMAT_BMP, CODEC_TYPE_BMP},
+    {"gif",  FILE_FORMAT_GIF, CODEC_TYPE_GIF},
+};
+
+const char *CMAObject::video_list[] = {"mp4"};
+
 CMAObject::CMAObject(CMAObject *obj_parent) :
     parent(obj_parent), metadata()
 {
@@ -114,7 +132,7 @@ void CMAObject::loadPhotoMetadata(const QString &path)
     }
 }
 
-void CMAObject::initObject(const QFileInfo &file)
+void CMAObject::initObject(const QFileInfo &file, int file_type)
 {
     metadata.name = strdup(file.fileName().toUtf8().data());
     metadata.ohfiParent = parent->metadata.ohfi;
@@ -133,33 +151,32 @@ void CMAObject::initObject(const QFileInfo &file)
         loadSfoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Music | File)) {
         metadata.data.music.fileName = strdup(metadata.name);
-        metadata.data.music.fileFormatType = 20;
+        metadata.data.music.fileFormatType = audio_list[file_type].file_format;
         metadata.data.music.statusType = 1;
         metadata.data.music.numTracks = 1;
         metadata.data.music.tracks = new media_track();
         metadata.data.music.tracks->type = VITA_TRACK_TYPE_AUDIO;
-        metadata.data.music.tracks->data.track_photo.codecType = 12; // MP3?
+        metadata.data.music.tracks->data.track_photo.codecType = audio_list[file_type].file_codec;
         loadMusicMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Video | File)) {
         metadata.data.video.fileName = strdup(metadata.name);
         metadata.data.video.dateTimeUpdated = file.created().toTime_t();
         metadata.data.video.statusType = 1;
-        metadata.data.video.fileFormatType = 1;
+        metadata.data.video.fileFormatType = FILE_FORMAT_MP4;
         metadata.data.video.parentalLevel = 0;
         metadata.data.video.numTracks = 1;
         metadata.data.video.tracks = new media_track();
         metadata.data.video.tracks->type = VITA_TRACK_TYPE_VIDEO;
-        metadata.data.video.tracks->data.track_video.codecType = 3; // this codec is working
         loadVideoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Photo | File)) {
         metadata.data.photo.fileName = strdup(metadata.name);
-        metadata.data.photo.fileFormatType = 28; // working
+        metadata.data.photo.fileFormatType = photo_list[file_type].file_format;
         metadata.data.photo.statusType = 1;
         metadata.data.photo.dateTimeOriginal = file.created().toTime_t();
         metadata.data.photo.numTracks = 1;
         metadata.data.photo.tracks = new media_track();
         metadata.data.photo.tracks->type = VITA_TRACK_TYPE_PHOTO;
-        metadata.data.photo.tracks->data.track_photo.codecType = 17; // JPEG?
+        metadata.data.photo.tracks->data.track_photo.codecType = photo_list[file_type].file_codec;
         loadPhotoMetadata(file.absoluteFilePath());
     }
 

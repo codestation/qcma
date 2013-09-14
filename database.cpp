@@ -18,6 +18,7 @@
  */
 
 #include "database.h"
+#include "cmaobject.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -25,12 +26,6 @@
 #include <QTextStream>
 #include <QThread>
 #include <QDebug>
-
-#define OHFI_OFFSET 1000
-
-const QStringList Database::image_types = QStringList() << "jpg" << "jpeg" << "png" << "tif" << "tiff" << "bmp" << "gif" << "mpo";
-const QStringList Database::audio_types = QStringList() << "mp3" << "mp4" << "wav";
-const QStringList Database::video_types = QStringList() << "mp4";
 
 Database::Database() :
     mutex(QMutex::Recursive)
@@ -162,6 +157,7 @@ CMAObject *Database::getParent(CMAObject *last_dir, const QString &current_path)
 
 int Database::scanRootDirectory(root_list &list, int ohfi_type)
 {
+    int file_type;
     int total_objects = 0;
     CMAObject *last_dir = list.first();
     QDir dir(last_dir->path);
@@ -177,13 +173,15 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
         it.next();
         QFileInfo info = it.fileInfo();
 
-        if(info.isFile() && !checkFileType(info.absoluteFilePath(), ohfi_type)) {
-            //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());
-            continue;
+        if(info.isFile()) {
+            if((file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
+                //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());
+                continue;
+            }
         }
 
         CMAObject *obj = new CMAObject(getParent(last_dir, info.path()));
-        obj->initObject(info);
+        obj->initObject(info, file_type);
         //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
         list << obj;
 
@@ -198,6 +196,7 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
 
 int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
 {
+    int file_type;
     int total_objects = 0;
 
     QDir dir(parent->path);
@@ -210,11 +209,11 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
             return -1;
         }
 
-        if(info.isFile() && !checkFileType(info.absoluteFilePath(), ohfi_type)) {
+        if(info.isFile() && (file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
             //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());>
         } else {
             CMAObject *obj = new CMAObject(parent);
-            obj->initObject(info);
+            obj->initObject(info, file_type);
             emit fileAdded(obj->metadata.name);
             //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
             list << obj;
@@ -474,32 +473,32 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head, int index, int 
     return numObjects;
 }
 
-bool Database::checkFileType(const QString path, int ohfi_root)
+int Database::checkFileType(const QString path, int ohfi_root)
 {
     switch(ohfi_root) {
     case VITA_OHFI_MUSIC:
-        foreach(const QString &ext, audio_types) {
-            if(path.endsWith(ext, Qt::CaseInsensitive)) {
-                return true;
+        for(int i = 0, max = sizeof(CMAObject::audio_list) / sizeof(CMAObject::file_type); i < max; i++) {
+            if(path.endsWith(CMAObject::audio_list[i].file_ext, Qt::CaseInsensitive)) {
+                return i;
             }
         }
         break;
     case VITA_OHFI_PHOTO:
-        foreach(const QString &ext, image_types) {
-            if(path.endsWith(ext, Qt::CaseInsensitive)) {
-                return true;
+        for(int i = 0, max = sizeof(CMAObject::photo_list) / sizeof(CMAObject::file_type); i < max; i++) {
+            if(path.endsWith(CMAObject::photo_list[i].file_ext, Qt::CaseInsensitive)) {
+                return i;
             }
         }
         break;
     case VITA_OHFI_VIDEO:
-        foreach(const QString &ext, video_types) {
-            if(path.endsWith(ext, Qt::CaseInsensitive)) {
-                return true;
+        for(int i = 0, max = sizeof(CMAObject::video_list) / sizeof(const char *); i < max; i++) {
+            if(path.endsWith(CMAObject::video_list[i], Qt::CaseInsensitive)) {
+                return i;
             }
         }
         break;
     default:
-        return true;
+        return 0;
     }
-    return false;
+    return -1;
 }
