@@ -157,7 +157,7 @@ CMAObject *Database::getParent(CMAObject *last_dir, const QString &current_path)
 
 int Database::scanRootDirectory(root_list &list, int ohfi_type)
 {
-    int file_type;
+    int file_type = -1;
     int total_objects = 0;
     CMAObject *last_dir = list.first();
     QDir dir(last_dir->path);
@@ -196,7 +196,7 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
 
 int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
 {
-    int file_type;
+    int file_type = -1;
     int total_objects = 0;
 
     QDir dir(parent->path);
