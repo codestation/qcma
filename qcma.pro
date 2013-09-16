@@ -67,7 +67,8 @@ OTHER_FILES += \
     resources/psp2-updatelist.xml \
     resources/psv_icon.png \
     README.md \
-    qcma.desktop
+    qcma.desktop \
+    qcma.rc
 
 FORMS += \
     configwidget.ui \
@@ -96,3 +97,5 @@ unix {
     target.path = $$BINDIR
     INSTALLS += target desktop icon64
 }
+
+win32:RC_FILE = qcma.rc

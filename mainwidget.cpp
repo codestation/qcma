@@ -129,7 +129,11 @@ void MainWidget::createTrayIcon()
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
+#ifndef Q_OS_WIN32
     trayIcon->setIcon(QIcon(":/main/resources/psv_icon.png"));
+#else
+    trayIcon->setIcon(QIcon(":/main/resources/psv_icon_16.png"));
+#endif
     trayIcon->show();
     // try to avoid the iconTray Qt bug
     Sleeper::sleep(1);

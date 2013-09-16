@@ -35,7 +35,7 @@ bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
 {
 #ifdef Q_OS_WIN32
 
-    if(GetDiskFreeSpaceExW(dir.toStdWString().c_str(), free, total, NULL) != 0) {
+    if(GetDiskFreeSpaceEx(dir.toStdWString().c_str(), (ULARGE_INTEGER *)free, (ULARGE_INTEGER *)total, NULL) != 0) {
         return true;
     }
 
