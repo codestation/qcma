@@ -80,8 +80,8 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
 
 void DeviceCapability::free_pc_capability_info(capability_info_t *info)
 {
-    delete &info->functions.formats.next_item[-1];
-    delete &info->functions.next_item[-1];
+    delete[] &info->functions.formats.next_item[-1];
+    delete[] &info->functions.next_item[-1];
     delete info;
 }
 

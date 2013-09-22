@@ -20,10 +20,16 @@
 #include "clientmanager.h"
 #include "progressform.h"
 #include "cmaclient.h"
+#include "utils.h"
 
 ClientManager::ClientManager(QObject *parent) :
     QObject(parent)
 {
+}
+
+ClientManager::~ClientManager()
+{
+    VitaMTP_Cleanup();
 }
 
 void ClientManager::databaseUpdated(int count)
@@ -44,6 +50,12 @@ void ClientManager::showPinDialog(QString name, int pin)
 
 void ClientManager::start()
 {
+    if(VitaMTP_Init() < 0)
+    {
+        emit messageSent(tr("Cannot initialize VitaMTP library"));
+        return;
+    }
+
     // initializing database for the first use
     refreshDatabase();
     CmaEvent::db = &db;
@@ -102,7 +114,9 @@ void ClientManager::refreshDatabase()
 
 void ClientManager::stop()
 {
-    CmaClient::stop();
+    if(CmaClient::stop() < 0) {
+        emit stopped();
+    }
 }
 
 void ClientManager::threadStopped()

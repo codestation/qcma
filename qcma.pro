@@ -99,5 +99,4 @@ unix {
 }
 
 win32:RC_FILE = qcma.rc
-win32:CONFIG += console
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields

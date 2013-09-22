@@ -37,7 +37,7 @@ QMutex CmaClient::runner;
 QMutex CmaClient::cancel;
 QSemaphore CmaClient::sema;
 
-bool CmaClient::is_active = true;
+bool CmaClient::is_active = false;
 bool CmaClient::in_progress = false;
 int CmaClient::is_cancelled = false;
 
@@ -53,12 +53,13 @@ void CmaClient::connectUsb()
 {
     vita_device_t *vita;
 
-    qDebug() << "Starting usb_thread:" << QThread::currentThreadId();
+    qDebug("Starting usb_thread: %u", (unsigned int)QThread::currentThreadId());
+
+    setActive(true);
 
     do {
         if((vita = VitaMTP_Get_First_USB_Vita()) !=NULL) {
             processNewConnection(vita);
-            VitaMTP_Close_USB_Vita();
         } else {
             //TODO: replace this with an event-driven setup
             Sleeper::msleep(2000);
@@ -83,7 +84,9 @@ void CmaClient::connectWireless()
     QTime now = QTime::currentTime();
     qsrand(now.msec());
 
-    qDebug() << "Starting wireless_thread:" << QThread::currentThreadId();
+    qDebug("Starting wireless_thread: %u", (unsigned int)QThread::currentThreadId());
+
+    setActive(true);
 
     do {
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::cancelCallback, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
@@ -109,17 +112,18 @@ void CmaClient::processNewConnection(vita_device_t *device)
     broadcast.setUnavailable();
 
     qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
-    DeviceCapability *vita_info = new DeviceCapability();
+    DeviceCapability vita_info;
 
-    if(!vita_info->exchangeInfo(device)) {
+    if(!vita_info.exchangeInfo(device)) {
         qCritical("Error while exchanging info with the vita");
     } else {
         // Conection successful, inform the user
-        emit deviceConnected(QString(tr("Connected to ")) + vita_info->getOnlineId());
+        emit deviceConnected(QString(tr("Connected to ")) + vita_info.getOnlineId());
         enterEventLoop(device);
     }
 
     VitaMTP_SendHostStatus(device, VITA_HOST_STATUS_EndConnection);
+    qDebug("Releasing device...");
     VitaMTP_Release_Device(device);
 
     emit deviceDisconnected();
@@ -202,12 +206,16 @@ void CmaClient::enterEventLoop(vita_device_t *device)
     qDebug("Finishing event loop");
 }
 
-void CmaClient::stop()
+int CmaClient::stop()
 {
+    if(!isActive()) {
+        return -1;
+    }
     CmaClient::setActive(false);
     cancel.lock();
     is_cancelled = true;
     cancel.unlock();
+    return 0;
 }
 
 bool CmaClient::isActive()

@@ -32,6 +32,7 @@ class ClientManager : public QObject
     Q_OBJECT
 public:
     explicit ClientManager(QObject *parent = 0);
+    ~ClientManager();
 
     void start();
     void stop();

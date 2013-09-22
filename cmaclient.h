@@ -76,7 +76,7 @@ signals:
     void finished();
 
 public slots:
-    static void stop();
+    static int stop();
 
 private slots:
     void connectUsb();

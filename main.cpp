@@ -71,12 +71,12 @@ int main(int argc, char *argv[])
 
     QTranslator translator;
     QString locale = QLocale().system().name();
-    qDebug() << "Current locale:" << locale;
+    qDebug("Current locale: %s", locale.toUtf8().data());
     if(translator.load("qcma." + locale, ":/main/resources/translations")) {
         app.installTranslator(&translator);
     }
 
-    qDebug() << "From main thread: "<< QThread::currentThreadId();
+    qDebug("Starting main thread: %u", (unsigned int)QThread::currentThreadId());
 
     // set the organization/application for QSettings to work properly
     app.setOrganizationName("qcma");

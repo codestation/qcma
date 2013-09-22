@@ -185,7 +185,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
     if(parent->metadata.path == NULL) {
         metadata.path = strdup(metadata.name);
     } else {
-        QString newpath = QString(parent->metadata.path) + QDir::separator() + metadata.name;
+        QString newpath = QString(parent->metadata.path) + "/" + metadata.name;
         metadata.path = strdup(newpath.toUtf8().data());
     }
 
@@ -216,22 +216,22 @@ void CMAObject::rename(const QString &newname)
     metadata.name = strdup(newname.toUtf8().data());
 
     if(metadata.path) {
-        QStringList metadata_path(QString(metadata.path).split(QDir::separator()));
+        QStringList metadata_path(QString(metadata.path).split("/"));
         metadata_path.replace(metadata_path.count() - 1, newname);
         free(metadata.path);
-        metadata.path = strdup(metadata_path.join(QDir::separator()).toUtf8().data());
+        metadata.path = strdup(metadata_path.join("/").toUtf8().data());
     }
 
-    path = QFileInfo(path).absoluteDir().path() + QDir::separator() + newname;
+    path = QFileInfo(path).absoluteDir().path() + "/" + newname;
 }
 
 void CMAObject::refreshPath()
 {
     if(parent) {
         free(metadata.path);
-        QString newpath(QString(parent->metadata.path) + QDir::separator() + metadata.name);
+        QString newpath(QString(parent->metadata.path) + "/" + metadata.name);
         metadata.path = strdup(newpath.toUtf8().data());
-        path = parent->path + QDir::separator() + metadata.name;
+        path = parent->path + "/" + metadata.name;
     }
 }
 
