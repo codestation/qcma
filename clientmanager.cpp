@@ -22,6 +22,8 @@
 #include "cmaclient.h"
 #include "utils.h"
 
+#include <vitamtp.h>
+
 ClientManager::ClientManager(QObject *parent) :
     QObject(parent)
 {
