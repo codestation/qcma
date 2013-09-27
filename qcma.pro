@@ -78,7 +78,8 @@ FORMS += \
     progressform.ui \
     pinform.ui
 
-TRANSLATIONS += resources/translations/qcma.es.ts
+TRANSLATIONS += resources/translations/qcma.es.ts \
+    resources/translations/qcma.ja.ts
 
 unix {
     isEmpty(PREFIX) {
