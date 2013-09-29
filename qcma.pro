@@ -101,4 +101,6 @@ unix {
 
 win32:RC_FILE = qcma.rc
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
+
+ICON = resources/$${TARGET}.icns
 macx:QT_CONFIG -= no-pkg-config
