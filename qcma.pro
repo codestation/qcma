@@ -101,3 +101,4 @@ unix {
 
 win32:RC_FILE = qcma.rc
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
+macx:QT_CONFIG -= no-pkg-config

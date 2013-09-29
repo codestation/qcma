@@ -40,9 +40,9 @@ bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
     }
 
 #else
-    struct statvfs64 stat;
+    struct statvfs stat;
 
-    if(statvfs64(dir.toUtf8().data(), &stat) == 0) {
+    if(statvfs(dir.toUtf8().data(), &stat) == 0) {
         *total = stat.f_frsize * stat.f_blocks;
         *free = stat.f_frsize * stat.f_bfree;
         return true;

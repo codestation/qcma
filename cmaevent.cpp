@@ -40,7 +40,7 @@ CmaEvent::CmaEvent(vita_device_t *s_device) :
 
 void CmaEvent::process()
 {
-    qDebug("Starting event_thread: %u", (unsigned int)QThread::currentThreadId());
+    qDebug("Starting event_thread: %lu", (unsigned long)QThread::currentThreadId());
     while(true) {
         sema.acquire();
         if(!isActive()) {
