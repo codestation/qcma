@@ -58,6 +58,8 @@ private:
     QAction *reload;
     QAction *options;
     QAction *backup;
+    QAction *about;
+    QAction *about_qt;
     QSystemTrayIcon *trayIcon;
 
     const static QStringList path_list;
@@ -65,6 +67,8 @@ private:
 private slots:
     void stopServer();
     void openManager();
+    void showAboutQt();
+    void showAboutDialog();
     void deviceDisconnect();
     void dialogResult(int result);
     void receiveMessage(QString message);

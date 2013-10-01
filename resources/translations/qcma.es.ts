@@ -99,17 +99,22 @@
         <translation type="obsolete">Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="33"/>
+        <location filename="../../clientmanager.cpp" line="41"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="35"/>
+        <location filename="../../clientmanager.cpp" line="43"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="97"/>
+        <location filename="../../clientmanager.cpp" line="57"/>
+        <source>Cannot initialize VitaMTP library</source>
+        <translation>No se pudo inicializar VitaMTP</translation>
+    </message>
+    <message>
+        <location filename="../../clientmanager.cpp" line="111"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
@@ -117,7 +122,7 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../cmaclient.cpp" line="118"/>
+        <location filename="../../cmaclient.cpp" line="121"/>
         <source>Connected to </source>
         <translation>Conectado a </translation>
     </message>
@@ -261,51 +266,76 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../mainwidget.cpp" line="70"/>
+        <location filename="../../mainwidget.cpp" line="73"/>
         <source>Shutting down...</source>
         <translation>Cerrando...</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="71"/>
+        <location filename="../../mainwidget.cpp" line="74"/>
         <source>Stopping QCMA...</source>
         <translation>Deteniendo QCMA...</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="77"/>
+        <location filename="../../mainwidget.cpp" line="80"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="78"/>
+        <location filename="../../mainwidget.cpp" line="81"/>
         <source>The device has been disconnected</source>
         <translation>El dispositivo se ha desconectado</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="119"/>
+        <source>About QCMA</source>
+        <translation>Acerca de QCMA</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="120"/>
+        <source>Copyright (C) 2013  Codestation
+</source>
+        <translation>Copyright (C) 2013  Codestation\n</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="143"/>
+        <source>&amp;Backup Manager</source>
+        <translation>&amp;Gestor de Respaldos</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="144"/>
+        <source>&amp;About</source>
+        <translation>&amp;Acerca de</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="145"/>
+        <source>Abou&amp;t Qt</source>
+        <translation>A&amp;cerca de Qt</translation>
     </message>
     <message>
         <source>Received PIN: %1</source>
         <translation type="obsolete">PIN recibido: %1</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="113"/>
+        <location filename="../../mainwidget.cpp" line="141"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ajustes</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="114"/>
+        <location filename="../../mainwidget.cpp" line="142"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="115"/>
         <source>Backup Manager</source>
-        <translation>Gestor de Respaldos</translation>
+        <translation type="obsolete">Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="116"/>
+        <location filename="../../mainwidget.cpp" line="146"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="141"/>
+        <location filename="../../mainwidget.cpp" line="179"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>

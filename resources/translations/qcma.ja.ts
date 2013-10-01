@@ -99,17 +99,22 @@
         <translation type="obsolete">%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="33"/>
+        <location filename="../../clientmanager.cpp" line="41"/>
         <source>Added %1 items to the database</source>
         <translation>%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="35"/>
+        <location filename="../../clientmanager.cpp" line="43"/>
         <source>Database indexing aborted by user</source>
         <translation>データベース構築がユーザーにより中止されました</translation>
     </message>
     <message>
-        <location filename="../../clientmanager.cpp" line="97"/>
+        <location filename="../../clientmanager.cpp" line="57"/>
+        <source>Cannot initialize VitaMTP library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../clientmanager.cpp" line="111"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
     </message>
@@ -117,7 +122,7 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../cmaclient.cpp" line="118"/>
+        <location filename="../../cmaclient.cpp" line="121"/>
         <source>Connected to </source>
         <translation>次のデバイスに接続しました </translation>
     </message>
@@ -262,51 +267,76 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../mainwidget.cpp" line="70"/>
+        <location filename="../../mainwidget.cpp" line="73"/>
         <source>Shutting down...</source>
         <translation>終了しています...</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="71"/>
+        <location filename="../../mainwidget.cpp" line="74"/>
         <source>Stopping QCMA...</source>
         <translation>QCMAを停止しています...</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="77"/>
+        <location filename="../../mainwidget.cpp" line="80"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="78"/>
+        <location filename="../../mainwidget.cpp" line="81"/>
         <source>The device has been disconnected</source>
         <translation>デバイスが切断されました</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="119"/>
+        <source>About QCMA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="120"/>
+        <source>Copyright (C) 2013  Codestation
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="143"/>
+        <source>&amp;Backup Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="144"/>
+        <source>&amp;About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="145"/>
+        <source>Abou&amp;t Qt</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Received PIN: %1</source>
         <translation type="obsolete">受信したPIN: %1</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="113"/>
+        <location filename="../../mainwidget.cpp" line="141"/>
         <source>&amp;Settings</source>
         <translation>&amp;設定</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="114"/>
+        <location filename="../../mainwidget.cpp" line="142"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;データベースを更新する</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="115"/>
         <source>Backup Manager</source>
-        <translation>バックアップマネージャー</translation>
+        <translation type="obsolete">バックアップマネージャー</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="116"/>
+        <location filename="../../mainwidget.cpp" line="146"/>
         <source>&amp;Quit</source>
         <translation>&amp;終了</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="141"/>
+        <location filename="../../mainwidget.cpp" line="179"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>

@@ -26,10 +26,13 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QGridLayout>
 #include <QMenu>
+#include <QMessageBox>
 #include <QSettings>
 #include <QTimer>
 #include <QSettings>
+#include <QSpacerItem>
 
 const QStringList MainWidget::path_list = QStringList() << "photoPath" << "musicPath" << "videoPath" << "appsPath" << "urlPath";
 
@@ -108,16 +111,45 @@ void MainWidget::openManager()
     form.show();
 }
 
+void MainWidget::showAboutDialog()
+{
+    QMessageBox about;
+
+    about.setText(QString("QCMA ") + QCMA_VER);
+    about.setWindowTitle(tr("About QCMA"));
+    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n"));
+    about.setStandardButtons(QMessageBox::Ok);
+    about.setIconPixmap(QPixmap(":/main/resources/qcma.png"));
+    about.setDefaultButton(QMessageBox::Ok);
+
+    // hack to expand the messagebox minimum size
+    QSpacerItem* horizontalSpacer = new QSpacerItem(300, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QGridLayout* layout = (QGridLayout*)about.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+
+    about.show();
+    about.exec();
+}
+
+void MainWidget::showAboutQt()
+{
+    QMessageBox::aboutQt(this);
+}
+
 void MainWidget::createTrayIcon()
 {
     options = new QAction(tr("&Settings"), this);
     reload = new QAction(tr("&Refresh database"), this);
-    backup = new QAction(tr("Backup Manager"), this);
+    backup = new QAction(tr("&Backup Manager"), this);
+    about = new QAction(tr("&About"), this);
+    about_qt = new QAction(tr("Abou&t Qt"), this);
     quit = new QAction(tr("&Quit"), this);
 
     connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
     connect(backup, SIGNAL(triggered()), this, SLOT(openManager()));
     connect(reload, SIGNAL(triggered()), &manager, SLOT(refreshDatabase()));
+    connect(about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
+    connect(about_qt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
 
     QMenu *trayIconMenu = new QMenu(this);
@@ -125,6 +157,8 @@ void MainWidget::createTrayIcon()
     trayIconMenu->addAction(reload);
     trayIconMenu->addAction(backup);
     trayIconMenu->addSeparator();
+    trayIconMenu->addAction(about);
+    trayIconMenu->addAction(about_qt);
     trayIconMenu->addAction(quit);
 
     trayIcon = new QSystemTrayIcon(this);

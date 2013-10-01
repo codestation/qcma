@@ -81,6 +81,10 @@ FORMS += \
 TRANSLATIONS += resources/translations/qcma.es.ts \
     resources/translations/qcma.ja.ts
 
+VERSION = \\\"'0.2.2'\\\"
+
+DEFINES += "QCMA_VER=$${VERSION}"
+
 unix {
     isEmpty(PREFIX) {
         PREFIX = /usr/local

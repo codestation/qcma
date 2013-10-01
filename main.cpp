@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    qDebug("Starting QCMA %s", QCMA_VER);
+
     QTranslator translator;
     QString locale = QLocale().system().name();
     qDebug("Current locale: %s", locale.toUtf8().data());
