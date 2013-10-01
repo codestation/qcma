@@ -292,9 +292,18 @@
     </message>
     <message>
         <location filename="../../mainwidget.cpp" line="120"/>
+        <source>Copyright (C) 2013  Codestation</source>
+        <translation>Copyright (C) 2013  Codestation</translation>
+    </message>
+    <message>
+        <location filename="../../mainwidget.cpp" line="144"/>
+        <source>&amp;About QCMA</source>
+        <translation>&amp;Acerca de QCMA</translation>
+    </message>
+    <message>
         <source>Copyright (C) 2013  Codestation
 </source>
-        <translation>Copyright (C) 2013  Codestation\n</translation>
+        <translation type="obsolete">Copyright (C) 2013  Codestation\n</translation>
     </message>
     <message>
         <location filename="../../mainwidget.cpp" line="143"/>
@@ -302,9 +311,8 @@
         <translation>&amp;Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../mainwidget.cpp" line="144"/>
         <source>&amp;About</source>
-        <translation>&amp;Acerca de</translation>
+        <translation type="obsolete">&amp;Acerca de</translation>
     </message>
     <message>
         <location filename="../../mainwidget.cpp" line="145"/>

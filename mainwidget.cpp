@@ -117,7 +117,7 @@ void MainWidget::showAboutDialog()
 
     about.setText(QString("QCMA ") + QCMA_VER);
     about.setWindowTitle(tr("About QCMA"));
-    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n"));
+    about.setInformativeText(tr("Copyright (C) 2013  Codestation") + "\n");
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/qcma.png"));
     about.setDefaultButton(QMessageBox::Ok);
@@ -141,7 +141,7 @@ void MainWidget::createTrayIcon()
     options = new QAction(tr("&Settings"), this);
     reload = new QAction(tr("&Refresh database"), this);
     backup = new QAction(tr("&Backup Manager"), this);
-    about = new QAction(tr("&About"), this);
+    about = new QAction(tr("&About QCMA"), this);
     about_qt = new QAction(tr("Abou&t Qt"), this);
     quit = new QAction(tr("&Quit"), this);
 

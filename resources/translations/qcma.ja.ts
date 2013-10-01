@@ -293,8 +293,7 @@
     </message>
     <message>
         <location filename="../../mainwidget.cpp" line="120"/>
-        <source>Copyright (C) 2013  Codestation
-</source>
+        <source>Copyright (C) 2013  Codestation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -304,7 +303,7 @@
     </message>
     <message>
         <location filename="../../mainwidget.cpp" line="144"/>
-        <source>&amp;About</source>
+        <source>&amp;About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
