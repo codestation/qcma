@@ -81,7 +81,7 @@ FORMS += \
 TRANSLATIONS += resources/translations/qcma.es.ts \
     resources/translations/qcma.ja.ts
 
-VERSION = \\\"'0.2.2'\\\"
+VERSION = \\\"'0.2.3'\\\"
 
 DEFINES += "QCMA_VER=$${VERSION}"
 
@@ -102,6 +102,8 @@ unix {
     target.path = $$BINDIR
     INSTALLS += target desktop icon64
 }
+
+unix:!macx:DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
 
 win32:RC_FILE = qcma.rc
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
