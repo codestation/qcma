@@ -34,9 +34,11 @@ const QString CmaBroadcast::broadcast_reply =
     "host-name:%4\r\n"
     "host-mtp-protocol-version:%5\r\n"
     "host-request-port:%6\r\n"
-    "host-wireless-protocol-version:%7\r\n";
+    "host-wireless-protocol-version:%7\r\n"
+    "host-supported-device:PS Vita, PS Vita TV\r\n";
 
-const char *CmaBroadcast::broadcast_query = "SRCH * HTTP/1.1\r\n";
+const char *CmaBroadcast::broadcast_query_01 = "SRCH * HTTP/1.1\r\n";
+const char *CmaBroadcast::broadcast_query_02 = "SRCH3 * HTTP/1.1\r\n";
 
 const char *CmaBroadcast::broadcast_ok = "HTTP/1.1 200 OK";
 const char *CmaBroadcast::broadcast_unavailable = "HTTP/1.1 503 NG";
@@ -71,7 +73,7 @@ void CmaBroadcast::readPendingDatagrams()
 
         socket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
 
-        if(datagram.contains(broadcast_query)) {
+        if(datagram.contains(broadcast_query_01) || datagram.contains(broadcast_query_02)) {
             QMutexLocker locker(&mutex);
             socket->writeDatagram(reply, sender, senderPort);
         } else {
