@@ -42,8 +42,8 @@ private:
     QUdpSocket *socket;
 
     static const QString broadcast_reply;
-    static const char *broadcast_query_01;
-    static const char *broadcast_query_02;
+    static const char *broadcast_query_start;
+    static const char *broadcast_query_end;
     static const char *broadcast_ok;
     static const char *broadcast_unavailable;
 
