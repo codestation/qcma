@@ -48,6 +48,8 @@ private:
 public slots:
     void loadBackupListing(int index);
     void removeEntry(BackupItem *item);
+private slots:
+    void on_filterLineEdit_textChanged(const QString &arg1);
 };
 
 #endif // BACKUPMANAGERFORM_H

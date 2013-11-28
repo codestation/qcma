@@ -72,22 +72,28 @@
         <translation>バックアップディスク使用容量</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="54"/>
+        <location filename="../../backupmanagerform.ui" line="122"/>
+        <location filename="../../backupmanagerform.cpp" line="210"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../backupmanagerform.cpp" line="55"/>
         <source>Default account</source>
         <translation>標準アカウント</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="61"/>
+        <location filename="../../backupmanagerform.cpp" line="62"/>
         <source>Are you sure to remove the backup of the following entry?</source>
         <translation>次の項目のバックアップを削除してもよろしいですか?</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="84"/>
+        <location filename="../../backupmanagerform.cpp" line="85"/>
         <source>Backup disk usage: %1</source>
         <translation>バックアップディスク使用容量: %1</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="175"/>
+        <location filename="../../backupmanagerform.cpp" line="176"/>
         <source> - (Launcher only)</source>
         <translation> - (LiveArea専用)</translation>
     </message>
@@ -292,6 +298,15 @@
 </source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;次のゲームのバックアップを削除してもよろしいですか?&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;ゲーム名&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </translation>
+    </message>
+</context>
+<context>
+    <name>FilterLineEdit</name>
+    <message>
+        <location filename="../../filterlineedit.cpp" line="21"/>
+        <location filename="../../filterlineedit.cpp" line="40"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
