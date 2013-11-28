@@ -42,6 +42,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
               <widget class="QLabel" name="label_2">
+               <property name="whatsThis">
+                <string>This is the location your Screenshots and Pictures are Saved to/Imported from.</string>
+               </property>
                <property name="text">
                 <string>Photo Folder</string>
                </property>
@@ -51,6 +54,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
                 <widget class="QLineEdit" name="photoPath">
+                 <property name="toolTip">
+                  <string>This is the location your Screenshots and Pictures are Saved to/Imported from.</string>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -71,6 +77,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QLabel" name="label_3">
+               <property name="whatsThis">
+                <string>This is the location your Videos are Saved to/Imported from.</string>
+               </property>
                <property name="text">
                 <string>Video Folder</string>
                </property>
@@ -80,6 +89,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
                 <widget class="QLineEdit" name="videoPath">
+                 <property name="toolTip">
+                  <string>This is the location your Videos are Saved to/Imported from.</string>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -100,6 +112,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
               <widget class="QLabel" name="label_4">
+               <property name="whatsThis">
+                <string>This is the location your Music is Saved to/Imported from.</string>
+               </property>
                <property name="text">
                 <string>Music Folder</string>
                </property>
@@ -109,6 +124,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
                 <widget class="QLineEdit" name="musicPath">
+                 <property name="toolTip">
+                  <string>This is the location your Music is Saved to/Imported from.</string>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -129,6 +147,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
               <widget class="QLabel" name="label_6">
+               <property name="whatsThis">
+                <string>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</string>
+               </property>
                <property name="text">
                 <string>Applications / Backups</string>
                </property>
@@ -138,6 +159,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
                 <widget class="QLineEdit" name="appPath">
+                 <property name="toolTip">
+                  <string>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</string>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -158,6 +182,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
               <widget class="QLabel" name="label_5">
+               <property name="whatsThis">
+                <string>This is the location your Software Updates and Browser Data is Saved to/Imported from.</string>
+               </property>
                <property name="text">
                 <string>Updates / Web content</string>
                </property>
@@ -167,6 +194,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
                 <widget class="QLineEdit" name="urlPath">
+                 <property name="toolTip">
+                  <string>This is the location your Software Updates and Browser Data is Saved to/Imported from.</string>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
