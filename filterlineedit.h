@@ -1,7 +1,7 @@
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
- *  Copyright (C) 2013  Codestation
+ *  Copyright (C) 2013  Xian Nox
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BACKUPMANAGERFORM_H
-#define BACKUPMANAGERFORM_H
+#ifndef FILTERLINEEDIT_H
+#define FILTERLINEEDIT_H
 
-#include "database.h"
-#include "backupitem.h"
+#include <QLineEdit>
+#include <QToolButton>
 
-#include <QWidget>
-
-namespace Ui {
-class BackupManagerForm;
-}
-
-class BackupManagerForm : public QWidget
+class FilterLineEdit : public QLineEdit
 {
     Q_OBJECT
 
 public:
-    explicit BackupManagerForm(QWidget *parent = 0);
-    ~BackupManagerForm();
-
-    Database *db;
+    explicit FilterLineEdit(QWidget *parent = 0);
+    
+protected:
+    void focusInEvent(QFocusEvent *e);
+    void focusOutEvent(QFocusEvent *e);
+    void resizeEvent(QResizeEvent *e);
 
 private:
-    void setupForm();
-    void setBackupUsage(quint64 size);
+    QToolButton *clearButton;
 
-    Ui::BackupManagerForm *ui;
-
-public slots:
-    void loadBackupListing(int index);
-    void removeEntry(BackupItem *item);
 private slots:
-    void on_filterLineEdit_textChanged(const QString &arg1);
+    void updateCloseButton(const QString &text);
+
 };
 
-#endif // BACKUPMANAGERFORM_H
+#endif // FILTERLINEEDIT_H

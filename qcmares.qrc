@@ -6,5 +6,6 @@
         <file>resources/translations/qcma.ja.qm</file>
         <file>resources/psv_icon_16.png</file>
         <file>resources/qcma.png</file>
+        <file>resources/edit-clear-locationbar-rtl.png</file>
     </qresource>
 </RCC>

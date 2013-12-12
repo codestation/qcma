@@ -23,6 +23,7 @@
 #include "sforeader.h"
 #include "confirmdialog.h"
 #include "utils.h"
+#include "filterlineedit.h"
 
 #include <QDebug>
 #include <QDialogButtonBox>
@@ -199,4 +200,22 @@ void BackupManagerForm::loadBackupListing(int index)
 
     vert_header->setUpdatesEnabled(true);
     db->mutex.unlock();
+
+    // apply filter
+    this->on_filterLineEdit_textChanged(ui->filterLineEdit->text());
+}
+
+void BackupManagerForm::on_filterLineEdit_textChanged(const QString &arg1)
+{
+    if(arg1 != tr("Filter")) {
+        for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
+            BackupItem *item = (BackupItem*) ui->tableWidget->cellWidget(i, 0);
+
+            if(item->title.contains(arg1, Qt::CaseInsensitive)) {
+                ui->tableWidget->setRowHidden(i, false);
+            } else {
+                ui->tableWidget->setRowHidden(i, true);
+            }
+        }
+    }
 }

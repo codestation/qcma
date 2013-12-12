@@ -72,22 +72,28 @@
         <translation>Uso de disco en respaldos</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="54"/>
+        <location filename="../../backupmanagerform.ui" line="122"/>
+        <location filename="../../backupmanagerform.cpp" line="210"/>
+        <source>Filter</source>
+        <translation>Filtro</translation>
+    </message>
+    <message>
+        <location filename="../../backupmanagerform.cpp" line="55"/>
         <source>Default account</source>
         <translation>Cuenta por defecto</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="61"/>
+        <location filename="../../backupmanagerform.cpp" line="62"/>
         <source>Are you sure to remove the backup of the following entry?</source>
         <translation>¿Estas seguro de borrar la siguiente entrada?</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="84"/>
+        <location filename="../../backupmanagerform.cpp" line="85"/>
         <source>Backup disk usage: %1</source>
         <translation>Uso de disco en respaldos: %1</translation>
     </message>
     <message>
-        <location filename="../../backupmanagerform.cpp" line="175"/>
+        <location filename="../../backupmanagerform.cpp" line="176"/>
         <source> - (Launcher only)</source>
         <translation> - (Solo lanzador LiveArea)</translation>
     </message>
@@ -291,6 +297,15 @@
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Are you sure to delete the backup of the following game?&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>FilterLineEdit</name>
+    <message>
+        <location filename="../../filterlineedit.cpp" line="40"/>
+        <location filename="../../filterlineedit.cpp" line="61"/>
+        <source>Filter</source>
+        <translation>Filtro</translation>
     </message>
 </context>
 <context>

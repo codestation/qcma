@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     backupitem.cpp \
     confirmdialog.cpp \
     progressform.cpp \
-    pinform.cpp
+    pinform.cpp \
+    filterlineedit.cpp
 
 HEADERS += \
     capability.h \
@@ -53,7 +54,8 @@ HEADERS += \
     backupitem.h \
     confirmdialog.h \
     progressform.h \
-    pinform.h
+    pinform.h \
+    filterlineedit.h
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
