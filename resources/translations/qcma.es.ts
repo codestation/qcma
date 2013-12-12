@@ -146,80 +146,110 @@
     </message>
     <message>
         <location filename="../../configwidget.ui" line="46"/>
+        <location filename="../../configwidget.ui" line="58"/>
+        <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="49"/>
         <source>Photo Folder</source>
         <translation>Directorio de Fotos</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="62"/>
-        <location filename="../../configwidget.ui" line="91"/>
-        <location filename="../../configwidget.ui" line="120"/>
-        <location filename="../../configwidget.ui" line="149"/>
-        <location filename="../../configwidget.ui" line="178"/>
+        <location filename="../../configwidget.ui" line="68"/>
+        <location filename="../../configwidget.ui" line="103"/>
+        <location filename="../../configwidget.ui" line="138"/>
+        <location filename="../../configwidget.ui" line="173"/>
+        <location filename="../../configwidget.ui" line="208"/>
         <source>Browse...</source>
         <translation>Buscar...</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="75"/>
+        <location filename="../../configwidget.ui" line="81"/>
+        <location filename="../../configwidget.ui" line="93"/>
+        <source>This is the location your Videos are Saved to/Imported from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="84"/>
         <source>Video Folder</source>
         <translation>Directorio de Videos</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="104"/>
+        <location filename="../../configwidget.ui" line="116"/>
+        <location filename="../../configwidget.ui" line="128"/>
+        <source>This is the location your Music is Saved to/Imported from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="119"/>
         <source>Music Folder</source>
         <translation>Directorio de Música</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="133"/>
+        <location filename="../../configwidget.ui" line="151"/>
+        <location filename="../../configwidget.ui" line="163"/>
+        <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="154"/>
         <source>Applications / Backups</source>
         <translation>Aplicaciones / Juegos / Respaldos</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="162"/>
+        <location filename="../../configwidget.ui" line="186"/>
+        <location filename="../../configwidget.ui" line="198"/>
+        <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.ui" line="189"/>
         <source>Updates / Web content</source>
         <translation>Actualizaciones / Contenido Web</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="192"/>
+        <location filename="../../configwidget.ui" line="222"/>
         <source>Other</source>
         <translation>Otros</translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="200"/>
+        <location filename="../../configwidget.ui" line="230"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="210"/>
+        <location filename="../../configwidget.ui" line="240"/>
         <source>Offline Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="223"/>
+        <location filename="../../configwidget.ui" line="253"/>
         <source>Skip metadata extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="233"/>
+        <location filename="../../configwidget.ui" line="263"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="243"/>
+        <location filename="../../configwidget.ui" line="273"/>
         <source>Disable USB monitoring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="253"/>
+        <location filename="../../configwidget.ui" line="283"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="262"/>
+        <location filename="../../configwidget.ui" line="292"/>
         <source>Database backend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../configwidget.ui" line="273"/>
+        <location filename="../../configwidget.ui" line="303"/>
         <source>In Memory</source>
         <translation type="unfinished"></translation>
     </message>
