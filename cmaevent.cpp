@@ -608,9 +608,12 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
     qDebug("Current account id: %s", settingsinfo->current_account.accountId);
 
     QSettings settings;
+
+    // Always refresh the account name
+    settings.setValue("lastOnlineId", settingsinfo->current_account.userName);
+
     if(settings.value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
-        db->setUUID(settingsinfo->current_account.accountId);
-        settings.setValue("lastOnlineId", settingsinfo->current_account.userName);
+        db->setUUID(settingsinfo->current_account.accountId);        
         // set the database to be updated ASAP
         emit refreshDatabase();
     }
