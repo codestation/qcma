@@ -303,8 +303,8 @@
 <context>
     <name>FilterLineEdit</name>
     <message>
-        <location filename="../../filterlineedit.cpp" line="21"/>
         <location filename="../../filterlineedit.cpp" line="40"/>
+        <location filename="../../filterlineedit.cpp" line="61"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>

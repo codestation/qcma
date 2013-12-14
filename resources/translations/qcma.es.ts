@@ -75,7 +75,7 @@
         <location filename="../../backupmanagerform.ui" line="122"/>
         <location filename="../../backupmanagerform.cpp" line="210"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro</translation>
     </message>
     <message>
         <location filename="../../backupmanagerform.cpp" line="55"/>
@@ -302,10 +302,10 @@
 <context>
     <name>FilterLineEdit</name>
     <message>
-        <location filename="../../filterlineedit.cpp" line="21"/>
         <location filename="../../filterlineedit.cpp" line="40"/>
+        <location filename="../../filterlineedit.cpp" line="61"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro</translation>
     </message>
 </context>
 <context>

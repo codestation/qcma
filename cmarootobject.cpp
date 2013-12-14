@@ -99,6 +99,10 @@ void CMARootObject::initObject(const QString &path)
         this->path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
         num_filters = 0;
     }
+
+    // create the backup directories
+    QDir dir(this->path);
+    dir.mkpath(dir.absolutePath());
 }
 
 CMARootObject::~CMARootObject()
