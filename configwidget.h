@@ -25,8 +25,7 @@
 #include <QSettings>
 #include <QSignalMapper>
 
-namespace Ui
-{
+namespace Ui {
 class ConfigWidget;
 }
 

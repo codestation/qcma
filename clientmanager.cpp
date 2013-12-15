@@ -52,8 +52,7 @@ void ClientManager::showPinDialog(QString name, int pin)
 
 void ClientManager::start()
 {
-    if(VitaMTP_Init() < 0)
-    {
+    if(VitaMTP_Init() < 0) {
         emit messageSent(tr("Cannot initialize VitaMTP library"));
         return;
     }

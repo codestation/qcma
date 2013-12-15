@@ -29,7 +29,7 @@ class FilterLineEdit : public QLineEdit
 
 public:
     explicit FilterLineEdit(QWidget *parent = 0);
-    
+
 protected:
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);

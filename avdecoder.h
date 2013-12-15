@@ -51,8 +51,7 @@ public:
     class AvInit
     {
     public:
-        AvInit()
-        {
+        AvInit() {
             av_register_all();
         }
     };
