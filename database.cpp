@@ -446,8 +446,7 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head, int index, int 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         for(root_list::iterator object = (*root).begin(); object != (*root).end(); ++object) {
             if(acceptFilteredObject(parent, *object, type)) {
-                if(offset++ >= index)
-                {
+                if(offset++ >= index) {
                     tail->next_metadata = &(*object)->metadata;
                     tail = tail->next_metadata;
                     numObjects++;

@@ -149,8 +149,7 @@ int CmaClient::deviceRegistered(const char *deviceid)
 int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
 {
     qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
-    // generate correct values on 32bit
-    int pin = ((qrand() << 16) | qrand()) % 100000000;
+    int pin = rand() % 10000 * 10000 | rand() % 10000;
     qDebug("Your registration PIN for %s is: %08d", info->name, pin);
     *p_err = 0;
     emit this_object->receivedPin(info->name, pin);

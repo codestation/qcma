@@ -25,7 +25,8 @@ SfoReader::SfoReader()
 {
 }
 
-bool SfoReader::load(const QString &path) {
+bool SfoReader::load(const QString &path)
+{
     QFile file(path);
     if(file.open(QIODevice::ReadOnly)) {
         data = file.readAll();
@@ -37,7 +38,8 @@ bool SfoReader::load(const QString &path) {
     return false;
 }
 
-const char *SfoReader::value(const char *key, const char *defaultValue) {
+const char *SfoReader::value(const char *key, const char *defaultValue)
+{
     const char *base_key = key_offset + header->key_offset;
     for(uint i = 0; i < header->pair_count; i++) {
         const char *curr_key = base_key + index[i].key_offset;

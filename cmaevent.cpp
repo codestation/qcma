@@ -613,7 +613,7 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
     settings.setValue("lastOnlineId", settingsinfo->current_account.userName);
 
     if(settings.value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
-        db->setUUID(settingsinfo->current_account.accountId);        
+        db->setUUID(settingsinfo->current_account.accountId);
         // set the database to be updated ASAP
         emit refreshDatabase();
     }
