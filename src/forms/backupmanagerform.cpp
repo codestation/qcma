@@ -19,10 +19,10 @@
 
 #include "backupmanagerform.h"
 #include "ui_backupmanagerform.h"
-#include "../cmaobject.h"
-#include "../sforeader.h"
+#include "cmaobject.h"
+#include "sforeader.h"
 #include "confirmdialog.h"
-#include "../utils.h"
+#include "utils.h"
 #include "filterlineedit.h"
 
 #include <QDebug>

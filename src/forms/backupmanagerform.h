@@ -20,7 +20,7 @@
 #ifndef BACKUPMANAGERFORM_H
 #define BACKUPMANAGERFORM_H
 
-#include "../database.h"
+#include "database.h"
 #include "backupitem.h"
 
 #include <QWidget>

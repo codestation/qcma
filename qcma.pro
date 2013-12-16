@@ -27,7 +27,7 @@ SOURCES += src/main.cpp \
     src/avdecoder.cpp \
     src/cmaevent.cpp \
     src/clientmanager.cpp \
-    filterlineedit.cpp \
+    src/filterlineedit.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
@@ -50,7 +50,7 @@ HEADERS += \
     src/avdecoder.h \
     src/cmaevent.h \
     src/clientmanager.h \
-    filterlineedit.h \
+    src/filterlineedit.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \
@@ -58,6 +58,8 @@ HEADERS += \
     src/forms/confirmdialog.h \
     src/forms/pinform.h \
     src/forms/progressform.h
+
+INCLUDEPATH += src/
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
