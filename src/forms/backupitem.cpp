@@ -19,7 +19,7 @@
 
 #include "backupitem.h"
 #include "ui_backupitem.h"
-#include "utils.h"
+#include "../utils.h"
 
 #include <QDesktopServices>
 #include <QUrl>
