@@ -66,15 +66,15 @@ PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS
 
-RESOURCES += \
-    resources/qcmares.qrc
+RESOURCES += qcmares.qrc
 
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml \
     resources/images/psv_icon.png \
-    README.md \
+    resources/images/psv_icon_16.png \
+    resources/images/qcma.png \
     resources/qcma.desktop \
-    resources/qcma.rc
+    qcma.rc
 
 FORMS += \
     src/forms/configwidget.ui \

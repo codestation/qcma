@@ -26,7 +26,7 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
     QLineEdit(parent)
 {
     clearButton = new QToolButton(this);
-    QIcon clearIcon(":/main/images/edit-clear-locationbar-rtl.png");
+    QIcon clearIcon(":/main/resources/images/edit-clear-locationbar-rtl.png");
     clearButton->setIcon(clearIcon);
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("border:none;padding:0px");
