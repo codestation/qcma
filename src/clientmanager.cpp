@@ -18,9 +18,9 @@
  */
 
 #include "clientmanager.h"
-#include "progressform.h"
 #include "cmaclient.h"
 #include "utils.h"
+#include "forms/progressform.h"
 
 #include <vitamtp.h>
 

@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/main">
-        <file>resources/psp2-updatelist.xml</file>
-        <file>resources/psv_icon.png</file>
+        <file>resources/xml/psp2-updatelist.xml</file>
         <file>resources/translations/qcma.es.qm</file>
         <file>resources/translations/qcma.ja.qm</file>
-        <file>resources/psv_icon_16.png</file>
-        <file>resources/qcma.png</file>
-        <file>resources/edit-clear-locationbar-rtl.png</file>
+        <file>resources/images/psv_icon.png</file>
+        <file>resources/images/psv_icon_16.png</file>
+        <file>resources/images/qcma.png</file>
+        <file>resources/images/edit-clear-locationbar-rtl.png</file>
     </qresource>
 </RCC>

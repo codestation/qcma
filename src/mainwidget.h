@@ -20,11 +20,11 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "configwidget.h"
-#include "clientmanager.h"
-#include "backupmanagerform.h"
 #include "cmaclient.h"
-#include "progressform.h"
+#include "clientmanager.h"
+#include "forms/configwidget.h"
+#include "forms/backupmanagerform.h"
+#include "forms/progressform.h"
 
 #include <QAction>
 #include <QWidget>

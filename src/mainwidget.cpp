@@ -119,7 +119,7 @@ void MainWidget::showAboutDialog()
     about.setWindowTitle(tr("About QCMA"));
     about.setInformativeText(tr("Copyright (C) 2013  Codestation") + "\n");
     about.setStandardButtons(QMessageBox::Ok);
-    about.setIconPixmap(QPixmap(":/main/resources/qcma.png"));
+    about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
     about.setDefaultButton(QMessageBox::Ok);
 
     // hack to expand the messagebox minimum size
@@ -164,9 +164,9 @@ void MainWidget::createTrayIcon()
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(":/main/resources/psv_icon.png"));
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon.png"));
 #else
-    trayIcon->setIcon(QIcon(":/main/resources/psv_icon_16.png"));
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16.png"));
 #endif
     trayIcon->show();
     // try to avoid the iconTray Qt bug

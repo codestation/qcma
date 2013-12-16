@@ -20,9 +20,9 @@
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
-#include "pinform.h"
 #include "database.h"
-#include "progressform.h"
+#include "forms/pinform.h"
+#include "forms/progressform.h"
 
 #include <QObject>
 #include <QThread>

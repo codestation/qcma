@@ -13,74 +13,79 @@ TARGET = qcma
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    capability.cpp \
-    database.cpp \
-    cmaobject.cpp \
-    cmarootobject.cpp \
-    utils.cpp \
-    mainwidget.cpp \
-    configwidget.cpp \
-    singleapplication.cpp \
-    sforeader.cpp \
-    cmaclient.cpp \
-    cmabroadcast.cpp \
-    avdecoder.cpp \
-    cmaevent.cpp \
-    clientmanager.cpp \
-    backupmanagerform.cpp \
-    backupitem.cpp \
-    confirmdialog.cpp \
-    progressform.cpp \
-    pinform.cpp \
-    filterlineedit.cpp
+SOURCES += src/main.cpp \
+    src/capability.cpp \
+    src/database.cpp \
+    src/cmaobject.cpp \
+    src/cmarootobject.cpp \
+    src/utils.cpp \
+    src/mainwidget.cpp \
+    src/singleapplication.cpp \
+    src/sforeader.cpp \
+    src/cmaclient.cpp \
+    src/cmabroadcast.cpp \
+    src/avdecoder.cpp \
+    src/cmaevent.cpp \
+    src/clientmanager.cpp \
+    src/filterlineedit.cpp \
+# forms
+    src/forms/backupitem.cpp \
+    src/forms/backupmanagerform.cpp \
+    src/forms/configwidget.cpp \
+    src/forms/confirmdialog.cpp \
+    src/forms/pinform.cpp \
+    src/forms/progressform.cpp
 
 HEADERS += \
-    capability.h \
-    database.h \
-    cmaobject.h \
-    cmarootobject.h \
-    utils.h \
-    mainwidget.h \
-    configwidget.h \
-    singleapplication.h \
-    sforeader.h \
-    cmaclient.h \
-    cmabroadcast.h \
-    avdecoder.h \
-    cmaevent.h \
-    clientmanager.h \
-    backupmanagerform.h \
-    backupitem.h \
-    confirmdialog.h \
-    progressform.h \
-    pinform.h \
-    filterlineedit.h
+    src/capability.h \
+    src/database.h \
+    src/cmaobject.h \
+    src/cmarootobject.h \
+    src/utils.h \
+    src/mainwidget.h \
+    src/singleapplication.h \
+    src/sforeader.h \
+    src/cmaclient.h \
+    src/cmabroadcast.h \
+    src/avdecoder.h \
+    src/cmaevent.h \
+    src/clientmanager.h \
+    src/filterlineedit.h \
+# forms
+    src/forms/backupitem.h \
+    src/forms/backupmanagerform.h \
+    src/forms/configwidget.h \
+    src/forms/confirmdialog.h \
+    src/forms/pinform.h \
+    src/forms/progressform.h
+
+INCLUDEPATH += src/
 
 CONFIG += link_pkgconfig
 PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS
 
-RESOURCES += \
-    qcmares.qrc
+RESOURCES += qcmares.qrc
 
 OTHER_FILES += \
-    resources/psp2-updatelist.xml \
-    resources/psv_icon.png \
-    README.md \
-    qcma.desktop \
+    resources/xml/psp2-updatelist.xml \
+    resources/images/psv_icon.png \
+    resources/images/psv_icon_16.png \
+    resources/images/qcma.png \
+    resources/qcma.desktop \
     qcma.rc
 
 FORMS += \
-    configwidget.ui \
-    backupmanagerform.ui \
-    backupitem.ui \
-    confirmdialog.ui \
-    progressform.ui \
-    pinform.ui
+    src/forms/configwidget.ui \
+    src/forms/backupmanagerform.ui \
+    src/forms/backupitem.ui \
+    src/forms/confirmdialog.ui \
+    src/forms/progressform.ui \
+    src/forms/pinform.ui
 
-TRANSLATIONS += resources/translations/qcma.es.ts \
+TRANSLATIONS += \
+    resources/translations/qcma.es.ts \
     resources/translations/qcma.ja.ts
 
 VERSION = \\\"'0.2.4'\\\"
