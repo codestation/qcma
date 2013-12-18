@@ -88,7 +88,7 @@ TRANSLATIONS += \
     resources/translations/qcma.es.ts \
     resources/translations/qcma.ja.ts
 
-VERSION = \\\"'0.2.4'\\\"
+VERSION = \\\"'0.2.5'\\\"
 
 DEFINES += "QCMA_VER=$${VERSION}"
 
