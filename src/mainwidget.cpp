@@ -77,8 +77,25 @@ void MainWidget::stopServer()
 
 void MainWidget::deviceDisconnect()
 {
+#ifndef Q_OS_WIN32
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_dc.png"));
+#else
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16_dc.png"));
+#endif
+    qDebug("Icon changed - disconnected");
     setTrayTooltip(tr("Disconnected"));
     receiveMessage(tr("The device has been disconnected"));
+}
+
+void MainWidget::deviceConnected(QString message)
+{
+    Q_UNUSED(message);
+#ifndef Q_OS_WIN32
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon.png"));
+#else
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16.png"));
+#endif
+    qDebug("Icon changed - connected");
 }
 
 void MainWidget::prepareApplication()
@@ -92,6 +109,7 @@ void MainWidget::connectSignals()
 {
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
+    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnected(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
     connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
@@ -164,9 +182,9 @@ void MainWidget::createTrayIcon()
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon.png"));
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_dc.png"));
 #else
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16.png"));
+    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16_dc.png"));
 #endif
     trayIcon->show();
     // try to avoid the iconTray Qt bug

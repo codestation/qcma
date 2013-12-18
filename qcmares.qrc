@@ -7,5 +7,7 @@
         <file>resources/images/psv_icon_16.png</file>
         <file>resources/images/qcma.png</file>
         <file>resources/images/edit-clear-locationbar-rtl.png</file>
+        <file>resources/images/psv_icon_dc.png</file>
+        <file>resources/images/psv_icon_16_dc.png</file>
     </qresource>
 </RCC>

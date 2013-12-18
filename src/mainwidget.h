@@ -69,6 +69,7 @@ private slots:
     void openManager();
     void showAboutQt();
     void showAboutDialog();
+    void deviceConnected(QString message);
     void deviceDisconnect();
     void dialogResult(int result);
     void receiveMessage(QString message);
