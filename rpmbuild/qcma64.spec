@@ -28,7 +28,7 @@ cp -r $RPM_SOURCE_DIR/qcma $RPM_BUILD_DIR/qcma
 %setup -n qcma -DT
 
 %build
-lrelease qcma.pro
+lrelease resources/translations/*.ts
 qmake PREFIX=/usr
 make
 

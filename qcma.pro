@@ -101,10 +101,10 @@ unix {
      DATADIR = $$PREFIX/share
 
     desktop.path = $$DATADIR/applications/$${TARGET}
-    desktop.files += $${TARGET}.desktop
+    desktop.files += resources/$${TARGET}.desktop
 
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps
-    icon64.files += resources/$${TARGET}.png
+    icon64.files += resources/images/$${TARGET}.png
 
     target.path = $$BINDIR
     INSTALLS += target desktop icon64
