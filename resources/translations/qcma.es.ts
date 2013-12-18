@@ -147,14 +147,14 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="34"/>
-        <source>Specify the folders that the PS Vita will access for each content type</source>
-        <translation>Especificar los directorios que el sistema PS Vita accederá para cada tipo de contenido</translation>
+        <source>Specify the folders that the PS Vita will access for each content type.</source>
+        <translation>Especificar los directorios que el sistema PS Vita accederá para cada tipo de contenido.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="46"/>
         <location filename="../../src/forms/configwidget.ui" line="58"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta es la ubicación donde tus capturas de pantalla e imágenes serán almacenadas o importadas.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="49"/>
@@ -174,7 +174,7 @@
         <location filename="../../src/forms/configwidget.ui" line="81"/>
         <location filename="../../src/forms/configwidget.ui" line="93"/>
         <source>This is the location your Videos are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta es la ubicación donde tus videos serán almacenados o importados.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="84"/>
@@ -185,7 +185,7 @@
         <location filename="../../src/forms/configwidget.ui" line="116"/>
         <location filename="../../src/forms/configwidget.ui" line="128"/>
         <source>This is the location your Music is Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta es la ubicación donde tu música será almacenada o importada.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="119"/>
@@ -196,7 +196,7 @@
         <location filename="../../src/forms/configwidget.ui" line="151"/>
         <location filename="../../src/forms/configwidget.ui" line="163"/>
         <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta es la ubicación donde tus juegos, aplicaciones, partidas salvadas y respaldos del sistema serán almacenados o importados.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="154"/>
@@ -205,14 +205,18 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="186"/>
-        <location filename="../../src/forms/configwidget.ui" line="198"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="189"/>
         <source>Updates / Web content</source>
         <translation>Actualizaciones / Contenido Web</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="198"/>
+        <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
+        <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="222"/>

@@ -147,7 +147,7 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="34"/>
-        <source>Specify the folders that the PS Vita will access for each content type</source>
+        <source>Specify the folders that the PS Vita will access for each content type.</source>
         <translation>PS Vitaがアクセスするフォルダーをコンテンツの種類ごとに指定してください。</translation>
     </message>
     <message>
@@ -205,7 +205,6 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="186"/>
-        <location filename="../../src/forms/configwidget.ui" line="198"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -213,6 +212,11 @@
         <location filename="../../src/forms/configwidget.ui" line="189"/>
         <source>Updates / Web content</source>
         <translation>アップデート/Webコンテンツ</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="198"/>
+        <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="222"/>

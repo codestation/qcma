@@ -31,7 +31,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Specify the folders that the PS Vita will access for each content type</string>
+              <string>Specify the folders that the PS Vita will access for each content type.</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -195,7 +195,7 @@
                <item>
                 <widget class="QLineEdit" name="urlPath">
                  <property name="toolTip">
-                  <string>This is the location your Software Updates and Browser Data is Saved to/Imported from.</string>
+                  <string>This is the location your PS Vita system will read all the content that it tries to download.</string>
                  </property>
                  <property name="readOnly">
                   <bool>true</bool>
