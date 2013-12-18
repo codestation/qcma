@@ -87,7 +87,23 @@ void CMAObject::loadSfoMetadata(const QString &path)
 
     if(reader.load(sfo)) {
         metadata.data.saveData.title = strdup(reader.value("TITLE", ""));
-        metadata.data.saveData.detail = strdup(reader.value("SAVEDATA_DETAIL", ""));
+        QString detail(reader.value("SAVEDATA_DETAIL", ""));
+
+        // libxml follow the spec and normalizes the newlines (and others) but
+        // the PS Vita chokes on contiguous codes and crashes the CMA app on
+        // the device. Of course, the "fix" would be that libxml doesn't
+        // normalize newlines but that is aganist the XML spec that the PS Vita
+        // doesn't respect >_>
+
+        // convert DOS to UNIX newlines
+        detail.replace("\r\n", "\n");
+        // separate newlines from quotes
+        detail.replace("\n\"", "\n \"");
+        detail.replace("\"\n", "\" \n");
+        // merge consecutive newlines
+        detail.replace("\n\n", "\n");
+
+        metadata.data.saveData.detail = strdup(detail.toStdString().c_str());
         metadata.data.saveData.savedataTitle = strdup(reader.value("SAVEDATA_TITLE", ""));
         metadata.data.saveData.dateTimeUpdated = QFileInfo(sfo).created().toTime_t();
     } else {
