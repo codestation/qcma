@@ -36,6 +36,8 @@
 
 const QStringList MainWidget::path_list = QStringList() << "photoPath" << "musicPath" << "videoPath" << "appsPath" << "urlPath";
 
+bool sleptOnce = false;
+
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent)
 {
@@ -137,7 +139,7 @@ void MainWidget::showAboutDialog()
 #ifndef QCMA_BUILD_HASH
     about.setInformativeText(tr("Copyright (C) 2013  Codestation") + "\n");
 #else
-    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(BUILD_HASH).arg(BUILD_BRANCH));
+    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
 #endif
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
@@ -199,7 +201,11 @@ void MainWidget::receiveMessage(QString message)
 {
     // a timeout is added before the popups are displayed to prevent them from
     // appearing in the wrong location
-    Sleeper::msleep(500);
+    if(!sleptOnce) {
+        Sleeper::sleep(1);
+        sleptOnce = true;
+    }
+
     if(trayIcon->isVisible()) {
         trayIcon->showMessage(tr("Information"), message);
     }
