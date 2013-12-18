@@ -134,7 +134,11 @@ void MainWidget::showAboutDialog()
 
     about.setText(QString("QCMA ") + QCMA_VER);
     about.setWindowTitle(tr("About QCMA"));
+#ifndef BUILD_HASH
     about.setInformativeText(tr("Copyright (C) 2013  Codestation") + "\n");
+#else
+    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(BUILD_HASH).arg(BUILD_BRANCH));
+#endif
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
     about.setDefaultButton(QMessageBox::Ok);

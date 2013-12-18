@@ -90,6 +90,11 @@ TRANSLATIONS += \
 
 VERSION = \\\"'0.2.5'\\\"
 
+unix {
+    DEFINES += "BUILD_HASH=\"\\\"$$system(git rev-parse --short HEAD)\\\"\""
+    DEFINES += "BUILD_BRANCH=\"\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\"\""
+}
+
 DEFINES += "QCMA_VER=$${VERSION}"
 
 unix {
