@@ -197,6 +197,9 @@ void MainWidget::createTrayIcon()
 
 void MainWidget::receiveMessage(QString message)
 {
+    // a timeout is added before the popups are displayed to prevent them from
+    // appearing in the wrong location
+    Sleeper::msleep(500);
     if(trayIcon->isVisible()) {
         trayIcon->showMessage(tr("Information"), message);
     }
