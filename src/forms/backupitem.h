@@ -35,7 +35,7 @@ public:
     ~BackupItem();
 
     void setItemInfo(const QString name, const QString size);
-    void setItemIcon(const QString path, int width = 48);
+    void setItemIcon(const QString path, int width = 48, bool try_dds = false);
     void setDirectory(const QString path);
     const QPixmap *getIconPixmap();
     int getIconWidth();

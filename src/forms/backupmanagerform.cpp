@@ -177,7 +177,7 @@ void BackupManagerForm::loadBackupListing(int index)
         }
 
         item->setItemInfo(game_name, size);
-        item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width);
+        item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
         item->setDirectory(obj->path + QDir::separator() + meta->name);
         item->resize(646, 70);
 

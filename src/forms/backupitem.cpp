@@ -20,6 +20,7 @@
 #include "backupitem.h"
 #include "ui_backupitem.h"
 #include "utils.h"
+#include "dds.h"
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -74,10 +75,17 @@ int BackupItem::getIconWidth()
     return ui->itemPicture->width();
 }
 
-void BackupItem::setItemIcon(const QString path, int width)
+void BackupItem::setItemIcon(const QString path, int width, bool try_dds)
 {
     ui->itemPicture->setMinimumWidth(width);
-    ui->itemPicture->setPixmap(QPixmap(path));
+    QPixmap pixmap(path);
+    if((pixmap.width() <= 0 || pixmap.height() <= 0) && try_dds) {
+        QImage image;
+        if(loadDDS(path, &image)) {
+            pixmap = QPixmap::fromImage(image);
+        }
+    }
+    ui->itemPicture->setPixmap(pixmap);
 }
 
 bool BackupItem::lessThan(const BackupItem *s1, const BackupItem *s2)

@@ -28,6 +28,7 @@ SOURCES += src/main.cpp \
     src/cmaevent.cpp \
     src/clientmanager.cpp \
     src/filterlineedit.cpp \
+    src/dds.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     src/cmaevent.h \
     src/clientmanager.h \
     src/filterlineedit.h \
+    src/dds.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \
