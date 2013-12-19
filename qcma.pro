@@ -92,6 +92,14 @@ VERSION = \\\"'0.2.5'\\\"
 
 DEFINES += "QCMA_VER=$${VERSION}"
 
+GET_HASHES {
+    message("Retrieving git hashes")
+    unix {
+        DEFINES += "QCMA_BUILD_HASH=\"\\\"$$system(git rev-parse --short HEAD)\\\"\""
+        DEFINES += "QCMA_BUILD_BRANCH=\"\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\"\""
+    }
+}
+
 unix {
     isEmpty(PREFIX) {
         PREFIX = /usr/local

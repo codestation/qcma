@@ -610,7 +610,10 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
     QSettings settings;
 
     // Always refresh the account name
-    settings.setValue("lastOnlineId", settingsinfo->current_account.userName);
+    if(qstrcmp(settingsinfo->current_account.userName, "mtpr3InvalidUserName") != 0) {
+        // wewt, the Vita didn't go full retard again
+        settings.setValue("lastOnlineId", settingsinfo->current_account.userName);
+    }
 
     if(settings.value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
         db->setUUID(settingsinfo->current_account.accountId);

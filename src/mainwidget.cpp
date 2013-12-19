@@ -36,6 +36,8 @@
 
 const QStringList MainWidget::path_list = QStringList() << "photoPath" << "musicPath" << "videoPath" << "appsPath" << "urlPath";
 
+bool sleptOnce = false;
+
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent)
 {
@@ -89,13 +91,14 @@ void MainWidget::deviceDisconnect()
 
 void MainWidget::deviceConnected(QString message)
 {
-    Q_UNUSED(message);
 #ifndef Q_OS_WIN32
     trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon.png"));
 #else
     trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16.png"));
 #endif
     qDebug("Icon changed - connected");
+    setTrayTooltip(message);
+    receiveMessage(message);
 }
 
 void MainWidget::prepareApplication()
@@ -110,8 +113,6 @@ void MainWidget::connectSignals()
     connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
     connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnected(QString)));
-    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(receiveMessage(QString)));
-    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(setTrayTooltip(QString)));
     connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
     connect(&manager, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
 
@@ -135,7 +136,11 @@ void MainWidget::showAboutDialog()
 
     about.setText(QString("QCMA ") + QCMA_VER);
     about.setWindowTitle(tr("About QCMA"));
+#ifndef QCMA_BUILD_HASH
     about.setInformativeText(tr("Copyright (C) 2013  Codestation") + "\n");
+#else
+    about.setInformativeText(tr("Copyright (C) 2013  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
+#endif
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
     about.setDefaultButton(QMessageBox::Ok);
@@ -177,6 +182,7 @@ void MainWidget::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(about);
     trayIconMenu->addAction(about_qt);
+    trayIconMenu->addSeparator();
     trayIconMenu->addAction(quit);
 
     trayIcon = new QSystemTrayIcon(this);
@@ -188,11 +194,18 @@ void MainWidget::createTrayIcon()
 #endif
     trayIcon->show();
     // try to avoid the iconTray Qt bug
-    Sleeper::sleep(1);
+    //Sleeper::sleep(1);
 }
 
 void MainWidget::receiveMessage(QString message)
 {
+    // a timeout is added before the popups are displayed to prevent them from
+    // appearing in the wrong location
+    if(!sleptOnce) {
+        Sleeper::sleep(1);
+        sleptOnce = true;
+    }
+
     if(trayIcon->isVisible()) {
         trayIcon->showMessage(tr("Information"), message);
     }
