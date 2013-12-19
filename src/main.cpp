@@ -26,6 +26,8 @@
 #include <QThread>
 #include <QTranslator>
 
+#include <inttypes.h>
+
 #include "singleapplication.h"
 #include "mainwidget.h"
 
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
         app.installTranslator(&translator);
     }
 
-    qDebug("Starting main thread: %lu", (unsigned long)QThread::currentThreadId());
+    qDebug("Starting main thread: 0x%016" PRIxPTR, (quintptr)QThread::currentThreadId());
 
     // set the organization/application for QSettings to work properly
     app.setOrganizationName("qcma");

@@ -26,7 +26,6 @@
 #include <QSettings>
 #include <QUrl>
 
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 Database *CmaEvent::db = NULL;
@@ -40,7 +39,8 @@ CmaEvent::CmaEvent(vita_device_t *s_device) :
 
 void CmaEvent::process()
 {
-    qDebug("Starting event_thread: %lu", (unsigned long)QThread::currentThreadId());
+    qDebug("Starting event_thread: 0x%016" PRIxPTR, (quintptr)QThread::currentThreadId());
+
     while(true) {
         sema.acquire();
         if(!isActive()) {
