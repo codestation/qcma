@@ -126,7 +126,7 @@ void MainWidget::setTrayTooltip(QString message)
 
 void MainWidget::openManager()
 {
-    form.loadBackupListing(0);
+    form.loadBackupListing(-1);
     form.show();
 }
 

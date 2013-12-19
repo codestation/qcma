@@ -91,6 +91,10 @@ void BackupManagerForm::loadBackupListing(int index)
     bool sys_dir;
     int img_width;
 
+    if(index < 0) {
+        index = ui->backupComboBox->currentIndex();
+    }
+
     ui->tableWidget->clear();
 
     switch(index) {
