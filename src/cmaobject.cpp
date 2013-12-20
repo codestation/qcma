@@ -87,7 +87,8 @@ void CMAObject::loadSfoMetadata(const QString &path)
 
     if(reader.load(sfo)) {
         metadata.data.saveData.title = strdup(reader.value("TITLE", ""));
-        QString detail(reader.value("SAVEDATA_DETAIL", ""));
+        //FIXME: disable savedata detail for now
+        //QString detail(reader.value("SAVEDATA_DETAIL", ""));
 
         // libxml follow the spec and normalizes the newlines (and others) but
         // the PS Vita chokes on contiguous codes and crashes the CMA app on
@@ -96,15 +97,24 @@ void CMAObject::loadSfoMetadata(const QString &path)
         // doesn't respect >_>
 
         // convert DOS to UNIX newlines
-        detail.replace("\r\n", "\n");
+        //detail.replace("\r\n", "\n");
         // separate newlines from quotes
-        detail.replace("\n\"", "\n \"");
-        detail.replace("\"\n", "\" \n");
+        //detail.replace("\n\"", "\n \"");
+        //detail.replace("\"\n", "\" \n");
         // merge consecutive newlines
-        detail.replace("\n\n", "\n");
+        //detail.replace("\n\n", "\n");
+        //while(detail.endsWith('\n')) {
+        //    detail.chop(1);
+        //}
+        //metadata.data.saveData.detail = strdup(detail.toStdString().c_str());
+        metadata.data.saveData.detail = strdup("");
 
-        metadata.data.saveData.detail = strdup(detail.toStdString().c_str());
-        metadata.data.saveData.savedataTitle = strdup(reader.value("SAVEDATA_TITLE", ""));
+        // remove newlines from savedata title
+        QString title(reader.value("SAVEDATA_TITLE", ""));
+        while(title.endsWith('\n')) {
+            title.chop(1);
+        }
+        metadata.data.saveData.savedataTitle = strdup(title.toStdString().c_str());
         metadata.data.saveData.dateTimeUpdated = QFileInfo(sfo).created().toTime_t();
     } else {
         metadata.data.saveData.title = strdup(metadata.name);
