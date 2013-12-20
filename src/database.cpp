@@ -58,10 +58,17 @@ void Database::setUUID(const QString uuid)
     QSettings().setValue("lastAccountId", uuid);
 }
 
-bool Database::reload()
+bool Database::reload(bool &prepared)
 {
     if(mutex.tryLock()) {
-        timer->start();
+        if(CMARootObject::uuid != "ffffffffffffffff") {
+            timer->start();
+            prepared = true;
+        } else {
+            mutex.unlock();
+            prepared = false;
+            return false;
+        }
         return true;
     } else {
         return false;
@@ -127,7 +134,6 @@ int Database::create()
         case VITA_OHFI_PSPSAVE:
         case VITA_OHFI_PSXAPP:
         case VITA_OHFI_PSMAPP:
-
             obj->initObject(settings.value("appsPath").toString());
         }
 

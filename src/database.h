@@ -42,7 +42,7 @@ public:
     explicit Database();
     ~Database();
 
-    bool reload();
+    bool reload(bool &prepared);
     void setUUID(const QString uuid);
     void addEntries(CMAObject *root);
     CMAObject *ohfiToObject(int ohfi);

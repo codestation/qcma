@@ -106,8 +106,13 @@ void ClientManager::start()
 
 void ClientManager::refreshDatabase()
 {
-    if(!db.reload()) {
-        emit messageSent(tr("Cannot refresh the database while is in use"));
+    bool prepared;
+    if(!db.reload(prepared)) {
+        if(prepared) {
+            emit messageSent(tr("Cannot refresh the database while is in use"));
+        } else {
+            emit messageSent(tr("No PS Vita system has been registered"));
+        }
     } else {
         progress.show();
     }
