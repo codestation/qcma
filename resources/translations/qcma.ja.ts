@@ -73,7 +73,7 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="210"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="214"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -93,7 +93,7 @@
         <translation>バックアップディスク使用容量: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="176"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="180"/>
         <source> - (Launcher only)</source>
         <translation> - (LiveArea専用)</translation>
     </message>
@@ -120,9 +120,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="110"/>
+        <location filename="../../src/clientmanager.cpp" line="112"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
+    </message>
+    <message>
+        <location filename="../../src/clientmanager.cpp" line="114"/>
+        <source>No PS Vita system has been registered</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -316,47 +321,55 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="73"/>
+        <location filename="../../src/mainwidget.cpp" line="75"/>
         <source>Shutting down...</source>
         <translation>終了しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="74"/>
+        <location filename="../../src/mainwidget.cpp" line="76"/>
         <source>Stopping QCMA...</source>
         <translation>QCMAを停止しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="80"/>
+        <location filename="../../src/mainwidget.cpp" line="88"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="81"/>
+        <location filename="../../src/mainwidget.cpp" line="89"/>
         <source>The device has been disconnected</source>
         <translation>デバイスが切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="119"/>
+        <location filename="../../src/mainwidget.cpp" line="138"/>
         <source>About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="120"/>
+        <location filename="../../src/mainwidget.cpp" line="140"/>
         <source>Copyright (C) 2013  Codestation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="143"/>
+        <location filename="../../src/mainwidget.cpp" line="142"/>
+        <source>Copyright (C) 2013  Codestation
+
+build hash: %1
+build branch: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="166"/>
         <source>&amp;Backup Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="144"/>
+        <location filename="../../src/mainwidget.cpp" line="167"/>
         <source>&amp;About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="145"/>
+        <location filename="../../src/mainwidget.cpp" line="168"/>
         <source>Abou&amp;t Qt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -365,12 +378,12 @@
         <translation type="obsolete">受信したPIN: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="141"/>
+        <location filename="../../src/mainwidget.cpp" line="164"/>
         <source>&amp;Settings</source>
         <translation>&amp;設定</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="142"/>
+        <location filename="../../src/mainwidget.cpp" line="165"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;データベースを更新する</translation>
     </message>
@@ -379,12 +392,12 @@
         <translation type="obsolete">バックアップマネージャー</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="146"/>
+        <location filename="../../src/mainwidget.cpp" line="169"/>
         <source>&amp;Quit</source>
         <translation>&amp;終了</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="179"/>
+        <location filename="../../src/mainwidget.cpp" line="210"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>
@@ -487,7 +500,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main.cpp" line="46"/>
+        <location filename="../../src/main.cpp" line="48"/>
         <source>A instance of QCMA is already running</source>
         <translation>QCMAのプロセスがすでに実行しています</translation>
     </message>
