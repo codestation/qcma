@@ -139,6 +139,13 @@ void BackupManagerForm::loadBackupListing(int index)
     // get the item list
     metadata_t *meta;
     int row_count = db->filterObjects(ohfi, &meta);
+
+    // exit if there aren't any items
+    if(row_count == 0) {
+        db->mutex.unlock();
+        return;
+    }
+
     ui->tableWidget->setRowCount(row_count);
 
     // adjust the table item width to fill all the widget
