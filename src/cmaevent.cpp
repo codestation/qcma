@@ -39,7 +39,7 @@ CmaEvent::CmaEvent(vita_device_t *s_device) :
 
 void CmaEvent::process()
 {
-    qDebug("Starting event_thread: 0x%016" PRIxPTR, (quintptr)QThread::currentThreadId());
+    qDebug("Starting event_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     while(true) {
         sema.acquire();

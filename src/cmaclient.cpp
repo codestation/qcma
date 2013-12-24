@@ -53,7 +53,7 @@ void CmaClient::connectUsb()
 {
     vita_device_t *vita;
 
-    qDebug("Starting usb_thread: 0x%016" PRIxPTR, (quintptr)QThread::currentThreadId());
+    qDebug("Starting usb_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     setActive(true);
 
@@ -84,7 +84,7 @@ void CmaClient::connectWireless()
     QTime now = QTime::currentTime();
     qsrand(now.msec());
 
-    qDebug("Starting wireless_thread: 0x%016" PRIxPTR, (quintptr)QThread::currentThreadId());
+    qDebug("Starting wireless_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     setActive(true);
 
