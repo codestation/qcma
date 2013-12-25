@@ -125,5 +125,5 @@ unix:!macx:DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
 win32:RC_FILE = qcma.rc
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
 
-ICON = resources/$${TARGET}.icns
+ICON = resources/images/$${TARGET}.icns
 macx:QT_CONFIG -= no-pkg-config
