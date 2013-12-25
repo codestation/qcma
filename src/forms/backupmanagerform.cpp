@@ -140,13 +140,13 @@ void BackupManagerForm::loadBackupListing(int index)
     metadata_t *meta;
     int row_count = db->filterObjects(ohfi, &meta);
 
+    ui->tableWidget->setRowCount(row_count);
+
     // exit if there aren't any items
     if(row_count == 0) {
         db->mutex.unlock();
         return;
     }
-
-    ui->tableWidget->setRowCount(row_count);
 
     // adjust the table item width to fill all the widget
     QHeaderView *vert_header = ui->tableWidget->verticalHeader();
