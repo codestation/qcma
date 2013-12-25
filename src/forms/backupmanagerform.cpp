@@ -190,7 +190,7 @@ void BackupManagerForm::loadBackupListing(int index)
         item->setItemInfo(game_name, size);
         item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
         item->setDirectory(obj->path + QDir::separator() + meta->name);
-        item->resize(646, 70);
+        item->resize(646, 75);
 
         item_list << item;
         meta = meta->next_metadata;
@@ -206,7 +206,7 @@ void BackupManagerForm::loadBackupListing(int index)
     for(it = item_list.begin(), row = 0; it != item_list.end(); ++it, ++row) {
         (*it)->row = row;
         ui->tableWidget->setCellWidget(row, 0, *it);
-        vert_header->resizeSection(row, 70);
+        vert_header->resizeSection(row, 75);
     }
 
     vert_header->setUpdatesEnabled(true);
