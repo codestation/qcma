@@ -42,7 +42,6 @@ public:
 
     static bool lessThan(const BackupItem *s1, const BackupItem *s2);
 
-    int row;
     int ohfi;
     QString title;
 

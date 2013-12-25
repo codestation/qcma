@@ -73,7 +73,15 @@ void BackupManagerForm::removeEntry(BackupItem *item)
         obj->removeReferencedObject();
         db->remove(obj);
     }
-    ui->tableWidget->removeRow(item->row);
+
+    for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
+        BackupItem *iter_item = static_cast<BackupItem *>(ui->tableWidget->cellWidget(i, 0));
+        if(iter_item == item) {
+            ui->tableWidget->removeRow(i);
+            break;
+        }
+    }
+
     obj = db->ohfiToObject(obj->metadata.ohfiParent);
     if(obj) {
         setBackupUsage(obj->metadata.size);
@@ -204,7 +212,6 @@ void BackupManagerForm::loadBackupListing(int index)
 
     // insert the sorted items into the table
     for(it = item_list.begin(), row = 0; it != item_list.end(); ++it, ++row) {
-        (*it)->row = row;
         ui->tableWidget->setCellWidget(row, 0, *it);
         vert_header->resizeSection(row, 75);
     }
