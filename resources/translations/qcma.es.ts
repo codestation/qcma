@@ -73,27 +73,27 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="214"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="230"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="55"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="102"/>
         <source>Default account</source>
         <translation>Cuenta por defecto</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="62"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="60"/>
         <source>Are you sure to remove the backup of the following entry?</source>
         <translation>¿Estas seguro de borrar la siguiente entrada?</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="85"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="91"/>
         <source>Backup disk usage: %1</source>
         <translation>Uso de disco en respaldos: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="180"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="197"/>
         <source> - (Launcher only)</source>
         <translation> - (Solo lanzador LiveArea)</translation>
     </message>
@@ -133,9 +133,14 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="121"/>
         <source>Connected to </source>
-        <translation>Conectado a </translation>
+        <translation type="vanished">Conectado a </translation>
+    </message>
+    <message>
+        <location filename="../../src/cmaclient.cpp" line="127"/>
+        <location filename="../../src/cmaclient.cpp" line="130"/>
+        <source>Connected to %1 (PS Vita)</source>
+        <translation>Conectado a %1 (PS Vita)</translation>
     </message>
 </context>
 <context>

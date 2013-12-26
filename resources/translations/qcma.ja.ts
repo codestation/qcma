@@ -73,27 +73,27 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="214"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="230"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="55"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="102"/>
         <source>Default account</source>
         <translation>標準アカウント</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="62"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="60"/>
         <source>Are you sure to remove the backup of the following entry?</source>
         <translation>次の項目のバックアップを削除してもよろしいですか?</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="85"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="91"/>
         <source>Backup disk usage: %1</source>
         <translation>バックアップディスク使用容量: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="180"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="197"/>
         <source> - (Launcher only)</source>
         <translation> - (LiveArea専用)</translation>
     </message>
@@ -133,9 +133,14 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="121"/>
         <source>Connected to </source>
-        <translation>次のデバイスに接続しました </translation>
+        <translation type="vanished">次のデバイスに接続しました </translation>
+    </message>
+    <message>
+        <location filename="../../src/cmaclient.cpp" line="127"/>
+        <location filename="../../src/cmaclient.cpp" line="130"/>
+        <source>Connected to %1 (PS Vita)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
