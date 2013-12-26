@@ -113,3 +113,8 @@ capability_info_t *DeviceCapability::generate_pc_capability_info()
     pc_capabilities->functions = functions[0];
     return pc_capabilities;
 }
+
+DeviceCapability::~DeviceCapability()
+{
+    VitaMTP_Data_Free_VitaInfo(&vita_info);
+}

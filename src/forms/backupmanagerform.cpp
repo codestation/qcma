@@ -51,8 +51,6 @@ void BackupManagerForm::setupForm()
     connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
-    // the the account name when vitamtp returns this value
-    ui->accountBox->addItem(QSettings().value("lastOnlineId", tr("Default account")).toString());
 }
 
 void BackupManagerForm::removeEntry(BackupItem *item)
@@ -98,6 +96,10 @@ void BackupManagerForm::loadBackupListing(int index)
     int ohfi;
     bool sys_dir;
     int img_width;
+
+    //TODO: load all the accounts in the combobox
+    ui->accountBox->clear();
+    ui->accountBox->addItem(QSettings().value("lastOnlineId", tr("Default account")).toString());
 
     if(index < 0) {
         index = ui->backupComboBox->currentIndex();

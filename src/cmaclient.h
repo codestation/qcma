@@ -54,6 +54,7 @@ private:
     static void registrationComplete();
 
     CmaBroadcast broadcast;
+    static QString tempOnlineId;
 
     //TODO: move all the control variables to the client manager class
     static bool is_active;

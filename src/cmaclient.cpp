@@ -37,6 +37,8 @@ QMutex CmaClient::runner;
 QMutex CmaClient::cancel;
 QSemaphore CmaClient::sema;
 
+QString CmaClient::tempOnlineId = QString();
+
 bool CmaClient::is_active = false;
 bool CmaClient::in_progress = false;
 int CmaClient::is_cancelled = false;
@@ -117,8 +119,17 @@ void CmaClient::processNewConnection(vita_device_t *device)
     if(!vita_info.exchangeInfo(device)) {
         qCritical("Error while exchanging info with the vita");
     } else {
+        QSettings settings;
+
         // Conection successful, inform the user
-        emit deviceConnected(QString(tr("Connected to ")) + vita_info.getOnlineId());
+        if(vita_info.getOnlineId() != NULL) {
+            settings.setValue("lastOnlineId", vita_info.getOnlineId());
+            emit deviceConnected(QString(tr("Connected to %1 (PS Vita)")).arg(vita_info.getOnlineId()));
+        } else {
+            QString onlineId = settings.value("lastOnlineId", "default").toString();
+            emit deviceConnected(QString(tr("Connected to %1 (PS Vita)")).arg(onlineId));
+        }
+
         enterEventLoop(device);
     }
 
@@ -135,7 +146,9 @@ void CmaClient::processNewConnection(vita_device_t *device)
 
 void CmaClient::registrationComplete()
 {
+    QSettings settings;
     qDebug("Registration completed");
+    settings.setValue("lastOnlineId", tempOnlineId);
     emit this_object->pinComplete();
 }
 
@@ -148,6 +161,8 @@ int CmaClient::deviceRegistered(const char *deviceid)
 
 int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
 {
+    // save the device name in a temporal variable, just in case the pin is rejected
+    tempOnlineId = QString(info->name);
     qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
     int pin = rand() % 10000 * 10000 | rand() % 10000;
     qDebug("Your registration PIN for %s is: %08d", info->name, pin);

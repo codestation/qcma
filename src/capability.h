@@ -26,20 +26,20 @@ class DeviceCapability
 {
 public:
     explicit DeviceCapability() {}
+    ~DeviceCapability();
     bool exchangeInfo(vita_device_t *device);
 
-    //TODO: vita_info_t doesn't retrieve this info, update vitamtp to get it
     const char *getVersion() {
-        return "";
+        return vita_info.responderVersion;
     }
-    const char *getProtocol()  {
-        return "";
+    int getProtocolVersion()  {
+        return vita_info.protocolVersion;
     }
     const char *getOnlineId()  {
-        return "PS Vita";
+        return vita_info.onlineId;
     }
     const char *getModelInfo()  {
-        return "";
+        return vita_info.modelInfo;
     }
 
 private:
