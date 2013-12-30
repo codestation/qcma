@@ -34,6 +34,7 @@ protected:
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
     void resizeEvent(QResizeEvent *e);
+    int frameWidth() const;
 
 private:
     QToolButton *clearButton;

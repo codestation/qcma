@@ -25,14 +25,24 @@
 FilterLineEdit::FilterLineEdit(QWidget *parent) :
     QLineEdit(parent)
 {
+    int frame_width = frameWidth();
     clearButton = new QToolButton(this);
     QIcon clearIcon(":/main/resources/images/edit-clear-locationbar-rtl.png");
     clearButton->setIcon(clearIcon);
+    clearButton->setIconSize(QSize(sizeHint().height() - 4 * frame_width,
+                                   sizeHint().height() - 4 * frame_width));
     clearButton->setCursor(Qt::ArrowCursor);
-    clearButton->setStyleSheet("border:none;padding:0px");
+    clearButton->setStyleSheet("QToolButton { border:none; padding:0px; }");
     clearButton->hide();
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(updateCloseButton(const QString&)));
+
+    setStyleSheet(QString("LineEdit { color:black; font-style:normal; padding-right:%1px; }").arg(
+                      clearButton->sizeHint().width() + frame_width + 1));
+
+    QSize min_size_hint = minimumSizeHint();
+    setMinimumSize(qMax(min_size_hint.width(), clearButton->sizeHint().height() + frame_width),
+                   qMax(min_size_hint.height(), clearButton->sizeHint().height() + frame_width));
 }
 
 void FilterLineEdit::updateCloseButton(const QString& text)
@@ -46,11 +56,11 @@ void FilterLineEdit::updateCloseButton(const QString& text)
 
 void FilterLineEdit::focusInEvent(QFocusEvent *e)
 {
-    if(this->styleSheet() == "color:gray;font-style:italic") {
+    if(this->styleSheet() == "FilterLineEdit { color:gray; font-style:italic; }") {
         this->clear();
     }
 
-    this->setStyleSheet(QString("color:black;font-style:normal;padding-right:%1").arg(clearButton->sizeHint().width()));
+    setStyleSheet(QString("FilterLineEdit { color:black; font-style:normal; padding-right:%1px; }").arg(clearButton->sizeHint().width() + frameWidth() + 1));
 
     QLineEdit::focusInEvent(e);
 }
@@ -59,16 +69,21 @@ void FilterLineEdit::focusOutEvent(QFocusEvent *e)
 {
     if(this->text().isEmpty()) {
         this->setText(tr("Filter"));
-        this->setStyleSheet("color:gray;font-style:italic");
+        this->setStyleSheet("FilterLineEdit { color:gray; font-style:italic; }");
     }
 
     QLineEdit::focusOutEvent(e);
 }
 
+int FilterLineEdit::frameWidth() const
+{
+    return style()->pixelMetric(QStyle::PM_DefaultFrameWidth, 0, this);
+}
+
 void FilterLineEdit::resizeEvent(QResizeEvent *e)
 {
     QSize sz = clearButton->sizeHint();
-    clearButton->move(rect().right() - sz.width(), (rect().bottom() - sz.height()) / 2);
+    clearButton->move(rect().right() - sz.width(), rect().bottom() - sz.height() + frameWidth());
 
     QLineEdit::resizeEvent(e);
 }
