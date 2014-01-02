@@ -127,7 +127,7 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
         if(img.load(path)) {
             QBuffer buffer(&data);
             buffer.open(QIODevice::WriteOnly);
-            QImage result = img.scaled(213, 120, Qt::KeepAspectRatio, Qt::FastTransformation);
+            QImage result = img.scaled(240, 136, Qt::KeepAspectRatio, Qt::FastTransformation);
             result.save(&buffer, "JPEG");
             metadata->data.thumbnail.width = result.width();
             metadata->data.thumbnail.height = result.height();

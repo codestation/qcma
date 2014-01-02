@@ -20,6 +20,7 @@
 #ifndef AVDECODER_H
 #define AVDECODER_H
 
+#include <QFile>
 #include <QImage>
 #include <QString>
 
@@ -62,7 +63,11 @@ private:
     void AVFrameToQImage(AVFrame &frame, QImage &image, int width, int height);
     AVFrame *getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index);
 
+    static int readFunction(void* opaque, uint8_t* buf, int buf_size);
+    static int64_t seekFunction(void* opaque, int64_t offset, int whence);
+
     AVFormatContext *pFormatCtx;
+    QFile *file;
 };
 
 #endif // AVDECODER_H
