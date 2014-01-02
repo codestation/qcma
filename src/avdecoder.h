@@ -44,7 +44,6 @@ public:
 
     QByteArray getAudioThumbnail(int width, int height);
     QByteArray getVideoThumbnail(int width, int height);
-    void getPictureMetadata(metadata_t &metadata);
     void getAudioMetadata(metadata_t &metadata);
     void getVideoMetadata(metadata_t &metadata);
 

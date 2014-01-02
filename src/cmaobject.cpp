@@ -150,12 +150,12 @@ void CMAObject::loadVideoMetadata(const QString &path)
 
 void CMAObject::loadPhotoMetadata(const QString &path)
 {
-    AVDecoder decoder;
-    if(decoder.open(path)) {
-        decoder.getPictureMetadata(metadata);
-    } else {
-        metadata.data.photo.title = strdup(metadata.name);
+    QImage img;
+    if(img.load(path)) {
+        metadata.data.photo.tracks->data.track_photo.width = img.width();
+        metadata.data.photo.tracks->data.track_photo.height = img.height();
     }
+    metadata.data.photo.title = strdup(metadata.name);
 }
 
 void CMAObject::initObject(const QFileInfo &file, int file_type)

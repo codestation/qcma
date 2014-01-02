@@ -30,7 +30,7 @@
 
 Database *CmaEvent::db = NULL;
 
-metadata_t CmaEvent::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 144, 80, 0, 1, 1.0f, 2}}, NULL};
+metadata_t CmaEvent::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
 
 CmaEvent::CmaEvent(vita_device_t *s_device) :
     device(s_device), is_active(true)

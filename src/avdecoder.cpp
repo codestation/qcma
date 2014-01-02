@@ -164,19 +164,6 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
     }
 }
 
-void AVDecoder::getPictureMetadata(metadata_t &metadata)
-{
-    int stream_index;
-    AVCodec *codec = NULL;
-
-    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) >= 0) {
-        AVCodecContext *pCodecCtx = pFormatCtx->streams[stream_index]->codec;
-        metadata.data.photo.tracks->data.track_photo.width = pCodecCtx->width;
-        metadata.data.photo.tracks->data.track_photo.height = pCodecCtx->height;
-    }
-    metadata.data.photo.title = strdup(metadata.name);
-}
-
 QByteArray AVDecoder::getAudioThumbnail(int width, int height)
 {
     QByteArray data;
