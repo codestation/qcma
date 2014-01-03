@@ -154,6 +154,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
     // exit if there aren't any items
     if(row_count == 0) {
+        setBackupUsage(0);
         db->mutex.unlock();
         return;
     }
