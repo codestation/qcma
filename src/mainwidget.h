@@ -28,7 +28,11 @@
 
 #include <QAction>
 #include <QWidget>
+
 #include <QSystemTrayIcon>
+#ifdef ENABLE_KDE_NOTIFIER
+#include "kdenotifier.h"
+#endif
 
 #include <vitamtp.h>
 
@@ -60,7 +64,12 @@ private:
     QAction *backup;
     QAction *about;
     QAction *about_qt;
+
+#ifndef ENABLE_KDE_NOTIFIER
     QSystemTrayIcon *trayIcon;
+#else
+    KDENotifier *notifierItem;
+#endif
 
     const static QStringList path_list;
 

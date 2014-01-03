@@ -122,6 +122,16 @@ unix {
 
 unix:!macx:DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
 
+unix:!macx:ENABLE_KDE {
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        error("ENABLE_KDE can only be used with Qt4")
+    }
+    LIBS += -lkdeui
+    DEFINES += "ENABLE_KDE_NOTIFIER=1"
+    SOURCES += src/kdenotifier.cpp
+    HEADERS += src/kdenotifier.h
+}
+
 win32:RC_FILE = qcma.rc
 win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
 

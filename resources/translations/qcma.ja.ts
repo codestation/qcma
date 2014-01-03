@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ja_JP">
+<TS version="2.0" language="ja_JP">
 <context>
     <name>BackupItem</name>
     <message>
@@ -134,7 +134,7 @@
     <name>CmaClient</name>
     <message>
         <source>Connected to </source>
-        <translation type="vanished">次のデバイスに接続しました </translation>
+        <translation type="obsolete">次のデバイスに接続しました </translation>
     </message>
     <message>
         <location filename="../../src/cmaclient.cpp" line="127"/>
@@ -317,8 +317,8 @@
 <context>
     <name>FilterLineEdit</name>
     <message>
-        <location filename="../../src/filterlineedit.cpp" line="40"/>
-        <location filename="../../src/filterlineedit.cpp" line="61"/>
+        <location filename="../../src/filterlineedit.cpp" line="50"/>
+        <location filename="../../src/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -326,37 +326,38 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="75"/>
+        <location filename="../../src/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
         <translation>終了しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="76"/>
+        <location filename="../../src/mainwidget.cpp" line="80"/>
         <source>Stopping QCMA...</source>
         <translation>QCMAを停止しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="88"/>
+        <location filename="../../src/mainwidget.cpp" line="96"/>
+        <location filename="../../src/mainwidget.cpp" line="227"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="89"/>
+        <location filename="../../src/mainwidget.cpp" line="97"/>
         <source>The device has been disconnected</source>
         <translation>デバイスが切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="138"/>
+        <location filename="../../src/mainwidget.cpp" line="154"/>
         <source>About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="140"/>
+        <location filename="../../src/mainwidget.cpp" line="156"/>
         <source>Copyright (C) 2013  Codestation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="142"/>
+        <location filename="../../src/mainwidget.cpp" line="158"/>
         <source>Copyright (C) 2013  Codestation
 
 build hash: %1
@@ -364,18 +365,23 @@ build branch: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="166"/>
+        <location filename="../../src/mainwidget.cpp" line="182"/>
         <source>&amp;Backup Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="167"/>
+        <location filename="../../src/mainwidget.cpp" line="183"/>
         <source>&amp;About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="168"/>
+        <location filename="../../src/mainwidget.cpp" line="184"/>
         <source>Abou&amp;t Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="246"/>
+        <source>Qcma - Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -383,12 +389,12 @@ build branch: %2</source>
         <translation type="obsolete">受信したPIN: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="164"/>
+        <location filename="../../src/mainwidget.cpp" line="180"/>
         <source>&amp;Settings</source>
         <translation>&amp;設定</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="165"/>
+        <location filename="../../src/mainwidget.cpp" line="181"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;データベースを更新する</translation>
     </message>
@@ -397,12 +403,17 @@ build branch: %2</source>
         <translation type="obsolete">バックアップマネージャー</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="169"/>
+        <location filename="../../src/mainwidget.cpp" line="185"/>
         <source>&amp;Quit</source>
         <translation>&amp;終了</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="210"/>
+        <location filename="../../src/mainwidget.cpp" line="225"/>
+        <source>Qcma status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="243"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>

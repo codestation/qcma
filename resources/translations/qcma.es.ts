@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<TS version="2.0" language="es_ES">
 <context>
     <name>BackupItem</name>
     <message>
@@ -134,7 +134,7 @@
     <name>CmaClient</name>
     <message>
         <source>Connected to </source>
-        <translation type="vanished">Conectado a </translation>
+        <translation type="obsolete">Conectado a </translation>
     </message>
     <message>
         <location filename="../../src/cmaclient.cpp" line="127"/>
@@ -316,8 +316,8 @@
 <context>
     <name>FilterLineEdit</name>
     <message>
-        <location filename="../../src/filterlineedit.cpp" line="40"/>
-        <location filename="../../src/filterlineedit.cpp" line="61"/>
+        <location filename="../../src/filterlineedit.cpp" line="50"/>
+        <location filename="../../src/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
@@ -325,37 +325,38 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="75"/>
+        <location filename="../../src/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
         <translation>Cerrando...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="76"/>
+        <location filename="../../src/mainwidget.cpp" line="80"/>
         <source>Stopping QCMA...</source>
         <translation>Deteniendo QCMA...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="88"/>
+        <location filename="../../src/mainwidget.cpp" line="96"/>
+        <location filename="../../src/mainwidget.cpp" line="227"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="89"/>
+        <location filename="../../src/mainwidget.cpp" line="97"/>
         <source>The device has been disconnected</source>
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="138"/>
+        <location filename="../../src/mainwidget.cpp" line="154"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="140"/>
+        <location filename="../../src/mainwidget.cpp" line="156"/>
         <source>Copyright (C) 2013  Codestation</source>
         <translation>Copyright (C) 2013  Codestation</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="142"/>
+        <location filename="../../src/mainwidget.cpp" line="158"/>
         <source>Copyright (C) 2013  Codestation
 
 build hash: %1
@@ -366,9 +367,14 @@ Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="167"/>
+        <location filename="../../src/mainwidget.cpp" line="183"/>
         <source>&amp;About QCMA</source>
         <translation>&amp;Acerca de QCMA</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="246"/>
+        <source>Qcma - Information</source>
+        <translation>Qcma - Información</translation>
     </message>
     <message>
         <source>Copyright (C) 2013  Codestation
@@ -376,7 +382,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Copyright (C) 2013  Codestation\n</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="166"/>
+        <location filename="../../src/mainwidget.cpp" line="182"/>
         <source>&amp;Backup Manager</source>
         <translation>&amp;Gestor de Respaldos</translation>
     </message>
@@ -385,7 +391,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">&amp;Acerca de</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="168"/>
+        <location filename="../../src/mainwidget.cpp" line="184"/>
         <source>Abou&amp;t Qt</source>
         <translation>A&amp;cerca de Qt</translation>
     </message>
@@ -394,12 +400,12 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">PIN recibido: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="164"/>
+        <location filename="../../src/mainwidget.cpp" line="180"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ajustes</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="165"/>
+        <location filename="../../src/mainwidget.cpp" line="181"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;Refrescar base de datos</translation>
     </message>
@@ -408,12 +414,17 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="169"/>
+        <location filename="../../src/mainwidget.cpp" line="185"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="210"/>
+        <location filename="../../src/mainwidget.cpp" line="225"/>
+        <source>Qcma status</source>
+        <translation>Estado de Qcma</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="243"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
