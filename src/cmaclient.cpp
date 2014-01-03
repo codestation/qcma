@@ -34,14 +34,14 @@
 
 QMutex CmaClient::mutex;
 QMutex CmaClient::runner;
-QMutex CmaClient::cancel;
+QWaitCondition CmaClient::usbcondition;
+QMutex CmaClient::usbwait;
 QSemaphore CmaClient::sema;
 
 QString CmaClient::tempOnlineId = QString();
 
 bool CmaClient::is_active = false;
 bool CmaClient::in_progress = false;
-int CmaClient::is_cancelled = false;
 
 CmaClient *CmaClient::this_object = NULL;
 
@@ -58,13 +58,14 @@ void CmaClient::connectUsb()
     qDebug("Starting usb_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     setActive(true);
+    usbwait.lock();
 
     do {
         if((vita = VitaMTP_Get_First_USB_Vita()) !=NULL) {
             processNewConnection(vita);
         } else {
             //TODO: replace this with an event-driven setup
-            Sleeper::msleep(2000);
+            usbcondition.wait(&usbwait, 2000);
             mutex.lock();
             if(in_progress) {
                 sema.acquire();
@@ -91,15 +92,22 @@ void CmaClient::connectWireless()
     setActive(true);
 
     do {
-        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::cancelCallback, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
+        if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
             processNewConnection(vita);
         } else {
-            Sleeper::msleep(2000);
             mutex.lock();
             if(in_progress) {
                 sema.acquire();
             }
-            mutex.unlock();;
+            mutex.unlock();
+
+            // if is active then something happened while setting the socket, wait a little and try again
+            if(isActive()) {
+                qDebug("Error getting wireless connection");
+                Sleeper::sleep(2000);
+            } else {
+                qDebug("Wireless connection cancelled by the user");
+            }
         }
     } while(isActive());
 
@@ -171,12 +179,6 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     return pin;
 }
 
-int CmaClient::cancelCallback()
-{
-    QMutexLocker locker(&cancel);
-    return is_cancelled;
-}
-
 void CmaClient::enterEventLoop(vita_device_t *device)
 {
     vita_event_t event;
@@ -227,9 +229,8 @@ int CmaClient::stop()
         return -1;
     }
     CmaClient::setActive(false);
-    cancel.lock();
-    is_cancelled = true;
-    cancel.unlock();
+    VitaMTP_Cancel_Get_Wireless_Vita();
+    usbcondition.wakeAll();
     return 0;
 }
 

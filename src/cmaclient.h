@@ -28,6 +28,7 @@
 #include <QObject>
 #include <QSemaphore>
 #include <QString>
+#include <QWaitCondition>
 
 #include <vitamtp.h>
 
@@ -59,11 +60,11 @@ private:
     //TODO: move all the control variables to the client manager class
     static bool is_active;
     static bool in_progress;
-    static int is_cancelled;
     static CmaClient *this_object;
     static QMutex mutex;
     static QMutex runner;
-    static QMutex cancel;
+    static QMutex usbwait;
+    static QWaitCondition usbcondition;
     static QSemaphore sema;
 
 signals:

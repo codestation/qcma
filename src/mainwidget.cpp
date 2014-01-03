@@ -77,7 +77,7 @@ void MainWidget::dialogResult(int result)
 void MainWidget::stopServer()
 {
     setTrayTooltip(tr("Shutting down..."));
-    receiveMessage(tr("Stopping QCMA..."));
+    receiveMessage(tr("Stopping QCMA (disconnect your PS Vita)"));
     manager.stop();
 }
 

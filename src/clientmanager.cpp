@@ -65,7 +65,7 @@ void ClientManager::start()
     connect(&db, SIGNAL(updated(int)), this, SLOT(databaseUpdated(int)));
     connect(&progress, SIGNAL(canceled()), &db, SLOT(cancelOperation()), Qt::DirectConnection);
 
-    thread_count = 2;
+    thread_count = 0;
     qDebug("Starting cma threads");
     CmaClient *client;
 
@@ -84,6 +84,7 @@ void ClientManager::start()
 
     client->moveToThread(usb_thread);
     usb_thread->start();
+    thread_count++;
 
     wireless_thread = new QThread();
     client = new CmaClient();
@@ -102,6 +103,7 @@ void ClientManager::start()
 
     client->moveToThread(wireless_thread);
     wireless_thread->start();
+    thread_count++;
 }
 
 void ClientManager::refreshDatabase()

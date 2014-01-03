@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<TS version="2.1" language="es_ES">
 <context>
     <name>BackupItem</name>
     <message>
@@ -73,7 +73,7 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="230"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="231"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
@@ -93,7 +93,7 @@
         <translation>Uso de disco en respaldos: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="197"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="198"/>
         <source> - (Launcher only)</source>
         <translation> - (Solo lanzador LiveArea)</translation>
     </message>
@@ -120,12 +120,12 @@
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="112"/>
+        <location filename="../../src/clientmanager.cpp" line="114"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="114"/>
+        <location filename="../../src/clientmanager.cpp" line="116"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -137,8 +137,8 @@
         <translation type="obsolete">Conectado a </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="127"/>
-        <location filename="../../src/cmaclient.cpp" line="130"/>
+        <location filename="../../src/cmaclient.cpp" line="135"/>
+        <location filename="../../src/cmaclient.cpp" line="138"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -330,9 +330,13 @@
         <translation>Cerrando...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="80"/>
         <source>Stopping QCMA...</source>
-        <translation>Deteniendo QCMA...</translation>
+        <translation type="obsolete">Deteniendo QCMA...</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="80"/>
+        <source>Stopping QCMA (disconnect your PS Vita)</source>
+        <translation>Deteniendo QCMA (desconecte su PS Vita)</translation>
     </message>
     <message>
         <location filename="../../src/mainwidget.cpp" line="96"/>

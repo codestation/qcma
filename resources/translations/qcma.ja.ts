@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ja_JP">
+<TS version="2.1" language="ja_JP">
 <context>
     <name>BackupItem</name>
     <message>
@@ -73,7 +73,7 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="230"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="231"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -93,7 +93,7 @@
         <translation>バックアップディスク使用容量: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="197"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="198"/>
         <source> - (Launcher only)</source>
         <translation> - (LiveArea専用)</translation>
     </message>
@@ -120,12 +120,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="112"/>
+        <location filename="../../src/clientmanager.cpp" line="114"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="114"/>
+        <location filename="../../src/clientmanager.cpp" line="116"/>
         <source>No PS Vita system has been registered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -137,8 +137,8 @@
         <translation type="obsolete">次のデバイスに接続しました </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="127"/>
-        <location filename="../../src/cmaclient.cpp" line="130"/>
+        <location filename="../../src/cmaclient.cpp" line="135"/>
+        <location filename="../../src/cmaclient.cpp" line="138"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -331,9 +331,13 @@
         <translation>終了しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="80"/>
         <source>Stopping QCMA...</source>
-        <translation>QCMAを停止しています...</translation>
+        <translation type="obsolete">QCMAを停止しています...</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwidget.cpp" line="80"/>
+        <source>Stopping QCMA (disconnect your PS Vita)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwidget.cpp" line="96"/>
