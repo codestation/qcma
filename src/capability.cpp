@@ -22,6 +22,11 @@
 #include <QDebug>
 #include <QHostInfo>
 
+DeviceCapability::DeviceCapability() :
+    vita_info()
+{
+}
+
 bool DeviceCapability::exchangeInfo(vita_device_t *device)
 {
     if(VitaMTP_GetVitaInfo(device, &vita_info) != PTP_RC_OK) {

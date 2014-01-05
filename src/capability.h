@@ -25,7 +25,7 @@
 class DeviceCapability
 {
 public:
-    explicit DeviceCapability() {}
+    explicit DeviceCapability();
     ~DeviceCapability();
     bool exchangeInfo(vita_device_t *device);
 

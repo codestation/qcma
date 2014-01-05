@@ -61,6 +61,9 @@ private:
     void vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId);
     void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
 
+    static int readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen);
+    static int writeCallback(const unsigned char *data, unsigned long size, unsigned long *written);
+
     void processEvent();
     bool isActive();
     void setDevice(vita_device_t *device);
@@ -75,6 +78,7 @@ private:
     QSemaphore sema;
 
     static metadata_t g_thumbmeta;
+    static QFile *m_file;
 
 signals:
     void finishedEventLoop();

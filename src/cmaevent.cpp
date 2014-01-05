@@ -29,6 +29,7 @@
 #include <inttypes.h>
 
 Database *CmaEvent::db = NULL;
+QFile *CmaEvent::m_file = NULL;
 
 metadata_t CmaEvent::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
 
@@ -149,20 +150,30 @@ void CmaEvent::processEvent()
 
 quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
 {
-    union {
-        unsigned char *fileData;
-        uint32_t *handles;
-    } data;
+    qDebug("Called %s, handle: %d, parent name: %s", Q_FUNC_INFO, handle, parent->metadata.name);
 
-    metadata_t remote_meta;
-    unsigned int length;
+    char *name;
+    uint64_t size;
+    int dataType;
 
-    if(VitaMTP_GetObject(device, handle, &remote_meta, (void **)&data, &length) != PTP_RC_OK) {
+    uint32_t *p_handles;
+    unsigned int p_len;
+
+    if(VitaMTP_GetObject_Info(device, handle, &name, &dataType) != PTP_RC_OK) {
         qWarning("Cannot get object for handle %d", handle);
         return PTP_RC_VITA_Invalid_Data;
     }
 
-    CMAObject *object =  db->pathToObject(remote_meta.name, parent->metadata.ohfi);
+    if(dataType & Folder) {
+        if(VitaMTP_GetObject_Folder(device, handle, &p_handles, &p_len) != PTP_RC_OK) {
+            qWarning("Cannot get folder handles for handle %d", handle);
+            return PTP_RC_VITA_Invalid_Data;
+        }
+    } else {
+
+    }
+
+    CMAObject *object =  db->pathToObject(name, parent->metadata.ohfi);
 
     if(object) {
         qDebug("Deleting %s", object->path.toStdString().c_str());
@@ -172,49 +183,48 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
 
     QDir dir(parent->path);
 
-    if(remote_meta.dataType & Folder) {
-        if(!dir.mkpath(remote_meta.name)) {
-            qWarning("Cannot create directory: %s", remote_meta.name);
-            free(data.fileData);
-            free(remote_meta.name);
+    if(dataType & Folder) {
+        if(!dir.mkpath(name)) {
+            qWarning("Cannot create directory: %s", name);
+            free(name);
             return PTP_RC_VITA_Failed_Operate_Object;
         }
     } else {
-        QFile file(dir.absoluteFilePath(remote_meta.name));
+        m_file = new QFile(dir.absoluteFilePath(name));
 
-        if(!file.open(QIODevice::WriteOnly)) {
-            qWarning("Cannot write to %s", remote_meta.name);
-            free(data.fileData);
-            free(remote_meta.name);
+        if(!m_file->open(QIODevice::WriteOnly)) {
+            qWarning("Cannot write to %s", name);
+            free(name);
+            delete m_file;
             return PTP_RC_VITA_Invalid_Permission;
         } else {
-            file.write((const char *)data.fileData, remote_meta.size);
+            VitaMTP_GetObject_Callback(device, handle, &size, CmaEvent::writeCallback);
+            m_file->close();
+            delete m_file;
         }
     }
 
-    QFileInfo info(dir, remote_meta.name);
+    QFileInfo info(dir, name);
     object = new CMAObject(parent);
     object->initObject(info);
-    object->metadata.handle = remote_meta.handle;
+    object->metadata.handle = handle;
     db->append(parent->metadata.ohfi, object);
-    free(remote_meta.name);
+    free(name);
 
     qDebug("Added object %s with OHFI %i to database", object->metadata.path, object->metadata.ohfi);
 
-    if(remote_meta.dataType & Folder) {
-        for(unsigned int i = 0; i < length; i++) {
-            quint16 ret = processAllObjects(object, data.handles[i]);
+    if(dataType & Folder) {
+        for(unsigned int i = 0; i < p_len; i++) {
+            quint16 ret = processAllObjects(object, p_handles[i]);
 
             if(ret != PTP_RC_OK) {
                 qDebug("Deleteting object with OHFI %d", object->metadata.ohfi);
                 db->remove(object);
-                free(data.fileData);
                 return ret;
             }
         }
     }
 
-    free(data.fileData);
     return PTP_RC_OK;
 }
 
@@ -405,15 +415,15 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
     uint handle;
 
     do {
-        uchar *data = NULL;
         len = object->metadata.size;
-        QFile file(object->path);
+        m_file = new QFile(object->path);
 
         // read the file to send if it's not a directory
         // if it is a directory, data and len are not used by VitaMTP
         if(object->metadata.dataType & File) {
-            if(!file.open(QIODevice::ReadOnly) || (data = file.map(0, file.size())) == NULL) {
+            if(!m_file->open(QIODevice::ReadOnly)) {
                 qWarning("Failed to read %s", object->path.toStdString().c_str());
+                delete m_file;
                 VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
                 return;
             }
@@ -432,17 +442,19 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         qDebug("OHFI %d with handle 0x%08X", ohfi, parentHandle);
 
         VitaMTP_RegisterCancelEventId(eventId);
-        quint16 ret = VitaMTP_SendObject(device, &parentHandle, &handle, &object->metadata, data);
+        quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, &object->metadata, &CmaEvent::readCallback);
         if(ret != PTP_RC_OK) {
             qWarning("Sending of %s failed. Code: %04X", object->metadata.name, ret);
-            file.unmap(data);
+            m_file->close();
+            delete m_file;
             return;
         }
 
         object->metadata.handle = handle;
 
         if(object->metadata.dataType & File) {
-            file.unmap(data);
+            m_file->close();
+            delete m_file;
         }
 
         // break early if only a file needs to be sent
@@ -686,7 +698,7 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
     } else {
         file.seek(part_init.offset);
         QByteArray data = file.read(part_init.size);
-        qDebug("Sending %s at file offset %"PRIu64" for %"PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
+        qDebug("Sending %s at file offset %" PRIu64" for %" PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
 
         if(VitaMTP_SendPartOfObject(device, eventId, (unsigned char *)data.data(), data.size()) != PTP_RC_OK) {
             qWarning("Failed to send part of object OHFI %d", part_init.ohfi);
@@ -813,7 +825,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    qDebug("Receiving %s at offset %"PRIu64" for %"PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
+    qDebug("Receiving %s at offset %" PRIu64" for %" PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
 
     QFile file(object->path);
     if(!file.open(QIODevice::ReadWrite)) {
@@ -823,7 +835,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
         object->updateObjectSize(part_init.size);
-        qDebug("Written %"PRIu64" bytes to %s at offset %"PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
+        qDebug("Written %" PRIu64" bytes to %s at offset %" PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
 
@@ -899,4 +911,25 @@ void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
     }
 
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+}
+
+int CmaEvent::readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen)
+{
+    QByteArray qdata = m_file->read(wantlen);
+    *gotlen = qdata.size();
+    if(*gotlen) {
+        memcpy(data, qdata.constData(), qdata.size());
+    }
+
+    return PTP_RC_OK;
+}
+
+int CmaEvent::writeCallback(const unsigned char *data, unsigned long size, unsigned long *written)
+{
+    int ret = m_file->write((const char *)data, size);
+    if(ret != -1) {
+        *written = ret;
+        ret = PTP_RC_OK;
+    }
+    return ret;
 }
