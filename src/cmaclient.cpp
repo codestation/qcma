@@ -230,6 +230,7 @@ int CmaClient::stop()
         return -1;
     }
     CmaClient::setActive(false);
+    qDebug("Cancelling wireless server thread");
     VitaMTP_Cancel_Get_Wireless_Vita();
     usbcondition.wakeAll();
     return 0;
