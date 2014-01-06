@@ -73,6 +73,7 @@ void ClientManager::start()
     client = new CmaClient();
     usb_thread->setObjectName("usb_thread");
     connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
+    connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
     connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
     connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
     connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
@@ -90,6 +91,7 @@ void ClientManager::start()
     client = new CmaClient();
     wireless_thread->setObjectName("wireless_thread");
     connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
+    connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
     connect(client, SIGNAL(receivedPin(QString,int)), this, SLOT(showPinDialog(QString,int)));
     connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
     connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));

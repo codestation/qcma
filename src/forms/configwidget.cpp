@@ -145,6 +145,7 @@ void ConfigWidget::accept()
     savePath(settings, ui->videoPath, "videoPath");
     savePath(settings, ui->appPath, "appsPath");
     savePath(settings, ui->urlPath, "urlPath");
+    settings.setValue("offlineMode", ui->offlineCheck->isChecked());
     settings.sync();
     done(Accepted);
 }

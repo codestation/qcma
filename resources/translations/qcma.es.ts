@@ -120,12 +120,12 @@
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="114"/>
+        <location filename="../../src/clientmanager.cpp" line="116"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="116"/>
+        <location filename="../../src/clientmanager.cpp" line="118"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -239,37 +239,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="240"/>
+        <location filename="../../src/forms/configwidget.ui" line="237"/>
         <source>Offline Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="253"/>
+        <location filename="../../src/forms/configwidget.ui" line="250"/>
         <source>Skip metadata extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="263"/>
+        <location filename="../../src/forms/configwidget.ui" line="260"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="273"/>
+        <location filename="../../src/forms/configwidget.ui" line="270"/>
         <source>Disable USB monitoring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="283"/>
+        <location filename="../../src/forms/configwidget.ui" line="280"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="292"/>
+        <location filename="../../src/forms/configwidget.ui" line="289"/>
         <source>Database backend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="303"/>
+        <location filename="../../src/forms/configwidget.ui" line="300"/>
         <source>In Memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -320,6 +320,14 @@
         <location filename="../../src/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
         <translation>Filtro</translation>
+    </message>
+</context>
+<context>
+    <name>HTTPDownloader</name>
+    <message>
+        <location filename="../../src/httpdownloader.cpp" line="154"/>
+        <source>Network error: %1</source>
+        <translation>Error de red: %1</translation>
     </message>
 </context>
 <context>

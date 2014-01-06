@@ -193,6 +193,7 @@ void CmaClient::enterEventLoop(vita_device_t *device)
     connect(&thread, SIGNAL(started()), &eventLoop, SLOT(process()));
     connect(&eventLoop, SIGNAL(refreshDatabase()), this, SIGNAL(refreshDatabase()), Qt::DirectConnection);
     connect(&eventLoop, SIGNAL(finishedEventLoop()), &thread, SLOT(quit()), Qt::DirectConnection);
+    connect(&eventLoop, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)), Qt::DirectConnection);
     thread.start();
 
     while(isActive()) {

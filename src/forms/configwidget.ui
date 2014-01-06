@@ -232,10 +232,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
+            <widget class="QCheckBox" name="offlineCheck">
              <property name="text">
               <string>Offline Mode</string>
              </property>

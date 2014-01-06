@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <QNetworkAccessManager>
 #include <QSettings>
 #include <QUrl>
 
@@ -486,20 +487,51 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
     QFile file(QDir(urlpath).absoluteFilePath(basename));
 
     QByteArray data;
+    QSettings settings;
+
+    bool offlineMode = settings.value("offlineMode", true).toBool();
 
     if(!file.open(QIODevice::ReadOnly)) {
-        if(basename == "psp2-updatelist.xml") {
+        if(offlineMode && basename == "psp2-updatelist.xml") {
             qDebug("Found request for update list. Sending cached data");
             QFile res(":/main/resources/xml/psp2-updatelist.xml");
             res.open(QIODevice::ReadOnly);
             data = res.readAll();
-        } else {
-            qWarning("Failed to download %s", url);
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Download);
+
+        } else if(!offlineMode) {
+            HTTPDownloader downloader(url);
+            QThread *http_thread = new QThread();
+            http_thread->setObjectName("http_thread");
+            connect(http_thread, SIGNAL(started()), &downloader, SLOT(downloadFile()));
+            connect(&downloader, SIGNAL(messageSent(QString)), SIGNAL(messageSent(QString)), Qt::DirectConnection);
+            downloader.moveToThread(http_thread);
+            http_thread->start();
+
+            int remote_size = (int)downloader.getFileSize();
+
+            if(remote_size != -1) {
+                // add the size of the file length to the total filesize
+                remote_size += 8;
+                qDebug("Sending %i bytes of data for HTTP request %s", remote_size, url);
+
+                if(VitaMTP_SendData_Callback(device, eventId, PTP_OC_VITA_SendHttpObjectFromURL, remote_size, HTTPDownloader::readCallback) != PTP_RC_OK) {
+                    qWarning("Failed to send HTTP object");
+                } else {
+                    VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+                }
+
+            } else {
+                qWarning("No valid content-length in header, aborting");
+                VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Download);
+            }
+
             free(url);
+            http_thread->quit();
+            http_thread->deleteLater();
             return;
         }
     } else {
+        qDebug("Reading from local file");
         data = file.readAll();
     }
 
@@ -913,18 +945,18 @@ void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
 }
 
-int CmaEvent::readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen)
+int CmaEvent::readCallback(unsigned char *data, int64_t wantlen, int64_t *gotlen)
 {
-    QByteArray qdata = m_file->read(wantlen);
-    *gotlen = qdata.size();
-    if(*gotlen) {
-        memcpy(data, qdata.constData(), qdata.size());
+    *gotlen = m_file->read((char *)data, wantlen);
+
+    if(*gotlen == -1) {
+        return -1;
     }
 
     return PTP_RC_OK;
 }
 
-int CmaEvent::writeCallback(const unsigned char *data, unsigned long size, unsigned long *written)
+int CmaEvent::writeCallback(const unsigned char *data, int64_t size, int64_t *written)
 {
     int ret = m_file->write((const char *)data, size);
     if(ret != -1) {

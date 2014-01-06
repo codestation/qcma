@@ -73,6 +73,7 @@ signals:
     void pinComplete();
     void deviceDetected();
     void deviceConnected(QString);
+    void messageSent(QString);
     void deviceDisconnected();
     void refreshDatabase();
     void finished();

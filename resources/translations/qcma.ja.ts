@@ -120,12 +120,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="114"/>
+        <location filename="../../src/clientmanager.cpp" line="116"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="116"/>
+        <location filename="../../src/clientmanager.cpp" line="118"/>
         <source>No PS Vita system has been registered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -239,37 +239,37 @@
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;詳細設定&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="240"/>
+        <location filename="../../src/forms/configwidget.ui" line="237"/>
         <source>Offline Mode</source>
         <translation>オフラインモード</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="253"/>
+        <location filename="../../src/forms/configwidget.ui" line="250"/>
         <source>Skip metadata extraction</source>
         <translation>メタデータの展開をスキップする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="263"/>
+        <location filename="../../src/forms/configwidget.ui" line="260"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation>PCのファイルが変更された際にデータベースを自動的に更新する</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="273"/>
+        <location filename="../../src/forms/configwidget.ui" line="270"/>
         <source>Disable USB monitoring</source>
         <translation>USBの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="283"/>
+        <location filename="../../src/forms/configwidget.ui" line="280"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation>Wi-Fiの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="292"/>
+        <location filename="../../src/forms/configwidget.ui" line="289"/>
         <source>Database backend</source>
         <translation>データベース保存</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="303"/>
+        <location filename="../../src/forms/configwidget.ui" line="300"/>
         <source>In Memory</source>
         <translation>メモリ内</translation>
     </message>
@@ -320,6 +320,14 @@
         <location filename="../../src/filterlineedit.cpp" line="50"/>
         <location filename="../../src/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HTTPDownloader</name>
+    <message>
+        <location filename="../../src/httpdownloader.cpp" line="154"/>
+        <source>Network error: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
