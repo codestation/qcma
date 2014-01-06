@@ -21,7 +21,6 @@
 
 #include <QThread>
 
-#include <inttypes.h>
 #include <vitamtp.h>
 
 QNetworkReply *HTTPDownloader::reply = NULL;

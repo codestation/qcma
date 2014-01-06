@@ -25,6 +25,8 @@
 #include <QObject>
 #include <QWaitCondition>
 
+#include <inttypes.h>
+
 class HTTPDownloader : public QObject
 {
     Q_OBJECT
