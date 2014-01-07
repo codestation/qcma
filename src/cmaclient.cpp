@@ -61,7 +61,8 @@ void CmaClient::connectUsb()
     usbwait.lock();
 
     do {
-        if((vita = VitaMTP_Get_First_USB_Vita()) !=NULL) {
+        if((vita = VitaMTP_Get_First_USB_Vita()) != NULL) {
+            qDebug("Starting new USB connection");
             processNewConnection(vita);
         } else {
             //TODO: replace this with an event-driven setup
@@ -93,6 +94,7 @@ void CmaClient::connectWireless()
 
     do {
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
+            qDebug("Starting new wireless connection");
             processNewConnection(vita);
         } else {
             mutex.lock();

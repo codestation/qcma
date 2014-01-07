@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2003 Ignacio Castaño <castano@ludicon.com>   
+   Copyright (C) 2003 Ignacio Castaño <castano@ludicon.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the Lesser GNU General Public
@@ -49,13 +49,11 @@ typedef quint8 uchar;
 #define VERTICAL 2
 #define CUBE_LAYOUT	HORIZONTAL
 
-struct Color8888
-{
+struct Color8888 {
     uchar r, g, b, a;
 };
 
-union Color565
-{
+union Color565 {
     struct {
         ushort b : 5;
         ushort g : 6;
@@ -223,7 +221,7 @@ static bool IsValid( const DDSHeader & header )
 }
 
 
-	// Get supported type. We currently support 10 different types.
+// Get supported type. We currently support 10 different types.
 static DDSType GetType( const DDSHeader & header )
 {
     if( header.pf.flags & DDPF_RGB ) {
@@ -234,8 +232,7 @@ static DDSType GetType( const DDSHeader & header )
             case 32:
                 return DDS_A8R8G8B8;
             }
-        }
-        else {
+        } else {
             switch( header.pf.bitcount ) {
             case 16:
                 return DDS_R5G6B5;
@@ -243,8 +240,7 @@ static DDSType GetType( const DDSHeader & header )
                 return DDS_R8G8B8;
             }
         }
-    }
-    else if( header.pf.flags & DDPF_FOURCC ) {
+    } else if( header.pf.flags & DDPF_FOURCC ) {
         switch( header.pf.fourcc ) {
         case FOURCC_DXT1:
             return DDS_DXT1;
@@ -388,14 +384,12 @@ static QDataStream & operator>> ( QDataStream & s, Color565 & c )
 }
 
 
-struct BlockDXT
-{
+struct BlockDXT {
     Color565 col0;
     Color565 col1;
     uchar row[4];
 
-    void GetColors( Color8888 color_array[4] )
-    {
+    void GetColors( Color8888 color_array[4] ) {
         color_array[0].r = (col0.c.r << 3) | (col0.c.r >> 2);
         color_array[0].g = (col0.c.g << 2) | (col0.c.g >> 4);
         color_array[0].b = (col0.c.b << 3) | (col0.c.b >> 2);
@@ -417,8 +411,7 @@ struct BlockDXT
             color_array[3].g = (2 * color_array[1].g + color_array[0].g) / 3;
             color_array[3].b = (2 * color_array[1].b + color_array[0].b) / 3;
             color_array[3].a = 0xFF;
-        }
-        else {
+        } else {
             // Three-color block: derive the other color.
             color_array[2].r = (color_array[0].r + color_array[1].r) / 2;
             color_array[2].g = (color_array[0].g + color_array[1].g) / 2;
@@ -454,14 +447,12 @@ struct BlockDXTAlphaLinear {
     uchar alpha1;
     uchar bits[6];
 
-    void GetAlphas( uchar alpha_array[8] )
-    {
+    void GetAlphas( uchar alpha_array[8] ) {
         alpha_array[0] = alpha0;
         alpha_array[1] = alpha1;
 
         // 8-alpha or 6-alpha block?
-        if( alpha_array[0] > alpha_array[1] )
-        {
+        if( alpha_array[0] > alpha_array[1] ) {
             // 8-alpha block:  derive the other 6 alphas.
             // 000 = alpha_0, 001 = alpha_1, others are interpolated
 
@@ -471,9 +462,7 @@ struct BlockDXTAlphaLinear {
             alpha_array[5] = ( 3 * alpha0 + 4 * alpha1) / 7;	// Bit code 101
             alpha_array[6] = ( 2 * alpha0 + 5 * alpha1) / 7;	// Bit code 110
             alpha_array[7] = (     alpha0 + 6 * alpha1) / 7;	// Bit code 111
-        }
-        else
-        {
+        } else {
             // 6-alpha block:  derive the other alphas.
             // 000 = alpha_0, 001 = alpha_1, others are interpolated
 
@@ -486,27 +475,40 @@ struct BlockDXTAlphaLinear {
         }
     }
 
-    void GetBits( uchar bit_array[16] )
-    {
+    void GetBits( uchar bit_array[16] ) {
         // Split 24 packed bits into 8 bytes, 3 bits at a time.
         uint b = bits[0] | bits[1] << 8 | bits[2] << 16;
-        bit_array[0] = uchar(b & 0x07); b >>= 3;
-        bit_array[1] = uchar(b & 0x07); b >>= 3;
-        bit_array[2] = uchar(b & 0x07); b >>= 3;
-        bit_array[3] = uchar(b & 0x07); b >>= 3;
-        bit_array[4] = uchar(b & 0x07); b >>= 3;
-        bit_array[5] = uchar(b & 0x07); b >>= 3;
-        bit_array[6] = uchar(b & 0x07); b >>= 3;
+        bit_array[0] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[1] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[2] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[3] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[4] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[5] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[6] = uchar(b & 0x07);
+        b >>= 3;
         bit_array[7] = uchar(b & 0x07);
 
         b = bits[3] | bits[4] << 8 | bits[5] << 16;
-        bit_array[8] = uchar(b & 0x07); b >>= 3;
-        bit_array[9] = uchar(b & 0x07); b >>= 3;
-        bit_array[10] = uchar(b & 0x07); b >>= 3;
-        bit_array[11] = uchar(b & 0x07); b >>= 3;
-        bit_array[12] = uchar(b & 0x07); b >>= 3;
-        bit_array[13] = uchar(b & 0x07); b >>= 3;
-        bit_array[14] = uchar(b & 0x07); b >>= 3;
+        bit_array[8] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[9] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[10] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[11] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[12] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[13] = uchar(b & 0x07);
+        b >>= 3;
+        bit_array[14] = uchar(b & 0x07);
+        b >>= 3;
         bit_array[15] = uchar(b & 0x07);
     }
 };
@@ -603,7 +605,9 @@ static bool LoadDXT3( QDataStream & s, const DDSHeader & header, QImage & img )
 
 static bool LoadDXT2( QDataStream & s, const DDSHeader & header, QImage & img )
 {
-    if( !LoadDXT3(s, header, img) ) return false;
+    if( !LoadDXT3(s, header, img) ) {
+        return false;
+    }
     //UndoPremultiplyAlpha(img);
     return true;
 }
@@ -658,7 +662,9 @@ static bool LoadDXT5( QDataStream & s, const DDSHeader & header, QImage & img )
 }
 static bool LoadDXT4( QDataStream & s, const DDSHeader & header, QImage & img )
 {
-    if( !LoadDXT5(s, header, img) ) return false;
+    if( !LoadDXT5(s, header, img) ) {
+        return false;
+    }
     //UndoPremultiplyAlpha(img);
     return true;
 }
@@ -771,7 +777,8 @@ static bool LoadATI2( QDataStream & s, const DDSHeader & header, QImage & img )
 typedef bool (* TextureLoader)( QDataStream & s, const DDSHeader & header, QImage & img );
 
 // Get an appropriate texture loader for the given type.
-static TextureLoader GetTextureLoader( DDSType type ) {
+static TextureLoader GetTextureLoader( DDSType type )
+{
     switch( type ) {
     case DDS_A8R8G8B8:
         return LoadA8R8G8B8;
@@ -826,7 +833,8 @@ static bool LoadTexture( QDataStream & s, const DDSHeader & header, QImage & img
 }
 
 
-static int FaceOffset( const DDSHeader & header ) {
+static int FaceOffset( const DDSHeader & header )
+{
 
     DDSType type = GetType( header );
 
@@ -843,8 +851,7 @@ static int FaceOffset( const DDSHeader & header ) {
             w >>= 1;
             h >>= 1;
         } while( --mipmap );
-    }
-    else {
+    } else {
         int multiplier = header.pf.bitcount / 8;
         do {
             int face_size = w * h * multiplier;
@@ -858,18 +865,18 @@ static int FaceOffset( const DDSHeader & header ) {
 }
 
 #if CUBE_LAYOUT == HORIZONTAL
-	static int face_offset[6][2] = { {2, 1}, {0, 1}, {1, 0}, {1, 2}, {1, 1}, {3, 1} };
+static int face_offset[6][2] = { {2, 1}, {0, 1}, {1, 0}, {1, 2}, {1, 1}, {3, 1} };
 #elif CUBE_LAYOUT == VERTICAL
-	static int face_offset[6][2] = { {2, 1}, {0, 1}, {1, 0}, {1, 2}, {1, 1}, {1, 3} };
+static int face_offset[6][2] = { {2, 1}, {0, 1}, {1, 0}, {1, 2}, {1, 1}, {1, 3} };
 #endif
-	static int face_flags[6] = {
-		DDSCAPS2_CUBEMAP_POSITIVEX,
-		DDSCAPS2_CUBEMAP_NEGATIVEX,
-		DDSCAPS2_CUBEMAP_POSITIVEY,
-		DDSCAPS2_CUBEMAP_NEGATIVEY,
-		DDSCAPS2_CUBEMAP_POSITIVEZ,
-		DDSCAPS2_CUBEMAP_NEGATIVEZ
-	};
+static int face_flags[6] = {
+    DDSCAPS2_CUBEMAP_POSITIVEX,
+    DDSCAPS2_CUBEMAP_NEGATIVEX,
+    DDSCAPS2_CUBEMAP_POSITIVEY,
+    DDSCAPS2_CUBEMAP_NEGATIVEY,
+    DDSCAPS2_CUBEMAP_POSITIVEZ,
+    DDSCAPS2_CUBEMAP_NEGATIVEZ
+};
 
 // Load unwrapped cube map.
 static bool LoadCubeMap( QDataStream & s, const DDSHeader & header, QImage & img )
@@ -956,8 +963,9 @@ bool canReadDDS(QIODevice *device)
     qint64 readBytes = device->read(head, sizeof(head));
     if (readBytes != sizeof(head)) {
         if (device->isSequential()) {
-            while (readBytes > 0)
+            while (readBytes > 0) {
                 device->ungetChar(head[readBytes-- - 1]);
+            }
         } else {
             device->seek(oldPos);
         }
@@ -965,8 +973,9 @@ bool canReadDDS(QIODevice *device)
     }
 
     if (device->isSequential()) {
-        while (readBytes > 0)
+        while (readBytes > 0) {
             device->ungetChar(head[readBytes-- - 1]);
+        }
     } else {
         device->seek(oldPos);
     }
@@ -1018,8 +1027,7 @@ bool loadDDS(const QString &filename, QImage *image)
 
     if( IsCubeMap( header ) ) {
         result = LoadCubeMap( s, header, *image );
-    }
-    else {
+    } else {
         result = LoadTexture( s, header, *image );
     }
 

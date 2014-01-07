@@ -40,7 +40,7 @@ signals:
 
 public slots:
     void downloadFile();
-    static int readCallback(unsigned char *data, int64_t wantlen, int64_t *gotlen);
+    static int readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen);
     void metadataChanged();
     void readyRead();
     void error(QNetworkReply::NetworkError);
@@ -58,8 +58,8 @@ private:
     volatile static qint64 m_contentLength;
 
     static char *buffer;
-    static qint64 bufferSize;
-    static qint64 downloadLeft;
+    static unsigned long bufferSize;
+    static unsigned long downloadLeft;
 };
 
 #endif // HTTPDOWNLOADER_H

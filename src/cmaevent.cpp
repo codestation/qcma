@@ -446,6 +446,9 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, &object->metadata, &CmaEvent::readCallback);
         if(ret != PTP_RC_OK) {
             qWarning("Sending of %s failed. Code: %04X", object->metadata.name, ret);
+            if(ret == PTP_ERROR_CANCEL) {
+                VitaMTP_ReportResult(device, eventId, PTP_RC_GeneralError);
+            }
             m_file->close();
             delete m_file;
             return;
@@ -945,23 +948,26 @@ void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
 }
 
-int CmaEvent::readCallback(unsigned char *data, int64_t wantlen, int64_t *gotlen)
+int CmaEvent::readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen)
 {
-    *gotlen = m_file->read((char *)data, wantlen);
+    int ret = m_file->read((char *)data, wantlen);
 
-    if(*gotlen == -1) {
-        return -1;
+    if(ret != -1) {
+        *gotlen = ret;
+        ret = PTP_RC_OK;
     }
 
-    return PTP_RC_OK;
+    return ret;
 }
 
-int CmaEvent::writeCallback(const unsigned char *data, int64_t size, int64_t *written)
+int CmaEvent::writeCallback(const unsigned char *data, unsigned long size, unsigned long *written)
 {
     int ret = m_file->write((const char *)data, size);
+
     if(ret != -1) {
         *written = ret;
         ret = PTP_RC_OK;
     }
+
     return ret;
 }

@@ -63,9 +63,8 @@ private:
     void vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId);
     void vitaEventSendNPAccountInfo(vita_event_t *event, int eventId);
 
-    static int readCallback(unsigned char *data, int64_t wantlen, int64_t *gotlen);
-    static int writeCallback(const unsigned char *data, int64_t size, int64_t *written);
-    static int readHTTPCallback(unsigned char *data, int64_t wantlen, int64_t *gotlen);
+    static int readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen);
+    static int writeCallback(const unsigned char *data, unsigned long size, unsigned long *written);
 
     void processEvent();
     bool isActive();
