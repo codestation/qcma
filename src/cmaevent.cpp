@@ -154,7 +154,7 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
     qDebug("Called %s, handle: %d, parent name: %s", Q_FUNC_INFO, handle, parent->metadata.name);
 
     char *name;
-    uint64_t size;
+    int fileType = -1;
     int dataType;
 
     uint32_t *p_handles;
@@ -199,15 +199,26 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
             delete m_file;
             return PTP_RC_VITA_Invalid_Permission;
         } else {
+            // the size gets ignored because we can also get it via info.size()
+            uint64_t size;
+
             VitaMTP_GetObject_Callback(device, handle, &size, CmaEvent::writeCallback);
             m_file->close();
             delete m_file;
+
+            // get the root ohfi type
+            CMAObject *root_obj = parent;
+            while(root_obj->parent) {
+                root_obj = root_obj->parent;
+            }
+
+            fileType = Database::checkFileType(dir.absoluteFilePath(name), root_obj->metadata.ohfi);
         }
     }
 
     QFileInfo info(dir, name);
     object = new CMAObject(parent);
-    object->initObject(info);
+    object->initObject(info, fileType);
     object->metadata.handle = handle;
     db->append(parent->metadata.ohfi, object);
     free(name);

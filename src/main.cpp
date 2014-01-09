@@ -22,6 +22,7 @@
 #endif
 
 #include <QDebug>
+#include <QLibraryInfo>
 #include <QLocale>
 #include <QThread>
 #include <QTranslator>
@@ -88,6 +89,10 @@ int main(int argc, char *argv[])
     if(translator.load("qcma." + locale, ":/main/resources/translations")) {
         app.installTranslator(&translator);
     }
+
+    QTranslator system_translator;
+    system_translator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&system_translator);
 
     qDebug("Starting main thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 

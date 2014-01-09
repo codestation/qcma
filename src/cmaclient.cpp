@@ -75,6 +75,7 @@ void CmaClient::connectUsb()
         }
     } while(isActive());
 
+    usbwait.unlock();
     qDebug("Finishing usb_thread");
     emit finished();
 }

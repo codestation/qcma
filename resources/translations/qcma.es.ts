@@ -105,27 +105,27 @@
         <translation type="obsolete">Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="41"/>
+        <location filename="../../src/clientmanager.cpp" line="43"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="43"/>
+        <location filename="../../src/clientmanager.cpp" line="45"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="56"/>
+        <location filename="../../src/clientmanager.cpp" line="58"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="116"/>
+        <location filename="../../src/clientmanager.cpp" line="123"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="118"/>
+        <location filename="../../src/clientmanager.cpp" line="125"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -137,8 +137,8 @@
         <translation type="obsolete">Conectado a </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="135"/>
         <location filename="../../src/cmaclient.cpp" line="138"/>
+        <location filename="../../src/cmaclient.cpp" line="141"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -236,7 +236,7 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="230"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Ajustes Avanzados&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="237"/>
@@ -244,57 +244,57 @@
         <translation>Modo desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="250"/>
+        <location filename="../../src/forms/configwidget.ui" line="247"/>
         <source>Skip metadata extraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Saltar la extracción de metadatos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="260"/>
+        <location filename="../../src/forms/configwidget.ui" line="271"/>
         <source>Update database automatically when files on the PC are changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="270"/>
+        <location filename="../../src/forms/configwidget.ui" line="254"/>
         <source>Disable USB monitoring</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshabilitar monitoreo USB</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="261"/>
+        <source>Disable Wi-Fi monitoring</source>
+        <translation>Deshabilitar monitoreo WiFi</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="280"/>
-        <source>Disable Wi-Fi monitoring</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/forms/configwidget.ui" line="289"/>
         <source>Database backend</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenaje de base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="300"/>
+        <location filename="../../src/forms/configwidget.ui" line="291"/>
         <source>In Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>En memoria</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="96"/>
+        <location filename="../../src/forms/configwidget.cpp" line="101"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="101"/>
+        <location filename="../../src/forms/configwidget.cpp" line="106"/>
         <source>Select the folder to be used as a music source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="106"/>
+        <location filename="../../src/forms/configwidget.cpp" line="111"/>
         <source>Select the folder to be used as a video source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="111"/>
+        <location filename="../../src/forms/configwidget.cpp" line="116"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="116"/>
+        <location filename="../../src/forms/configwidget.cpp" line="121"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
     </message>
@@ -325,7 +325,7 @@
 <context>
     <name>HTTPDownloader</name>
     <message>
-        <location filename="../../src/httpdownloader.cpp" line="154"/>
+        <location filename="../../src/httpdownloader.cpp" line="153"/>
         <source>Network error: %1</source>
         <translation>Error de red: %1</translation>
     </message>

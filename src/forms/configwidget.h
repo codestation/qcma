@@ -41,7 +41,7 @@ private:
     enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL};
 
     void connectSignals();
-    void setDefaultDirs();
+    void setDefaultData();
     void savePath(QSettings &settings, const QLineEdit *edit, const QString &key);
 
     Ui::ConfigWidget *ui;

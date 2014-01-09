@@ -22,6 +22,8 @@
 #include "utils.h"
 #include "forms/progressform.h"
 
+#include <QSettings>
+
 #include <vitamtp.h>
 
 ClientManager::ClientManager(QObject *parent) :
@@ -59,6 +61,7 @@ void ClientManager::start()
 
     // initializing database for the first use
     refreshDatabase();
+
     CmaEvent::db = &db;
     connect(&db, SIGNAL(fileAdded(QString)), &progress, SLOT(setFileName(QString)));
     connect(&db, SIGNAL(directoryAdded(QString)), &progress, SLOT(setDirectoryName(QString)));
@@ -68,44 +71,53 @@ void ClientManager::start()
     thread_count = 0;
     qDebug("Starting cma threads");
     CmaClient *client;
+    QSettings settings;
 
-    usb_thread = new QThread();
-    client = new CmaClient();
-    usb_thread->setObjectName("usb_thread");
-    connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-    connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
-    connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
-    connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
-    connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-    connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+    if(!settings.value("disableUSB", false).toBool()) {
+        usb_thread = new QThread();
+        client = new CmaClient();
+        usb_thread->setObjectName("usb_thread");
+        connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
+        connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
+        connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
+        connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
+        connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
+        connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-    connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
-    connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
-    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
+        connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
+        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 
-    client->moveToThread(usb_thread);
-    usb_thread->start();
-    thread_count++;
+        client->moveToThread(usb_thread);
+        usb_thread->start();
+        thread_count++;
+    }
 
-    wireless_thread = new QThread();
-    client = new CmaClient();
-    wireless_thread->setObjectName("wireless_thread");
-    connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
-    connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
-    connect(client, SIGNAL(receivedPin(QString,int)), this, SLOT(showPinDialog(QString,int)));
-    connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
-    connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
-    connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-    connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+    if(!settings.value("disableWireless", false).toBool()) {
+        wireless_thread = new QThread();
+        client = new CmaClient();
+        wireless_thread->setObjectName("wireless_thread");
+        connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
+        connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
+        connect(client, SIGNAL(receivedPin(QString,int)), this, SLOT(showPinDialog(QString,int)));
+        connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
+        connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
+        connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
+        connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-    connect(client, SIGNAL(pinComplete()), &pinForm, SLOT(hide()));
-    connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
-    connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
-    connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, SIGNAL(pinComplete()), &pinForm, SLOT(hide()));
+        connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
+        connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
+        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 
-    client->moveToThread(wireless_thread);
-    wireless_thread->start();
-    thread_count++;
+        client->moveToThread(wireless_thread);
+        wireless_thread->start();
+        thread_count++;
+    }
+
+    if(thread_count == 0) {
+        emit messageSent(tr("You must enable at least USB or Wireless monitoring"));
+    }
 }
 
 void ClientManager::refreshDatabase()

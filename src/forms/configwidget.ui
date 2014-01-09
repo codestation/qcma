@@ -242,12 +242,23 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_2">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
+            <widget class="QCheckBox" name="metadataCheck">
              <property name="text">
               <string>Skip metadata extraction</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="usbCheck">
+             <property name="text">
+              <string>Disable USB monitoring</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="wifiCheck">
+             <property name="text">
+              <string>Disable Wi-Fi monitoring</string>
              </property>
             </widget>
            </item>
@@ -258,26 +269,6 @@
              </property>
              <property name="text">
               <string>Update database automatically when files on the PC are changed</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_4">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Disable USB monitoring</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_5">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Disable Wi-Fi monitoring</string>
              </property>
             </widget>
            </item>

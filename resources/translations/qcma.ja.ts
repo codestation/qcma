@@ -105,27 +105,27 @@
         <translation type="obsolete">%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="41"/>
+        <location filename="../../src/clientmanager.cpp" line="43"/>
         <source>Added %1 items to the database</source>
         <translation>%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="43"/>
+        <location filename="../../src/clientmanager.cpp" line="45"/>
         <source>Database indexing aborted by user</source>
         <translation>データベース構築がユーザーにより中止されました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="56"/>
+        <location filename="../../src/clientmanager.cpp" line="58"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="116"/>
+        <location filename="../../src/clientmanager.cpp" line="123"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="118"/>
+        <location filename="../../src/clientmanager.cpp" line="125"/>
         <source>No PS Vita system has been registered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -137,8 +137,8 @@
         <translation type="obsolete">次のデバイスに接続しました </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="135"/>
         <location filename="../../src/cmaclient.cpp" line="138"/>
+        <location filename="../../src/cmaclient.cpp" line="141"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -244,57 +244,57 @@
         <translation>オフラインモード</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="250"/>
+        <location filename="../../src/forms/configwidget.ui" line="247"/>
         <source>Skip metadata extraction</source>
         <translation>メタデータの展開をスキップする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="260"/>
+        <location filename="../../src/forms/configwidget.ui" line="271"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation>PCのファイルが変更された際にデータベースを自動的に更新する</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="270"/>
+        <location filename="../../src/forms/configwidget.ui" line="254"/>
         <source>Disable USB monitoring</source>
         <translation>USBの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="280"/>
+        <location filename="../../src/forms/configwidget.ui" line="261"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation>Wi-Fiの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="289"/>
+        <location filename="../../src/forms/configwidget.ui" line="280"/>
         <source>Database backend</source>
         <translation>データベース保存</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="300"/>
+        <location filename="../../src/forms/configwidget.ui" line="291"/>
         <source>In Memory</source>
         <translation>メモリ内</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="96"/>
+        <location filename="../../src/forms/configwidget.cpp" line="101"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>フォトの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="101"/>
+        <location filename="../../src/forms/configwidget.cpp" line="106"/>
         <source>Select the folder to be used as a music source</source>
         <translation>ミュージックの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="106"/>
+        <location filename="../../src/forms/configwidget.cpp" line="111"/>
         <source>Select the folder to be used as a video source</source>
         <translation>ビデオの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="111"/>
+        <location filename="../../src/forms/configwidget.cpp" line="116"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>PS Vitaのゲームとバックアップの保存に使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="116"/>
+        <location filename="../../src/forms/configwidget.cpp" line="121"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>ソフトウェアアップデートの取得に使用されるフォルダを選択してください</translation>
     </message>
@@ -326,7 +326,7 @@
 <context>
     <name>HTTPDownloader</name>
     <message>
-        <location filename="../../src/httpdownloader.cpp" line="154"/>
+        <location filename="../../src/httpdownloader.cpp" line="153"/>
         <source>Network error: %1</source>
         <translation type="unfinished"></translation>
     </message>

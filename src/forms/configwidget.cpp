@@ -41,7 +41,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     connectSignals();
-    setDefaultDirs();
+    setDefaultData();
 }
 
 void ConfigWidget::connectSignals()
@@ -62,7 +62,7 @@ void ConfigWidget::connectSignals()
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-void ConfigWidget::setDefaultDirs()
+void ConfigWidget::setDefaultData()
 {
     QString defaultdir;
     QSettings settings;
@@ -78,6 +78,11 @@ void ConfigWidget::setDefaultDirs()
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     defaultdir.append(QDir::separator()).append("PSV Updates");
     ui->urlPath->setText(settings.value("urlPath", defaultdir).toString());
+
+    ui->offlineCheck->setChecked(settings.value("offlineMode", true).toBool());
+    ui->metadataCheck->setChecked(settings.value("skipMetadata", false).toBool());
+    ui->usbCheck->setChecked(settings.value("disableUSB", false).toBool());
+    ui->wifiCheck->setChecked(settings.value("disableWireless", false).toBool());
 }
 
 ConfigWidget::~ConfigWidget()
@@ -146,6 +151,10 @@ void ConfigWidget::accept()
     savePath(settings, ui->appPath, "appsPath");
     savePath(settings, ui->urlPath, "urlPath");
     settings.setValue("offlineMode", ui->offlineCheck->isChecked());
+    settings.setValue("skipMetadata", ui->metadataCheck->isChecked());
+    settings.setValue("disableUSB", ui->usbCheck->isChecked());
+    settings.setValue("disableWireless", ui->wifiCheck->isChecked());
     settings.sync();
+
     done(Accepted);
 }

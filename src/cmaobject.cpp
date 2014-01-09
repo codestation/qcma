@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <QDebug>
+#include <QSettings>
 
 int CMAObject::ohfi_count = OHFI_OFFSET;
 
@@ -83,9 +84,10 @@ CMAObject::~CMAObject()
 void CMAObject::loadSfoMetadata(const QString &path)
 {
     QString sfo = QDir(path).absoluteFilePath("PARAM.SFO");
+    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
     SfoReader reader;
 
-    if(reader.load(sfo)) {
+    if(!skipMetadata && reader.load(sfo)) {
         metadata.data.saveData.title = strdup(reader.value("TITLE", ""));
         //FIXME: disable savedata detail for now
         //QString detail(reader.value("SAVEDATA_DETAIL", ""));
@@ -127,7 +129,9 @@ void CMAObject::loadSfoMetadata(const QString &path)
 void CMAObject::loadMusicMetadata(const QString &path)
 {
     AVDecoder decoder;
-    if(decoder.open(path)) {
+    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
+
+    if(!skipMetadata && decoder.open(path)) {
         decoder.getAudioMetadata(metadata);
     } else {
         metadata.data.music.album = strdup(parent->metadata.name ? parent->metadata.name : "");
@@ -139,7 +143,9 @@ void CMAObject::loadMusicMetadata(const QString &path)
 void CMAObject::loadVideoMetadata(const QString &path)
 {
     AVDecoder decoder;
-    if(decoder.open(path)) {
+    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
+
+    if(!skipMetadata && decoder.open(path)) {
         decoder.getVideoMetadata(metadata);
     } else {
         metadata.data.video.title = strdup(metadata.name);
@@ -151,7 +157,9 @@ void CMAObject::loadVideoMetadata(const QString &path)
 void CMAObject::loadPhotoMetadata(const QString &path)
 {
     QImage img;
-    if(img.load(path)) {
+    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
+
+    if(!skipMetadata && img.load(path)) {
         metadata.data.photo.tracks->data.track_photo.width = img.width();
         metadata.data.photo.tracks->data.track_photo.height = img.height();
     }
@@ -176,6 +184,12 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.saveData.statusType = 1;
         loadSfoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Music | File)) {
+
+        if(file_type < 0) {
+            qWarning("Invalid file type for music: %i, setting it to zero", file_type);
+            file_type = 0;
+        }
+
         metadata.data.music.fileName = strdup(metadata.name);
         metadata.data.music.fileFormatType = audio_list[file_type].file_format;
         metadata.data.music.statusType = 1;
@@ -195,6 +209,12 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.video.tracks->type = VITA_TRACK_TYPE_VIDEO;
         loadVideoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Photo | File)) {
+
+        if(file_type < 0) {
+            qWarning("Invalid file type for photos: %i, setting it to zero", file_type);
+            file_type = 0;
+        }
+
         metadata.data.photo.fileName = strdup(metadata.name);
         metadata.data.photo.fileFormatType = photo_list[file_type].file_format;
         metadata.data.photo.statusType = 1;
