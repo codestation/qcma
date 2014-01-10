@@ -151,6 +151,8 @@ void CMAObject::loadVideoMetadata(const QString &path)
         metadata.data.video.title = strdup(metadata.name);
         metadata.data.video.explanation = strdup("");
         metadata.data.video.copyright = strdup("");
+        // default to H264 video codec
+        metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_AVC;
     }
 }
 
