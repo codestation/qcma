@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
 
@@ -71,6 +72,10 @@ int main(int argc, char *argv[])
         qInstallMsgHandler(noMessageOutput);
 #endif
     }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+#endif
 
     qDebug("Starting QCMA %s", QCMA_VER);
 

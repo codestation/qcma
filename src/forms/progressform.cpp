@@ -31,7 +31,7 @@ ProgressForm::ProgressForm(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
     setFixedSize(size());
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-    connect(ui->cancelButton,   SIGNAL(clicked()), this, SLOT(cancelConfirm()));
+    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelConfirm()));
 }
 
 ProgressForm::~ProgressForm()
