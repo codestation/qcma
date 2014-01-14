@@ -70,7 +70,7 @@ PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
 
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
 
-RESOURCES += qcmares.qrc
+RESOURCES += qcmares.qrc translations.qrc
 
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml \
@@ -89,8 +89,8 @@ FORMS += \
     src/forms/pinform.ui
 
 TRANSLATIONS += \
-    resources/translations/qcma.es.ts \
-    resources/translations/qcma.ja.ts
+    resources/translations/qcma_es.ts \
+    resources/translations/qcma_ja.ts
 
 VERSION = \\\"'0.2.8'\\\"
 

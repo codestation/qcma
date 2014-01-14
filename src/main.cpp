@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(translator.load("qcma." + locale, ":/main/resources/translations")) {
+    if(translator.load("qcma_" + locale, ":/translations")) {
         app.installTranslator(&translator);
     }
 
