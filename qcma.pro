@@ -11,6 +11,8 @@ QT       += core \
 
 TARGET = qcma
 
+VERSION = 0.2.9
+
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
@@ -63,23 +65,6 @@ HEADERS += \
     src/forms/progressform.h \
     src/httpdownloader.h
 
-INCLUDEPATH += src/
-
-CONFIG += link_pkgconfig
-PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
-
-QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
-
-RESOURCES += qcmares.qrc translations.qrc
-
-OTHER_FILES += \
-    resources/xml/psp2-updatelist.xml \
-    resources/images/psv_icon.png \
-    resources/images/psv_icon_16.png \
-    resources/images/qcma.png \
-    resources/qcma.desktop \
-    qcma.rc
-
 FORMS += \
     src/forms/configwidget.ui \
     src/forms/backupmanagerform.ui \
@@ -92,26 +77,39 @@ TRANSLATIONS += \
     resources/translations/qcma_es.ts \
     resources/translations/qcma_ja.ts
 
-VERSION = \\\"'0.2.8'\\\"
+OTHER_FILES += \
+    resources/xml/psp2-updatelist.xml \
+    resources/images/psv_icon.png \
+    resources/images/psv_icon_16.png \
+    resources/images/qcma.png \
+    resources/qcma.desktop \
+    qcma.rc
 
-DEFINES += "QCMA_VER=$${VERSION}"
+INCLUDEPATH += src/
 
-GET_HASHES {
-    message("Retrieving git hashes")
-    unix {
-        DEFINES += "QCMA_BUILD_HASH=\"\\\"$$system(git rev-parse --short HEAD)\\\"\""
-        DEFINES += "QCMA_BUILD_BRANCH=\"\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\"\""
-    }
-}
+RESOURCES += qcmares.qrc translations.qrc
 
-unix {
+# find packages using pkg-config
+CONFIG += link_pkgconfig
+PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
+
+# custom CXXFLAGS
+QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
+
+#Linux-only config
+unix:!macx {
+    # largefile support
+    DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
+
+    # installation prefix
     isEmpty(PREFIX) {
         PREFIX = /usr/local
     }
 
-     BINDIR = $$PREFIX/bin
-     DATADIR = $$PREFIX/share
+    BINDIR = $$PREFIX/bin
+    DATADIR = $$PREFIX/share
 
+    # config for desktop file and icon
     desktop.path = $$DATADIR/applications/$${TARGET}
     desktop.files += resources/$${TARGET}.desktop
 
@@ -120,22 +118,54 @@ unix {
 
     target.path = $$BINDIR
     INSTALLS += target desktop icon64
-}
 
-unix:!macx:DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
-
-unix:!macx:ENABLE_KDE {
-    greaterThan(QT_MAJOR_VERSION, 4) {
-        error("ENABLE_KDE can only be used with Qt4")
+    # KDE support
+    ENABLE_KDE {
+        greaterThan(QT_MAJOR_VERSION, 4) {
+            error("ENABLE_KDE can only be used with Qt4")
+        }
     }
     LIBS += -lkdeui
-    DEFINES += "ENABLE_KDE_NOTIFIER=1"
+    DEFINES += ENABLE_KDE_NOTIFIER=1
     SOURCES += src/kdenotifier.cpp
     HEADERS += src/kdenotifier.h
 }
 
-win32:RC_FILE = qcma.rc
-win32:QMAKE_CXXFLAGS += -mno-ms-bitfields
+# Windows config
+win32 {
+    # Windows icon
+    RC_FILE = qcma.rc
+    # avoid alignment issues with newer mingw compiler
+    QMAKE_CXXFLAGS += -mno-ms-bitfields
+}
 
-ICON = resources/images/$${TARGET}.icns
-macx:QT_CONFIG -= no-pkg-config
+# OS X config
+macx {
+    # OS X icon
+    ICON = resources/images/$${TARGET}.icns
+    # re-enable pkg-config on OS X (brew installs pkg-config files)
+    QT_CONFIG -= no-pkg-config
+}
+
+
+# try to get the current git version + hash
+QCMA_GIT_VERSION=$$system(git describe --tags)
+
+#use the generic version if the above command fails (no git executable or metadata)
+isEmpty(QCMA_GIT_VERSION) {
+    DEFINES += QCMA_VER=\\\"$$VERSION\\\"
+} else {
+    DEFINES += QCMA_VER=\\\"$$QCMA_GIT_VERSION\\\"
+}
+
+GET_HASHES {
+    # try to get the current git commit and branch
+    QCMA_GIT_HASH=$$system(git rev-parse --short HEAD)
+    QCMA_GIT_BRANCH=$$system(git rev-parse --abbrev-ref HEAD)
+
+    # pass the current git commit hash
+    !isEmpty(QCMA_GIT_HASH):!isEmpty(QCMA_GIT_BRANCH) {
+        DEFINES += QCMA_BUILD_HASH=\\\"$$QCMA_GIT_HASH\\\"
+        DEFINES += QCMA_BUILD_BRANCH=\\\"$$QCMA_GIT_BRANCH\\\"
+    }
+}
