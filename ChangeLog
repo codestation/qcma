@@ -1,0 +1,59 @@
+qcma (0.2.8) unstable; urgency=low
+
+  * Fixed bug where USB transfers couldn't be cancelled.
+  * Enabled item in Advanced settings dialog: "Skip metadata retrieval" (disabled by default).
+  * Enabled item in Advanced settings dialog: "Disable USB monitoring" (disabled by default).
+  * Enabled item in Advanced settings dialog: "Disable Wireless monitoring" (disabled by default).
+
+ -- codestation <codestation404@gmail.com>  Thu, 09 Jan 2014 00:00:00 -0000
+
+qcma (0.2.7) unstable; urgency=low
+
+  * Resolved problem when reading big files in PSP savedatas (like sending ISOS to the Vita).
+  * Resolved high memory usage when receiving files from PSP savedatas (like ISOS from TN-V).
+  * Fix crash on startup on some circunstances.
+  * Enabled item in Advanced settings dialog: "Offline mode" (enabled by default).
+
+ -- codestation <codestation404@gmail.com>  Sun, 05 Jan 2014 00:00:00 -0000
+
+qcma (0.2.6) unstable; urgency=low
+
+  * Show the account name on the info popup when the vita is connected (just like the official CMA).
+  * Fixed bug with multimedia browsing/streaming of content who has non-ascii characters on the filename.
+  * Picture scanning should be a little faster (use internal Qt library instead of ffmpeg for picture metadata extraction).
+  * KDE native notification support (only on Archlinux or builds from source code).
+  * Fixed bug with backup usage size when no items are detected.
+  * No more delay on Qcma exit if no devices are connected (will wait if a PS Vita is still connected).
+
+ -- codestation <codestation404@gmail.com>  Fri, 03 Jan 2014 00:00:00 -0000
+
+qcma (0.2.5) unstable; urgency=low
+
+  * Added filter for backup manager
+  * Fixed the PIN bug (negative numbers).
+  * Fixed bug related to creation of base folders for game backups.
+  * Show connection status in icon tray color.
+  * Show PSM icons in backup manager.
+  * Fixed bug with listing in backup manager.
+  * Fixed crash in PS Vita with some PSP savedatas.
+  * Avoid creation of folder with account id "ffffffffffffffff"
+
+ -- codestation <codestation404@gmail.com>  Sun, 22 Dec 2013 00:00:00 -0000
+
+qcma (0.2.4) unstable; urgency=low
+
+  * Support new CMA broadcast string on FW 3.00. Identify as PS Vita TV compatible.
+
+ -- codestation <codestation404@gmail.com>  Tue, 05 Nov 2013 00:00:00 -0000
+
+qcma (0.2.3) unstable; urgency=low
+
+  * Make sure that qcma uses statvfs64 on 32bit builds.
+
+ -- codestation <codestation404@gmail.com>  Sun, 06 Oct 2013 00:00:00 -0000
+
+qcma (0.2.2) unstable; urgency=low
+
+  * Initial release
+
+ -- codestation <codestation404@gmail.com>  Tue, 01 Oct 2013 00:00:00 -0000
