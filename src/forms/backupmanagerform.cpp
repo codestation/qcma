@@ -193,15 +193,28 @@ void BackupManagerForm::loadBackupListing(int index)
         connect(item, SIGNAL(deleteEntry(BackupItem*)), this, SLOT(removeEntry(BackupItem*)));
         QString size = readable_size(meta->size);
 
-        // check if the game data is present, else is just a LiveArea launcher
-        if(sys_dir && !(QDir(base_path + QDir::separator() + "app").exists() || QDir(base_path + QDir::separator() + "game").exists())) {
-            size.append(tr(" - (Launcher only)"));
+        QString info;
+
+        // check if is listing PS Vita games
+        if(index == 0) {
+            if(QDir(base_path + QDir::separator() + "app").exists()) {
+                info.append(tr(" [GAME]"));
+            }
+            if(QDir(base_path + QDir::separator() + "savedata").exists()) {
+                info.append(tr(" [SAVE]"));
+            }
+            if(QDir(base_path + QDir::separator() + "patch").exists()) {
+                info.append(tr(" [UPDATE]"));
+            }
+            if(QDir(base_path + QDir::separator() + "addcont").exists()) {
+                info.append(tr(" [DLC]"));
+            }
         }
 
-        item->setItemInfo(game_name, size);
+        item->setItemInfo(game_name, size, info);
         item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
         item->setDirectory(obj->path + QDir::separator() + meta->name);
-        item->resize(646, 75);
+        item->resize(646, 68);
 
         item_list << item;
         meta = meta->next_metadata;
@@ -216,7 +229,7 @@ void BackupManagerForm::loadBackupListing(int index)
     // insert the sorted items into the table
     for(it = item_list.begin(), row = 0; it != item_list.end(); ++it, ++row) {
         ui->tableWidget->setCellWidget(row, 0, *it);
-        vert_header->resizeSection(row, 75);
+        vert_header->resizeSection(row, 68);
     }
 
     vert_header->setUpdatesEnabled(true);

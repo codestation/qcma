@@ -4,17 +4,27 @@
 <context>
     <name>BackupItem</name>
     <message>
-        <location filename="../../src/forms/backupitem.ui" line="47"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <location filename="../../src/forms/backupitem.ui" line="58"/>
+        <source>&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/forms/backupitem.ui" line="79"/>
+        <source>&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/backupitem.ui" line="92"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;[APP] [SAVE] [UPDATE] [DLC]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/backupitem.ui" line="131"/>
         <source>Delete entry</source>
         <translation>Borrar entrada</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupitem.ui" line="92"/>
+        <location filename="../../src/forms/backupitem.ui" line="144"/>
         <source>Open folder</source>
         <translation>Abrir directorio</translation>
     </message>
@@ -73,7 +83,7 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="231"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="244"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
@@ -93,9 +103,28 @@
         <translation>Uso de disco en respaldos: %1</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="198"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="201"/>
+        <source> [GAME]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="204"/>
+        <source> [SAVE]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="207"/>
+        <source> [UPDATE]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="210"/>
+        <source> [DLC]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source> - (Launcher only)</source>
-        <translation> - (Solo lanzador LiveArea)</translation>
+        <translation type="vanished"> - (Solo lanzador LiveArea)</translation>
     </message>
 </context>
 <context>

@@ -25,9 +25,16 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-const QString BackupItem::nameTemplate = "<html><head/><body>"
-        "<p><span style=\" font-size:12pt; font-weight:600;\">%1</span></p>"
-        "<p><span style=\" font-size:10pt;\">%2</span></p>"
+const QString BackupItem::gameTemplate = "<html><head/><body>"
+        "<p><span style=\" font-size:13pt; font-weight:600;\">%1</span></p>"
+        "</body></html>";
+
+const QString BackupItem::sizeTemplate = "<html><head/><body>"
+        "<p><span style=\" font-size:10pt;\">%1</span></p>"
+        "</body></html>";
+
+const QString BackupItem::infoTemplate = "<html><head/><body>"
+        "<p><span style=\" font-size:10pt;\">&nbsp;%1</span></p>"
         "</body></html>";
 
 BackupItem::BackupItem(QWidget *parent) :
@@ -60,14 +67,16 @@ const QPixmap *BackupItem::getIconPixmap()
     return ui->itemPicture->pixmap();
 }
 
-void BackupItem::setDirectory(const QString path)
+void BackupItem::setDirectory(const QString &path)
 {
     this->path = path;
 }
 
-void BackupItem::setItemInfo(const QString name, const QString size)
+void BackupItem::setItemInfo(const QString &name, const QString &size, const QString &extra)
 {
-    ui->itemName->setText(nameTemplate.arg(name, size));
+    ui->gameLabel->setText(gameTemplate.arg(name));
+    ui->sizeLabel->setText(sizeTemplate.arg(size));
+    ui->infoLabel->setText(infoTemplate.arg(extra));
 }
 
 int BackupItem::getIconWidth()
@@ -75,7 +84,7 @@ int BackupItem::getIconWidth()
     return ui->itemPicture->width();
 }
 
-void BackupItem::setItemIcon(const QString path, int width, bool try_dds)
+void BackupItem::setItemIcon(const QString &path, int width, bool try_dds)
 {
     ui->itemPicture->setMinimumWidth(width);
     QPixmap pixmap(path);

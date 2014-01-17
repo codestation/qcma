@@ -34,9 +34,9 @@ public:
     explicit BackupItem(QWidget *parent = 0);
     ~BackupItem();
 
-    void setItemInfo(const QString name, const QString size);
-    void setItemIcon(const QString path, int width = 48, bool try_dds = false);
-    void setDirectory(const QString path);
+    void setItemInfo(const QString &name, const QString &size, const QString &extra);
+    void setItemIcon(const QString &path, int width = 48, bool try_dds = false);
+    void setDirectory(const QString &path);
     const QPixmap *getIconPixmap();
     int getIconWidth();
 
@@ -48,7 +48,9 @@ public:
 private:
     QString path;
     Ui::BackupItem *ui;
-    static const QString nameTemplate;
+    static const QString gameTemplate;
+    static const QString sizeTemplate;
+    static const QString infoTemplate;
 
 signals:
     void deleteEntry(BackupItem *entry);
