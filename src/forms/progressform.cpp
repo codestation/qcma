@@ -62,3 +62,16 @@ void ProgressForm::setDirectoryName(QString dir)
     QString elided = ui->directoryLabel->fontMetrics().elidedText(dir, Qt::ElideMiddle, ui->directoryLabel->width(), 0);
     ui->directoryLabel->setText(elided);
 }
+
+void ProgressForm::showDelayed(int msec)
+{
+    timer.setSingleShot(true);
+    timer.setInterval(msec);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(show()));
+    timer.start();
+}
+
+void ProgressForm::interruptShow()
+{
+    timer.stop();
+}

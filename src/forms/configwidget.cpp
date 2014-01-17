@@ -67,17 +67,17 @@ void ConfigWidget::setDefaultData()
     QString defaultdir;
     QSettings settings;
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    ui->photoPath->setText(settings.value("photoPath", defaultdir).toString());
+    ui->photoPath->setText(QDir::toNativeSeparators(settings.value("photoPath", defaultdir).toString()));
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    ui->musicPath->setText(settings.value("musicPath", defaultdir).toString());
+    ui->musicPath->setText(QDir::toNativeSeparators(settings.value("musicPath", defaultdir).toString()));
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-    ui->videoPath->setText(settings.value("videoPath", defaultdir).toString());
+    ui->videoPath->setText(QDir::toNativeSeparators(settings.value("videoPath", defaultdir).toString()));
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     defaultdir.append(QDir::separator()).append("PS Vita");
-    ui->appPath->setText(settings.value("appsPath", defaultdir).toString());
+    ui->appPath->setText(QDir::toNativeSeparators(settings.value("appsPath", defaultdir).toString()));
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     defaultdir.append(QDir::separator()).append("PSV Updates");
-    ui->urlPath->setText(settings.value("urlPath", defaultdir).toString());
+    ui->urlPath->setText(QDir::toNativeSeparators(settings.value("urlPath", defaultdir).toString()));
 
     ui->offlineCheck->setChecked(settings.value("offlineMode", true).toBool());
     ui->metadataCheck->setChecked(settings.value("skipMetadata", false).toBool());
@@ -128,7 +128,7 @@ void ConfigWidget::browseBtnPressed(int btn)
     QString selected = QFileDialog::getExistingDirectory(this, msg, lineedit->text(), QFileDialog::ShowDirsOnly);
 
     if(!selected.isEmpty()) {
-        lineedit->setText(selected);
+        lineedit->setText(QDir::toNativeSeparators((selected)));
     }
 }
 
@@ -138,7 +138,7 @@ void ConfigWidget::savePath(QSettings &settings, const QLineEdit *edit, const QS
     if(path.endsWith(QDir::separator())) {
         path.chop(1);
     }
-    settings.setValue(key, path);
+    settings.setValue(key, QDir::fromNativeSeparators(path));
     QDir(QDir::root()).mkpath(path);
 }
 

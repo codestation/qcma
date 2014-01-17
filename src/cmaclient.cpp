@@ -251,3 +251,15 @@ void CmaClient::setActive(bool state)
     is_active = state;
 }
 
+bool CmaClient::isRunning()
+{
+    bool ret;
+    if(mutex.tryLock()) {
+        ret = in_progress;
+        mutex.unlock();
+    } else {
+        ret = true;
+    }
+    return ret;
+}
+

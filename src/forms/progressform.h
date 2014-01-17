@@ -20,6 +20,7 @@
 #ifndef PROGRESSFORM_H
 #define PROGRESSFORM_H
 
+#include <QTimer>
 #include <QWidget>
 
 namespace Ui {
@@ -34,8 +35,13 @@ public:
     explicit ProgressForm(QWidget *parent = 0);
     ~ProgressForm();
 
+    void showDelayed(int msec = 1000);
+    void interruptShow();
+
 private:
     Ui::ProgressForm *ui;
+
+    QTimer timer;
 
 signals:
     void canceled();

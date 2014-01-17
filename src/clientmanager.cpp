@@ -38,6 +38,7 @@ ClientManager::~ClientManager()
 
 void ClientManager::databaseUpdated(int count)
 {
+    progress.interruptShow();
     progress.hide();
     if(count >= 0) {
         emit messageSent(tr("Added %1 items to the database").arg(count));
@@ -130,7 +131,7 @@ void ClientManager::refreshDatabase()
             emit messageSent(tr("No PS Vita system has been registered"));
         }
     } else {
-        progress.show();
+        progress.showDelayed(1000);
     }
 }
 

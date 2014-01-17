@@ -38,6 +38,7 @@ class CmaClient : public QObject
 public:
     explicit CmaClient(QObject *parent = 0);
 
+    static bool isRunning();
     void launch();
 
 private:
