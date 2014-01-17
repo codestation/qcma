@@ -105,27 +105,32 @@
         <translation type="obsolete">%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="43"/>
+        <location filename="../../src/clientmanager.cpp" line="44"/>
         <source>Added %1 items to the database</source>
         <translation>%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="45"/>
+        <location filename="../../src/clientmanager.cpp" line="46"/>
         <source>Database indexing aborted by user</source>
         <translation>データベース構築がユーザーにより中止されました</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="58"/>
+        <location filename="../../src/clientmanager.cpp" line="59"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="123"/>
+        <location filename="../../src/clientmanager.cpp" line="120"/>
+        <source>You must enable at least USB or Wireless monitoring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/clientmanager.cpp" line="129"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>使用中にはデータベースを更新できません</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="125"/>
+        <location filename="../../src/clientmanager.cpp" line="131"/>
         <source>No PS Vita system has been registered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -343,33 +348,33 @@
         <translation type="obsolete">QCMAを停止しています...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="80"/>
+        <location filename="../../src/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="96"/>
-        <location filename="../../src/mainwidget.cpp" line="227"/>
+        <location filename="../../src/mainwidget.cpp" line="98"/>
+        <location filename="../../src/mainwidget.cpp" line="229"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="97"/>
+        <location filename="../../src/mainwidget.cpp" line="99"/>
         <source>The device has been disconnected</source>
         <translation>デバイスが切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="154"/>
+        <location filename="../../src/mainwidget.cpp" line="156"/>
         <source>About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="156"/>
+        <location filename="../../src/mainwidget.cpp" line="158"/>
         <source>Copyright (C) 2013  Codestation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="158"/>
+        <location filename="../../src/mainwidget.cpp" line="160"/>
         <source>Copyright (C) 2013  Codestation
 
 build hash: %1
@@ -377,22 +382,22 @@ build branch: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="182"/>
+        <location filename="../../src/mainwidget.cpp" line="184"/>
         <source>&amp;Backup Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="183"/>
+        <location filename="../../src/mainwidget.cpp" line="185"/>
         <source>&amp;About QCMA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="184"/>
+        <location filename="../../src/mainwidget.cpp" line="186"/>
         <source>Abou&amp;t Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="246"/>
+        <location filename="../../src/mainwidget.cpp" line="248"/>
         <source>Qcma - Information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -401,12 +406,12 @@ build branch: %2</source>
         <translation type="obsolete">受信したPIN: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="180"/>
+        <location filename="../../src/mainwidget.cpp" line="182"/>
         <source>&amp;Settings</source>
         <translation>&amp;設定</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="181"/>
+        <location filename="../../src/mainwidget.cpp" line="183"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;データベースを更新する</translation>
     </message>
@@ -415,17 +420,17 @@ build branch: %2</source>
         <translation type="obsolete">バックアップマネージャー</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="185"/>
+        <location filename="../../src/mainwidget.cpp" line="187"/>
         <source>&amp;Quit</source>
         <translation>&amp;終了</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="225"/>
+        <location filename="../../src/mainwidget.cpp" line="227"/>
         <source>Qcma status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="243"/>
+        <location filename="../../src/mainwidget.cpp" line="245"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>
@@ -528,7 +533,7 @@ build branch: %2</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main.cpp" line="48"/>
+        <location filename="../../src/main.cpp" line="50"/>
         <source>A instance of QCMA is already running</source>
         <translation>QCMAのプロセスがすでに実行しています</translation>
     </message>

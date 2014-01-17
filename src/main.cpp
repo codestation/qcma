@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
     QTranslator translator;
     QString locale = QLocale().system().name();
-    qDebug("Current locale: %s", locale.toUtf8().data());
+    qDebug() << "Current locale:" << locale;
 
     if(app.arguments().contains("--set-locale")) {
         int index = app.arguments().indexOf("--set-locale");
@@ -91,8 +91,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(translator.load("qcma_" + locale, ":/translations")) {
+    if(translator.load("qcma_" + locale, ":/resources/translations")) {
         app.installTranslator(&translator);
+    } else {
+        qDebug() << "Cannot load translation for locale:" << locale;
     }
 
     QTranslator system_translator;

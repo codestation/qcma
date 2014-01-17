@@ -105,27 +105,32 @@
         <translation type="obsolete">Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="43"/>
+        <location filename="../../src/clientmanager.cpp" line="44"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="45"/>
+        <location filename="../../src/clientmanager.cpp" line="46"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="58"/>
+        <location filename="../../src/clientmanager.cpp" line="59"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="123"/>
+        <location filename="../../src/clientmanager.cpp" line="120"/>
+        <source>You must enable at least USB or Wireless monitoring</source>
+        <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
+    </message>
+    <message>
+        <location filename="../../src/clientmanager.cpp" line="129"/>
         <source>Cannot refresh the database while is in use</source>
         <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="125"/>
+        <location filename="../../src/clientmanager.cpp" line="131"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -251,7 +256,7 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="271"/>
         <source>Update database automatically when files on the PC are changed</source>
-        <translation type="unfinished">Actualizar la base de datos automaticamente</translation>
+        <translation>Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="254"/>
@@ -342,33 +347,33 @@
         <translation type="obsolete">Deteniendo QCMA...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="80"/>
+        <location filename="../../src/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation>Deteniendo QCMA (desconecte su PS Vita)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="96"/>
-        <location filename="../../src/mainwidget.cpp" line="227"/>
+        <location filename="../../src/mainwidget.cpp" line="98"/>
+        <location filename="../../src/mainwidget.cpp" line="229"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="97"/>
+        <location filename="../../src/mainwidget.cpp" line="99"/>
         <source>The device has been disconnected</source>
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="154"/>
+        <location filename="../../src/mainwidget.cpp" line="156"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="156"/>
+        <location filename="../../src/mainwidget.cpp" line="158"/>
         <source>Copyright (C) 2013  Codestation</source>
         <translation>Copyright (C) 2013  Codestation</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="158"/>
+        <location filename="../../src/mainwidget.cpp" line="160"/>
         <source>Copyright (C) 2013  Codestation
 
 build hash: %1
@@ -379,12 +384,12 @@ Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="183"/>
+        <location filename="../../src/mainwidget.cpp" line="185"/>
         <source>&amp;About QCMA</source>
         <translation>&amp;Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="246"/>
+        <location filename="../../src/mainwidget.cpp" line="248"/>
         <source>Qcma - Information</source>
         <translation>Qcma - Información</translation>
     </message>
@@ -394,7 +399,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Copyright (C) 2013  Codestation\n</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="182"/>
+        <location filename="../../src/mainwidget.cpp" line="184"/>
         <source>&amp;Backup Manager</source>
         <translation>&amp;Gestor de Respaldos</translation>
     </message>
@@ -403,7 +408,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">&amp;Acerca de</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="184"/>
+        <location filename="../../src/mainwidget.cpp" line="186"/>
         <source>Abou&amp;t Qt</source>
         <translation>A&amp;cerca de Qt</translation>
     </message>
@@ -412,12 +417,12 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">PIN recibido: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="180"/>
+        <location filename="../../src/mainwidget.cpp" line="182"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ajustes</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="181"/>
+        <location filename="../../src/mainwidget.cpp" line="183"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;Refrescar base de datos</translation>
     </message>
@@ -426,17 +431,17 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="185"/>
+        <location filename="../../src/mainwidget.cpp" line="187"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="225"/>
+        <location filename="../../src/mainwidget.cpp" line="227"/>
         <source>Qcma status</source>
         <translation>Estado de Qcma</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="243"/>
+        <location filename="../../src/mainwidget.cpp" line="245"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
@@ -539,7 +544,7 @@ Rama de compilación: %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main.cpp" line="48"/>
+        <location filename="../../src/main.cpp" line="50"/>
         <source>A instance of QCMA is already running</source>
         <translation>Otra instancia de QCMA ya se encuentra en ejecución</translation>
     </message>
