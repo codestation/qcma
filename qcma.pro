@@ -124,11 +124,11 @@ unix:!macx {
         greaterThan(QT_MAJOR_VERSION, 4) {
             error("ENABLE_KDE can only be used with Qt4")
         }
+        LIBS += -lkdeui
+        DEFINES += ENABLE_KDE_NOTIFIER=1
+        SOURCES += src/kdenotifier.cpp
+        HEADERS += src/kdenotifier.h
     }
-    LIBS += -lkdeui
-    DEFINES += ENABLE_KDE_NOTIFIER=1
-    SOURCES += src/kdenotifier.cpp
-    HEADERS += src/kdenotifier.h
 }
 
 # Windows config
