@@ -7,7 +7,8 @@
 QT       += core \
             gui \
             widgets \
-            network
+            network \
+            sql
 
 TARGET = qcma
 
@@ -31,6 +32,7 @@ SOURCES += src/main.cpp \
     src/clientmanager.cpp \
     src/filterlineedit.cpp \
     src/dds.cpp \
+    src/sqlitedb.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
@@ -56,6 +58,7 @@ HEADERS += \
     src/clientmanager.h \
     src/filterlineedit.h \
     src/dds.h \
+    src/sqlitedb.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \

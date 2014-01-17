@@ -39,13 +39,23 @@ public:
     AVDecoder();
     ~AVDecoder();
 
+    enum codec_type {CODEC_VIDEO = AVMEDIA_TYPE_VIDEO, CODEC_AUDIO = AVMEDIA_TYPE_AUDIO};
+
     bool open(const QString filename);
     void close();
+    bool loadCodec(codec_type codec);
 
     QByteArray getAudioThumbnail(int width, int height);
     QByteArray getVideoThumbnail(int width, int height);
     void getAudioMetadata(metadata_t &metadata);
     void getVideoMetadata(metadata_t &metadata);
+    const char *getMetadataEntry(const char *key, const char *default_value = NULL);
+
+    int getWidth();
+    int getHeight();
+    int getDuration();
+    int getBitrate();
+    int getCodecBitrate();
 
     // simulate a static constructor to initialize libav only once
     class AvInit
@@ -66,6 +76,7 @@ private:
     static int64_t seekFunction(void* opaque, int64_t offset, int whence);
 
     AVFormatContext *pFormatCtx;
+    AVCodecContext *pCodecCtx;
     QFile *file;
 };
 

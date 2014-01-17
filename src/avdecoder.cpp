@@ -28,7 +28,7 @@
 AVDecoder::AvInit init;
 
 AVDecoder::AVDecoder() :
-    pFormatCtx(NULL), file(NULL)
+    pFormatCtx(NULL), pCodecCtx(NULL), file(NULL)
 {
 }
 
@@ -93,6 +93,16 @@ bool AVDecoder::open(const QString filename)
         return false;
     }
     return true;
+}
+
+const char *AVDecoder::getMetadataEntry(const char *key, const char *default_value)
+{
+    AVDictionaryEntry *entry;
+
+    if((entry = av_dict_get(pFormatCtx->metadata, key, NULL, 0)) != NULL) {
+        return entry->value;
+    }
+    return default_value;
 }
 
 void AVDecoder::getAudioMetadata(metadata_t &metadata)
@@ -161,6 +171,42 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
         } else {
             metadata.data.video.tracks->data.track_video.codecType = 0;
         }
+    }
+}
+
+int AVDecoder::getWidth()
+{
+    return pCodecCtx->width;
+}
+
+int AVDecoder::getHeight()
+{
+    return pCodecCtx->height;
+}
+
+int AVDecoder::getDuration()
+{
+    return pFormatCtx->duration / 1000;
+}
+
+int AVDecoder::getBitrate()
+{
+    return pFormatCtx->bit_rate;
+}
+
+int AVDecoder::getCodecBitrate()
+{
+    return pCodecCtx->bit_rate;
+}
+
+bool AVDecoder::loadCodec(codec_type codec)
+{
+    int stream_index = av_find_best_stream(pFormatCtx, (AVMediaType)codec, -1, -1, NULL, 0);
+    if(stream_index >= 0) {
+        pCodecCtx = pFormatCtx->streams[stream_index]->codec;
+        return true;
+    } else {
+        return false;
     }
 }
 
