@@ -28,70 +28,28 @@
 AVDecoder::AvInit init;
 
 AVDecoder::AVDecoder() :
-    pFormatCtx(NULL), file(NULL)
+    pFormatCtx(NULL)
 {
 }
 
 AVDecoder::~AVDecoder()
 {
     if(pFormatCtx) {
-        av_free(pFormatCtx->pb->buffer);
-        av_free(pFormatCtx->pb);
         avformat_close_input(&pFormatCtx);
     }
-    if(file) {
-        file->close();
-        delete file;
-    }
-}
-
-int AVDecoder::readFunction(void* opaque, uint8_t* buf, int buf_size)
-{
-    QIODevice* stream = (QIODevice*)opaque;
-    int numBytes = stream->read((char*)buf, buf_size);
-    return numBytes;
-}
-
-int64_t AVDecoder::seekFunction(void* opaque, int64_t offset, int whence)
-{
-    if (whence == AVSEEK_SIZE) {
-        return -1;    // I don't know "size of my handle in bytes"
-    }
-    QIODevice* stream = (QIODevice*)opaque;
-    if (stream->isSequential()) {
-        return -1;    // cannot seek a sequential stream
-    }
-    if (! stream->seek(offset) ) {
-        return -1;
-    }
-    return stream->pos();
 }
 
 bool AVDecoder::open(const QString filename)
 {
-    file = new QFile(filename);
-    if(!file->open(QIODevice::ReadOnly)) {
-        return false;
-    }
-    const int ioBufferSize = 32768;
-    unsigned char *ioBuffer = (unsigned char *)av_malloc(ioBufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
-    AVIOContext *avioContext = avio_alloc_context(ioBuffer, ioBufferSize, 0, (void*)(file), &AVDecoder::readFunction, NULL, &AVDecoder::seekFunction);
-    pFormatCtx = avformat_alloc_context();
-    pFormatCtx->pb = avioContext;
-
-
-    if(avformat_open_input(&pFormatCtx, "dummy", NULL, NULL) != 0) {
-        av_free(avioContext->buffer);
-        av_free(avioContext);
+    if(avformat_open_input(&pFormatCtx, QFile::encodeName(filename).constData(), NULL, NULL) != 0) {
         return false;
     }
 
     if(avformat_find_stream_info(pFormatCtx, NULL) < 0) {
-        av_free(avioContext->buffer);
-        av_free(avioContext);
         avformat_close_input(&pFormatCtx);
         return false;
     }
+
     return true;
 }
 
@@ -302,10 +260,6 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
 
 void AVDecoder::close()
 {
-    av_free(pFormatCtx->pb->buffer);
-    av_free(pFormatCtx->pb);
     avformat_close_input(&pFormatCtx);
     pFormatCtx = NULL;
-    file->close();
-    file = NULL;
 }
