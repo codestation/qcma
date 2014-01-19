@@ -170,8 +170,8 @@
         <translation type="obsolete">Conectado a </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="137"/>
-        <location filename="../../src/cmaclient.cpp" line="140"/>
+        <location filename="../../src/cmaclient.cpp" line="138"/>
+        <location filename="../../src/cmaclient.cpp" line="141"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -210,6 +210,7 @@
         <location filename="../../src/forms/configwidget.ui" line="138"/>
         <location filename="../../src/forms/configwidget.ui" line="173"/>
         <location filename="../../src/forms/configwidget.ui" line="208"/>
+        <location filename="../../src/forms/configwidget.ui" line="231"/>
         <source>Browse...</source>
         <translation>Buscar...</translation>
     </message>
@@ -262,94 +263,104 @@
         <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="222"/>
+        <location filename="../../src/forms/configwidget.ui" line="219"/>
+        <source>Packages</source>
+        <translation>Archivos PKG</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="247"/>
         <source>Other</source>
         <translation>Otros</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="230"/>
+        <location filename="../../src/forms/configwidget.ui" line="255"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Ajustes Avanzados&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="237"/>
+        <location filename="../../src/forms/configwidget.ui" line="262"/>
         <source>Offline Mode</source>
         <translation>Modo desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="247"/>
+        <location filename="../../src/forms/configwidget.ui" line="272"/>
         <source>Skip metadata extraction</source>
         <translation>Saltar la extracción de metadatos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="271"/>
+        <location filename="../../src/forms/configwidget.ui" line="296"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation>Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="296"/>
+        <location filename="../../src/forms/configwidget.ui" line="321"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="306"/>
+        <location filename="../../src/forms/configwidget.ui" line="331"/>
         <source>Skip photo scanning</source>
         <translation>Omitir el escaneo de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="313"/>
+        <location filename="../../src/forms/configwidget.ui" line="338"/>
         <source>Skip video scanning</source>
         <translation>Omitir el escaneo de vídeos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="320"/>
+        <location filename="../../src/forms/configwidget.ui" line="345"/>
         <source>Skip music scanning</source>
         <translation>Omitir el escaneo de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="254"/>
+        <location filename="../../src/forms/configwidget.ui" line="279"/>
         <source>Disable USB monitoring</source>
         <translation>Deshabilitar monitoreo USB</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="261"/>
+        <location filename="../../src/forms/configwidget.ui" line="286"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation>Deshabilitar monitoreo WiFi</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="280"/>
+        <location filename="../../src/forms/configwidget.ui" line="305"/>
         <source>Database backend</source>
         <translation>Almacenaje de base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="291"/>
+        <location filename="../../src/forms/configwidget.ui" line="316"/>
         <source>In Memory</source>
         <translation>En memoria</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="106"/>
+        <location filename="../../src/forms/configwidget.cpp" line="116"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="111"/>
+        <location filename="../../src/forms/configwidget.cpp" line="121"/>
         <source>Select the folder to be used as a music source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="116"/>
+        <location filename="../../src/forms/configwidget.cpp" line="126"/>
         <source>Select the folder to be used as a video source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="121"/>
+        <location filename="../../src/forms/configwidget.cpp" line="131"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="126"/>
+        <location filename="../../src/forms/configwidget.cpp" line="136"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.cpp" line="141"/>
+        <source>Select the folder to be used to software packages</source>
+        <translation>Seleccione el directorio a ser utilizado para almacenar archivos pkg</translation>
     </message>
 </context>
 <context>

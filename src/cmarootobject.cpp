@@ -99,6 +99,12 @@ void CMARootObject::initObject(const QString &path)
         metadata.dataType = App;
         this->path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
         num_filters = 0;
+        break;
+
+    case VITA_OHFI_PACKAGE:
+        metadata.dataType = Package;
+        this->path = path;
+        num_filters = 0;
     }
 
     // create the backup directories

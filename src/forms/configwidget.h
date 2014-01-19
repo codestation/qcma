@@ -38,7 +38,7 @@ public:
     ~ConfigWidget();
 
 private:
-    enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL};
+    enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL, BTN_PKG};
 
     void connectSignals();
     void setDefaultData();

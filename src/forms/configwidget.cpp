@@ -52,11 +52,13 @@ void ConfigWidget::connectSignals()
     mapper->setMapping(ui->videoBtn, BTN_VIDEO);
     mapper->setMapping(ui->appBtn, BTN_APPS);
     mapper->setMapping(ui->urlBtn, BTN_URL);
+    mapper->setMapping(ui->pkgBtn, BTN_PKG);
     connect(ui->photoBtn, SIGNAL(clicked()), mapper, SLOT(map()));
     connect(ui->musicBtn, SIGNAL(clicked()), mapper, SLOT(map()));
     connect(ui->videoBtn, SIGNAL(clicked()), mapper, SLOT(map()));
     connect(ui->appBtn, SIGNAL(clicked()), mapper, SLOT(map()));
     connect(ui->urlBtn, SIGNAL(clicked()), mapper, SLOT(map()));
+    connect(ui->pkgBtn, SIGNAL(clicked()), mapper, SLOT(map()));
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(browseBtnPressed(int)));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
@@ -68,16 +70,24 @@ void ConfigWidget::setDefaultData()
     QSettings settings;
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     ui->photoPath->setText(QDir::toNativeSeparators(settings.value("photoPath", defaultdir).toString()));
+
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     ui->musicPath->setText(QDir::toNativeSeparators(settings.value("musicPath", defaultdir).toString()));
+
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     ui->videoPath->setText(QDir::toNativeSeparators(settings.value("videoPath", defaultdir).toString()));
+
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     defaultdir.append(QDir::separator()).append("PS Vita");
     ui->appPath->setText(QDir::toNativeSeparators(settings.value("appsPath", defaultdir).toString()));
+
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     defaultdir.append(QDir::separator()).append("PSV Updates");
     ui->urlPath->setText(QDir::toNativeSeparators(settings.value("urlPath", defaultdir).toString()));
+
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir.append(QDir::separator()).append("PSV Packages");
+    ui->pkgPath->setText(QDir::toNativeSeparators(settings.value("pkgPath", defaultdir).toString()));
 
     ui->offlineCheck->setChecked(settings.value("offlineMode", true).toBool());
     ui->metadataCheck->setChecked(settings.value("skipMetadata", false).toBool());
@@ -126,6 +136,11 @@ void ConfigWidget::browseBtnPressed(int btn)
         msg = tr("Select the folder to be used to fetch software updates");
         break;
 
+    case BTN_PKG:
+        lineedit = ui->pkgPath;
+        msg = tr("Select the folder to be used to software packages");
+        break;
+
     default:
         return;
     }
@@ -155,6 +170,7 @@ void ConfigWidget::accept()
     savePath(settings, ui->videoPath, "videoPath");
     savePath(settings, ui->appPath, "appsPath");
     savePath(settings, ui->urlPath, "urlPath");
+    savePath(settings, ui->pkgPath, "pkgPath");
     settings.setValue("offlineMode", ui->offlineCheck->isChecked());
     settings.setValue("skipMetadata", ui->metadataCheck->isChecked());
     settings.setValue("disableUSB", ui->usbCheck->isChecked());

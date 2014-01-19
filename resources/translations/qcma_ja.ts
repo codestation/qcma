@@ -174,8 +174,8 @@
         <translation type="obsolete">次のデバイスに接続しました </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="137"/>
-        <location filename="../../src/cmaclient.cpp" line="140"/>
+        <location filename="../../src/cmaclient.cpp" line="138"/>
+        <location filename="../../src/cmaclient.cpp" line="141"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -214,6 +214,7 @@
         <location filename="../../src/forms/configwidget.ui" line="138"/>
         <location filename="../../src/forms/configwidget.ui" line="173"/>
         <location filename="../../src/forms/configwidget.ui" line="208"/>
+        <location filename="../../src/forms/configwidget.ui" line="231"/>
         <source>Browse...</source>
         <translation>参照...</translation>
     </message>
@@ -266,94 +267,104 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="222"/>
+        <location filename="../../src/forms/configwidget.ui" line="219"/>
+        <source>Packages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="247"/>
         <source>Other</source>
         <translation>その他</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="230"/>
+        <location filename="../../src/forms/configwidget.ui" line="255"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;詳細設定&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="237"/>
+        <location filename="../../src/forms/configwidget.ui" line="262"/>
         <source>Offline Mode</source>
         <translation>オフラインモード</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="247"/>
+        <location filename="../../src/forms/configwidget.ui" line="272"/>
         <source>Skip metadata extraction</source>
         <translation>メタデータの展開をスキップする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="271"/>
+        <location filename="../../src/forms/configwidget.ui" line="296"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation>PCのファイルが変更された際にデータベースを自動的に更新する</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="296"/>
+        <location filename="../../src/forms/configwidget.ui" line="321"/>
         <source>SQLite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="306"/>
+        <location filename="../../src/forms/configwidget.ui" line="331"/>
         <source>Skip photo scanning</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="313"/>
+        <location filename="../../src/forms/configwidget.ui" line="338"/>
         <source>Skip video scanning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="320"/>
+        <location filename="../../src/forms/configwidget.ui" line="345"/>
         <source>Skip music scanning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="254"/>
+        <location filename="../../src/forms/configwidget.ui" line="279"/>
         <source>Disable USB monitoring</source>
         <translation>USBの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="261"/>
+        <location filename="../../src/forms/configwidget.ui" line="286"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation>Wi-Fiの監視を無効にする</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="280"/>
+        <location filename="../../src/forms/configwidget.ui" line="305"/>
         <source>Database backend</source>
         <translation>データベース保存</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="291"/>
+        <location filename="../../src/forms/configwidget.ui" line="316"/>
         <source>In Memory</source>
         <translation>メモリ内</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="106"/>
+        <location filename="../../src/forms/configwidget.cpp" line="116"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>フォトの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="111"/>
+        <location filename="../../src/forms/configwidget.cpp" line="121"/>
         <source>Select the folder to be used as a music source</source>
         <translation>ミュージックの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="116"/>
+        <location filename="../../src/forms/configwidget.cpp" line="126"/>
         <source>Select the folder to be used as a video source</source>
         <translation>ビデオの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="121"/>
+        <location filename="../../src/forms/configwidget.cpp" line="131"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>PS Vitaのゲームとバックアップの保存に使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="126"/>
+        <location filename="../../src/forms/configwidget.cpp" line="136"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>ソフトウェアアップデートの取得に使用されるフォルダを選択してください</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.cpp" line="141"/>
+        <source>Select the folder to be used to software packages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

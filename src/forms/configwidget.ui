@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>432</height>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -208,6 +208,31 @@
                   <string>Browse...</string>
                  </property>
                 </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>Packages</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QLineEdit" name="pkgPath"/>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pkgBtn">
+                   <property name="text">
+                    <string>Browse...</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </item>

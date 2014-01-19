@@ -95,8 +95,9 @@ int QListDB::create()
     int total_objects = 0;
     //QMutexLocker locker(&mutex);
     const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VIDEO,
-                               VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP, VITA_OHFI_PSPAPP,
-                               VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP, VITA_OHFI_PSMAPP
+                               VITA_OHFI_PACKAGE, VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP,
+                               VITA_OHFI_PSPAPP, VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP,
+                               VITA_OHFI_PSMAPP
                              };
     CMAObject::resetOhfiCounter();
     QSettings settings;
@@ -129,6 +130,10 @@ int QListDB::create()
         case VITA_OHFI_PSXAPP:
         case VITA_OHFI_PSMAPP:
             obj->initObject(settings.value("appsPath").toString());
+            break;
+
+        case VITA_OHFI_PACKAGE:
+            obj->initObject(settings.value("pkgPath").toString());
         }
 
         root_list list;
