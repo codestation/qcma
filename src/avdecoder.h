@@ -20,7 +20,6 @@
 #ifndef AVDECODER_H
 #define AVDECODER_H
 
-#include <QFile>
 #include <QImage>
 #include <QString>
 
@@ -51,11 +50,21 @@ public:
     void getVideoMetadata(metadata_t &metadata);
     const char *getMetadataEntry(const char *key, const char *default_value = NULL);
 
-    int getWidth();
-    int getHeight();
-    int getDuration();
-    int getBitrate();
-    int getCodecBitrate();
+    inline int getWidth() {
+        return pCodecCtx->width;
+    }
+
+    inline int getHeight() {
+        return pCodecCtx->height;
+    }
+
+    inline int getDuration() {
+        return pFormatCtx->duration / 1000;
+    }
+
+    inline int getBitrate() {
+        return pCodecCtx->bit_rate;
+    }
 
     // simulate a static constructor to initialize libav only once
     class AvInit
@@ -63,21 +72,21 @@ public:
     public:
         AvInit() {
             av_register_all();
+            // hide warning logs
+            av_log_set_level(AV_LOG_ERROR);
         }
     };
 
     static AvInit init;
 
 private:
-    void AVFrameToQImage(AVFrame &frame, QImage &image, int width, int height);
     AVFrame *getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index);
-
-    static int readFunction(void* opaque, uint8_t* buf, int buf_size);
-    static int64_t seekFunction(void* opaque, int64_t offset, int whence);
 
     AVFormatContext *pFormatCtx;
     AVCodecContext *pCodecCtx;
-    QFile *file;
+    AVStream *av_stream;
+    AVCodec *av_codec;
+    int stream_index;
 };
 
 #endif // AVDECODER_H
