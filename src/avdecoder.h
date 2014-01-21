@@ -38,13 +38,33 @@ public:
     AVDecoder();
     ~AVDecoder();
 
+    enum codec_type {CODEC_VIDEO = AVMEDIA_TYPE_VIDEO, CODEC_AUDIO = AVMEDIA_TYPE_AUDIO};
+
     bool open(const QString filename);
     void close();
+    bool loadCodec(codec_type codec);
 
     QByteArray getAudioThumbnail(int width, int height);
     QByteArray getVideoThumbnail(int width, int height);
     void getAudioMetadata(metadata_t &metadata);
     void getVideoMetadata(metadata_t &metadata);
+    const char *getMetadataEntry(const char *key, const char *default_value = NULL);
+
+    inline int getWidth() {
+        return pCodecCtx->width;
+    }
+
+    inline int getHeight() {
+        return pCodecCtx->height;
+    }
+
+    inline int getDuration() {
+        return pFormatCtx->duration / 1000;
+    }
+
+    inline int getBitrate() {
+        return pCodecCtx->bit_rate;
+    }
 
     // simulate a static constructor to initialize libav only once
     class AvInit
@@ -52,6 +72,8 @@ public:
     public:
         AvInit() {
             av_register_all();
+            // hide warning logs
+            av_log_set_level(AV_LOG_ERROR);
         }
     };
 
@@ -61,6 +83,10 @@ private:
     AVFrame *getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index);
 
     AVFormatContext *pFormatCtx;
+    AVCodecContext *pCodecCtx;
+    AVStream *av_stream;
+    AVCodec *av_codec;
+    int stream_index;
 };
 
 #endif // AVDECODER_H

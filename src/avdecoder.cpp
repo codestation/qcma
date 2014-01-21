@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "utils.h"
 #include "avdecoder.h"
 #include "cmaobject.h"
 
@@ -28,12 +29,15 @@
 AVDecoder::AvInit init;
 
 AVDecoder::AVDecoder() :
-    pFormatCtx(NULL)
+    pFormatCtx(NULL), pCodecCtx(NULL), av_stream(NULL), av_codec(NULL), stream_index(-1)
 {
 }
 
 AVDecoder::~AVDecoder()
 {
+    if(pCodecCtx) {
+        avcodec_close(pCodecCtx);
+    }
     if(pFormatCtx) {
         avformat_close_input(&pFormatCtx);
     }
@@ -53,68 +57,62 @@ bool AVDecoder::open(const QString filename)
     return true;
 }
 
-void AVDecoder::getAudioMetadata(metadata_t &metadata)
+bool AVDecoder::loadCodec(codec_type codec)
+{
+    AVDictionary *opts = NULL;
+
+    if((stream_index = av_find_best_stream(pFormatCtx, (AVMediaType)codec, -1, -1, &av_codec, 0)) < 0) {
+        return false;
+    }
+
+    av_stream = pFormatCtx->streams[stream_index];
+    pCodecCtx = av_stream->codec;
+
+    if(avcodec_open2(pCodecCtx, av_codec, &opts) < 0) {
+        return false;
+    }
+
+    return true;
+}
+
+const char *AVDecoder::getMetadataEntry(const char *key, const char *default_value)
 {
     AVDictionaryEntry *entry;
-    AVDictionary* file_metadata = pFormatCtx->metadata;
 
-    if((entry = av_dict_get(file_metadata, "artist", NULL, 0)) != NULL) {
-        metadata.data.music.artist = strdup(entry->value);
-    } else {
-        metadata.data.music.artist = strdup("");
+    if((entry = av_dict_get(pFormatCtx->metadata, key, NULL, 0)) != NULL) {
+        return entry->value;
     }
+    return default_value;
+}
 
-    if((entry = av_dict_get(file_metadata, "album", NULL, 0)) != NULL) {
-        metadata.data.music.album = strdup(entry->value);
+void AVDecoder::getAudioMetadata(metadata_t &metadata)
+{
+    metadata.data.music.artist = strdup(getMetadataEntry("artist", ""));
+    metadata.data.music.album = strdup(getMetadataEntry("album", ""));
+    metadata.data.music.title = strdup(getMetadataEntry("title", ""));
+
+    if(loadCodec(CODEC_AUDIO)) {
+        metadata.data.music.tracks->data.track_audio.bitrate = pCodecCtx->bit_rate;
     } else {
-        metadata.data.music.album = strdup("");
+        metadata.data.music.tracks->data.track_audio.bitrate = pFormatCtx->bit_rate;
     }
-
-    if((entry = av_dict_get(file_metadata, "title", NULL, 0)) != NULL) {
-        metadata.data.music.title = strdup(entry->value);
-    } else {
-        metadata.data.music.title = strdup("");
-    }
-
-    metadata.data.music.tracks->data.track_audio.bitrate = pFormatCtx->bit_rate;
 }
 
 void AVDecoder::getVideoMetadata(metadata_t &metadata)
 {
-    AVDictionaryEntry *entry;
-    AVDictionary* file_metadata = pFormatCtx->metadata;
+    metadata.data.video.copyright = strdup(getMetadataEntry("copyright", ""));
+    metadata.data.video.explanation = strdup(getMetadataEntry("comments", ""));
+    metadata.data.video.title = strdup(getMetadataEntry("title", metadata.name));
 
-    if((entry = av_dict_get(file_metadata, "copyright", NULL, 0)) != NULL) {
-        metadata.data.video.copyright = strdup(entry->value);
-    } else {
-        metadata.data.video.copyright = strdup("");
-    }
-
-    if((entry = av_dict_get(file_metadata, "comments", NULL, 0)) != NULL) {
-        metadata.data.video.explanation = strdup(entry->value);
-    } else {
-        metadata.data.video.explanation = strdup("");
-    }
-
-    if((entry = av_dict_get(file_metadata, "title", NULL, 0)) != NULL) {
-        metadata.data.video.title = strdup(entry->value);
-    } else {
-        metadata.data.video.title = strdup(metadata.name);
-    }
-
-    metadata.data.video.tracks->data.track_video.duration = pFormatCtx->duration / 1000;
-    metadata.data.video.tracks->data.track_video.bitrate = pFormatCtx->bit_rate;
-
-    int stream_index;
-    AVCodec *codec = NULL;
-
-    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) >= 0) {
-        AVCodecContext *pCodecCtx = pFormatCtx->streams[stream_index]->codec;
+    if(loadCodec(CODEC_VIDEO)) {
         metadata.data.video.tracks->data.track_video.width = pCodecCtx->width;
         metadata.data.video.tracks->data.track_video.height = pCodecCtx->height;
-        if(strcmp(codec->name, "h264") == 0) {
+        metadata.data.video.tracks->data.track_video.bitrate = pCodecCtx->bit_rate;
+        metadata.data.video.tracks->data.track_video.duration = pFormatCtx->duration / 1000;
+
+        if(strcmp(av_codec->name, "h264") == 0) {
             metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_AVC;
-        } else if(strcmp(codec->name, "mpeg4") == 0) {
+        } else if(strcmp(av_codec->name, "mpeg4") == 0) {
             metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_MPEG4;
         } else {
             metadata.data.video.tracks->data.track_video.codecType = 0;
@@ -126,10 +124,7 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
 {
     QByteArray data;
 
-    int stream_index;
-    AVCodec *codec = NULL;
-    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) < 0) {
-        // no thumbnail
+    if(!loadCodec(CODEC_VIDEO)) {
         return data;
     }
 
@@ -171,27 +166,16 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index)
 QByteArray AVDecoder::getVideoThumbnail(int width, int height)
 {
     QByteArray data;
-    int stream_index;
     AVFrame *pFrame;
-    AVDictionary *opts = NULL;
-    AVCodec *codec = NULL;
-    AVCodecContext *pCodecCtx = NULL;
 
     int percentage = QSettings().value("videoThumbnailSeekPercentage", 30).toInt();
 
-    if((stream_index = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0)) < 0) {
-        return data;
-    }
-
-    pCodecCtx = pFormatCtx->streams[stream_index]->codec;
-
-    if(avcodec_open2(pCodecCtx, codec, &opts) < 0) {
-        avcodec_close(pCodecCtx);
+    if(!loadCodec(CODEC_VIDEO)) {
         return data;
     }
 
     qint64 seek_pos = pFormatCtx->duration * percentage / (AV_TIME_BASE * 100);
-    qint64 frame = av_rescale(seek_pos,pFormatCtx->streams[stream_index]->time_base.den, pFormatCtx->streams[stream_index]->time_base.num);
+    qint64 frame = av_rescale(seek_pos, av_stream->time_base.den, av_stream->time_base.num);
 
     if(avformat_seek_file(pFormatCtx, stream_index, 0, frame, frame, AVSEEK_FLAG_FRAME) < 0) {
         avcodec_close(pCodecCtx);
