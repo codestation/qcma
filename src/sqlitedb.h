@@ -23,6 +23,8 @@
 #define OBJECT_SAVEDATA 0x00040000
 #define OBJECT_SAVEDATA_FILE 0x00000002
 
+#define OBJECT_APPLICATION 0x00080000
+
 class SQLiteDB : public QObject
 {
     Q_OBJECT
@@ -47,11 +49,11 @@ public:
     uint insertVideoEntry(const QString &path, int type, int parent);
     uint insertPhotoEntry(const QString &path, int type, int parent);
     uint insertSavedataEntry(const QString &path, int type, int parent);
+    uint insertApplicationEntry(const QString &path, int type, int parent, int app_type);
 
-private:    
+private:
     int recursiveScanRootDirectory(const QString &base_path, int parent, int type);
     uint insertDirectoryEntry(const QString &path, int type, int parent);
-    int checkFileType(const QString path, int ohfi_root);
     bool updateAdjacencyList(int ohfi, int parent);
 
     QString uuid;

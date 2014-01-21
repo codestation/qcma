@@ -212,7 +212,7 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
                 root_obj = root_obj->parent;
             }
 
-            fileType = Database::checkFileType(dir.absoluteFilePath(name), root_obj->metadata.ohfi);
+            fileType = checkFileType(dir.absoluteFilePath(name), root_obj->metadata.ohfi);
         }
     }
 

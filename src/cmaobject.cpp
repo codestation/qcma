@@ -29,24 +29,6 @@
 
 int CMAObject::ohfi_count = OHFI_OFFSET;
 
-const CMAObject::file_type CMAObject::audio_list[] = {
-    {"mp3", FILE_FORMAT_MP3, CODEC_TYPE_MP3},
-    {"mp4", FILE_FORMAT_MP4, CODEC_TYPE_AAC},
-    {"wav", FILE_FORMAT_WAV, CODEC_TYPE_PCM}
-};
-
-const CMAObject::file_type CMAObject::photo_list[] = {
-    {"jpg",  FILE_FORMAT_JPG, CODEC_TYPE_JPG},
-    {"jpeg", FILE_FORMAT_JPG, CODEC_TYPE_JPG},
-    {"png",  FILE_FORMAT_PNG, CODEC_TYPE_PNG},
-    {"tif",  FILE_FORMAT_TIF, CODEC_TYPE_TIF},
-    {"tiff", FILE_FORMAT_TIF, CODEC_TYPE_TIF},
-    {"bmp",  FILE_FORMAT_BMP, CODEC_TYPE_BMP},
-    {"gif",  FILE_FORMAT_GIF, CODEC_TYPE_GIF},
-};
-
-const char *CMAObject::video_list[] = {"mp4"};
-
 CMAObject::CMAObject(CMAObject *obj_parent) :
     parent(obj_parent), metadata()
 {

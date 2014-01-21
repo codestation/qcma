@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "utils.h"
 #include "database.h"
 #include "cmaobject.h"
 
@@ -476,34 +477,4 @@ int Database::filterObjects(int ohfiParent, metadata_t **p_head, int index, int 
     }
 
     return numObjects;
-}
-
-int Database::checkFileType(const QString path, int ohfi_root)
-{
-    switch(ohfi_root) {
-    case VITA_OHFI_MUSIC:
-        for(int i = 0, max = sizeof(CMAObject::audio_list) / sizeof(CMAObject::file_type); i < max; i++) {
-            if(path.endsWith(CMAObject::audio_list[i].file_ext, Qt::CaseInsensitive)) {
-                return i;
-            }
-        }
-        break;
-    case VITA_OHFI_PHOTO:
-        for(int i = 0, max = sizeof(CMAObject::photo_list) / sizeof(CMAObject::file_type); i < max; i++) {
-            if(path.endsWith(CMAObject::photo_list[i].file_ext, Qt::CaseInsensitive)) {
-                return i;
-            }
-        }
-        break;
-    case VITA_OHFI_VIDEO:
-        for(int i = 0, max = sizeof(CMAObject::video_list) / sizeof(const char *); i < max; i++) {
-            if(path.endsWith(CMAObject::video_list[i], Qt::CaseInsensitive)) {
-                return i;
-            }
-        }
-        break;
-    default:
-        return 0;
-    }
-    return -1;
 }

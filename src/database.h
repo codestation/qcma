@@ -53,8 +53,6 @@ public:
     CMAObject *pathToObject(const char *path, int ohfiRoot);
     int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
 
-    static int checkFileType(const QString path, int ohfi_root);
-
     QMutex mutex;
 
 private:

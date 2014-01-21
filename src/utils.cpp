@@ -31,6 +31,26 @@
 #include <sys/statvfs.h>
 #endif
 
+const file_type audio_list[] = {
+    {"mp3", FILE_FORMAT_MP3, CODEC_TYPE_MP3},
+    {"mp4", FILE_FORMAT_MP4, CODEC_TYPE_AAC},
+    {"wav", FILE_FORMAT_WAV, CODEC_TYPE_PCM}
+};
+
+const file_type photo_list[] = {
+    {"jpg",  FILE_FORMAT_JPG, CODEC_TYPE_JPG},
+    {"jpeg", FILE_FORMAT_JPG, CODEC_TYPE_JPG},
+    {"png",  FILE_FORMAT_PNG, CODEC_TYPE_PNG},
+    {"tif",  FILE_FORMAT_TIF, CODEC_TYPE_TIF},
+    {"tiff", FILE_FORMAT_TIF, CODEC_TYPE_TIF},
+    {"bmp",  FILE_FORMAT_BMP, CODEC_TYPE_BMP},
+    {"gif",  FILE_FORMAT_GIF, CODEC_TYPE_GIF},
+};
+
+const file_type video_list[] = {
+    {"mp4", FILE_FORMAT_MP4, 0}
+};
+
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
 {
 #ifdef Q_OS_WIN32
@@ -174,4 +194,34 @@ QString readable_size(quint64 size, bool use_gib)
         size_f /= 1024.0;
     }
     return QString().setNum(size_f,'f',2) + " " + unit;
+}
+
+int checkFileType(const QString path, int ohfi_root)
+{
+    switch(ohfi_root) {
+    case VITA_OHFI_MUSIC:
+        for(int i = 0, max = sizeof(audio_list) / sizeof(file_type); i < max; i++) {
+            if(path.endsWith(audio_list[i].file_ext, Qt::CaseInsensitive)) {
+                return i;
+            }
+        }
+        break;
+    case VITA_OHFI_PHOTO:
+        for(int i = 0, max = sizeof(photo_list) / sizeof(file_type); i< max; i++) {
+            if(path.endsWith(photo_list[i].file_ext, Qt::CaseInsensitive)) {
+                return i;
+            }
+        }
+        break;
+    case VITA_OHFI_VIDEO:
+        for(int i = 0, max = sizeof(video_list) / sizeof(file_type); i< max; i++) {
+            if(path.endsWith(video_list[i].file_ext, Qt::CaseInsensitive)) {
+                return i;
+            }
+        }
+        break;
+    default:
+        return 0;
+    }
+    return -1;
 }
