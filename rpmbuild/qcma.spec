@@ -16,6 +16,7 @@ Requires:       libvitamtp3 >= 2.5.0
 BuildRequires:  pkg-config
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
+BuildRequires:  libqt5-qttools
 BuildRequires:  libqt5-qtbase-devel
 
 %description
@@ -31,7 +32,7 @@ cp -r $RPM_SOURCE_DIR/%{name}-%{version} $RPM_BUILD_DIR/%{name}-%{version}
 %setup -n %{name}-%{version} -DT
 
 %build
-lrelease resources/translations/*.ts
+lrelease-qt5 resources/translations/*.ts
 qmake-qt5 PREFIX=/usr
 make %{?_smp_mflags}
 
