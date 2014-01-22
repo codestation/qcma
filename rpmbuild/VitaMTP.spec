@@ -2,67 +2,81 @@
 # VitaMTP spec file
 # 
 
-Name:           libvitamtp2
+Name:           libvitamtp
+Version:        2.5.0
+Release:        0
+%define sonum   3
 Summary:        Low-level Vita communication library
 License:        GPL-3.0
-Release:        2
-Version:        2.1.0
+Group:          System/Libraries
 URL:            https://github.com/codestation/VitaMTP
 Source:         https://github.com/codestation/VitaMTP.git
-Prefix:         /usr
+BuildRequires:  pkg-config
+BuildRequires:  libxml2-devel
+BuildRequires:  libusb-1_0-devel
+
+%description
+libVitaMTP is a library based off of libMTP that does low level USB
+communications with the Vita. It can read and receive MTP commands that
+the Vita sends, which are a proprietary set of commands that is based on
+the MTP open standard.
+
+%package -n %{name}%{sonum}
+Summary:        Low-level Vita communication library
 Group:          System/Libraries
+
+%description -n %{name}%{sonum}
+libVitaMTP is a library based off of libMTP that does low level USB
+communications with the Vita. It can read and receive MTP commands that
+the Vita sends, which are a proprietary set of commands that is based on
+the MTP open standard.
 
 %package devel
 Summary:        Low-level Vita communication library - development files
 Group:          Development/Libraries/C and C++
-Requires:       libvitamtp2 == 2.1.0
-
-%description
-libVitaMTP is a library based off of libMTP that does low level USB 
-communications with the Vita. It can read and receive MTP commands that 
-the Vita sends, which are a proprietary set of commands that is based on 
-the MTP open standard.
+Requires:       %{name}%{sonum} = %{version}
+Requires:       libxml2-devel
+Requires:       libusb-1_0-devel
 
 %description devel
-libVitaMTP is a library based off of libMTP that does low level USB 
-communications with the Vita. It can read and receive MTP commands that 
-the Vita sends, which are a proprietary set of commands that is based on 
+libVitaMTP is a library based off of libMTP that does low level USB
+communications with the Vita. It can read and receive MTP commands that
+the Vita sends, which are a proprietary set of commands that is based on
 the MTP open standard.
 This package contains only the files necessary for development.
 
-%changelog
-* Tue Nov 05 2013 codestation <codestation> - 2.1.0
-- Added new CMA version.
-
 %prep
-rm -rf $RPM_SOURCE_DIR/libvitamtp2
-git clone https://github.com/codestation/VitaMTP.git $RPM_SOURCE_DIR/libvitamtp2
-cp -r $RPM_SOURCE_DIR/libvitamtp2 $RPM_BUILD_DIR/libvitamtp2
-%setup -n libvitamtp2 -DT
+rm -rf $RPM_SOURCE_DIR/%{name}%{sonum}
+git clone https://github.com/codestation/VitaMTP.git $RPM_SOURCE_DIR/%{name}%{sonum}
+cp -r $RPM_SOURCE_DIR/%{name}%{sonum} $RPM_BUILD_DIR/%{name}%{sonum}
+
+%setup -n %{name}%{sonum} -DT
 
 %build
 ./autogen.sh
-./configure --prefix=/usr --disable-opencma
-make
+./configure --prefix=/usr --libdir=%{_libdir}
+make %{?_smp_mflags}
 
 %install
-make DESTDIR=%{buildroot} install
-mkdir -p %{buildroot}/lib/udev/rules.d
-cp debian/vitamtp1.udev %{buildroot}/lib/udev/rules.d/80-psvita.rules
+%makeinstall
+rm -rf %{buildroot}/%{_libdir}/*.la
+mkdir -p %{buildroot}/usr/lib/udev/rules.d
+cp debian/vitamtp1.udev %{buildroot}/usr/lib/udev/rules.d/80-psvita.rules
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post -n %{name}%{sonum} -p /sbin/ldconfig
+%postun -n %{name}%{sonum} -p /sbin/ldconfig
 
-%files
-%defattr(-,root,root,-)
-/lib/udev/rules.d/80-psvita.rules
-/usr/lib/libvitamtp.la
-/usr/lib/libvitamtp.so.2
-/usr/lib/libvitamtp.so.2.0.0
+%files -n %{name}%{sonum}
+%defattr(-,root,root)
+%doc README.md ChangeLog COPYING
+%{_libdir}/lib*.so.*
+%{_udevrulesdir}/80-psvita.rules
 
 %files devel
-%defattr(-,root,root,-)
-/usr/include/vitamtp.h
-/usr/lib/libvitamtp.a
-/usr/lib/libvitamtp.so
-/usr/lib/pkgconfig/libvitamtp.pc
+%defattr(-,root,root)
+%{_prefix}/include/vitamtp.h
+%{_libdir}/libvitamtp.a
+%{_libdir}/libvitamtp.so
+%{_libdir}/pkgconfig/libvitamtp.pc
+
+%changelog
