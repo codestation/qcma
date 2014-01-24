@@ -20,7 +20,7 @@
 #ifndef CMACLIENT_H
 #define CMACLIENT_H
 
-#include "database.h"
+#include "qlistdb.h"
 #include "cmaevent.h"
 #include "cmaobject.h"
 #include "cmabroadcast.h"

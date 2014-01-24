@@ -20,7 +20,7 @@
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
-#include "database.h"
+#include "qlistdb.h"
 #include "forms/pinform.h"
 #include "forms/progressform.h"
 
@@ -37,7 +37,7 @@ public:
     void start();
     void stop();
 
-    Database db;
+    QListDB db;
 
 private:
     int thread_count;

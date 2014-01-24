@@ -20,7 +20,7 @@
 #ifndef BACKUPMANAGERFORM_H
 #define BACKUPMANAGERFORM_H
 
-#include "database.h"
+#include "qlistdb.h"
 #include "backupitem.h"
 
 #include <QWidget>
@@ -37,7 +37,7 @@ public:
     explicit BackupManagerForm(QWidget *parent = 0);
     ~BackupManagerForm();
 
-    Database *db;
+    QListDB *db;
 
 private:
     void setupForm();

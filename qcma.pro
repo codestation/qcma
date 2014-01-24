@@ -18,7 +18,6 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp \
     src/capability.cpp \
-    src/database.cpp \
     src/cmaobject.cpp \
     src/cmarootobject.cpp \
     src/utils.cpp \
@@ -33,18 +32,18 @@ SOURCES += src/main.cpp \
     src/filterlineedit.cpp \
     src/dds.cpp \
     src/sqlitedb.cpp \
+    src/httpdownloader.cpp \
+    src/qlistdb.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
     src/forms/configwidget.cpp \
     src/forms/confirmdialog.cpp \
     src/forms/pinform.cpp \
-    src/forms/progressform.cpp \
-    src/httpdownloader.cpp
+    src/forms/progressform.cpp
 
 HEADERS += \
     src/capability.h \
-    src/database.h \
     src/cmaobject.h \
     src/cmarootobject.h \
     src/utils.h \
@@ -59,14 +58,15 @@ HEADERS += \
     src/filterlineedit.h \
     src/dds.h \
     src/sqlitedb.h \
+    src/httpdownloader.h \
+    src/qlistdb.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \
     src/forms/configwidget.h \
     src/forms/confirmdialog.h \
     src/forms/pinform.h \
-    src/forms/progressform.h \
-    src/httpdownloader.h
+    src/forms/progressform.h
 
 FORMS += \
     src/forms/configwidget.ui \

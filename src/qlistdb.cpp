@@ -18,7 +18,7 @@
  */
 
 #include "utils.h"
-#include "database.h"
+#include "qlistdb.h"
 #include "cmaobject.h"
 
 #include <QDir>
@@ -28,7 +28,7 @@
 #include <QThread>
 #include <QDebug>
 
-Database::Database() :
+QListDB::QListDB() :
     mutex(QMutex::Recursive)
 {
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
@@ -43,7 +43,7 @@ Database::Database() :
     connect(timer, SIGNAL(timeout()), this, SLOT(process()));
 }
 
-Database::~Database()
+QListDB::~QListDB()
 {
     destroy();
     timer->stop();
@@ -53,13 +53,13 @@ Database::~Database()
     delete thread;
 }
 
-void Database::setUUID(const QString uuid)
+void QListDB::setUUID(const QString uuid)
 {
     CMARootObject::uuid = uuid;
     QSettings().setValue("lastAccountId", uuid);
 }
 
-bool Database::reload(bool &prepared)
+bool QListDB::reload(bool &prepared)
 {
     if(mutex.tryLock()) {
         if(CMARootObject::uuid != "ffffffffffffffff") {
@@ -76,7 +76,7 @@ bool Database::reload(bool &prepared)
     }
 }
 
-void Database::process()
+void QListDB::process()
 {
     destroy();
     cancel_operation = false;
@@ -90,19 +90,19 @@ void Database::process()
     mutex.unlock();
 }
 
-void Database::cancelOperation()
+void QListDB::cancelOperation()
 {
     QMutexLocker locker(&cancel);
     cancel_operation = true;
 }
 
-bool Database::continueOperation()
+bool QListDB::continueOperation()
 {
     QMutexLocker locker(&cancel);
     return !cancel_operation;
 }
 
-int Database::create()
+int QListDB::create()
 {
     int total_objects = 0;
     //QMutexLocker locker(&mutex);
@@ -153,7 +153,7 @@ int Database::create()
     return total_objects;
 }
 
-CMAObject *Database::getParent(CMAObject *last_dir, const QString &current_path)
+CMAObject *QListDB::getParent(CMAObject *last_dir, const QString &current_path)
 {
     while(last_dir && current_path != last_dir->path) {
         last_dir = last_dir->parent;
@@ -162,7 +162,7 @@ CMAObject *Database::getParent(CMAObject *last_dir, const QString &current_path)
     return last_dir;
 }
 
-int Database::scanRootDirectory(root_list &list, int ohfi_type)
+int QListDB::scanRootDirectory(root_list &list, int ohfi_type)
 {
     int file_type = -1;
     int total_objects = 0;
@@ -201,7 +201,7 @@ int Database::scanRootDirectory(root_list &list, int ohfi_type)
     return total_objects;
 }
 
-int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
+int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
 {
     int file_type = -1;
     int total_objects = 0;
@@ -236,7 +236,7 @@ int Database::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int
     return total_objects;
 }
 
-void Database::destroy()
+void QListDB::destroy()
 {
     //QMutexLocker locker(&mutex);
 
@@ -249,7 +249,7 @@ void Database::destroy()
     object_list.clear();
 }
 
-bool Database::removeInternal(root_list &list, const CMAObject *obj)
+bool QListDB::removeInternal(root_list &list, const CMAObject *obj)
 {
     bool found = false;
     QList<CMAObject *>::iterator it = list.begin();
@@ -270,7 +270,7 @@ bool Database::removeInternal(root_list &list, const CMAObject *obj)
     return found;
 }
 
-bool Database::remove(const CMAObject *obj, int ohfi_root)
+bool QListDB::remove(const CMAObject *obj, int ohfi_root)
 {
     QMutexLocker locker(&mutex);
 
@@ -286,12 +286,12 @@ bool Database::remove(const CMAObject *obj, int ohfi_root)
     return false;
 }
 
-bool Database::lessThanComparator(const CMAObject *a, const CMAObject *b)
+bool QListDB::lessThanComparator(const CMAObject *a, const CMAObject *b)
 {
     return a->metadata.ohfi < b->metadata.ohfi;
 }
 
-bool Database::hasFilter(const CMARootObject *object,int ohfi)
+bool QListDB::hasFilter(const CMARootObject *object,int ohfi)
 {
     for(int i = 0; i < object->num_filters; i++) {
         if(object->filters[i].ohfi == ohfi) {
@@ -301,20 +301,20 @@ bool Database::hasFilter(const CMARootObject *object,int ohfi)
     return false;
 }
 
-bool Database::findInternal(const root_list &list, int ohfi, find_data &data)
+bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
 {
     if(hasFilter(static_cast<CMARootObject *>(list.first()), ohfi)) {
         data.it = list.begin();
     } else {
         CMAObject obj;
         obj.setOhfi(ohfi);
-        data.it = qBinaryFind(list.begin(), list.end(), &obj, Database::lessThanComparator);
+        data.it = qBinaryFind(list.begin(), list.end(), &obj, QListDB::lessThanComparator);
     }
     data.end = list.end();
     return data.it != data.end;
 }
 
-bool Database::find(int ohfi, Database::find_data &data)
+bool QListDB::find(int ohfi, QListDB::find_data &data)
 {
     QMutexLocker locker(&mutex);
 
@@ -326,7 +326,7 @@ bool Database::find(int ohfi, Database::find_data &data)
     return false;
 }
 
-void Database::append(int parent_ohfi, CMAObject *object)
+void QListDB::append(int parent_ohfi, CMAObject *object)
 {
     QMutexLocker locker(&mutex);
     CMAObject parent;
@@ -334,7 +334,7 @@ void Database::append(int parent_ohfi, CMAObject *object)
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         root_list *cat_list = &(*root);
-        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), &parent, Database::lessThanComparator);
+        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), &parent, QListDB::lessThanComparator);
 
         if(it != cat_list->end()) {
             cat_list->append(object);
@@ -343,14 +343,14 @@ void Database::append(int parent_ohfi, CMAObject *object)
     }
 }
 
-CMAObject *Database::ohfiToObject(int ohfi)
+CMAObject *QListDB::ohfiToObject(int ohfi)
 {
     QMutexLocker locker(&mutex);
     find_data data;
     return find(ohfi, data) ? *data.it : NULL;
 }
 
-CMAObject *Database::pathToObjectInternal(const root_list &list, const char *path)
+CMAObject *QListDB::pathToObjectInternal(const root_list &list, const char *path)
 {
     // skip the first element since is the root element
     root_list::const_iterator skipped_first = ++list.begin();
@@ -363,7 +363,7 @@ CMAObject *Database::pathToObjectInternal(const root_list &list, const char *pat
     return NULL;
 }
 
-CMAObject *Database::pathToObject(const char *path, int ohfiRoot)
+CMAObject *QListDB::pathToObject(const char *path, int ohfiRoot)
 {
     QMutexLocker locker(&mutex);
 
@@ -381,7 +381,7 @@ CMAObject *Database::pathToObject(const char *path, int ohfiRoot)
     return NULL;
 }
 
-int Database::acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type)
+int QListDB::acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type)
 {
     QMutexLocker locker(&mutex);
     int result = 0;
@@ -413,7 +413,7 @@ int Database::acceptFilteredObject(const CMAObject *parent, const CMAObject *cur
     return result;
 }
 
-void Database::dumpMetadataList(const metadata_t *p_head)
+void QListDB::dumpMetadataList(const metadata_t *p_head)
 {
     while(p_head) {
         qDebug("Metadata: %s with OHFI %d", p_head->name, p_head->ohfi);
@@ -421,7 +421,7 @@ void Database::dumpMetadataList(const metadata_t *p_head)
     }
 }
 
-int Database::filterObjects(int ohfiParent, metadata_t **p_head, int index, int max_number)
+int QListDB::filterObjects(int ohfiParent, metadata_t **p_head, int index, int max_number)
 {
     QMutexLocker locker(&mutex);
     CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(ohfiParent));

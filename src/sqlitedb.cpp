@@ -156,12 +156,14 @@ bool SQLiteDB::initialize()
 
     for(unsigned int i = 0; i < sizeof(table_list) / sizeof(const char *); i++) {
         if(!query.exec(table_list[i])) {
+            qDebug() << query.lastError();
             return false;
         }
     }
 
     for(unsigned int i = 0; i < sizeof(trigger_list) / sizeof(const char *); i++) {
         if(!query.exec(trigger_list[i])) {
+            qDebug() << query.lastError();
             return false;
         }
     }
@@ -275,35 +277,28 @@ int SQLiteDB::recursiveScanRootDirectory(const QString &base_path, int parent, i
 
 int SQLiteDB::getPathId(const QString &path)
 {
-    if (!db.isOpen()) {
-        return -1;
-    }
     QSqlQuery query(QString("SELECT object_id from sources WHERE path = %1").arg(path));
     if(query.next()) {
         return query.value(0).toInt();
     } else {
+        qDebug() << query.lastError();
         return -1;
     }
 }
 
 QString SQLiteDB::getPathFromId(int ohfi)
 {
-    if (!db.isOpen()) {
-        return QString();
-    }
     QSqlQuery query(QString("SELECT path FROM sources WHERE object_id = %1").arg(ohfi));
     if(query.next()) {
         return query.value(0).toString();
     } else {
+        qDebug() << query.lastError();
         return QString();
     }
 }
 
 bool SQLiteDB::updateSize(int ohfi, quint64 size)
 {
-    if (!db.isOpen()) {
-        return false;
-    }
     QSqlQuery query(QString("UPDATE sources SET size = %1 WHERE object_id == %2").arg(size).arg(ohfi));
     return query.exec();
 }
@@ -311,7 +306,11 @@ bool SQLiteDB::updateSize(int ohfi, quint64 size)
 bool SQLiteDB::deleteEntry(int ohfi)
 {
     QSqlQuery query(QString("DELETE FROM object_node WHERE object_id == %1").arg(ohfi));
-    return query.exec();
+    bool ret = query.exec();
+    if(!ret) {
+        qDebug() << query.lastError();
+    }
+    return ret;
 }
 
 bool SQLiteDB::deleteEntry(const QString &path)
@@ -329,13 +328,19 @@ bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
 
     if(query.exec() && query.next()) {
         return true;
+    } else {
+        qDebug() << query.lastError();
     }
 
     query.prepare("INSERT INTO adjacent_objects (parent_id, child_id)"
                   "VALUES (:parentid, :child_id)");
     query.bindValue(0, parent);
     query.bindValue(1, ohfi);
-    return query.exec();
+    bool ret = query.exec();
+    if(!ret) {
+        qDebug() << query.lastError();
+    }
+    return ret;
 }
 
 uint SQLiteDB::insertDirectoryEntry(const QString &path, int type, int parent)
@@ -376,6 +381,7 @@ uint SQLiteDB::insertObjectEntry(const char *title, int type)
     query.bindValue(1, title);
 
     if(!query.exec() || !query.exec("SELECT last_insert_rowid()") || !query.next()) {
+        qDebug() << query.lastError();
         return 0;
     }
     //}
@@ -401,7 +407,11 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path)
     query.bindValue(2, size);
     query.bindValue(3, date_created);
     query.bindValue(4, date_modified);
-    return query.exec();
+    bool ret = query.exec();
+    if(!ret) {
+        qDebug() << query.lastError();
+    }
+    return ret;
 }
 
 uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)

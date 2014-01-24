@@ -29,7 +29,7 @@
 
 #include <inttypes.h>
 
-Database *CmaEvent::db = NULL;
+QListDB *CmaEvent::db = NULL;
 QFile *CmaEvent::m_file = NULL;
 
 metadata_t CmaEvent::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
@@ -412,7 +412,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
 
     qDebug("Searching object with OHFI %d", ohfi);
 
-    Database::find_data iters;
+    QListDB::find_data iters;
     if(!db->find(ohfi, iters)) {
         qWarning("Failed to find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
@@ -816,7 +816,7 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
 
         //rename the current object
         root->rename(operateobject.title);
-        Database::find_data iters;
+        QListDB::find_data iters;
         db->find(root->metadata.ohfi, iters);
 
         // rename the rest of the list only if has the renamed parent in some part of the chain

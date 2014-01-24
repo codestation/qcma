@@ -17,8 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef QLISTDB_H
+#define QLISTDB_H
 
 #include "cmarootobject.h"
 
@@ -30,7 +30,7 @@
 
 #include <vitamtp.h>
 
-class Database : public QObject
+class QListDB : public QObject
 {
     Q_OBJECT
 public:
@@ -39,8 +39,8 @@ public:
         QList<CMAObject *>::const_iterator end;
     } find_data;
 
-    explicit Database();
-    ~Database();
+    explicit QListDB();
+    ~QListDB();
 
     bool reload(bool &prepared);
     void setUUID(const QString uuid);
@@ -97,4 +97,4 @@ public slots:
     void cancelOperation();
 };
 
-#endif // DATABASE_H
+#endif // QLISTDB_H

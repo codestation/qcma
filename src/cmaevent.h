@@ -21,7 +21,7 @@
 #define CMAEVENT_H
 
 #include "cmaobject.h"
-#include "database.h"
+#include "qlistdb.h"
 #include "httpdownloader.h"
 
 #include <QNetworkReply>
@@ -39,7 +39,7 @@ public:
     void vitaEventCancelTask(vita_event_t *event, int eventId);
 
     // don't make the db reference static
-    static Database *db;
+    static QListDB *db;
 
 private:
     uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
