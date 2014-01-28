@@ -22,7 +22,6 @@
 
 #include "qlistdb.h"
 #include "cmaevent.h"
-#include "cmaobject.h"
 #include "cmabroadcast.h"
 
 #include <QObject>

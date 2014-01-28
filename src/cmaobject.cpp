@@ -20,6 +20,7 @@
 #include "cmaobject.h"
 #include "sforeader.h"
 #include "avdecoder.h"
+#include "database.h"
 #include "utils.h"
 
 #include <QDir>
@@ -108,48 +109,6 @@ void CMAObject::loadSfoMetadata(const QString &path)
     }
 }
 
-void CMAObject::loadMusicMetadata(const QString &path)
-{
-    AVDecoder decoder;
-    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
-
-    if(!skipMetadata && decoder.open(path)) {
-        decoder.getAudioMetadata(metadata);
-    } else {
-        metadata.data.music.album = strdup(parent->metadata.name ? parent->metadata.name : "");
-        metadata.data.music.artist = strdup("");
-        metadata.data.music.title = strdup(metadata.name);
-    }
-}
-
-void CMAObject::loadVideoMetadata(const QString &path)
-{
-    AVDecoder decoder;
-    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
-
-    if(!skipMetadata && decoder.open(path)) {
-        decoder.getVideoMetadata(metadata);
-    } else {
-        metadata.data.video.title = strdup(metadata.name);
-        metadata.data.video.explanation = strdup("");
-        metadata.data.video.copyright = strdup("");
-        // default to H264 video codec
-        metadata.data.video.tracks->data.track_video.codecType = CODEC_TYPE_AVC;
-    }
-}
-
-void CMAObject::loadPhotoMetadata(const QString &path)
-{
-    QImage img;
-    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
-
-    if(!skipMetadata && img.load(path)) {
-        metadata.data.photo.tracks->data.track_photo.width = img.width();
-        metadata.data.photo.tracks->data.track_photo.height = img.height();
-    }
-    metadata.data.photo.title = strdup(metadata.name);
-}
-
 void CMAObject::initObject(const QFileInfo &file, int file_type)
 {
     metadata.name = strdup(file.fileName().toUtf8().data());
@@ -181,7 +140,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.music.tracks = new media_track();
         metadata.data.music.tracks->type = VITA_TRACK_TYPE_AUDIO;
         metadata.data.music.tracks->data.track_photo.codecType = audio_list[file_type].file_codec;
-        loadMusicMetadata(file.absoluteFilePath());
+        Database::loadMusicMetadata(file.absoluteFilePath(), metadata);
     } else if(MASK_SET(metadata.dataType, Video | File)) {
         metadata.data.video.fileName = strdup(metadata.name);
         metadata.data.video.dateTimeUpdated = file.created().toTime_t();
@@ -191,7 +150,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.video.numTracks = 1;
         metadata.data.video.tracks = new media_track();
         metadata.data.video.tracks->type = VITA_TRACK_TYPE_VIDEO;
-        loadVideoMetadata(file.absoluteFilePath());
+        Database::loadVideoMetadata(file.absoluteFilePath(), metadata);
     } else if(MASK_SET(metadata.dataType, Photo | File)) {
 
         if(file_type < 0) {
@@ -207,7 +166,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.photo.tracks = new media_track();
         metadata.data.photo.tracks->type = VITA_TRACK_TYPE_PHOTO;
         metadata.data.photo.tracks->data.track_photo.codecType = photo_list[file_type].file_codec;
-        loadPhotoMetadata(file.absoluteFilePath());
+        Database::loadPhotoMetadata(file.absoluteFilePath(), metadata);
     }
 
     path = file.absoluteFilePath();

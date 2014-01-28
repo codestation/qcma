@@ -19,7 +19,7 @@
 
 #include "utils.h"
 #include "avdecoder.h"
-#include "cmaobject.h"
+#include "database.h"
 
 #include <QDebug>
 #include <QBuffer>

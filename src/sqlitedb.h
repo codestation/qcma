@@ -1,6 +1,8 @@
 #ifndef SQLITEDB_H
 #define SQLITEDB_H
 
+#include "database.h"
+
 #include <vitamtp.h>
 
 #include <QObject>
@@ -25,7 +27,7 @@
 
 #define OBJECT_APPLICATION 0x00080000
 
-class SQLiteDB : public QObject
+class SQLiteDB : public Database
 {
     Q_OBJECT
 public:
@@ -50,6 +52,8 @@ public:
     uint insertPhotoEntry(const QString &path, int type, int parent);
     uint insertSavedataEntry(const QString &path, int type, int parent);
     uint insertApplicationEntry(const QString &path, int type, int parent, int app_type);
+
+    bool getObjectMetadata(int ohfi, metadata_t &metadata);
 
 private:
     int recursiveScanRootDirectory(const QString &base_path, int parent, int type);

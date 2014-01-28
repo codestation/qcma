@@ -115,7 +115,7 @@ static const char *trigger_list[] = {
 };
 
 SQLiteDB::SQLiteDB(QObject *parent) :
-    QObject(parent)
+    Database(parent)
 {
     uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
 }
@@ -273,6 +273,13 @@ int SQLiteDB::recursiveScanRootDirectory(const QString &base_path, int parent, i
     }
 
     return total_objects;
+}
+
+bool SQLiteDB::getObjectMetadata(int ohfi, metadata_t &metadata)
+{
+    Q_UNUSED(ohfi);
+    Q_UNUSED(metadata);
+    return false;
 }
 
 int SQLiteDB::getPathId(const QString &path)

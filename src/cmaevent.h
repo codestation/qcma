@@ -20,7 +20,6 @@
 #ifndef CMAEVENT_H
 #define CMAEVENT_H
 
-#include "cmaobject.h"
 #include "qlistdb.h"
 #include "httpdownloader.h"
 
@@ -42,7 +41,7 @@ public:
     static QListDB *db;
 
 private:
-    uint16_t processAllObjects(CMAObject *parent, uint32_t handle);
+    uint16_t processAllObjects(metadata_t &metadata, uint32_t handle);
     void vitaEventSendObject(vita_event_t *event, int eventId);
     void vitaEventSendObjectMetadata(vita_event_t *event, int eventId);
     void vitaEventSendNumOfObject(vita_event_t *event, int eventId);
@@ -79,7 +78,6 @@ private:
     QMutex active;
     QSemaphore sema;
 
-    static metadata_t g_thumbmeta;
     static QFile *m_file;
 
 signals:

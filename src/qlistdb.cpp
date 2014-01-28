@@ -28,7 +28,8 @@
 #include <QThread>
 #include <QDebug>
 
-QListDB::QListDB() :
+QListDB::QListDB(QObject *parent) :
+    Database(parent),
     mutex(QMutex::Recursive)
 {
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
@@ -249,18 +250,18 @@ void QListDB::destroy()
     object_list.clear();
 }
 
-bool QListDB::removeInternal(root_list &list, const CMAObject *obj)
+bool QListDB::removeInternal(root_list &list, int ohfi)
 {
     bool found = false;
     QList<CMAObject *>::iterator it = list.begin();
 
     while(it != list.end()) {
-        if(!found && (*it) == obj) {
+        if(!found && (*it)->metadata.ohfi == ohfi) {
             // update the size of the parent objects
             (*it)->updateObjectSize(-(*it)->metadata.size);
             it = list.erase(it);
             found = true;
-        } else if(found && (*it)->metadata.ohfiParent == obj->metadata.ohfi) {
+        } else if(found && (*it)->metadata.ohfiParent == ohfi) {
             it = list.erase(it);
         } else {
             ++it;
@@ -268,22 +269,6 @@ bool QListDB::removeInternal(root_list &list, const CMAObject *obj)
     }
 
     return found;
-}
-
-bool QListDB::remove(const CMAObject *obj, int ohfi_root)
-{
-    QMutexLocker locker(&mutex);
-
-    if(ohfi_root) {
-        return removeInternal(object_list[ohfi_root], obj);
-    } else {
-        for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
-            if(removeInternal(*root, obj)) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 bool QListDB::lessThanComparator(const CMAObject *a, const CMAObject *b)
@@ -326,23 +311,6 @@ bool QListDB::find(int ohfi, QListDB::find_data &data)
     return false;
 }
 
-void QListDB::append(int parent_ohfi, CMAObject *object)
-{
-    QMutexLocker locker(&mutex);
-    CMAObject parent;
-    parent.setOhfi(parent_ohfi);
-
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
-        root_list *cat_list = &(*root);
-        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), &parent, QListDB::lessThanComparator);
-
-        if(it != cat_list->end()) {
-            cat_list->append(object);
-            break;
-        }
-    }
-}
-
 CMAObject *QListDB::ohfiToObject(int ohfi)
 {
     QMutexLocker locker(&mutex);
@@ -358,24 +326,6 @@ CMAObject *QListDB::pathToObjectInternal(const root_list &list, const char *path
     for(root_list::const_iterator obj = skipped_first; obj != list.end(); ++obj) {
         if(strcasecmp(path, (*obj)->metadata.path) == 0) {
             return (*obj);
-        }
-    }
-    return NULL;
-}
-
-CMAObject *QListDB::pathToObject(const char *path, int ohfiRoot)
-{
-    QMutexLocker locker(&mutex);
-
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
-
-        if(ohfiRoot && (*root).first()->metadata.ohfi != ohfiRoot) {
-            continue;
-        }
-        CMAObject *obj = pathToObjectInternal(*root, path);
-
-        if(obj) {
-            return obj;
         }
     }
     return NULL;
@@ -421,10 +371,45 @@ void QListDB::dumpMetadataList(const metadata_t *p_head)
     }
 }
 
-int QListDB::filterObjects(int ohfiParent, metadata_t **p_head, int index, int max_number)
+bool QListDB::getObjectMetadata(int ohfi, metadata_t &metadata)
 {
     QMutexLocker locker(&mutex);
-    CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(ohfiParent));
+
+    CMAObject *obj = ohfiToObject(ohfi);
+    if(obj) {
+        //TODO: return the pointer instead of copying the struct
+        metadata = obj->metadata;
+        return true;
+    }
+    return false;
+}
+
+int QListDB::childObjectCount(int parent_ohfi)
+{
+    metadata_t *metadata = NULL;
+    return getObjectMetadatas(parent_ohfi, metadata);
+}
+
+bool QListDB::deleteEntry(int ohfi, int root_ohfi)
+{
+    QMutexLocker locker(&mutex);
+
+    if(root_ohfi) {
+        return removeInternal(object_list[root_ohfi], ohfi);
+    } else {
+        for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+            if(removeInternal(*root, ohfi)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int index, int max_number)
+{
+    QMutexLocker locker(&mutex);
+    CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(parent_ohfi));
 
     if(parent == NULL) {
         return 0;
@@ -433,11 +418,11 @@ int QListDB::filterObjects(int ohfiParent, metadata_t **p_head, int index, int m
     int type = parent->metadata.type;
 
     if(parent->metadata.ohfi < OHFI_OFFSET && parent->filters) { // if we have filters
-        if(ohfiParent == parent->metadata.ohfi) { // if we are looking at root
-            return parent->getFilters(p_head);
+        if(parent_ohfi == parent->metadata.ohfi) { // if we are looking at root
+            return parent->getFilters(&metadata);
         } else { // we are looking at a filter
             for(int j = 0; j < parent->num_filters; j++) {
-                if(parent->filters[j].ohfi == ohfiParent) {
+                if(parent->filters[j].ohfi == parent_ohfi) {
                     type = parent->filters[j].type;
                     break;
                 }
@@ -472,9 +457,123 @@ int QListDB::filterObjects(int ohfiParent, metadata_t **p_head, int index, int m
 
     tail->next_metadata = NULL;
 
-    if(p_head != NULL) {
-        *p_head = temp.next_metadata;
+    if(metadata != NULL) {
+        metadata = temp.next_metadata;
     }
 
     return numObjects;
+}
+
+qint64 QListDB::getObjectSize(int ohfi)
+{
+    QMutexLocker locker(&mutex);
+
+    CMAObject *obj = ohfiToObject(ohfi);
+    return obj ? obj->metadata.size : -1;
+}
+
+int QListDB::getPathId(const char *name, int ohfi)
+{
+    QMutexLocker locker(&mutex);
+
+    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+
+        if(ohfi && (*root).first()->metadata.ohfi != ohfi) {
+            continue;
+        }
+        CMAObject *obj = pathToObjectInternal(*root, name);
+
+        if(obj) {
+            return obj->metadata.ohfi;
+        }
+    }
+    return 0;
+}
+
+int QListDB::insertObjectEntry(const QString &path, int parent_ohfi)
+{
+    QMutexLocker locker(&mutex);
+
+    CMAObject *parent = ohfiToObject(parent_ohfi);
+
+    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+        root_list *cat_list = &(*root);
+        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), parent, QListDB::lessThanComparator);
+
+        if(it != cat_list->end()) {
+            CMAObject *newobj = new CMAObject(parent);
+            newobj->initObject(path);
+            cat_list->append(newobj);
+            return newobj->metadata.ohfi;
+        }
+    }
+
+    return 0;
+}
+
+QString QListDB::getAbsolutePath(int ohfi)
+{
+    QMutexLocker locker(&mutex);
+    CMAObject *obj = ohfiToObject(ohfi);
+    return obj ? obj->path : NULL;
+}
+
+QString QListDB::getRelativePath(int ohfi)
+{
+    QMutexLocker locker(&mutex);
+    CMAObject *obj = ohfiToObject(ohfi);
+    return obj ? obj->metadata.path : NULL;
+}
+
+bool QListDB::renameObject(int ohfi, const QString &name)
+{
+    QMutexLocker locker(&mutex);
+
+    CMAObject *root = ohfiToObject(ohfi);
+
+    if(!root) {
+        return false;
+    }
+
+    //rename the current object
+    root->rename(name);
+    QListDB::find_data iters;
+    find(root->metadata.ohfi, iters);
+
+    // rename the rest of the list only if has the renamed parent in some part of the chain
+    while(iters.it != iters.end) {
+        CMAObject *obj = *iters.it++;
+
+        if(obj->hasParent(root)) {
+            obj->refreshPath();
+        }
+    }
+
+    return true;
+}
+
+void QListDB::setObjectSize(int ohfi, qint64 size)
+{
+    QMutexLocker locker(&mutex);
+    CMAObject *obj = ohfiToObject(ohfi);
+
+    if(obj) {
+        obj->updateObjectSize(size);
+    }
+}
+
+int QListDB::getRootId(int ohfi)
+{
+    QMutexLocker locker(&mutex);
+    CMAObject *obj = ohfiToObject(ohfi);
+
+    if(!obj) {
+        return 0;
+    }
+
+    while(obj->parent) {
+        obj = obj->parent;
+    }
+
+    return obj->metadata.ohfi;
 }

@@ -40,7 +40,8 @@ SOURCES += src/main.cpp \
     src/forms/configwidget.cpp \
     src/forms/confirmdialog.cpp \
     src/forms/pinform.cpp \
-    src/forms/progressform.cpp
+    src/forms/progressform.cpp \
+    src/database.cpp
 
 HEADERS += \
     src/capability.h \
@@ -66,7 +67,8 @@ HEADERS += \
     src/forms/configwidget.h \
     src/forms/confirmdialog.h \
     src/forms/pinform.h \
-    src/forms/progressform.h
+    src/forms/progressform.h \
+    src/database.h
 
 FORMS += \
     src/forms/configwidget.ui \

@@ -20,6 +20,7 @@
 #ifndef QLISTDB_H
 #define QLISTDB_H
 
+#include "database.h"
 #include "cmarootobject.h"
 
 #include <QList>
@@ -30,51 +31,54 @@
 
 #include <vitamtp.h>
 
-class QListDB : public QObject
+class QListDB : public Database
 {
     Q_OBJECT
 public:
+    explicit QListDB(QObject *parent = 0);
+    ~QListDB();
+
+    bool reload(bool &prepared);
+    void setUUID(const QString uuid);
+
+    int childObjectCount(int parent_ohfi);
+    bool deleteEntry(int ohfi, int root_ohfi = 0);
+    QString getAbsolutePath(int ohfi);
+    bool getObjectMetadata(int ohfi, metadata_t &metadata);
+    int getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int index = 0, int max_number = 0);
+    qint64 getObjectSize(int ohfi);
+    int getPathId(const char *name, int ohfi);
+    QString getRelativePath(int ohfi);
+    int getRootId(int ohfi);
+    int insertObjectEntry(const QString &path, int parent_ohfi);
+    bool renameObject(int ohfi, const QString &name);
+    void setObjectSize(int ohfi, qint64 size);
+
+    QMutex mutex;
+
+private:
     typedef struct {
         QList<CMAObject *>::const_iterator it;
         QList<CMAObject *>::const_iterator end;
     } find_data;
 
-    explicit QListDB();
-    ~QListDB();
-
-    bool reload(bool &prepared);
-    void setUUID(const QString uuid);
-    void addEntries(CMAObject *root);
-    CMAObject *ohfiToObject(int ohfi);
-    bool find(int ohfi, find_data &data);
-    void append(int parent_ohfi, CMAObject *object);
-    bool remove(const CMAObject *obj, int ohfi_root = 0);
-    int filterObjects(int ohfiParent, metadata_t **p_head, int index = 0, int max_number = 0);
-    CMAObject *pathToObject(const char *path, int ohfiRoot);
-    int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
-
-    QMutex mutex;
-
-private:
     typedef QList<CMAObject *> root_list;
     typedef QMap<int, root_list> map_list;
-
-    static const QStringList audio_types;
-    static const QStringList image_types;
-    static const QStringList video_types;
-
 
     int create();
     void destroy();
     int scanRootDirectory(root_list &list,int ohfi_type);
     int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
     bool hasFilter(const CMARootObject *object,int ohfi);
-    bool removeInternal(root_list &list, const CMAObject *obj);
+    bool removeInternal(root_list &list, int ohfi);
     bool findInternal(const root_list &list, int ohfi, find_data &data);
     CMAObject *getParent(CMAObject *last_dir, const QString &current_path);
     CMAObject *pathToObjectInternal(const root_list &list, const char *path);
     static bool lessThanComparator(const CMAObject *a, const CMAObject *b);
     void dumpMetadataList(const metadata_t *p_head);
+    bool find(int ohfi, find_data &data);
+    int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
+    CMAObject *ohfiToObject(int ohfi);
     bool continueOperation();
 
     // control variables

@@ -66,11 +66,12 @@ void BackupManagerForm::removeEntry(BackupItem *item)
 
     QMutexLocker locker(&db->mutex);
 
-    CMAObject *obj = db->ohfiToObject(item->ohfi);
-    if(obj) {
-        obj->removeReferencedObject();
-        db->remove(obj);
+    metadata meta;
+    if(db->getObjectMetadata(item->ohfi, meta)) {
+        setBackupUsage(db->getObjectSize(meta.ohfiParent));
     }
+
+    db->deleteEntry(item->ohfi);
 
     for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
         BackupItem *iter_item = static_cast<BackupItem *>(ui->tableWidget->cellWidget(i, 0));
@@ -78,11 +79,6 @@ void BackupManagerForm::removeEntry(BackupItem *item)
             ui->tableWidget->removeRow(i);
             break;
         }
-    }
-
-    obj = db->ohfiToObject(obj->metadata.ohfiParent);
-    if(obj) {
-        setBackupUsage(obj->metadata.size);
     }
 }
 
@@ -146,10 +142,9 @@ void BackupManagerForm::loadBackupListing(int index)
 
     db->mutex.lock();
 
-    // get the item list
+    // get the item list    
     metadata_t *meta;
-    int row_count = db->filterObjects(ohfi, &meta);
-
+    int row_count = db->getObjectMetadatas(ohfi, meta);
     ui->tableWidget->setRowCount(row_count);
 
     // exit if there aren't any items
@@ -167,13 +162,12 @@ void BackupManagerForm::loadBackupListing(int index)
 #else
     horiz_header->setResizeMode(QHeaderView::Stretch);
 #endif
-    CMAObject *obj = db->ohfiToObject(ohfi);
-    setBackupUsage(obj->metadata.size);
-
+    setBackupUsage(db->getObjectSize(ohfi));
+    QString path = db->getAbsolutePath(ohfi);
     QList<BackupItem *> item_list;
 
     while(meta) {
-        QString base_path = obj->path + QDir::separator() + meta->name;
+        QString base_path = path + QDir::separator() + meta->name;
         QString parent_path = sys_dir ? base_path + QDir::separator() + "sce_sys" : base_path;
         SfoReader reader;
         QString game_name;
@@ -213,7 +207,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
         item->setItemInfo(game_name, size, info);
         item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
-        item->setDirectory(obj->path + QDir::separator() + meta->name);
+        item->setDirectory(path + QDir::separator() + meta->name);
         item->resize(646, 68);
 
         item_list << item;
