@@ -172,9 +172,9 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
     }
 
     int ohfi = db->getPathId(name, parent_metadata.ohfi);
-    const QString fullpath = db->getAbsolutePath(ohfi);
 
     if(ohfi > 0) {
+        const QString fullpath = db->getAbsolutePath(ohfi);
         qDebug() << "Deleting" << fullpath;
         removeRecursively(fullpath);
         db->deleteEntry(ohfi);
@@ -382,7 +382,7 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
 
     metadata_t *meta = NULL;
 
-    int count = db->getObjectMetadatas(browse.ohfiParent, meta, browse.index, browse.numObjects); // if meta is null, will return empty XML
+    int count = db->getObjectMetadatas(browse.ohfiParent, &meta, browse.index, browse.numObjects); // if meta is null, will return empty XML
     qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
     if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
@@ -403,7 +403,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
     qDebug("Searching object with OHFI %d", ohfi);
 
     metadata_t *metadata = NULL;
-    if(!db->getObjectMetadatas(ohfi, metadata)) {
+    if(!db->getObjectMetadatas(ohfi, &metadata)) {
         qWarning("Failed to find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;

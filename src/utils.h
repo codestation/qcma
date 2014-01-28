@@ -45,7 +45,7 @@ public:
 };
 #endif
 
-bool removeRecursively(const QString &dirName);
+bool removeRecursively(const QString &path);
 QString readable_size(quint64 size, bool use_gib = false);
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total);
 QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata);

@@ -45,12 +45,13 @@ public:
     virtual QString getAbsolutePath(int ohfi) = 0;
     virtual QString getRelativePath(int ohfi) = 0;
     virtual bool getObjectMetadata(int ohfi, metadata_t &metadata) = 0;
-    virtual int getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int index = 0, int max_number = 0) = 0;
+    virtual int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0) = 0;
     virtual qint64 getObjectSize(int ohfi) = 0;
     virtual int getPathId(const char *name, int ohfi) = 0;
     virtual int insertObjectEntry(const QString &path, int parent_ohfi) = 0;
     virtual bool renameObject(int ohfi, const QString &name) = 0;
     virtual void setObjectSize(int ohfi, qint64 size) = 0;
+    virtual int getParentId(int ohfi) = 0;
     virtual int getRootId(int ohfi) = 0;
 
     static int checkFileType(const QString path, int ohfi_root);

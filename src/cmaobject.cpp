@@ -181,15 +181,6 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
     updateObjectSize(file.size());
 }
 
-bool CMAObject::removeReferencedObject()
-{
-    if(metadata.dataType & Folder) {
-        return removeRecursively(path);
-    } else {
-        return QFile::remove(path);
-    }
-}
-
 void CMAObject::updateObjectSize(qint64 size)
 {
     if(parent) {

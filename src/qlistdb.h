@@ -45,8 +45,9 @@ public:
     bool deleteEntry(int ohfi, int root_ohfi = 0);
     QString getAbsolutePath(int ohfi);
     bool getObjectMetadata(int ohfi, metadata_t &metadata);
-    int getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int index = 0, int max_number = 0);
+    int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0);
     qint64 getObjectSize(int ohfi);
+    int getParentId(int ohfi);
     int getPathId(const char *name, int ohfi);
     QString getRelativePath(int ohfi);
     int getRootId(int ohfi);

@@ -301,8 +301,6 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
 
 bool QListDB::find(int ohfi, QListDB::find_data &data)
 {
-    QMutexLocker locker(&mutex);
-
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         if(findInternal(*root, ohfi, data)) {
             return true;
@@ -313,7 +311,6 @@ bool QListDB::find(int ohfi, QListDB::find_data &data)
 
 CMAObject *QListDB::ohfiToObject(int ohfi)
 {
-    QMutexLocker locker(&mutex);
     find_data data;
     return find(ohfi, data) ? *data.it : NULL;
 }
@@ -365,6 +362,8 @@ int QListDB::acceptFilteredObject(const CMAObject *parent, const CMAObject *curr
 
 void QListDB::dumpMetadataList(const metadata_t *p_head)
 {
+    QMutexLocker locker(&mutex);
+
     while(p_head) {
         qDebug("Metadata: %s with OHFI %d", p_head->name, p_head->ohfi);
         p_head = p_head->next_metadata;
@@ -386,8 +385,7 @@ bool QListDB::getObjectMetadata(int ohfi, metadata_t &metadata)
 
 int QListDB::childObjectCount(int parent_ohfi)
 {
-    metadata_t *metadata = NULL;
-    return getObjectMetadatas(parent_ohfi, metadata);
+    return getObjectMetadatas(parent_ohfi, NULL);
 }
 
 bool QListDB::deleteEntry(int ohfi, int root_ohfi)
@@ -406,7 +404,7 @@ bool QListDB::deleteEntry(int ohfi, int root_ohfi)
     return false;
 }
 
-int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int index, int max_number)
+int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index, int max_number)
 {
     QMutexLocker locker(&mutex);
     CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(parent_ohfi));
@@ -419,7 +417,7 @@ int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int inde
 
     if(parent->metadata.ohfi < OHFI_OFFSET && parent->filters) { // if we have filters
         if(parent_ohfi == parent->metadata.ohfi) { // if we are looking at root
-            return parent->getFilters(&metadata);
+            return parent->getFilters(metadata);
         } else { // we are looking at a filter
             for(int j = 0; j < parent->num_filters; j++) {
                 if(parent->filters[j].ohfi == parent_ohfi) {
@@ -458,7 +456,7 @@ int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t *&metadata, int inde
     tail->next_metadata = NULL;
 
     if(metadata != NULL) {
-        metadata = temp.next_metadata;
+        *metadata = temp.next_metadata;
     }
 
     return numObjects;
@@ -494,15 +492,21 @@ int QListDB::insertObjectEntry(const QString &path, int parent_ohfi)
 {
     QMutexLocker locker(&mutex);
 
-    CMAObject *parent = ohfiToObject(parent_ohfi);
+    CMAObject *parent_obj = ohfiToObject(parent_ohfi);
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         root_list *cat_list = &(*root);
-        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), parent, QListDB::lessThanComparator);
+        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), parent_obj, QListDB::lessThanComparator);
 
         if(it != cat_list->end()) {
-            CMAObject *newobj = new CMAObject(parent);
-            newobj->initObject(path);
+            CMAObject *newobj = new CMAObject(parent_obj);
+
+            // get the root object
+            while(parent_obj->parent) {
+                parent_obj = parent_obj->parent;
+            }
+
+            newobj->initObject(path, parent_obj->metadata.dataType);
             cat_list->append(newobj);
             return newobj->metadata.ohfi;
         }
@@ -576,4 +580,12 @@ int QListDB::getRootId(int ohfi)
     }
 
     return obj->metadata.ohfi;
+}
+
+int QListDB::getParentId(int ohfi)
+{
+    QMutexLocker locker(&mutex);
+    CMAObject *obj = ohfiToObject(ohfi);
+
+    return obj ? obj->metadata.ohfiParent : 0;
 }

@@ -66,11 +66,8 @@ void BackupManagerForm::removeEntry(BackupItem *item)
 
     QMutexLocker locker(&db->mutex);
 
-    metadata meta;
-    if(db->getObjectMetadata(item->ohfi, meta)) {
-        setBackupUsage(db->getObjectSize(meta.ohfiParent));
-    }
-
+    int parent_ohfi = db->getParentId(item->ohfi);
+    removeRecursively(db->getAbsolutePath(item->ohfi));
     db->deleteEntry(item->ohfi);
 
     for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
@@ -79,6 +76,10 @@ void BackupManagerForm::removeEntry(BackupItem *item)
             ui->tableWidget->removeRow(i);
             break;
         }
+    }
+
+    if(parent_ohfi > 0) {
+        setBackupUsage(db->getObjectSize(parent_ohfi));
     }
 }
 
@@ -143,8 +144,8 @@ void BackupManagerForm::loadBackupListing(int index)
     db->mutex.lock();
 
     // get the item list    
-    metadata_t *meta;
-    int row_count = db->getObjectMetadatas(ohfi, meta);
+    metadata_t *meta = NULL;
+    int row_count = db->getObjectMetadatas(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);
 
     // exit if there aren't any items

@@ -34,7 +34,6 @@ public:
     ~CMAObject();
 
     void refreshPath();
-    bool removeReferencedObject();
     void rename(const QString &name);
     void updateObjectSize(qint64 size);
     bool hasParent(const CMAObject *obj);
@@ -61,9 +60,6 @@ protected:
 
 private:
     void loadSfoMetadata(const QString &path);
-    void loadMusicMetadata(const QString &path);
-    void loadVideoMetadata(const QString &path);
-    void loadPhotoMetadata(const QString &path);
 };
 
 #endif // CMAOBJECT_H
