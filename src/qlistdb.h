@@ -55,8 +55,6 @@ public:
     bool renameObject(int ohfi, const QString &name);
     void setObjectSize(int ohfi, qint64 size);
 
-    QMutex mutex;
-
 private:
     typedef struct {
         QList<CMAObject *>::const_iterator it;

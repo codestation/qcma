@@ -32,8 +32,8 @@
 
 #include <vitamtp.h>
 
-BackupManagerForm::BackupManagerForm(QWidget *parent) :
-    QWidget(parent),
+BackupManagerForm::BackupManagerForm(Database *db, QWidget *parent) :
+    QDialog(parent), m_db(db),
     ui(new Ui::BackupManagerForm)
 {
     ui->setupUi(this);
@@ -64,11 +64,11 @@ void BackupManagerForm::removeEntry(BackupItem *item)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    int parent_ohfi = db->getParentId(item->ohfi);
-    removeRecursively(db->getAbsolutePath(item->ohfi));
-    db->deleteEntry(item->ohfi);
+    int parent_ohfi = m_db->getParentId(item->ohfi);
+    removeRecursively(m_db->getAbsolutePath(item->ohfi));
+    m_db->deleteEntry(item->ohfi);
 
     for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
         BackupItem *iter_item = static_cast<BackupItem *>(ui->tableWidget->cellWidget(i, 0));
@@ -79,7 +79,7 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     }
 
     if(parent_ohfi > 0) {
-        setBackupUsage(db->getObjectSize(parent_ohfi));
+        setBackupUsage(m_db->getObjectSize(parent_ohfi));
     }
 }
 
@@ -141,17 +141,17 @@ void BackupManagerForm::loadBackupListing(int index)
         sys_dir = true;
     }
 
-    db->mutex.lock();
+    m_db->mutex.lock();
 
     // get the item list    
     metadata_t *meta = NULL;
-    int row_count = db->getObjectMetadatas(ohfi, &meta);
+    int row_count = m_db->getObjectMetadatas(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);
 
     // exit if there aren't any items
     if(row_count == 0) {
         setBackupUsage(0);
-        db->mutex.unlock();
+        m_db->mutex.unlock();
         return;
     }
 
@@ -163,8 +163,8 @@ void BackupManagerForm::loadBackupListing(int index)
 #else
     horiz_header->setResizeMode(QHeaderView::Stretch);
 #endif
-    setBackupUsage(db->getObjectSize(ohfi));
-    QString path = db->getAbsolutePath(ohfi);
+    setBackupUsage(m_db->getObjectSize(ohfi));
+    QString path = m_db->getAbsolutePath(ohfi);
     QList<BackupItem *> item_list;
 
     while(meta) {
@@ -228,7 +228,7 @@ void BackupManagerForm::loadBackupListing(int index)
     }
 
     vert_header->setUpdatesEnabled(true);
-    db->mutex.unlock();
+    m_db->mutex.unlock();
 
     // apply filter
     this->on_filterLineEdit_textChanged(ui->filterLineEdit->text());

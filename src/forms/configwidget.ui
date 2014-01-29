@@ -282,13 +282,15 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="comboBox">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
+              <widget class="QComboBox" name="databaseSelect">
                <item>
                 <property name="text">
                  <string>In Memory</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>SQLite</string>
                 </property>
                </item>
               </widget>

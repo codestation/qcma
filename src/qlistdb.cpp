@@ -29,8 +29,7 @@
 #include <QDebug>
 
 QListDB::QListDB(QObject *parent) :
-    Database(parent),
-    mutex(QMutex::Recursive)
+    Database(parent)
 {
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     CMARootObject::uuid  = uuid;

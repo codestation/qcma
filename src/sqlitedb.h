@@ -40,6 +40,20 @@ public:
     bool initialize();
     QSqlError getLastError();
 
+    int childObjectCount(int parent_ohfi);
+    bool deleteEntry(int ohfi, int root_ohfi = 0);
+    QString getAbsolutePath(int ohfi);
+    bool getObjectMetadata(int ohfi, metadata_t &metadata);
+    int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0);
+    qint64 getObjectSize(int ohfi);
+    int getParentId(int ohfi);
+    int getPathId(const char *name, int ohfi);
+    QString getRelativePath(int ohfi);
+    int getRootId(int ohfi);
+    int insertObjectEntry(const QString &path, int parent_ohfi);
+    bool renameObject(int ohfi, const QString &name);
+    void setObjectSize(int ohfi, qint64 size);
+
     int getPathId(const QString &path);
     QString getPathFromId(int ohfi);
     bool updateSize(int ohfi, quint64 size);
@@ -52,8 +66,6 @@ public:
     uint insertPhotoEntry(const QString &path, int type, int parent);
     uint insertSavedataEntry(const QString &path, int type, int parent);
     uint insertApplicationEntry(const QString &path, int type, int parent, int app_type);
-
-    bool getObjectMetadata(int ohfi, metadata_t &metadata);
 
 private:
     int recursiveScanRootDirectory(const QString &base_path, int parent, int type);

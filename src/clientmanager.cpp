@@ -26,8 +26,8 @@
 
 #include <vitamtp.h>
 
-ClientManager::ClientManager(QObject *parent) :
-    QObject(parent)
+ClientManager::ClientManager(Database *db, QObject *parent) :
+    QObject(parent), m_db(db)
 {
 }
 
@@ -63,11 +63,10 @@ void ClientManager::start()
     // initializing database for the first use
     refreshDatabase();
 
-    CmaEvent::db = &db;
-    connect(&db, SIGNAL(fileAdded(QString)), &progress, SLOT(setFileName(QString)));
-    connect(&db, SIGNAL(directoryAdded(QString)), &progress, SLOT(setDirectoryName(QString)));
-    connect(&db, SIGNAL(updated(int)), this, SLOT(databaseUpdated(int)));
-    connect(&progress, SIGNAL(canceled()), &db, SLOT(cancelOperation()), Qt::DirectConnection);
+    connect(m_db, SIGNAL(fileAdded(QString)), &progress, SLOT(setFileName(QString)));
+    connect(m_db, SIGNAL(directoryAdded(QString)), &progress, SLOT(setDirectoryName(QString)));
+    connect(m_db, SIGNAL(updated(int)), this, SLOT(databaseUpdated(int)));
+    connect(&progress, SIGNAL(canceled()), m_db, SLOT(cancelOperation()), Qt::DirectConnection);
 
     thread_count = 0;
     qDebug("Starting cma threads");
@@ -76,7 +75,7 @@ void ClientManager::start()
 
     if(!settings.value("disableUSB", false).toBool()) {
         usb_thread = new QThread();
-        client = new CmaClient();
+        client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
         connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
         connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
@@ -96,7 +95,7 @@ void ClientManager::start()
 
     if(!settings.value("disableWireless", false).toBool()) {
         wireless_thread = new QThread();
-        client = new CmaClient();
+        client = new CmaClient(m_db);
         wireless_thread->setObjectName("wireless_thread");
         connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
         connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
@@ -124,7 +123,7 @@ void ClientManager::start()
 void ClientManager::refreshDatabase()
 {
     bool prepared;
-    if(!db.reload(prepared)) {
+    if(!m_db->reload(prepared)) {
         if(prepared) {
             emit messageSent(tr("Cannot refresh the database while is in use"));
         } else {

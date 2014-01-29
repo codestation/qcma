@@ -275,13 +275,6 @@ int SQLiteDB::recursiveScanRootDirectory(const QString &base_path, int parent, i
     return total_objects;
 }
 
-bool SQLiteDB::getObjectMetadata(int ohfi, metadata_t &metadata)
-{
-    Q_UNUSED(ohfi);
-    Q_UNUSED(metadata);
-    return false;
-}
-
 int SQLiteDB::getPathId(const QString &path)
 {
     QSqlQuery query(QString("SELECT object_id from sources WHERE path = %1").arg(path));
@@ -811,4 +804,71 @@ uint SQLiteDB::insertApplicationEntry(const QString &path, int type, int parent,
 
     db.commit();
     return ohfi;
+}
+
+
+
+bool SQLiteDB::getObjectMetadata(int ohfi, metadata_t &metadata)
+{
+    return false;
+}
+
+int SQLiteDB::childObjectCount(int parent_ohfi)
+{
+    return 0;
+}
+
+bool SQLiteDB::deleteEntry(int ohfi, int root_ohfi)
+{
+    return false;
+}
+
+int SQLiteDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index, int max_number)
+{
+    return 0;
+}
+
+qint64 SQLiteDB::getObjectSize(int ohfi)
+{
+    return -1;
+}
+
+int SQLiteDB::getPathId(const char *name, int ohfi)
+{
+    return 0;
+}
+
+int SQLiteDB::insertObjectEntry(const QString &path, int parent_ohfi)
+{
+    return 0;
+}
+
+QString SQLiteDB::getAbsolutePath(int ohfi)
+{
+    return NULL;
+}
+
+QString SQLiteDB::getRelativePath(int ohfi)
+{
+    return NULL;
+}
+
+bool SQLiteDB::renameObject(int ohfi, const QString &name)
+{
+    return false;
+}
+
+void SQLiteDB::setObjectSize(int ohfi, qint64 size)
+{
+
+}
+
+int SQLiteDB::getRootId(int ohfi)
+{
+    return 0;
+}
+
+int SQLiteDB::getParentId(int ohfi)
+{
+    return 0;
 }

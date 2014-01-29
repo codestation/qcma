@@ -24,7 +24,8 @@ const file_type video_list[] = {
 };
 
 Database::Database(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    mutex(QMutex::Recursive)
 {
 }
 

@@ -20,9 +20,10 @@
 #ifndef CMAEVENT_H
 #define CMAEVENT_H
 
-#include "qlistdb.h"
+#include "database.h"
 #include "httpdownloader.h"
 
+#include <QFile>
 #include <QNetworkReply>
 #include <QObject>
 #include <QSemaphore>
@@ -33,12 +34,8 @@ class CmaEvent : public QObject
 {
     Q_OBJECT
 public:
-    explicit CmaEvent(vita_device_t *s_device);
-
+    explicit CmaEvent(Database *db, vita_device_t *s_device);
     void vitaEventCancelTask(vita_event_t *event, int eventId);
-
-    // don't make the db reference static
-    static QListDB *db;
 
 private:
     uint16_t processAllObjects(metadata_t &metadata, uint32_t handle);
@@ -71,6 +68,8 @@ private:
 
     vita_device_t *device;
     vita_event_t t_event;
+
+    Database *m_db;
 
     // control variables
     bool is_active;

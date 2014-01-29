@@ -45,8 +45,8 @@ bool CmaClient::in_progress = false;
 
 CmaClient *CmaClient::this_object = NULL;
 
-CmaClient::CmaClient(QObject *parent) :
-    QObject(parent)
+CmaClient::CmaClient(Database *db, QObject *parent) :
+    QObject(parent), m_db(db)
 {
     this_object = this;
 }
@@ -188,7 +188,7 @@ void CmaClient::enterEventLoop(vita_device_t *device)
 
     qDebug("Starting event loop");
 
-    CmaEvent eventLoop (device);
+    CmaEvent eventLoop(m_db, device);
     QThread thread;
     thread.setObjectName("event_thread");
 

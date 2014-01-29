@@ -83,6 +83,7 @@ void ConfigWidget::setDefaultData()
     ui->metadataCheck->setChecked(settings.value("skipMetadata", false).toBool());
     ui->usbCheck->setChecked(settings.value("disableUSB", false).toBool());
     ui->wifiCheck->setChecked(settings.value("disableWireless", false).toBool());
+    ui->databaseSelect->setCurrentIndex(settings.value("useMemoryStorage", true).toBool() ? 0 : 1);
 }
 
 ConfigWidget::~ConfigWidget()
@@ -154,6 +155,7 @@ void ConfigWidget::accept()
     settings.setValue("skipMetadata", ui->metadataCheck->isChecked());
     settings.setValue("disableUSB", ui->usbCheck->isChecked());
     settings.setValue("disableWireless", ui->wifiCheck->isChecked());
+    settings.setValue("useMemoryStorage", ui->databaseSelect->currentIndex() == 0);
     settings.sync();
 
     done(Accepted);

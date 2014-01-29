@@ -52,10 +52,13 @@ private:
 
     bool first_run;
 
+    // database
+    Database *db;
+
     // forms
-    ConfigWidget dialog;
-    ClientManager manager;
-    BackupManagerForm form;
+    ConfigWidget *configForm;
+    ClientManager *managerForm;
+    BackupManagerForm *backupForm;
 
     //system tray
     QAction *quit;

@@ -1,7 +1,9 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#include <QMutex>
 #include <QObject>
+
 #include <vitamtp.h>
 
 typedef struct {
@@ -9,6 +11,8 @@ typedef struct {
     int file_format;
     int file_codec;
 } file_type;
+
+#define OHFI_BASE_VALUE 256
 
 #define FILE_FORMAT_MP4 1
 #define FILE_FORMAT_WAV 2
@@ -39,7 +43,6 @@ class Database : public QObject
     Q_OBJECT
 public:
     explicit Database(QObject *parent = 0);
-
     virtual int childObjectCount(int parent_ohfi) = 0;
     virtual bool deleteEntry(int ohfi, int root_ohfi = 0) = 0;
     virtual QString getAbsolutePath(int ohfi) = 0;
@@ -54,11 +57,15 @@ public:
     virtual int getParentId(int ohfi) = 0;
     virtual int getRootId(int ohfi) = 0;
 
+    virtual bool reload(bool &prepared) = 0;
+    virtual void setUUID(const QString uuid) = 0;
+
     static int checkFileType(const QString path, int ohfi_root);
     static void loadMusicMetadata(const QString &path, metadata_t &metadata);
     static void loadPhotoMetadata(const QString &path, metadata_t &metadata);
     static void loadVideoMetadata(const QString &path, metadata_t &metadata);
 
+    QMutex mutex;
 };
 
 #endif // DATABASE_H

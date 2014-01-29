@@ -19,8 +19,10 @@
 
 #include "mainwidget.h"
 #include "cmaclient.h"
-#include "cmaevent.h"
 #include "utils.h"
+
+#include "qlistdb.h"
+#include "sqlitedb.h"
 
 #include <QAction>
 #include <QApplication>
@@ -43,7 +45,7 @@ const QStringList MainWidget::path_list = QStringList() << "photoPath" << "music
 bool sleptOnce = false;
 
 MainWidget::MainWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL)
 {
 }
 
@@ -54,12 +56,12 @@ void MainWidget::checkSettings()
     foreach(const QString &path, path_list) {
         if(!settings.contains(path)) {
             first_run = true;
-            dialog.show();
+            configForm->show();
             return;
         }
     }
     first_run = false;
-    manager.start();
+    managerForm->start();
 }
 
 void MainWidget::dialogResult(int result)
@@ -67,7 +69,7 @@ void MainWidget::dialogResult(int result)
     if(result == QDialog::Accepted) {
         if(first_run) {
             first_run = false;
-            manager.start();
+            managerForm->start();
         }
     } else if(first_run) {
         qApp->quit();
@@ -80,7 +82,7 @@ void MainWidget::stopServer()
     if(CmaClient::isRunning()) {
         receiveMessage(tr("Stopping QCMA (disconnect your PS Vita)"));
     }
-    manager.stop();
+    managerForm->stop();
 }
 
 void MainWidget::deviceDisconnect()
@@ -117,6 +119,16 @@ void MainWidget::deviceConnected(QString message)
 
 void MainWidget::prepareApplication()
 {
+    //TODO: delete database before exit
+    if(QSettings().value("useMemoryStorage", true).toBool()) {
+        db = new QListDB();
+    } else {
+        db = NULL; // new SQLiteDB();
+    }
+
+    configForm = new ConfigWidget(this);
+    backupForm = new BackupManagerForm(db, this);
+    managerForm = new ClientManager(db, this);
     connectSignals();
     createTrayIcon();
     checkSettings();
@@ -124,13 +136,13 @@ void MainWidget::prepareApplication()
 
 void MainWidget::connectSignals()
 {
-    connect(&dialog, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
-    connect(&manager, SIGNAL(stopped()), qApp, SLOT(quit()));
-    connect(&manager, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnected(QString)));
-    connect(&manager, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(&manager, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
+    connect(configForm, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
+    connect(managerForm, SIGNAL(stopped()), qApp, SLOT(quit()));
+    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnected(QString)));
+    connect(managerForm, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    connect(managerForm, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
 
-    form.db = &manager.db;
+    //backupForm.db = managerForm.db;
 }
 
 void MainWidget::setTrayTooltip(QString message)
@@ -144,8 +156,8 @@ void MainWidget::setTrayTooltip(QString message)
 
 void MainWidget::openManager()
 {
-    form.loadBackupListing(-1);
-    form.show();
+    backupForm->loadBackupListing(-1);
+    backupForm->show();
 }
 
 void MainWidget::showAboutDialog()
@@ -186,9 +198,9 @@ void MainWidget::createTrayIcon()
     about_qt = new QAction(tr("Abou&t Qt"), this);
     quit = new QAction(tr("&Quit"), this);
 
-    connect(options, SIGNAL(triggered()), &dialog, SLOT(open()));
+    connect(options, SIGNAL(triggered()), configForm, SLOT(open()));
     connect(backup, SIGNAL(triggered()), this, SLOT(openManager()));
-    connect(reload, SIGNAL(triggered()), &manager, SLOT(refreshDatabase()));
+    connect(reload, SIGNAL(triggered()), managerForm, SLOT(refreshDatabase()));
     connect(about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
     connect(about_qt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
