@@ -12,6 +12,7 @@ Source:         https://github.com/codestation/qcma.git
 Group:          Productivity/File utilities
 Requires:       ffmpeg
 Requires:       libqt5-qtbase
+Requires:       libqt5-qtimageformats
 Requires:       libvitamtp3 >= 2.5.0
 BuildRequires:  pkg-config
 BuildRequires:  ffmpeg-devel

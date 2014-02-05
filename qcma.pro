@@ -156,16 +156,11 @@ isEmpty(QCMA_GIT_VERSION) {
     DEFINES += QCMA_VER=\\\"$$VERSION\\\"
 } else {
     DEFINES += QCMA_VER=\\\"$$QCMA_GIT_VERSION\\\"
-}
 
-GET_HASHES {
-    # try to get the current git commit and branch
-    QCMA_GIT_HASH=$$system(git rev-parse --short HEAD)
-    QCMA_GIT_BRANCH=$$system(git rev-parse --abbrev-ref HEAD)
-
-    # pass the current git commit hash
-    !isEmpty(QCMA_GIT_HASH):!isEmpty(QCMA_GIT_BRANCH) {
-        DEFINES += QCMA_BUILD_HASH=\\\"$$QCMA_GIT_HASH\\\"
-        DEFINES += QCMA_BUILD_BRANCH=\\\"$$QCMA_GIT_BRANCH\\\"
+    # git executable and metadata are available, might as well get commit hash and branch name
+    GET_HASHES {
+        DEFINES += QCMA_BUILD_HASH=\\\"$$system(git rev-parse --short HEAD)\\\"
+        DEFINES += QCMA_BUILD_BRANCH=\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\"
     }
+
 }
