@@ -22,7 +22,7 @@
 #include "cmaobject.h"
 #include "sforeader.h"
 #include "confirmdialog.h"
-#include "utils.h"
+#include "cmautils.h"
 #include "filterlineedit.h"
 
 #include <QDebug>
@@ -83,7 +83,7 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     }
 }
 
-void BackupManagerForm::setBackupUsage(quint64 size)
+void BackupManagerForm::setBackupUsage(qint64 size)
 {
     ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(size, true)));
 }
@@ -163,10 +163,12 @@ void BackupManagerForm::loadBackupListing(int index)
 #else
     horiz_header->setResizeMode(QHeaderView::Stretch);
 #endif
-    setBackupUsage(m_db->getObjectSize(ohfi));
+    qint64 backup_size = m_db->getObjectSize(ohfi);
+    setBackupUsage(backup_size);
     QString path = m_db->getAbsolutePath(ohfi);
     QList<BackupItem *> item_list;
 
+    metadata_t *first = meta;
     while(meta) {
         QString base_path = path + QDir::separator() + meta->name;
         QString parent_path = sys_dir ? base_path + QDir::separator() + "sce_sys" : base_path;
@@ -214,6 +216,8 @@ void BackupManagerForm::loadBackupListing(int index)
         item_list << item;
         meta = meta->next_metadata;
     }
+
+    m_db->freeMetadata(first);
 
     qSort(item_list.begin(), item_list.end(), BackupItem::lessThan);
 

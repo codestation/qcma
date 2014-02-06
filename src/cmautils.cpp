@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils.h"
+#include "cmautils.h"
 #include "avdecoder.h"
 
 #include <QBuffer>
@@ -162,7 +162,7 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
     return data;
 }
 
-QString readable_size(quint64 size, bool use_gib)
+QString readable_size(qint64 size, bool use_gib)
 {
     QStringList list;
     list << "KiB" << "MiB";

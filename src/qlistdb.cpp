@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils.h"
+#include "cmautils.h"
 #include "qlistdb.h"
 #include "cmaobject.h"
 
@@ -34,8 +34,8 @@ QListDB::QListDB(QObject *parent) :
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     CMARootObject::uuid  = uuid;
     thread = new QThread();
-    timer = new QTimer();
     moveToThread(thread);
+    timer = new QTimer();
     thread->start();
 
     timer->setInterval(0);
@@ -45,7 +45,7 @@ QListDB::QListDB(QObject *parent) :
 
 QListDB::~QListDB()
 {
-    destroy();
+    clear();
     timer->stop();
     delete timer;
     thread->quit();
@@ -53,53 +53,41 @@ QListDB::~QListDB()
     delete thread;
 }
 
-void QListDB::setUUID(const QString uuid)
+void QListDB::setUUID(const QString &uuid)
 {
     CMARootObject::uuid = uuid;
     QSettings().setValue("lastAccountId", uuid);
 }
 
-bool QListDB::reload(bool &prepared)
+bool QListDB::load()
 {
-    if(mutex.tryLock()) {
+    // not implemented
+    return false;
+}
+
+bool QListDB::rescan()
+{
+    if(mutex.tryLock(1000)) {
         if(CMARootObject::uuid != "ffffffffffffffff") {
             timer->start();
-            prepared = true;
+            return true;
         } else {
             mutex.unlock();
-            prepared = false;
             return false;
         }
-        return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
-void QListDB::process()
+void QListDB::clear()
 {
-    destroy();
-    cancel_operation = false;
-    int count = create();
-    cancel_operation = false;
-    qDebug("Added %i entries to the database", count);
-    if(count < 0) {
-        destroy();
+    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+        CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());
+        delete first;
+        qDeleteAll(*root);
     }
-    emit updated(count);
-    mutex.unlock();
-}
 
-void QListDB::cancelOperation()
-{
-    QMutexLocker locker(&cancel);
-    cancel_operation = true;
-}
-
-bool QListDB::continueOperation()
-{
-    QMutexLocker locker(&cancel);
-    return !cancel_operation;
+    object_list.clear();
 }
 
 int QListDB::create()
@@ -146,6 +134,8 @@ int QListDB::create()
         if(dir_count < 0) {
             return -1;
         }
+
+        qDebug("Added %i objects for OHFI %#02X", dir_count, ohfi_array[i]);
 
         total_objects += dir_count;
         object_list[ohfi_array[i]] = list;
@@ -234,19 +224,6 @@ int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int 
     }
 
     return total_objects;
-}
-
-void QListDB::destroy()
-{
-    //QMutexLocker locker(&mutex);
-
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
-        CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());
-        delete first;
-        qDeleteAll(*root);
-    }
-
-    object_list.clear();
 }
 
 bool QListDB::removeInternal(root_list &list, int ohfi)
@@ -487,7 +464,7 @@ int QListDB::getPathId(const char *name, int ohfi)
     return 0;
 }
 
-int QListDB::insertObjectEntry(const QString &path, int parent_ohfi)
+int QListDB::insertObjectEntry(const QString &path, const QString &name, int parent_ohfi)
 {
     QMutexLocker locker(&mutex);
 
@@ -505,7 +482,8 @@ int QListDB::insertObjectEntry(const QString &path, int parent_ohfi)
                 parent_obj = parent_obj->parent;
             }
 
-            newobj->initObject(path, parent_obj->metadata.dataType);
+            QFileInfo info(path, name);
+            newobj->initObject(info, parent_obj->metadata.dataType);
             cat_list->append(newobj);
             return newobj->metadata.ohfi;
         }

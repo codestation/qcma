@@ -21,7 +21,7 @@
 #include "capability.h"
 #include "avdecoder.h"
 #include "cmaevent.h"
-#include "utils.h"
+#include "cmautils.h"
 
 #include <QApplication>
 #include <QDateTime>

@@ -21,7 +21,7 @@
 #include "sforeader.h"
 #include "avdecoder.h"
 #include "database.h"
-#include "utils.h"
+#include "cmautils.h"
 
 #include <QDir>
 #include <QDateTime>

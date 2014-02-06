@@ -19,7 +19,7 @@
 
 #include "mainwidget.h"
 #include "cmaclient.h"
-#include "utils.h"
+#include "cmautils.h"
 
 #include "qlistdb.h"
 #include "sqlitedb.h"
@@ -123,7 +123,7 @@ void MainWidget::prepareApplication()
     if(QSettings().value("useMemoryStorage", true).toBool()) {
         db = new QListDB();
     } else {
-        db = NULL; // new SQLiteDB();
+        db = new SQLiteDB();
     }
 
     configForm = new ConfigWidget(this);
@@ -267,4 +267,5 @@ MainWidget::~MainWidget()
 #ifndef ENABLE_KDE_NOTIFIER
     trayIcon->hide();
 #endif
+    delete db;
 }

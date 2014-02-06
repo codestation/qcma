@@ -18,7 +18,7 @@
  */
 
 #include "cmaevent.h"
-#include "utils.h"
+#include "cmautils.h"
 
 #include <QDateTime>
 #include <QDebug>
@@ -179,7 +179,8 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
         m_db->deleteEntry(ohfi);
     }
 
-    QDir dir(m_db->getAbsolutePath(parent_metadata.ohfi));
+    QString fullpath = m_db->getAbsolutePath(parent_metadata.ohfi);
+    QDir dir(fullpath);
 
     if(dataType & Folder) {
         if(!dir.mkpath(name)) {
@@ -205,11 +206,9 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
         }
     }
 
-    QFileInfo info(dir, name);
-    int new_ohfi = m_db->insertObjectEntry(info.absoluteFilePath(), parent_metadata.ohfi);
+    int new_ohfi = m_db->insertObjectEntry(fullpath, name, parent_metadata.ohfi);
+    qDebug("Added object %s with OHFI %i to database", name, new_ohfi);
     free(name);
-
-    qDebug() << QString("Added object %1 with OHFI %2 to database").arg(info.absoluteFilePath(), QString::number(new_ohfi));
 
     if(dataType & Folder) {
         metadata_t folder_metadata;
@@ -389,6 +388,7 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
     } else {
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
+    m_db->freeMetadata(meta);
 }
 
 void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
@@ -469,6 +469,8 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         metadata = metadata->next_metadata;
 
     } while(metadata && metadata->ohfiParent >= OHFI_BASE_VALUE); // get everything under this "folder"
+
+    m_db->freeMetadata(start);
 
     VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, handle);
 
@@ -562,13 +564,14 @@ void CmaEvent::vitaEventSendObjectStatus(vita_event_t *event, int eventId)
 
     QMutexLocker locker(&m_db->mutex);
 
+    qDebug("Checking for path %s under ohfi %i", objectstatus.title, objectstatus.ohfiRoot);
     int ohfi = m_db->getPathId(objectstatus.title, objectstatus.ohfiRoot);
 
     if(ohfi == 0) { // not in database, don't return metadata
         qDebug("Object %s not in database (OHFI: %i). Sending OK response for non-existence", objectstatus.title, objectstatus.ohfiRoot);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     } else {
-        metadata_t metadata;
+        metadata_t metadata = metadata_t();
         m_db->getObjectMetadata(ohfi, metadata);
         metadata.next_metadata = NULL;
         qDebug("Sending metadata for OHFI %d", ohfi);
@@ -780,7 +783,7 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
             qWarning("Unable to create temporary folder: %s", operateobject.title);
             VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
-            int new_ohfi = m_db->insertObjectEntry(QDir(dir).absoluteFilePath(operateobject.title), operateobject.ohfi);
+            int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
             qDebug("Created folder %s with OHFI %d", operateobject.title, new_ohfi);
             VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
         }
@@ -794,7 +797,7 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
             qWarning("Unable to create temporary file: %s", operateobject.title);
             VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
-            int new_ohfi = m_db->insertObjectEntry(file.fileName(), operateobject.ohfi);
+            int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
             //qDebug("Created file %s with OHFI %d under parent %s", newobj->metadata.path, new_ohfi, root->metadata.path);
             VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
         }

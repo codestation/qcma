@@ -38,8 +38,13 @@ public:
     explicit QListDB(QObject *parent = 0);
     ~QListDB();
 
+    bool load();
+    bool rescan();
+    void close();
+    void clear();
+
     bool reload(bool &prepared);
-    void setUUID(const QString uuid);
+    void setUUID(const QString &uuid);
 
     int childObjectCount(int parent_ohfi);
     bool deleteEntry(int ohfi, int root_ohfi = 0);
@@ -51,9 +56,12 @@ public:
     int getPathId(const char *name, int ohfi);
     QString getRelativePath(int ohfi);
     int getRootId(int ohfi);
-    int insertObjectEntry(const QString &path, int parent_ohfi);
+    int insertObjectEntry(const QString &path, const QString &name, int parent_ohfi);
     bool renameObject(int ohfi, const QString &name);
     void setObjectSize(int ohfi, qint64 size);
+    void freeMetadata(metadata_t *metadata) {
+        Q_UNUSED(metadata);
+    }
 
 private:
     typedef struct {
@@ -65,7 +73,6 @@ private:
     typedef QMap<int, root_list> map_list;
 
     int create();
-    void destroy();
     int scanRootDirectory(root_list &list,int ohfi_type);
     int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
     bool hasFilter(const CMARootObject *object,int ohfi);
@@ -78,26 +85,10 @@ private:
     bool find(int ohfi, find_data &data);
     int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
     CMAObject *ohfiToObject(int ohfi);
-    bool continueOperation();
-
-    // control variables
-    QMutex cancel;
-    bool cancel_operation;
 
     QTimer *timer;
     QThread *thread;
     map_list object_list;
-
-signals:
-    void fileAdded(QString);
-    void directoryAdded(QString);
-    void updated(int);
-
-protected slots:
-    void process();
-
-public slots:
-    void cancelOperation();
 };
 
 #endif // QLISTDB_H

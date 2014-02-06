@@ -1,4 +1,23 @@
-#include "utils.h"
+/*
+ *  QCMA: Cross-platform content manager assistant for the PS Vita
+ *
+ *  Copyright (C) 2014  Codestation
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "cmautils.h"
 #include "sqlitedb.h"
 #include "sforeader.h"
 #include "avdecoder.h"
@@ -26,13 +45,14 @@ static const char create_adjacent[] = "CREATE TABLE IF NOT EXISTS adjacent_objec
 static const char create_obj_node[] = "CREATE TABLE IF NOT EXISTS object_node ("
                                       "object_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                                       "type INTEGER NOT NULL,"
+                                      "data_type INTEGER NOT NULL,"
                                       "title TEXT,"
                                       "child_count INTEGER NOT NULL DEFAULT 0,"
                                       "reference_count INTEGER NOT NULL DEFAULT 0);";
 
 static const char create_sources[] = "CREATE TABLE IF NOT EXISTS sources ("
                                      "object_id INTEGER PRIMARY KEY REFERENCES object_node(object_id) ON DELETE CASCADE,"
-                                     "path TEXT UNIQUE NOT NULL CHECK (LENGTH(path) > 0),"
+                                     "path TEXT NOT NULL CHECK (LENGTH(path) > 0),"
                                      "size INTEGER,"
                                      "date_created TIMESTAMP,"
                                      "date_modified TIMESTAMP)";
@@ -114,19 +134,23 @@ static const char *trigger_list[] = {
     create_trigger_node, create_trigger_adjins, create_trigger_adjdel
 };
 
+static const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VIDEO,
+                                  VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP, VITA_OHFI_PSPAPP,
+                                  VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP, VITA_OHFI_PSMAPP
+                                };
+
 SQLiteDB::SQLiteDB(QObject *parent) :
     Database(parent)
 {
     uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
-}
+    thread = new QThread();
+    moveToThread(thread);
+    timer = new QTimer();
+    thread->start();
+    timer->setInterval(0);
+    timer->setSingleShot(true);
+    connect(timer, SIGNAL(timeout()), this, SLOT(process()));
 
-SQLiteDB::~SQLiteDB()
-{
-    db.close();
-}
-
-bool SQLiteDB::open()
-{
     // fetch a configured database path if it exists
     QString db_path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     db_path = QSettings().value("databasePath", db_path).toString();
@@ -134,24 +158,66 @@ bool SQLiteDB::open()
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(db_path + QDir::separator() + "qcma.sqlite");
-
-    return db.open();
 }
 
-void SQLiteDB::remove()
+SQLiteDB::~SQLiteDB()
 {
+    db.close();
+    timer->stop();
+    delete timer;
+    thread->quit();
+    thread->wait();
+    delete thread;
+}
+
+
+void SQLiteDB::setUUID(const QString &uuid)
+{
+    this->uuid = uuid;
+    QSettings().setValue("lastAccountId", uuid);
+}
+
+bool SQLiteDB::load()
+{
+    bool success = false;
+
+    if(db.open()) {
+        qDebug() << "Database created/registered";
+        success = !initialize();
+    } else {
+        const QSqlError error = db.lastError();
+        qWarning() << "Error opening connection to the database:" << error.text();
+    }
+
+    return success;
+}
+
+bool SQLiteDB::rescan()
+{
+    if(mutex.tryLock(1000)) {
+        if(uuid != "ffffffffffffffff") {
+            timer->start();
+            return true;
+        } else {
+            mutex.unlock();
+            return false;
+        }
+    }
+    return false;
+}
+
+void SQLiteDB::clear()
+{
+    db.close();
+    //QSqlDatabase::removeDatabase("QSQLITE");
     QString db_path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     db_path = QSettings().value("databasePath", db_path).toString();
-    QDir(QDir::root()).mkpath(db_path);
-
     QFile(db_path + QDir::separator() + "qcma.sqlite").remove();
+    load();
 }
 
 bool SQLiteDB::initialize()
 {
-    if (!db.isOpen()) {
-        return false;
-    }
     QSqlQuery query;
 
     for(unsigned int i = 0; i < sizeof(table_list) / sizeof(const char *); i++) {
@@ -169,7 +235,7 @@ bool SQLiteDB::initialize()
     }
 
     // force object_id to start at 256
-    if(query.exec("INSERT INTO object_node (object_id, type) VALUES (255, 0)")) {
+    if(query.exec("INSERT INTO object_node (object_id, data_type, type) VALUES (255, 0, 0)")) {
         query.exec("DELETE FROM object_node WHERE object_id = 255");
     }
     return true;
@@ -184,95 +250,158 @@ int SQLiteDB::create()
 {
     int total_objects = 0;
 
-    const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_VIDEO, VITA_OHFI_PHOTO,
-                               VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP, VITA_OHFI_PSPAPP,
-                               VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP, VITA_OHFI_PSMAPP
-                             };
-
-    QSettings settings;
-    QString base_path;
-
+    db.transaction();
     for(int i = 0, max = sizeof(ohfi_array) / sizeof(int); i < max; i++) {
-        switch(ohfi_array[i]) {
-        case VITA_OHFI_MUSIC:
-            base_path = settings.value("musicPath").toString();
-            break;
-        case VITA_OHFI_VIDEO:
-            base_path = settings.value("videoPath").toString();
-            break;
-        case VITA_OHFI_PHOTO:
-            base_path = settings.value("photoPath").toString();
-            break;
-        case VITA_OHFI_BACKUP:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "SYSTEM" + QDir::separator() + uuid;
-            break;
-        case VITA_OHFI_VITAAPP:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "APP" + QDir::separator() + uuid;
-            break;
-        case VITA_OHFI_PSPAPP:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "PGAME" + QDir::separator() + uuid;
-            break;
-        case VITA_OHFI_PSPSAVE:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "PSAVEDATA" + QDir::separator() + uuid;
-            break;
-        case VITA_OHFI_PSXAPP:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "PSGAME" + QDir::separator() + uuid;
-            break;
-        case VITA_OHFI_PSMAPP:
-            base_path = settings.value("appsPath").toString() + QDir::separator() + "PSM" + QDir::separator() + uuid;
-            break;
-        }
-
-        int dir_count = recursiveScanRootDirectory(base_path, ohfi_array[i], ohfi_array[i]);
+        QString base_path = getBasePath(ohfi_array[i]);
+        int dir_count = recursiveScanRootDirectory(base_path, NULL, ohfi_array[i], ohfi_array[i]);
 
         if(dir_count < 0) {
+            db.rollback();
             return -1;
         }
+
+        //qDebug("Added %i objects for OHFI %#02X", dir_count, ohfi_array[i]);
+
         total_objects += dir_count;
     }
+    db.commit();
     return total_objects;
 }
 
-int SQLiteDB::recursiveScanRootDirectory(const QString &base_path, int parent, int parent_type)
+QString SQLiteDB::getBasePath(int root_ohfi)
+{
+    QString base_path;
+    QSettings settings;
+
+    switch(root_ohfi) {
+    case VITA_OHFI_MUSIC:
+        base_path = settings.value("musicPath").toString();
+        break;
+    case VITA_OHFI_VIDEO:
+        base_path = settings.value("videoPath").toString();
+        break;
+    case VITA_OHFI_PHOTO:
+        base_path = settings.value("photoPath").toString();
+        break;
+    case VITA_OHFI_BACKUP:
+        base_path = settings.value("appsPath").toString() + "/SYSTEM/" + uuid;
+        break;
+    case VITA_OHFI_VITAAPP:
+        base_path = settings.value("appsPath").toString() + "/APP/" + uuid;
+        break;
+    case VITA_OHFI_PSPAPP:
+        base_path = settings.value("appsPath").toString() + "/PGAME/" + uuid;
+        break;
+    case VITA_OHFI_PSPSAVE:
+        base_path = settings.value("appsPath").toString() + "/PSAVEDATA/" + uuid;
+        break;
+    case VITA_OHFI_PSXAPP:
+        base_path = settings.value("appsPath").toString() + "/PSGAME/" + uuid;
+        break;
+    case VITA_OHFI_PSMAPP:
+        base_path = settings.value("appsPath").toString() + "/PSM/" + uuid;
+        break;
+    }
+    return base_path;
+}
+
+int SQLiteDB::recursiveScanRootDirectory(const QString &base_path, const QString &rel_path, int parent_ohfi, int root_ohfi)
 {
     int total_objects = 0;
 
-    QDir dir(base_path);
+    QDir dir(base_path + "/" + rel_path);
     dir.setSorting(QDir::Name);
     QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     foreach(const QFileInfo &info, qsl) {
-        //qDebug() << "Processing " << info.fileName();
-        if(info.isDir()) {
-            int ohfi = insertDirectoryEntry(info.absoluteFilePath(), parent_type, parent);
-            total_objects += recursiveScanRootDirectory(info.absoluteFilePath(), ohfi, parent_type);
-        } else if(info.isFile()) {
-            switch(parent_type) {
-            case VITA_OHFI_MUSIC:
-                insertMusicEntry(info.absoluteFilePath(), OBJECT_MUSIC | (parent_type & ~OBJECT_FOLDER), parent);
-                break;
-            case VITA_OHFI_PHOTO:
-                insertPhotoEntry(info.absoluteFilePath(), OBJECT_PHOTO | (parent_type & ~OBJECT_FOLDER), parent);
-                break;
-            case VITA_OHFI_VIDEO:
-                insertVideoEntry(info.absoluteFilePath(), OBJECT_VIDEO | (parent_type & ~OBJECT_FOLDER), parent);
-                break;
-            case VITA_OHFI_PSPSAVE:
-                insertSavedataEntry(info.absoluteFilePath(), OBJECT_SAVEDATA | (parent_type & ~OBJECT_FOLDER), parent);
-                break;
-            case VITA_OHFI_VITAAPP:
-            case VITA_OHFI_PSPAPP:
-            case VITA_OHFI_PSXAPP:
-            case VITA_OHFI_PSMAPP:
-            case VITA_OHFI_BACKUP:
-                insertApplicationEntry(info.absoluteFilePath(), OBJECT_APPLICATION | (parent_type & ~OBJECT_FOLDER), parent, parent_type);
-            }
 
-            total_objects++;
+        if(!continueOperation()) {
+            return -1;
+        }
+
+        //qDebug() << "Processing " << info.fileName();
+
+        QString rel_name = rel_path.isNull() ? info.fileName() : rel_path + "/" + info.fileName();
+
+        int ohfi = insertObjectEntryInternal(base_path, rel_name, parent_ohfi, root_ohfi);
+
+        if(ohfi > 0) {
+            // update progress dialog
+            if(info.isDir()) {
+                emit directoryAdded(base_path + "/" + rel_name);
+                total_objects += recursiveScanRootDirectory(base_path, rel_name, ohfi, root_ohfi);
+                qint64 dirsize = getChildenTotalSize(ohfi);
+                setObjectSize(ohfi, dirsize);
+            } else if(info.isFile()) {
+                emit fileAdded(info.fileName());
+                total_objects++;
+            }
         }
     }
 
     return total_objects;
+}
+
+int SQLiteDB::insertObjectEntry(const QString &path, const QString &name, int parent_ohfi)
+{
+    int ohfi;
+    int type;
+
+    if((type = getObjectType(parent_ohfi)) == 0) {
+        return 0;
+    }
+    db.transaction();
+    if((ohfi = insertObjectEntryInternal(path, name, parent_ohfi, type)) == 0) {
+        db.rollback();
+    }
+    db.commit();
+
+    return ohfi;
+}
+
+int SQLiteDB::insertObjectEntryInternal(const QString &path, const QString &name, int parent_ohfi, int root_ohfi)
+{
+    int ohfi;
+    QFileInfo info(path, name);
+
+    if(info.isDir()) {
+        ohfi = insertDefaultEntry(path, name, info.fileName(), parent_ohfi, Folder);
+    } else {
+        ohfi = insertFileEntry(path, name, parent_ohfi, root_ohfi);
+    }
+
+    return ohfi;
+}
+
+int SQLiteDB::insertFileEntry(const QString &path, const QString &name, int parent_ohfi, int root_ohfi)
+{
+    int ohfi = 0;
+
+    switch(root_ohfi) {
+    case VITA_OHFI_MUSIC:
+        ohfi = insertMusicEntry(path, name, parent_ohfi, File | Music);
+        break;
+    case VITA_OHFI_PHOTO:
+        ohfi = insertPhotoEntry(path, name, parent_ohfi, File | Photo);
+        break;
+    case VITA_OHFI_VIDEO:
+        ohfi = insertVideoEntry(path, name, parent_ohfi, File | Video);
+        break;
+    case VITA_OHFI_PSPSAVE:
+        ohfi = insertSavedataEntry(path, name, parent_ohfi, File | SaveData);
+        break;
+    case VITA_OHFI_VITAAPP:
+    case VITA_OHFI_PSPAPP:
+    case VITA_OHFI_PSXAPP:
+    case VITA_OHFI_PSMAPP:
+    case VITA_OHFI_BACKUP:
+        ohfi = insertApplicationEntry(path, name, parent_ohfi, File | App, root_ohfi);
+        break;
+    default:
+        qFatal("Invalid parent type");
+    }
+
+    return ohfi;
 }
 
 int SQLiteDB::getPathId(const QString &path)
@@ -313,12 +442,6 @@ bool SQLiteDB::deleteEntry(int ohfi)
     return ret;
 }
 
-bool SQLiteDB::deleteEntry(const QString &path)
-{
-    QSqlQuery query(QString("DELETE FROM object_node WHERE object_id == (SELECT object_id FROM sources WHERE path == %1)").arg(path));
-    return query.exec();
-}
-
 bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
 {
     QSqlQuery query;
@@ -328,8 +451,6 @@ bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
 
     if(query.exec() && query.next()) {
         return true;
-    } else {
-        qDebug() << query.lastError();
     }
 
     query.prepare("INSERT INTO adjacent_objects (parent_id, child_id)"
@@ -343,67 +464,61 @@ bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
     return ret;
 }
 
-uint SQLiteDB::insertDirectoryEntry(const QString &path, int type, int parent)
+int SQLiteDB::insertDefaultEntry(const QString &path, const QString &name, const QString &title, int parent, int type)
 {
-    uint ohfi;
-    db.transaction();
-    QString dirname = QFileInfo(path).fileName();
+    int ohfi = 0;
 
-    if((ohfi = insertObjectEntry(dirname.toUtf8().constData(), type)) == 0) {
-        db.rollback();
+    if((ohfi = insertNodeEntry(title, VITA_DIR_TYPE_MASK_REGULAR, type)) == 0) {
         return 0;
     }
 
     if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
         return 0;
     }
 
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
+    if(!name.isNull() && !insertSourceEntry(ohfi, path, name)) {
         return 0;
     }
-    db.commit();
     return ohfi;
 }
 
-uint SQLiteDB::insertObjectEntry(const char *title, int type)
+int SQLiteDB::insertNodeEntry(const QString &title, int type, int data_type)
 {
     QSqlQuery query;
 
-    //query.prepare("SELECT object_id FROM object_node WHERE type == :type and title == :title");
-    //query.bindValue(0, type);
-    //query.bindValue(1, title);
-
-    //if(!query.exec() || !query.next()) {
-    query.prepare("INSERT INTO object_node (type, title) VALUES (:type, :title)");
+    query.prepare("INSERT INTO object_node (type, data_type, title) VALUES (:type, :data_type, :title)");
     query.bindValue(0, type);
-    query.bindValue(1, title);
+    query.bindValue(1, data_type);
+    query.bindValue(2, title);
 
     if(!query.exec() || !query.exec("SELECT last_insert_rowid()") || !query.next()) {
         qDebug() << query.lastError();
         return 0;
     }
-    //}
 
     return query.value(0).toInt();
 }
 
-bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path)
+bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path, const QString &name)
 {
-    qint64 size;
-    uint date_created, date_modified;
+    QVariant size, date_created, date_modified;
 
-    QFileInfo info(path);
-    size = info.size();
-    date_created = info.created().toTime_t();
-    date_modified = info.lastModified().toTime_t();
+    QFileInfo info(path, name);
+    if(info.isFile()) {
+        size = QVariant(info.size());
+        date_created = QVariant(info.created().toTime_t());
+    } else {
+        size = QVariant(QVariant::LongLong);
+        date_created = QVariant(QVariant::UInt);
+    }
+
+    date_modified = QVariant(info.lastModified().toTime_t());
 
     QSqlQuery query;
     query.prepare("REPLACE INTO sources (object_id, path, size, date_created, date_modified)"
                   "VALUES (:object_id, :path, :size, :date_created, :date_modified)");
     query.bindValue(0, object_id);
-    query.bindValue(1, path);
+    query.bindValue(1, name);
     query.bindValue(2, size);
     query.bindValue(3, date_created);
     query.bindValue(4, date_modified);
@@ -414,22 +529,22 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path)
     return ret;
 }
 
-uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
+uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int parent, int type)
 {
     bool ok;
-    uint ohfi;
+    int ohfi;
     AVDecoder decoder;
     quint64 duration;
     const char *artist, *album, *albumartist, *genre, *track, *title;
     int file_format, audio_codec, audio_bitrate, genre_id, artist_id, track_id, album_id, track_number;
 
-    int file_type = checkFileType(path, VITA_OHFI_MUSIC);
+    int file_type = checkFileType(name, VITA_OHFI_MUSIC);
     if(file_type < 0) {
-        qDebug() << "Excluding from database:" << path;
+        //qDebug() << "Excluding from database:" << path;
         return 0;
     }
 
-    if(!decoder.open(path)) {
+    if(!decoder.open(path + "/" + name)) {
         return 0;
     }
 
@@ -456,30 +571,16 @@ uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
     file_format = audio_list[file_type].file_format;
     audio_codec = audio_list[file_type].file_codec;
 
-    QByteArray basename = QFileInfo(path).baseName().toUtf8();
+    QByteArray basename = QFileInfo(name).baseName().toUtf8();
     title = decoder.getMetadataEntry("title", basename.constData());
 
-    db.transaction();
-
-    if((ohfi = insertObjectEntry(title, type)) == 0) {
-        db.rollback();
-        return 0;
-    }
-
-    if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
+    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
         return 0;
     }
 
     if(genre) {
-        genre_id = insertObjectEntry(genre, type | OBJECT_GENRE);
+        genre_id = insertNodeEntry(genre, VITA_DIR_TYPE_MASK_GENRES, type);
         if(!updateAdjacencyList(ohfi, genre_id)) {
-            db.rollback();
             return 0;
         }
     } else {
@@ -487,9 +588,8 @@ uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
     }
 
     if(artist) {
-        track_id = insertObjectEntry(artist, type | OBJECT_ARTIST);
+        track_id = insertNodeEntry(artist, VITA_DIR_TYPE_MASK_ARTISTS, type);
         if(!updateAdjacencyList(ohfi, track_id)) {
-            db.rollback();
             return 0;
         }
     } else {
@@ -497,9 +597,8 @@ uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
     }
 
     if(albumartist) {
-        artist_id = insertObjectEntry(albumartist, type | OBJECT_ALBUM_ARTIST);
+        artist_id = insertNodeEntry(albumartist, VITA_DIR_TYPE_MASK_REGULAR, type);
         if(!updateAdjacencyList(ohfi, artist_id)) {
-            db.rollback();
             return 0;
         }
     } else {
@@ -507,18 +606,15 @@ uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
     }
 
     if(album) {
-        album_id = insertObjectEntry(album, type | OBJECT_ALBUM);
+        album_id = insertNodeEntry(album, VITA_DIR_TYPE_MASK_ALBUMS, type);
 
         if(track_id && !updateAdjacencyList(ohfi, album_id)) {
-            db.rollback();
             return 0;
         }
         if(track_id && !updateAdjacencyList(album_id, track_id)) {
-            db.rollback();
             return 0;
         }
         if(artist_id && !updateAdjacencyList(album_id, artist_id)) {
-            db.rollback();
             return 0;
         }
     } else {
@@ -544,15 +640,13 @@ uint SQLiteDB::insertMusicEntry(const QString &path, int type, int parent)
     query.bindValue(11, track_number);
 
     if(!query.exec()) {
-        db.rollback();
         return 0;
     }
 
-    db.commit();
     return ohfi;
 }
 
-uint SQLiteDB::insertVideoEntry(const QString &path, int type, int parent)
+uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int parent, int type)
 {
     int ohfi;
     AVDecoder decoder;
@@ -560,13 +654,13 @@ uint SQLiteDB::insertVideoEntry(const QString &path, int type, int parent)
     int file_format, parental_level, width, height, video_codec, video_bitrate, audio_codec, audio_bitrate;
     const char *explanation, *copyright, *title;
 
-    if(!decoder.open(path) || !decoder.loadCodec(AVDecoder::CODEC_VIDEO)) {
+    if(!decoder.open(path + "/" + name) || !decoder.loadCodec(AVDecoder::CODEC_VIDEO)) {
         return 0;
     }
 
-    int file_type = checkFileType(path, VITA_OHFI_VIDEO);
+    int file_type = checkFileType(name, VITA_OHFI_VIDEO);
     if(file_type < 0) {
-        qDebug() << "Excluding from database:" << path;
+        //qDebug() << "Excluding from database:" << path;
         return 0;
     }
 
@@ -588,24 +682,12 @@ uint SQLiteDB::insertVideoEntry(const QString &path, int type, int parent)
         audio_bitrate = 0;
     }
 
-    QByteArray basename = QFileInfo(path).baseName().toUtf8();
+    QByteArray basename = QFileInfo(name).baseName().toUtf8();
     //title = decoder.getMetadataEntry("title", basename.constData());
     title = basename.constData();
 
-    db.transaction();
 
-    if((ohfi = insertObjectEntry(title, type)) == 0) {
-        db.rollback();
-        return 0;
-    }
-
-    if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
+    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
         return 0;
     }
 
@@ -629,53 +711,38 @@ uint SQLiteDB::insertVideoEntry(const QString &path, int type, int parent)
 
     if(!query.exec()) {
         qDebug() << query.lastError().text();
-        db.rollback();
         return 0;
     }
 
-    db.commit();
     return ohfi;
 }
 
-uint SQLiteDB::insertPhotoEntry(const QString &path, int type, int parent)
+uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int parent, int type)
 {
     int ohfi;
     QImage img;
     uint date_created;
     int width, height, file_format, photo_codec;
 
-    int file_type = checkFileType(path, VITA_OHFI_PHOTO);
+    int file_type = checkFileType(name, VITA_OHFI_PHOTO);
     if(file_type < 0) {
-        qDebug() << "Excluding from database:" << path;
+        //qDebug() << "Excluding from database:" << path;
         return 0;
     }
 
-    if(!img.load(path)) {
+    if(!img.load(path + "/" + name)) {
         return 0;
     }
 
-    date_created = QFileInfo(path).created().toTime_t();
+    date_created = QFileInfo(path + "/" + name).created().toTime_t();
     width = img.width();
     height = img.height();
     file_format = photo_list[file_type].file_format;
     photo_codec = photo_list[file_type].file_codec;
 
-    QByteArray basename = QFileInfo(path).baseName().toUtf8();
+    QByteArray basename = QFileInfo(name).baseName().toUtf8();
 
-    db.transaction();
-
-    if((ohfi = insertObjectEntry(basename.constData(), type)) == 0) {
-        db.rollback();
-        return 0;
-    }
-
-    if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
+    if((ohfi = insertDefaultEntry(path, name, basename, parent, type)) == 0) {
         return 0;
     }
 
@@ -692,15 +759,13 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, int type, int parent)
     query.bindValue(5, height);
 
     if(!query.exec()) {
-        db.rollback();
         return 0;
     }
 
-    db.commit();
     return ohfi;
 }
 
-uint SQLiteDB::insertSavedataEntry(const QString &path, int type, int parent)
+uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int parent, int type)
 {
     int ohfi;
     SfoReader reader;
@@ -709,39 +774,22 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, int type, int parent)
     const char *savedata_detail = NULL;
     const char *savedata_directory = NULL;
 
-    QString file_name = QFileInfo(path).fileName();
+    QString file_name = QFileInfo(name).fileName();
     QByteArray utf8name = file_name.toUtf8();
 
-    db.transaction();
-
-    if(file_name.endsWith(".sfo", Qt::CaseInsensitive) && reader.load(path)) {
+    if(file_name.endsWith(".sfo", Qt::CaseInsensitive) && reader.load(path + "/" + name)) {
         title = reader.value("TITLE", utf8name.constData());
         savedata_detail = reader.value("SAVEDATA_DETAIL", "");
         savedata_directory = reader.value("SAVEDATA_DIRECTORY", utf8name.constData());
-        date_updated = QFileInfo(path).lastModified().toTime_t();
+        date_updated = QFileInfo(path + "/" + name).lastModified().toTime_t();
     }
 
-    if((ohfi = insertObjectEntry(title, type)) == 0) {
-        db.rollback();
-        return 0;
-    }
-
-    if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!path.endsWith(".sfo", Qt::CaseInsensitive)) {
+    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
         return 0;
     }
 
     if(!title) {
-        return 0;
+        return ohfi;
     }
 
     QSqlQuery query;
@@ -756,36 +804,31 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, int type, int parent)
     query.bindValue(4, date_updated);
 
     if(!query.exec()) {
-        db.rollback();
         return 0;
     }
 
-    db.commit();
     return ohfi;
 }
 
 
-uint SQLiteDB::insertApplicationEntry(const QString &path, int type, int parent, int app_type)
+uint SQLiteDB::insertApplicationEntry(const QString &path, const QString &name, int parent, int type, int app_type)
 {
     int ohfi;
+    QString title_id;
 
-    QString base_name = QFileInfo(path).baseName();
+    if(name.endsWith(".sfo", Qt::CaseInsensitive)) {
+        QDir curdir(path + "/" + name);
+        if(curdir.cdUp() && curdir.cdUp()) {
+            title_id = QFileInfo(curdir.absolutePath()).fileName();
+        }
+    }
 
-    db.transaction();
-
-    if((ohfi = insertObjectEntry(base_name.toUtf8().constData(), type)) == 0) {
-        db.rollback();
+    if((ohfi = insertDefaultEntry(path, name, QFileInfo(name).fileName(), parent, type)) == 0) {
         return 0;
     }
 
-    if(parent && !updateAdjacencyList(ohfi, parent)) {
-        db.rollback();
-        return 0;
-    }
-
-    if(!insertSourceEntry(ohfi, path)) {
-        db.rollback();
-        return 0;
+    if(title_id.isNull()) {
+        return ohfi;
     }
 
     QSqlQuery query;
@@ -794,81 +837,341 @@ uint SQLiteDB::insertApplicationEntry(const QString &path, int type, int parent,
                   "VALUES (:object_id, :title, :app_type)");
 
     query.bindValue(0, ohfi);
-    query.bindValue(1, base_name);
+    query.bindValue(1, title_id);
     query.bindValue(2, app_type);
 
     if(!query.exec()) {
-        db.rollback();
         return 0;
     }
 
-    db.commit();
     return ohfi;
-}
-
-
-
-bool SQLiteDB::getObjectMetadata(int ohfi, metadata_t &metadata)
-{
-    return false;
 }
 
 int SQLiteDB::childObjectCount(int parent_ohfi)
 {
-    return 0;
+    QSqlQuery query;
+    query.prepare("SELECT count(child_id) FROM adjacent_objects WHERE parent_id = :object_id");
+    query.bindValue(0, parent_ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return -1;
+    } else {
+        return query.value(0).toInt();
+    }
 }
 
 bool SQLiteDB::deleteEntry(int ohfi, int root_ohfi)
 {
-    return false;
+    Q_UNUSED(root_ohfi);
+    qDebug("Deleting node: %i", ohfi);
+
+    QSqlQuery source_query("DELETE FROM sources WHERE object_id = :object_id");
+    source_query.bindValue(0, ohfi);
+
+    db.transaction();
+    if(!source_query.exec()) {
+        db.rollback();
+        return false;
+    }
+
+    QSqlQuery object_query("DELETE FROM object_node WHERE object_id = :object_id");
+    object_query.bindValue(0, ohfi);
+    if(!object_query.exec()) {
+        db.rollback();
+        return false;
+    }
+
+    db.commit();
+    return true;
+}
+
+void SQLiteDB::fillMetadata(const QSqlQuery &query, metadata_t &metadata)
+{
+    metadata.ohfi = query.value("ohfi").toInt();
+    metadata.ohfiParent = query.value("parent").toInt();
+    metadata.name = strdup(query.value("name").toByteArray().constData());
+    metadata.path = strdup(query.value("path").toByteArray().constData());
+    metadata.type = VITA_DIR_TYPE_MASK_REGULAR;
+    metadata.dataType = (DataType)query.value("data_type").toInt();
+    metadata.size = query.value("size").toULongLong();
+    metadata.dateTimeCreated = query.value("date_created").toInt();
+    metadata.next_metadata = NULL;
+}
+
+bool SQLiteDB::getObjectMetadata(int ohfi, metadata_t &metadata)
+{
+    QSqlQuery query(
+        "SELECT "
+        "t0.object_id as ohfi,"
+        "t1.parent_id as parent,"
+        "t2.path as path,"
+        "t0.title as name,"
+        "t0.type as type,"
+        "t0.data_type as data_type,"
+        "t2.size as size,"
+        "t2.date_created as date_created "
+        "FROM object_node t0 "
+        "JOIN adjacent_objects t1 ON t1.child_id = t0.object_id "
+        "JOIN sources t2 ON t2.object_id = t0.object_id "
+        "WHERE t0.object_id = :object_id");
+    query.bindValue(0, ohfi);
+
+    if(query.exec() && query.next()) {
+        fillMetadata(query, metadata);
+        return true;
+    } else {
+        qDebug() << query.lastError();
+        return false;
+    }
 }
 
 int SQLiteDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index, int max_number)
 {
-    return 0;
+    if(metadata == NULL) {
+        return childObjectCount(parent_ohfi);
+    }
+
+    int count = 0;
+    QString query_str(
+        "SELECT "
+        "t0.child_id as ohfi,"
+        "t0.parent_id as parent,"
+        "t2.path as path,"
+        "t1.title as name,"
+        "t1.type as type,"
+        "t1.data_type as data_type,"
+        "t2.size as size,"
+        "t2.date_created as date_created "
+        "FROM adjacent_objects t0 "
+        "JOIN object_node t1 ON t0.child_id = t1.object_id "
+        "JOIN sources t2 ON t0.child_id = t2.object_id "
+        "WHERE t0.parent_id = :parent_id ");
+
+    if(max_number > 0) {
+        query_str += "LIMIT :limit OFFSET :offset";
+    }
+
+    QSqlQuery query(query_str);
+    query.bindValue(0, parent_ohfi);
+
+    if(max_number > 0) {
+        query.bindValue(1, max_number);
+        query.bindValue(2, index);
+    }
+
+    if(query.exec()) {
+        metadata_t **last = &*metadata;
+        while(query.next()) {
+            metadata_t *meta = new metadata_t();
+            fillMetadata(query, *meta);
+            *last = meta;
+            last = &meta->next_metadata;
+            count++;
+        }
+    } else {
+        qDebug() << query.lastError();
+    }
+    return count;
 }
 
 qint64 SQLiteDB::getObjectSize(int ohfi)
 {
-    return -1;
+    if(ohfi < OHFI_BASE_VALUE) {
+        return getChildenTotalSize(ohfi);
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT size FROM sources WHERE object_id = :object_id");
+    query.bindValue(0, ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return -1;
+    } else {
+        return query.value(0).toInt();
+    }
 }
 
 int SQLiteDB::getPathId(const char *name, int ohfi)
 {
-    return 0;
-}
+    //FIXME: use ohfi to filter by category
+    Q_UNUSED(ohfi);
+    QSqlQuery query;
 
-int SQLiteDB::insertObjectEntry(const QString &path, int parent_ohfi)
-{
-    return 0;
+    query.prepare("SELECT object_id FROM sources WHERE path = :path");
+    query.bindValue(0, name);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return 0;
+    } else {
+        return query.value(0).toInt();
+    }
 }
 
 QString SQLiteDB::getAbsolutePath(int ohfi)
 {
-    return NULL;
+    int root_ohfi = ohfi < OHFI_BASE_VALUE ? ohfi : getRootId(ohfi);
+    QString base_path = getBasePath(root_ohfi);
+    QString rel_path = getRelativePath(ohfi);
+    return rel_path.isNull() ? base_path : base_path + "/" + rel_path;
 }
 
 QString SQLiteDB::getRelativePath(int ohfi)
 {
-    return NULL;
+    QSqlQuery query;
+    query.prepare("SELECT path FROM sources WHERE object_id = :object_id");
+    query.bindValue(0, ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return NULL;
+    } else {
+        return query.value(0).toString();
+    }
+}
+
+bool SQLiteDB::updateObjectPath(int ohfi, const QString &name)
+{
+    int parent_ohfi = getParentId(ohfi);
+    QString parent_path, file;
+
+    if(name.isNull()) {
+        QSqlQuery name_query("SELECT title FROM object_node WHERE object_id = :object_id");
+        name_query.bindValue(0, ohfi);
+        if(!name_query.exec() || !name_query.next()) {
+            return false;
+        }
+        file = name_query.value(0).toString();
+    } else {
+        file = name;
+    }
+
+    if(parent_ohfi >= OHFI_BASE_VALUE) {
+        parent_path = getRelativePath(parent_ohfi);
+        if(parent_path.isNull()) {
+            parent_path = file;
+        } else {
+            parent_path += "/" + file;
+        }
+    } else {
+        parent_path = file;
+    }
+
+    QSqlQuery query("UPDATE sources SET path = :path WHERE object_id = :object_id");
+    query.bindValue(0, parent_path);
+    query.bindValue(1, ohfi);
+
+    if(!query.exec()) {
+        return false;
+    }
+
+    DataType type = (DataType)getObjectType(ohfi);
+
+    if(type & Folder) {
+        QSqlQuery child_query("SELECT child_id, data_type FROM adjacent_objects "
+                              "JOIN object_node ON object_id = child_id"
+                              "WHERE parent_id = :parent_id");
+        child_query.bindValue(0, ohfi);
+
+        if(query.exec()) {
+            while(query.next()) {
+                int child_ohfi = query.value(0).toInt();
+                if(!updateObjectPath(child_ohfi, NULL)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 bool SQLiteDB::renameObject(int ohfi, const QString &name)
 {
-    return false;
+    QSqlQuery query("UPDATE object_node SET title = :title WHERE object_id = :object_id");
+    query.bindValue(0, name);
+    query.bindValue(1, ohfi);
+
+    if(!query.exec()) {
+        return false;
+    }
+
+    return updateObjectPath(ohfi, name);
 }
 
 void SQLiteDB::setObjectSize(int ohfi, qint64 size)
 {
+    QSqlQuery query;
+    query.prepare("UPDATE sources SET size = :size WHERE object_id = :object_id");
+    query.bindValue(0, size);
+    query.bindValue(1, ohfi);
+    if(!query.exec()) {
+        qDebug() << query.lastError();
+    }
+}
 
+qint64 SQLiteDB::getChildenTotalSize(int ohfi)
+{
+    QSqlQuery query;
+    query.prepare("SELECT SUM(t0.size) FROM sources t0 "
+                  "JOIN adjacent_objects t1 ON t0.object_id = t1.child_id "
+                  "where t1.parent_id = :parent_id");
+    query.bindValue(0, ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return -1;
+    } else {
+        return query.value(0).toLongLong();
+    }
 }
 
 int SQLiteDB::getRootId(int ohfi)
 {
-    return 0;
+    QSqlQuery query;
+    int root_ohfi = ohfi;
+
+    query.prepare("SELECT parent_id FROM adjacent_objects WHERE child_id = :child_id");
+    while(root_ohfi >= OHFI_BASE_VALUE) {
+        query.bindValue(0, root_ohfi);
+        if(!query.exec() || !query.next()) {
+            qDebug() << query.lastError();
+            root_ohfi = 0;
+        } else {
+            root_ohfi = query.value(0).toInt();
+        }
+    }
+    return root_ohfi;
+}
+
+int SQLiteDB::getObjectType(int ohfi)
+{
+    QSqlQuery query;
+    query.prepare("SELECT type FROM object_node WHERE object_id = :object_id");
+    query.bindValue(0, ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return 0;
+    } else {
+        return query.value(0).toInt();
+    }
 }
 
 int SQLiteDB::getParentId(int ohfi)
 {
-    return 0;
+    QSqlQuery query;
+    query.prepare("SELECT parent_id FROM adjacent_objects WHERE child_id = :child_id");
+    query.bindValue(0, ohfi);
+    if(!query.exec() || !query.next()) {
+        qDebug() << query.lastError();
+        return 0;
+    } else {
+        return query.value(0).toInt();
+    }
+}
+
+void SQLiteDB::freeMetadata(metadata_t *metadata)
+{
+    while(metadata) {
+        metadata_t *current = metadata;
+        metadata = metadata->next_metadata;
+        delete current;
+    }
 }

@@ -43,6 +43,11 @@ class Database : public QObject
     Q_OBJECT
 public:
     explicit Database(QObject *parent = 0);
+
+    virtual bool load() = 0;
+    virtual bool rescan() = 0;
+    virtual void setUUID(const QString &uuid) = 0;
+
     virtual int childObjectCount(int parent_ohfi) = 0;
     virtual bool deleteEntry(int ohfi, int root_ohfi = 0) = 0;
     virtual QString getAbsolutePath(int ohfi) = 0;
@@ -51,14 +56,12 @@ public:
     virtual int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0) = 0;
     virtual qint64 getObjectSize(int ohfi) = 0;
     virtual int getPathId(const char *name, int ohfi) = 0;
-    virtual int insertObjectEntry(const QString &path, int parent_ohfi) = 0;
+    virtual int insertObjectEntry(const QString &path, const QString &name, int parent_ohfi) = 0;
     virtual bool renameObject(int ohfi, const QString &name) = 0;
     virtual void setObjectSize(int ohfi, qint64 size) = 0;
     virtual int getParentId(int ohfi) = 0;
     virtual int getRootId(int ohfi) = 0;
-
-    virtual bool reload(bool &prepared) = 0;
-    virtual void setUUID(const QString uuid) = 0;
+    virtual void freeMetadata(metadata_t *metadata) = 0;
 
     static int checkFileType(const QString path, int ohfi_root);
     static void loadMusicMetadata(const QString &path, metadata_t &metadata);
@@ -66,6 +69,29 @@ public:
     static void loadVideoMetadata(const QString &path, metadata_t &metadata);
 
     QMutex mutex;
+
+protected:
+    bool continueOperation();
+
+private:
+
+    virtual void clear() = 0;
+    virtual int create() = 0;
+
+    // control variables
+    QMutex cancel;
+    bool cancel_operation;
+
+signals:
+    void fileAdded(QString);
+    void directoryAdded(QString);
+    void updated(int);
+
+protected slots:
+    void process();
+
+public slots:
+    void cancelOperation();
 };
 
 #endif // DATABASE_H

@@ -19,7 +19,7 @@
 
 #include "clientmanager.h"
 #include "cmaclient.h"
-#include "utils.h"
+#include "cmautils.h"
 #include "forms/progressform.h"
 
 #include <QSettings>
@@ -122,13 +122,12 @@ void ClientManager::start()
 
 void ClientManager::refreshDatabase()
 {
-    bool prepared;
-    if(!m_db->reload(prepared)) {
-        if(prepared) {
-            emit messageSent(tr("Cannot refresh the database while is in use"));
-        } else {
-            emit messageSent(tr("No PS Vita system has been registered"));
-        }
+    if(m_db->load()) {
+        return;
+    }
+
+    if(!m_db->rescan()) {
+        emit messageSent(tr("No PS Vita system has been registered"));
     } else {
         progress.showDelayed(1000);
     }

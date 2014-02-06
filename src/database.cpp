@@ -2,6 +2,7 @@
 #include "avdecoder.h"
 
 #include <QSettings>
+#include <QThread>
 
 const file_type audio_list[] = {
     {"mp3", FILE_FORMAT_MP3, CODEC_TYPE_MP3},
@@ -27,6 +28,33 @@ Database::Database(QObject *parent) :
     QObject(parent),
     mutex(QMutex::Recursive)
 {
+}
+#include <QDebug>
+void Database::process()
+{
+    qDebug("Starting database_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
+    clear();
+    cancel_operation = false;
+    int count = create();
+    cancel_operation = false;
+    qDebug("Added %i entries to the database", count);
+    if(count < 0) {
+        clear();
+    }
+    emit updated(count);
+    mutex.unlock();
+}
+
+void Database::cancelOperation()
+{
+    QMutexLocker locker(&cancel);
+    cancel_operation = true;
+}
+
+bool Database::continueOperation()
+{
+    QMutexLocker locker(&cancel);
+    return !cancel_operation;
 }
 
 int Database::checkFileType(const QString path, int ohfi_root)
