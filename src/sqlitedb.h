@@ -74,7 +74,7 @@ public:
     uint insertVideoEntry(const QString &path, const QString &name, int parent, int type);
     uint insertPhotoEntry(const QString &path, const QString &name, int parent, int type);
     uint insertSavedataEntry(const QString &path, const QString &name, int parent, int type);
-    uint insertApplicationEntry(const QString &path, const QString &name, int parent, int type, int app_type);
+    bool insertApplicationEntry(const QString &name, int ohfi, int app_type);
 
 private:
     int recursiveScanRootDirectory(const QString &base_path, const QString &rel_path, int parent_ohfi, int root_ohfi);
@@ -83,11 +83,11 @@ private:
     int insertNodeEntry(const QString &title, int type, int data_type);
     bool updateAdjacencyList(int ohfi, int parent);
     QString getBasePath(int root_ohfi);
-    int insertFileEntry(const QString &path, const QString &name, int parent, int parent_type);
     int getObjectType(int ohfi);
     void fillMetadata(const QSqlQuery &query, metadata_t &metadata);
     qint64 getChildenTotalSize(int ohfi);
     bool updateObjectPath(int ohfi, const QString &name);
+    int getRootItems(int root_ohfi, metadata_t **metadata);
 
     QTimer *timer;
     QThread *thread;
