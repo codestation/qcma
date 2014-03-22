@@ -135,7 +135,7 @@ int QListDB::create()
             return -1;
         }
 
-        qDebug("Added %i objects for OHFI %#02X", dir_count, ohfi_array[i]);
+        qDebug("Added objects for OHFI 0x%02X: %i", ohfi_array[i], dir_count);
 
         total_objects += dir_count;
         object_list[ohfi_array[i]] = list;

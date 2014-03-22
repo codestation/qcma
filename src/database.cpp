@@ -37,7 +37,7 @@ void Database::process()
     cancel_operation = false;
     int count = create();
     cancel_operation = false;
-    qDebug("Added %i entries to the database", count);
+    qDebug("Total entries added to the database: %i", count);
     if(count < 0) {
         clear();
     }

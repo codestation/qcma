@@ -88,6 +88,8 @@ private:
     qint64 getChildenTotalSize(int ohfi);
     bool updateObjectPath(int ohfi, const QString &name);
     int getRootItems(int root_ohfi, metadata_t **metadata);
+    bool insertVirtualEntries();
+    bool insertVirtualEntry(int ohfi);
 
     QTimer *timer;
     QThread *thread;

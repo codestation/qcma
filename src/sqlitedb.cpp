@@ -78,7 +78,6 @@ static const char create_apps[] = "CREATE TABLE IF NOT EXISTS application ("
 
 static const char create_virtual[] = "CREATE TABLE IF NOT EXISTS virtual_nodes ("
                                   "object_id INTEGER PRIMARY KEY REFERENCES object_node(object_id) ON DELETE CASCADE,"
-                                  "title TEXT NOT NULL CHECK (LENGTH(title) > 0),"
                                   "app_type INTEGER)";
 
 static const char create_photos[] = "CREATE TABLE IF NOT EXISTS photos ("
@@ -265,6 +264,12 @@ int SQLiteDB::create()
     int total_objects = 0;
 
     db.transaction();
+
+    if(!insertVirtualEntries()) {
+        db.rollback();
+        return -1;
+    }
+
     for(int i = 0, max = sizeof(ohfi_array) / sizeof(int); i < max; i++) {
         QString base_path = getBasePath(ohfi_array[i]);
         int dir_count = recursiveScanRootDirectory(base_path, NULL, ohfi_array[i], ohfi_array[i]);
@@ -1222,4 +1227,74 @@ int SQLiteDB::getRootItems(int root_ohfi, metadata_t **metadata)
     }
 
     return count;
+}
+
+bool SQLiteDB::insertVirtualEntry(int ohfi)
+{
+    QSqlQuery query;
+    query.prepare("REPLACE INTO virtual_nodes (object_id)"
+                  "VALUES (:object_id)");
+    query.bindValue(0, ohfi);
+    bool ret = query.exec();
+    if(!ret) {
+        qDebug() << query.lastError();
+    }
+    return ret;
+}
+
+bool SQLiteDB::insertVirtualEntries()
+{
+    int ohfi;
+
+    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Video)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Video)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Photo)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Month", VITA_DIR_TYPE_MASK_MONTH, Photo)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Photo)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Artists", VITA_DIR_TYPE_MASK_ARTISTS, Music)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Albums", VITA_DIR_TYPE_MASK_ALBUMS, Music)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Songs", VITA_DIR_TYPE_MASK_SONGS, Music)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Genres", VITA_DIR_TYPE_MASK_GENRES, Music)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    if((ohfi = insertNodeEntry("Playlists", VITA_DIR_TYPE_MASK_PLAYLISTS, Music)) > 0)
+        insertVirtualEntry(ohfi);
+    else
+        return false;
+
+    return true;
 }
