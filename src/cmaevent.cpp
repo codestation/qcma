@@ -504,6 +504,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
             data = res.readAll();
 
         } else if(!offlineMode) {
+            qDebug("URL: %s", url);
             HTTPDownloader downloader(url);
             QThread *http_thread = new QThread();
             http_thread->setObjectName("http_thread");

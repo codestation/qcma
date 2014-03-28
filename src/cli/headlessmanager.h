@@ -17,25 +17,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENTMANAGER_H
-#define CLIENTMANAGER_H
+#ifndef HEADLESSMANAGER_H
+#define HEADLESSMANAGER_H
 
-#include "qlistdb.h"
-#include "forms/pinform.h"
-#include "forms/progressform.h"
+#include "database.h"
 
 #include <QObject>
 #include <QThread>
+#include <QDBusConnection>
 
-class ClientManager : public QObject
+class HeadlessManager : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.qcma.HeadlessManager")
+
 public:
-    explicit ClientManager(Database *db, QObject *parent = 0);
-    ~ClientManager();
+    explicit HeadlessManager(QObject *parent = 0);
+    ~HeadlessManager();
 
     void start();
-    void stop();
 
 private:
     int thread_count;
@@ -43,24 +43,20 @@ private:
 
     Database *m_db;
 
-    PinForm pinForm;
-    ProgressForm progress;
-
     QThread *usb_thread;
     QThread *wireless_thread;
+    QDBusConnection dbus_conn;
 
 signals:
     void stopped();
-    void receivedPin(int);
-    void deviceDisconnected();
-    void messageSent(QString);
-    void deviceConnected(QString);
+    Q_SCRIPTABLE void databaseUpdated(int count);
+
+public slots:
+    void refreshDatabase();
+    void stop();
 
 private slots:
     void threadStopped();
-    void refreshDatabase();
-    void databaseUpdated(int count);
-    void showPinDialog(QString name, int pin);
 };
 
-#endif // CLIENTMANAGER_H
+#endif // HEADLESSMANAGER_H

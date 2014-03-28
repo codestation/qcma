@@ -23,7 +23,7 @@
 #include "sforeader.h"
 #include "confirmdialog.h"
 #include "cmautils.h"
-#include "filterlineedit.h"
+#include "gui/filterlineedit.h"
 
 #include <QDebug>
 #include <QDialogButtonBox>
@@ -143,7 +143,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
     m_db->mutex.lock();
 
-    // get the item list    
+    // get the item list
     metadata_t *meta = NULL;
     int row_count = m_db->getObjectMetadatas(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);

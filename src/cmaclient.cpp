@@ -23,7 +23,6 @@
 #include "cmaevent.h"
 #include "cmautils.h"
 
-#include <QApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
