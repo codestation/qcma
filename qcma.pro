@@ -11,3 +11,7 @@ SUBDIRS = qcma_gui.pro
 unix:!macx {
     SUBDIRS += qcma_cli.pro
 }
+
+TRANSLATIONS += \
+    resources/translations/qcma_es.ts \
+    resources/translations/qcma_ja.ts

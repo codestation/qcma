@@ -44,10 +44,6 @@ HEADERS += \
     src/qlistdb.h \
     src/database.h \
 
-TRANSLATIONS += \
-    resources/translations/qcma_es.ts \
-    resources/translations/qcma_ja.ts
-
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml \
     resources/images/psv_icon.png \
