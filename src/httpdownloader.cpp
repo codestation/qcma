@@ -83,32 +83,32 @@ void HTTPDownloader::readyRead()
     dataRead.lock();
 
     int currOffset = bufferSize;
+
     if(bufferSize == 0) {
         bufferSize = reply->bytesAvailable();
+
         if(firstRead) {
             bufferSize += 8;
             currOffset += 8;
-        }
-        // start with a 16KiB buffer
-        buffer = (char *)malloc(16384 + 2048);
-        if(firstRead) {
+
+            // start with a 16KiB buffer
+            buffer = (char *)malloc(16384);
             *(uint64_t *)buffer = m_contentLength;
             firstRead = false;
         }
 
     } else {
         bufferSize += reply->bytesAvailable();
-        if(bufferSize > 16384 + 2048) {
+
+        if(bufferSize > 16384) {
             buffer = (char *)realloc(buffer, bufferSize);
         }
     }
-    reply->read(buffer + currOffset, reply->bytesAvailable());
 
+    reply->read(buffer + currOffset, reply->bytesAvailable());
     downloadLeft -= bufferSize;
 
-    //qDebug("bufferSize: %li, downloadLeft: %li", bufferSize, downloadLeft);
-
-    if(bufferSize > 16384 || downloadLeft == 0) {
+    if(bufferSize >= 16384 || downloadLeft == 0) {
         dataAvailable.unlock();
     }
     dataRead.unlock();
