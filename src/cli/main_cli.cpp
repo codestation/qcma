@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QStringList>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>

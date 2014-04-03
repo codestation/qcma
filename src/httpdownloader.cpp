@@ -19,6 +19,7 @@
 
 #include "httpdownloader.h"
 
+#include <QDebug>
 #include <QThread>
 
 #include <vitamtp.h>
