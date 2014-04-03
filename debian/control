@@ -12,3 +12,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita
 
+Package: qcma-headless
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Content Manager Assistant for the PS Vita (headless version)

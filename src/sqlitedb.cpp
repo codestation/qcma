@@ -880,14 +880,14 @@ bool SQLiteDB::deleteEntry(int ohfi, int root_ohfi)
 
 void SQLiteDB::fillMetadata(const QSqlQuery &query, metadata_t &metadata)
 {
-    metadata.ohfi = query.value("ohfi").toInt();
-    metadata.ohfiParent = query.value("parent").toInt();
-    metadata.name = strdup(query.value("name").toByteArray().constData());
-    metadata.path = strdup(query.value("path").toByteArray().constData());
+    metadata.ohfi = query.value(0).toInt(); // ohfi
+    metadata.ohfiParent = query.value(1).toInt(); // parent
+    metadata.path = strdup(query.value(2).toByteArray().constData()); // path
+    metadata.name = strdup(query.value(3).toByteArray().constData()); // name
     metadata.type = VITA_DIR_TYPE_MASK_REGULAR;
-    metadata.dataType = (DataType)query.value("data_type").toInt();
-    metadata.size = query.value("size").toULongLong();
-    metadata.dateTimeCreated = query.value("date_created").toInt();
+    metadata.dataType = (DataType)query.value(5).toInt(); // data_type
+    metadata.size = query.value(6).toULongLong(); // size
+    metadata.dateTimeCreated = query.value(7).toInt(); // date_created
     metadata.next_metadata = NULL;
     //TODO: fill the rest of the metadata
 }
