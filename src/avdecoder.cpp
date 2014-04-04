@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QBuffer>
 #include <QFile>
+#include <QImage>
 #include <QSettings>
 
 AVDecoder::AvInit init;

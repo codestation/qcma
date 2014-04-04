@@ -1,6 +1,7 @@
 #include "database.h"
 #include "avdecoder.h"
 
+#include <QImage>
 #include <QSettings>
 #include <QThread>
 

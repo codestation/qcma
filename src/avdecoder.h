@@ -20,7 +20,6 @@
 #ifndef AVDECODER_H
 #define AVDECODER_H
 
-#include <QImage>
 #include <QString>
 
 extern "C" {

@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core \
-            network \
-            sql
+QT += core network sql
 
 VERSION = 0.3.0
 

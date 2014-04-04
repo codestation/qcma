@@ -1,10 +1,8 @@
 include(qcma_common.pri)
 
-TARGET = qcma
+QT += gui widgets
 
-QT       += \
-            gui \
-            widgets
+TARGET = qcma
 
 SOURCES += \
     src/gui/main.cpp \
