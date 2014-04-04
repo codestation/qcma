@@ -26,6 +26,29 @@ official CMA and also offer some features missing in the original one.
 #### Planned features
 * **Android version**: port of Qcma to Android.
 
+## Headless version
+
+There is a qcma_cli binary that doesn't need a X session running (useful for servers).
+The daemon provides minimal interaction via dbus. Here are some usage examples:
+
+#### Send a signal to refresh the database
+
+```
+dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
+```
+
+#### Send a signal to stop the daemon
+
+```
+dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
+```
+
+#### Receive confirmation when the database finished updating
+
+```
+dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUpdated'"
+```
+
 ## Dependencies
 * [Qt 4.x or 5.x](http://qt-project.org/)
 
