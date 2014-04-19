@@ -527,13 +527,13 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path, const QStr
     QFileInfo info(path, name);
     if(info.isFile()) {
         size = QVariant(info.size());
-        date_created = QVariant(info.created().toTime_t());
+        date_created = QVariant(info.created().toUTC().toTime_t());
     } else {
         size = QVariant(QVariant::LongLong);
         date_created = QVariant(QVariant::UInt);
     }
 
-    date_modified = QVariant(info.lastModified().toTime_t());
+    date_modified = QVariant(info.lastModified().toUTC().toTime_t());
 
     QSqlQuery query;
     query.prepare("REPLACE INTO sources (object_id, path, size, date_created, date_modified)"
@@ -756,7 +756,7 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int pa
     }
 
     QDateTime date = QFileInfo(path + "/" + name).created();
-    date_created = date.toTime_t();
+    date_created = date.toUTC().toTime_t();
     QString month_created = date.toString("yyyy/MM");
 
     width = img.width();
@@ -806,7 +806,7 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int
         title = reader.value("TITLE", utf8name.constData());
         savedata_detail = reader.value("SAVEDATA_DETAIL", "");
         savedata_directory = reader.value("SAVEDATA_DIRECTORY", utf8name.constData());
-        date_updated = QFileInfo(path + "/" + name).lastModified().toTime_t();
+        date_updated = QFileInfo(path + "/" + name).lastModified().toUTC().toTime_t();
     }
 
     if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {

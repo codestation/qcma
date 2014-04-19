@@ -1,0 +1,12 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.qcma.HeadlessManager">
+    <signal name="databaseUpdated">
+      <arg name="count" type="i" direction="out"/>
+    </signal>
+    <method name="refreshDatabase">
+    </method>
+    <method name="stop">
+    </method>
+  </interface>
+</node>

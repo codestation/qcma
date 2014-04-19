@@ -188,7 +188,10 @@ void BackupManagerForm::loadBackupListing(int index)
         item->title = game_name;
 
         connect(item, SIGNAL(deleteEntry(BackupItem*)), this, SLOT(removeEntry(BackupItem*)));
-        QString size = readable_size(meta->size);
+
+        // show better size info for multi GiB backups
+        bool use_gb = ohfi == VITA_OHFI_BACKUP && meta->size > 1024*1024*1024;
+        QString size = readable_size(meta->size, use_gb);
 
         QString info;
 

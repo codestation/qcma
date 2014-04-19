@@ -383,10 +383,16 @@ bool QListDB::deleteEntry(int ohfi, int root_ohfi)
 int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index, int max_number)
 {
     QMutexLocker locker(&mutex);
+
     CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(parent_ohfi));
 
     if(parent == NULL) {
         return 0;
+    }
+
+    if(parent->metadata.dataType & File) {
+        *metadata = &parent->metadata;
+        return 1;
     }
 
     int type = parent->metadata.type;
