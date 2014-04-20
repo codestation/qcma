@@ -1,6 +1,7 @@
 qcma (0.3.0) unstable; urgency=low
 
   * Headless qcma version.
+  * Added dbus controls to qcma (Linux only)
   * Set the default video codec to h264 if metadata skip is enabled.
   * Delay the progress dialog by one second so it doesn't show on quick scans.
   * Do not show the disconnect message if no connection is established.

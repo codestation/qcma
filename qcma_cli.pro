@@ -25,4 +25,3 @@ system(qdbuscpp2xml -M -s src/cli/headlessmanager.h -o org.qcma.HeadlessManager.
 
 # Create the helper class
 DBUS_ADAPTORS = org.qcma.HeadlessManager.xml
-

@@ -110,8 +110,10 @@ int main(int argc, char *argv[])
     //TODO: check if this is actually needed since we don't have a main window by default
     QApplication::setQuitOnLastWindowClosed(false);
 
+    bool showSystray = app.arguments().contains("--no-systray");
+
     MainWidget widget;
-    widget.prepareApplication();
+    widget.prepareApplication(showSystray);
 
     // receive the message from another process
     QObject::connect(&app, SIGNAL(messageAvailable(QString)), &widget, SLOT(receiveMessage(QString)));

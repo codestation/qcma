@@ -386,7 +386,7 @@ int SQLiteDB::insertObjectEntry(const QString &path, const QString &name, int pa
 
 int SQLiteDB::insertObjectEntryInternal(const QString &path, const QString &name, int parent_ohfi, int root_ohfi)
 {
-    int ohfi;
+    int ohfi = 0;
     QFileInfo info(path, name);
 
     if(info.isDir()) {

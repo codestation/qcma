@@ -65,3 +65,14 @@ unix:!macx {
         HEADERS += src/kdenotifier.h
     }
 }
+
+unix:!macx {
+
+QT += dbus
+
+# Create the introspection XML
+system(qdbuscpp2xml -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+
+# Create the helper class
+DBUS_ADAPTORS = org.qcma.ClientManager.xml
+}

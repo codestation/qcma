@@ -45,6 +45,7 @@ void ClientManager::databaseUpdated(int count)
     } else {
         emit messageSent(tr("Database indexing aborted by user"));
     }
+    emit updated(count);
 }
 
 void ClientManager::showPinDialog(QString name, int pin)

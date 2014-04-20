@@ -50,15 +50,18 @@ private:
     QThread *wireless_thread;
 
 signals:
+    void updated(int);
     void stopped();
     void receivedPin(int);
     void deviceDisconnected();
     void messageSent(QString);
     void deviceConnected(QString);
 
+public slots:
+    void refreshDatabase();
+
 private slots:
     void threadStopped();
-    void refreshDatabase();
     void databaseUpdated(int count);
     void showPinDialog(QString name, int pin);
 };

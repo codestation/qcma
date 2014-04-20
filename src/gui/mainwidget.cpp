@@ -21,6 +21,10 @@
 #include "cmaclient.h"
 #include "cmautils.h"
 
+#ifdef Q_OS_LINUX
+#include "clientmanager_adaptor.h"
+#endif
+
 #include "qlistdb.h"
 #include "sqlitedb.h"
 
@@ -44,10 +48,32 @@ const QStringList MainWidget::path_list = QStringList() << "photoPath" << "music
 
 bool sleptOnce = false;
 
+#ifdef Q_OS_LINUX
+MainWidget::MainWidget(QWidget *parent) :
+    QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL), dbus_conn(QDBusConnection::sessionBus())
+{
+    new ClientManagerAdaptor(this);
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    // expose qcma over dbus so the database update can be triggered
+    dbus.registerObject("/ClientManager", this);
+    dbus.registerService("org.qcma.ClientManager");
+#ifndef ENABLE_KDE_NOTIFIER
+    trayIcon = NULL;
+#else
+    notifierItem = NULL;
+#endif
+}
+#else
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL)
 {
+#ifndef ENABLE_KDE_NOTIFIER
+    trayIcon = NULL;
+#else
+    notifierItem = NULL;
+#endif
 }
+#endif
 
 void MainWidget::checkSettings()
 {
@@ -101,7 +127,7 @@ void MainWidget::deviceDisconnect()
     receiveMessage(tr("The device has been disconnected"));
 }
 
-void MainWidget::deviceConnected(QString message)
+void MainWidget::deviceConnect(QString message)
 {
 #ifndef ENABLE_KDE_NOTIFIER
 #ifndef Q_OS_WIN32
@@ -117,7 +143,7 @@ void MainWidget::deviceConnected(QString message)
     receiveMessage(message);
 }
 
-void MainWidget::prepareApplication()
+void MainWidget::prepareApplication(bool showSystray)
 {
     //TODO: delete database before exit
     if(QSettings().value("useMemoryStorage", true).toBool()) {
@@ -130,7 +156,11 @@ void MainWidget::prepareApplication()
     backupForm = new BackupManagerForm(db, this);
     managerForm = new ClientManager(db, this);
     connectSignals();
-    createTrayIcon();
+
+    if(showSystray) {
+        createTrayIcon();
+    }
+
     checkSettings();
 }
 
@@ -138,19 +168,22 @@ void MainWidget::connectSignals()
 {
     connect(configForm, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
     connect(managerForm, SIGNAL(stopped()), qApp, SLOT(quit()));
-    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnected(QString)));
-    connect(managerForm, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(managerForm, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
-
-    //backupForm.db = managerForm.db;
+    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
+    connect(managerForm, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
+    connect(managerForm, SIGNAL(messageSent(QString)), this, SIGNAL(messageReceived(QString)));
+    connect(managerForm, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
 }
 
 void MainWidget::setTrayTooltip(QString message)
 {
 #ifndef ENABLE_KDE_NOTIFIER
-    trayIcon->setToolTip(message);
+    if(trayIcon) {
+        trayIcon->setToolTip(message);
+    }
 #else
-    notifierItem->setToolTipSubTitle(message);
+    if(notifierItem) {
+        notifierItem->setToolTipSubTitle(message);
+    }
 #endif
 }
 
@@ -189,6 +222,16 @@ void MainWidget::showAboutQt()
     QMessageBox::aboutQt(this);
 }
 
+void MainWidget::openConfig()
+{
+    configForm->open();
+}
+
+void MainWidget::refreshDatabase()
+{
+    managerForm->refreshDatabase();
+}
+
 void MainWidget::createTrayIcon()
 {
     options = new QAction(tr("&Settings"), this);
@@ -198,9 +241,9 @@ void MainWidget::createTrayIcon()
     about_qt = new QAction(tr("Abou&t Qt"), this);
     quit = new QAction(tr("&Quit"), this);
 
-    connect(options, SIGNAL(triggered()), configForm, SLOT(open()));
+    connect(options, SIGNAL(triggered()), this, SLOT(openConfig()));
     connect(backup, SIGNAL(triggered()), this, SLOT(openManager()));
-    connect(reload, SIGNAL(triggered()), managerForm, SLOT(refreshDatabase()));
+    connect(reload, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
     connect(about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
     connect(about_qt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
@@ -241,6 +284,10 @@ void MainWidget::createTrayIcon()
     notifierItem->setToolTipSubTitle(tr("Disconnected"));
     notifierItem->setStandardActionsEnabled(false);
 #endif
+
+    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnect(QString)));
+    connect(managerForm, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
+    connect(managerForm, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
 }
 
 void MainWidget::receiveMessage(QString message)
@@ -265,7 +312,9 @@ void MainWidget::receiveMessage(QString message)
 MainWidget::~MainWidget()
 {
 #ifndef ENABLE_KDE_NOTIFIER
-    trayIcon->hide();
+    if(trayIcon) {
+        trayIcon->hide();
+    }
 #endif
     delete db;
 }
