@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     //TODO: check if this is actually needed since we don't have a main window by default
     QApplication::setQuitOnLastWindowClosed(false);
 
-    bool showSystray = app.arguments().contains("--no-systray");
+    bool showSystray = !app.arguments().contains("--no-systray");
 
     MainWidget widget;
     widget.prepareApplication(showSystray);
