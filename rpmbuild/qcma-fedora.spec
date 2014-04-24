@@ -34,7 +34,7 @@ cp -r $RPM_SOURCE_DIR/%{name}-%{version} $RPM_BUILD_DIR/%{name}-%{version}
 
 %build
 lrelease-qt5 resources/translations/*.ts
-qmake-qt5 PREFIX=/usr
+qmake-qt5 PREFIX=/usr qcma.pro
 make %{?_smp_mflags}
 
 %install
