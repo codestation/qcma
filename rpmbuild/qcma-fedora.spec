@@ -26,7 +26,7 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 
 %prep
 rm -rf $RPM_SOURCE_DIR/%{name}-%{version}
-git clone https://github.com/codestation/qcma.git $RPM_SOURCE_DIR/%{name}-%{version}
+git clone "${QCMA_REPO:=https://github.com/codestation/qcma.git}" $RPM_SOURCE_DIR/%{name}-%{version}
 cp -r $RPM_SOURCE_DIR/%{name}-%{version} $RPM_BUILD_DIR/%{name}-%{version}
 
 %setup -n %{name}-%{version} -DT

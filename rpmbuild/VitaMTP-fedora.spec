@@ -47,7 +47,7 @@ This package contains only the files necessary for development.
 
 %prep
 rm -rf $RPM_SOURCE_DIR/%{name}%{sonum}
-git clone https://github.com/codestation/VitaMTP.git $RPM_SOURCE_DIR/%{name}%{sonum}
+git clone "${VITAMTP_REPO:=https://github.com/codestation/VitaMTP.git}" $RPM_SOURCE_DIR/%{name}%{sonum}
 cp -r $RPM_SOURCE_DIR/%{name}%{sonum} $RPM_BUILD_DIR/%{name}%{sonum}
 
 %setup -n %{name}%{sonum} -DT
