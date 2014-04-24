@@ -71,7 +71,11 @@ unix:!macx {
 QT += dbus
 
 # Create the introspection XML
-system(qdbuscpp2xml -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+QT5_SUFFIX {
+    system(qdbuscpp2xml-qt5 -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+} else {
+    system(qdbuscpp2xml -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+}
 
 # Create the helper class
 DBUS_ADAPTORS = org.qcma.ClientManager.xml

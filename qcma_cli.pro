@@ -21,7 +21,11 @@ unix:!macx {
 }
 
 # Create the introspection XML
-system(qdbuscpp2xml -M -s src/cli/headlessmanager.h -o org.qcma.HeadlessManager.xml)
+QT5_SUFFIX {
+    system(qdbuscpp2xml-qt5 -M -s src/cli/headlessmanager.h -o org.qcma.HeadlessManager.xml)
+} else {
+    system(qdbuscpp2xml -M -s src/cli/headlessmanager.h -o org.qcma.HeadlessManager.xml)
+}
 
 # Create the helper class
 DBUS_ADAPTORS = org.qcma.HeadlessManager.xml
