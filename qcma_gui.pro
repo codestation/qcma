@@ -61,8 +61,8 @@ unix:!macx {
         }
         LIBS += -lkdeui
         DEFINES += ENABLE_KDE_NOTIFIER=1
-        SOURCES += src/kdenotifier.cpp
-        HEADERS += src/kdenotifier.h
+        SOURCES += src/gui/kdenotifier.cpp
+        HEADERS += src/gui/kdenotifier.h
     }
 }
 
