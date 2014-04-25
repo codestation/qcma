@@ -24,14 +24,16 @@
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QStringList>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
 
 #include <inttypes.h>
+#include <vitamtp.h>
 
-#include "singleapplication.h"
-#include "mainwidget.h"
+#include "singlecoreapplication.h"
+#include "headlessmanager.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
@@ -47,11 +49,11 @@ void noMessageOutput(QtMsgType type, const char *msg)
 
 int main(int argc, char *argv[])
 {
-    if(SingleApplication::sendMessage(QObject::tr("A instance of QCMA is already running"))) {
+    if(SingleCoreApplication::sendMessage(QObject::tr("A instance of QCMA is already running"))) {
         return 0;
     }
 
-    SingleApplication app(argc, argv);
+    SingleCoreApplication app(argc, argv);
 
 #ifndef Q_OS_WIN32
     // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
@@ -107,14 +109,8 @@ int main(int argc, char *argv[])
     app.setOrganizationName("qcma");
     app.setApplicationName("qcma");
 
-    //TODO: check if this is actually needed since we don't have a main window by default
-    QApplication::setQuitOnLastWindowClosed(false);
-
-    MainWidget widget;
-    widget.prepareApplication();
-
-    // receive the message from another process
-    QObject::connect(&app, SIGNAL(messageAvailable(QString)), &widget, SLOT(receiveMessage(QString)));
+    HeadlessManager manager;
+    manager.start();
 
     return app.exec();
 }

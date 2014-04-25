@@ -23,7 +23,7 @@
 #include "sforeader.h"
 #include "confirmdialog.h"
 #include "cmautils.h"
-#include "filterlineedit.h"
+#include "gui/filterlineedit.h"
 
 #include <QDebug>
 #include <QDialogButtonBox>
@@ -143,7 +143,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
     m_db->mutex.lock();
 
-    // get the item list    
+    // get the item list
     metadata_t *meta = NULL;
     int row_count = m_db->getObjectMetadatas(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);
@@ -188,7 +188,10 @@ void BackupManagerForm::loadBackupListing(int index)
         item->title = game_name;
 
         connect(item, SIGNAL(deleteEntry(BackupItem*)), this, SLOT(removeEntry(BackupItem*)));
-        QString size = readable_size(meta->size);
+
+        // show better size info for multi GiB backups
+        bool use_gb = ohfi == VITA_OHFI_BACKUP && meta->size > 1024*1024*1024;
+        QString size = readable_size(meta->size, use_gb);
 
         QString info;
 

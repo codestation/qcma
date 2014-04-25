@@ -10,7 +10,7 @@ meant to be compatible with Linux, Windows and MAC OS X.
 The aim of this project is to provide an implementation that is on par with the
 official CMA and also offer some features missing in the original one.
 
-#### Implemented features missing in OpenCMA (Yifan Lu CLI application)
+#### Implemented features.
 * Metadata for PSP savedatas.
 * Basic metadata for single songs (album, artist, title, cover art).
 * Basic metadata for videos (duration, dimensions, thumbnail).
@@ -24,14 +24,35 @@ official CMA and also offer some features missing in the original one.
 * SQLite backend for database.
 
 #### Planned features
-* **UPNP bridge**: connect an existing UPNP server to interface with the Vita
-using the wireless streaming feature.
+* **Android version**: port of Qcma to Android.
+
+## Headless version
+
+There is a qcma_cli binary that doesn't need a X session running (useful for servers).
+The daemon provides minimal interaction via dbus. Here are some usage examples:
+
+#### Send a signal to refresh the database
+
+```
+dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
+```
+
+#### Send a signal to stop the daemon
+
+```
+dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
+```
+
+#### Receive confirmation when the database finished updating
+
+```
+dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUpdated'"
+```
 
 ## Dependencies
 * [Qt 4.x or 5.x](http://qt-project.org/)
 
-* [VitaMTP](https://github.com/yifanlu/VitaMTP). Use my
-[fork](https://github.com/codestation/VitaMTP) until the patches are merged upstream.
+* [VitaMTP fork](https://github.com/codestation/VitaMTP)
 
 * [FFmpeg](hhttp://www.ffmpeg.org/)
 
@@ -45,6 +66,8 @@ Contact me on [GitHub](https://github.com/codestation/)
 ## Thanks to
 [Yifan Lu](https://github.com/yifanlu/vitamtp/) - for the vitamtp library and
 the reference implementation of OpenCMA.
+
+[Xian Nox] (https://github.com/xiannox) - for the Wiki and various contributions.
 
 #### License
 GPL v3: since some parts of QCMA are based on the reference implementation of

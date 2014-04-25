@@ -131,7 +131,7 @@
   <customwidget>
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>filterlineedit.h</header>
+   <header>gui/filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

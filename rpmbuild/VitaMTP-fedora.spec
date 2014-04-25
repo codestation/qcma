@@ -47,7 +47,8 @@ This package contains only the files necessary for development.
 
 %prep
 rm -rf $RPM_SOURCE_DIR/%{name}%{sonum}
-git clone https://github.com/codestation/VitaMTP.git $RPM_SOURCE_DIR/%{name}%{sonum}
+%{!?_vitamtp_repo:%define _vitamtp_repo https://github.com/codestation/VitaMTP.git}
+git clone "%{_vitamtp_repo}" $RPM_SOURCE_DIR/%{name}%{sonum}
 cp -r $RPM_SOURCE_DIR/%{name}%{sonum} $RPM_BUILD_DIR/%{name}%{sonum}
 
 %setup -n %{name}%{sonum} -DT
@@ -61,7 +62,7 @@ make %{?_smp_mflags}
 %makeinstall
 rm -rf %{buildroot}/%{_libdir}/*.la
 mkdir -p %{buildroot}/usr/lib/udev/rules.d
-cp debian/vitamtp1.udev %{buildroot}/usr/lib/udev/rules.d/80-psvita.rules
+cp debian/vitamtp%{sonum}.udev %{buildroot}/usr/lib/udev/rules.d/80-psvita.rules
 
 %post -n %{name}%{sonum} -p /sbin/ldconfig
 %postun -n %{name}%{sonum} -p /sbin/ldconfig

@@ -19,6 +19,7 @@
 
 #include "httpdownloader.h"
 
+#include <QDebug>
 #include <QThread>
 
 #include <vitamtp.h>
@@ -42,6 +43,7 @@ HTTPDownloader::HTTPDownloader(const QString &url, QObject *parent) :
 HTTPDownloader::~HTTPDownloader()
 {
     lengthMutex.unlock();
+    dataAvailable.unlock();
     free(buffer);
 }
 
@@ -82,30 +84,32 @@ void HTTPDownloader::readyRead()
     dataRead.lock();
 
     int currOffset = bufferSize;
+
     if(bufferSize == 0) {
         bufferSize = reply->bytesAvailable();
+
         if(firstRead) {
             bufferSize += 8;
             currOffset += 8;
-        }
-        // start with a 16KiB buffer
-        buffer = (char *)malloc(16384 + 2048);
-        if(firstRead) {
+
+            // start with a 16KiB buffer
+            buffer = (char *)malloc(16384);
             *(uint64_t *)buffer = m_contentLength;
             firstRead = false;
         }
 
     } else {
         bufferSize += reply->bytesAvailable();
-        if(bufferSize > 16384 + 2048) {
+
+        if(bufferSize > 16384) {
             buffer = (char *)realloc(buffer, bufferSize);
         }
     }
-    reply->read(buffer + currOffset, reply->bytesAvailable());
 
+    reply->read(buffer + currOffset, reply->bytesAvailable());
     downloadLeft -= bufferSize;
 
-    if(bufferSize > 16384 || downloadLeft == 0) {
+    if(bufferSize >= 16384 || downloadLeft == 0) {
         dataAvailable.unlock();
     }
     dataRead.unlock();
@@ -149,8 +153,10 @@ int HTTPDownloader::readCallback(unsigned char *data, unsigned long wantlen, uns
 void HTTPDownloader::error(QNetworkReply::NetworkError errorCode)
 {
     Q_UNUSED(errorCode);
+    QString error = reply->errorString();
 
-    emit messageSent(tr("Network error: %1").arg(reply->errorString()));
+    qWarning() << "Network error:" << error;
+    emit messageSent(tr("Network error: %1").arg(error));
 
     // set buffer to zero so a read callback can be aborted
     dataRead.lock();

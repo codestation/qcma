@@ -34,16 +34,22 @@
 #include "kdenotifier.h"
 #endif
 
+#ifdef Q_OS_LINUX
+#include <QDBusConnection>
+#endif
+
 #include <vitamtp.h>
 
 class MainWidget : public QWidget
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.qcma.ClientManager")
+
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
 
-    void prepareApplication();
+    void prepareApplication(bool showSystray);
 
 private:
     void connectSignals();
@@ -68,6 +74,10 @@ private:
     QAction *about;
     QAction *about_qt;
 
+#ifdef Q_OS_LINUX
+    QDBusConnection dbus_conn;
+#endif
+
 #ifndef ENABLE_KDE_NOTIFIER
     QSystemTrayIcon *trayIcon;
 #else
@@ -76,12 +86,22 @@ private:
 
     const static QStringList path_list;
 
-private slots:
-    void stopServer();
+signals:
+    Q_SCRIPTABLE void deviceConnected(QString);
+    Q_SCRIPTABLE void deviceDisconnected();
+    Q_SCRIPTABLE void databaseUpdated(int count);
+    Q_SCRIPTABLE void messageReceived(QString message);
+
+public slots:
+    void openConfig();
     void openManager();
     void showAboutQt();
     void showAboutDialog();
-    void deviceConnected(QString message);
+    void refreshDatabase();
+    void stopServer();
+
+private slots:
+    void deviceConnect(QString message);
     void deviceDisconnect();
     void dialogResult(int result);
     void receiveMessage(QString message);

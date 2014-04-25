@@ -17,56 +17,62 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "clientmanager.h"
 #include "cmaclient.h"
 #include "cmautils.h"
-#include "forms/progressform.h"
+#include "sqlitedb.h"
+#include "qlistdb.h"
+#include "headlessmanager.h"
+#include "headlessmanager_adaptor.h"
 
+#include <QCoreApplication>
 #include <QSettings>
-
 #include <vitamtp.h>
 
-ClientManager::ClientManager(Database *db, QObject *parent) :
-    QObject(parent), m_db(db)
+HeadlessManager::HeadlessManager(QObject *parent) :
+    QObject(parent), dbus_conn(QDBusConnection::sessionBus())
 {
+    new HeadlessManagerAdaptor(this);
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    // expose qcma over dbus so the database update can be triggered
+    dbus.registerObject("/HeadlessManager", this);
+    dbus.registerService("org.qcma.HeadlessManager");
 }
 
-ClientManager::~ClientManager()
+HeadlessManager::~HeadlessManager()
 {
     VitaMTP_Cleanup();
+    delete m_db;
 }
 
-void ClientManager::databaseUpdated(int count)
+void HeadlessManager::refreshDatabase()
 {
-    progress.interruptShow();
-    progress.hide();
-    if(count >= 0) {
-        emit messageSent(tr("Added %1 items to the database").arg(count));
-    } else {
-        emit messageSent(tr("Database indexing aborted by user"));
+    if(m_db->load()) {
+        return;
+    }
+
+    if(!m_db->rescan()) {
+        qDebug("No PS Vita system has been registered");
     }
 }
 
-void ClientManager::showPinDialog(QString name, int pin)
-{
-    pinForm.setPin(name, pin);
-    pinForm.startCountdown();
-}
-
-void ClientManager::start()
+void HeadlessManager::start()
 {
     if(VitaMTP_Init() < 0) {
-        emit messageSent(tr("Cannot initialize VitaMTP library"));
+        qDebug("Cannot initialize VitaMTP library");
         return;
+    }
+
+    if(QSettings().value("useMemoryStorage", true).toBool()) {
+        m_db = new QListDB();
+    } else {
+        m_db = new SQLiteDB();
     }
 
     // initializing database for the first use
     refreshDatabase();
 
-    connect(m_db, SIGNAL(fileAdded(QString)), &progress, SLOT(setFileName(QString)));
-    connect(m_db, SIGNAL(directoryAdded(QString)), &progress, SLOT(setDirectoryName(QString)));
-    connect(m_db, SIGNAL(updated(int)), this, SLOT(databaseUpdated(int)));
-    connect(&progress, SIGNAL(canceled()), m_db, SLOT(cancelOperation()), Qt::DirectConnection);
+    // send a signal over dbus of the connected peers knows when the update is finished
+    connect(m_db, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
 
     thread_count = 0;
     qDebug("Starting cma threads");
@@ -78,14 +84,11 @@ void ClientManager::start()
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
         connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-        connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
         connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
         connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
         connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
         connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-        connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
-        connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
         connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 
         client->moveToThread(usb_thread);
@@ -98,16 +101,11 @@ void ClientManager::start()
         client = new CmaClient(m_db);
         wireless_thread->setObjectName("wireless_thread");
         connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
-        connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));
-        connect(client, SIGNAL(receivedPin(QString,int)), this, SLOT(showPinDialog(QString,int)));
         connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
         connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
         connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
         connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-        connect(client, SIGNAL(pinComplete()), &pinForm, SLOT(hide()));
-        connect(client, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
-        connect(client, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
         connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
 
         client->moveToThread(wireless_thread);
@@ -116,35 +114,22 @@ void ClientManager::start()
     }
 
     if(thread_count == 0) {
-        emit messageSent(tr("You must enable at least USB or Wireless monitoring"));
+        qDebug("You must enable at least USB or Wireless monitoring");
     }
 }
 
-void ClientManager::refreshDatabase()
-{
-    if(m_db->load()) {
-        return;
-    }
-
-    if(!m_db->rescan()) {
-        emit messageSent(tr("No PS Vita system has been registered"));
-    } else {
-        progress.showDelayed(1000);
-    }
-}
-
-void ClientManager::stop()
+void HeadlessManager::stop()
 {
     if(CmaClient::stop() < 0) {
-        emit stopped();
+        QCoreApplication::quit();
     }
 }
 
-void ClientManager::threadStopped()
+void HeadlessManager::threadStopped()
 {
     mutex.lock();
     if(--thread_count == 0) {
-        emit stopped();
+        QCoreApplication::quit();
     }
     mutex.unlock();
 }

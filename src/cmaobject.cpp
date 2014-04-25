@@ -100,7 +100,7 @@ void CMAObject::loadSfoMetadata(const QString &path)
             title.chop(1);
         }
         metadata.data.saveData.savedataTitle = strdup(title.toStdString().c_str());
-        metadata.data.saveData.dateTimeUpdated = QFileInfo(sfo).created().toTime_t();
+        metadata.data.saveData.dateTimeUpdated = QFileInfo(sfo).created().toUTC().toTime_t();
     } else {
         metadata.data.saveData.title = strdup(metadata.name);
         metadata.data.saveData.detail = strdup("");
@@ -116,7 +116,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
     metadata.ohfi = ohfi_count++;
 
     metadata.type = VITA_DIR_TYPE_MASK_REGULAR; // ignored for files
-    metadata.dateTimeCreated = file.created().toTime_t();
+    metadata.dateTimeCreated = file.created().toUTC().toTime_t();
     metadata.size = 0;
     DataType type = file.isFile() ? File : Folder;
     metadata.dataType = (DataType)(type | (parent->metadata.dataType & ~Folder));
@@ -143,7 +143,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         Database::loadMusicMetadata(file.absoluteFilePath(), metadata);
     } else if(MASK_SET(metadata.dataType, Video | File)) {
         metadata.data.video.fileName = strdup(metadata.name);
-        metadata.data.video.dateTimeUpdated = file.created().toTime_t();
+        metadata.data.video.dateTimeUpdated = file.created().toUTC().toTime_t();
         metadata.data.video.statusType = 1;
         metadata.data.video.fileFormatType = FILE_FORMAT_MP4;
         metadata.data.video.parentalLevel = 0;
@@ -161,7 +161,7 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         metadata.data.photo.fileName = strdup(metadata.name);
         metadata.data.photo.fileFormatType = photo_list[file_type].file_format;
         metadata.data.photo.statusType = 1;
-        metadata.data.photo.dateTimeOriginal = file.created().toTime_t();
+        metadata.data.photo.dateTimeOriginal = file.created().toUTC().toTime_t();
         metadata.data.photo.numTracks = 1;
         metadata.data.photo.tracks = new media_track();
         metadata.data.photo.tracks->type = VITA_TRACK_TYPE_PHOTO;

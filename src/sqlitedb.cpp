@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QImage>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QStandardPaths>
@@ -77,8 +78,8 @@ static const char create_apps[] = "CREATE TABLE IF NOT EXISTS application ("
                                   "app_type INTEGER)";
 
 static const char create_virtual[] = "CREATE TABLE IF NOT EXISTS virtual_nodes ("
-                                  "object_id INTEGER PRIMARY KEY REFERENCES object_node(object_id) ON DELETE CASCADE,"
-                                  "app_type INTEGER)";
+                                     "object_id INTEGER PRIMARY KEY REFERENCES object_node(object_id) ON DELETE CASCADE,"
+                                     "app_type INTEGER)";
 
 static const char create_photos[] = "CREATE TABLE IF NOT EXISTS photos ("
                                     "object_id INTEGER PRIMARY KEY REFERENCES object_node(object_id) ON DELETE CASCADE,"
@@ -385,7 +386,7 @@ int SQLiteDB::insertObjectEntry(const QString &path, const QString &name, int pa
 
 int SQLiteDB::insertObjectEntryInternal(const QString &path, const QString &name, int parent_ohfi, int root_ohfi)
 {
-    int ohfi;
+    int ohfi = 0;
     QFileInfo info(path, name);
 
     if(info.isDir()) {
@@ -526,13 +527,13 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path, const QStr
     QFileInfo info(path, name);
     if(info.isFile()) {
         size = QVariant(info.size());
-        date_created = QVariant(info.created().toTime_t());
+        date_created = QVariant(info.created().toUTC().toTime_t());
     } else {
         size = QVariant(QVariant::LongLong);
         date_created = QVariant(QVariant::UInt);
     }
 
-    date_modified = QVariant(info.lastModified().toTime_t());
+    date_modified = QVariant(info.lastModified().toUTC().toTime_t());
 
     QSqlQuery query;
     query.prepare("REPLACE INTO sources (object_id, path, size, date_created, date_modified)"
@@ -755,7 +756,7 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int pa
     }
 
     QDateTime date = QFileInfo(path + "/" + name).created();
-    date_created = date.toTime_t();
+    date_created = date.toUTC().toTime_t();
     QString month_created = date.toString("yyyy/MM");
 
     width = img.width();
@@ -805,7 +806,7 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int
         title = reader.value("TITLE", utf8name.constData());
         savedata_detail = reader.value("SAVEDATA_DETAIL", "");
         savedata_directory = reader.value("SAVEDATA_DIRECTORY", utf8name.constData());
-        date_updated = QFileInfo(path + "/" + name).lastModified().toTime_t();
+        date_updated = QFileInfo(path + "/" + name).lastModified().toUTC().toTime_t();
     }
 
     if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
@@ -880,14 +881,14 @@ bool SQLiteDB::deleteEntry(int ohfi, int root_ohfi)
 
 void SQLiteDB::fillMetadata(const QSqlQuery &query, metadata_t &metadata)
 {
-    metadata.ohfi = query.value("ohfi").toInt();
-    metadata.ohfiParent = query.value("parent").toInt();
-    metadata.name = strdup(query.value("name").toByteArray().constData());
-    metadata.path = strdup(query.value("path").toByteArray().constData());
+    metadata.ohfi = query.value(0).toInt(); // ohfi
+    metadata.ohfiParent = query.value(1).toInt(); // parent
+    metadata.path = strdup(query.value(2).toByteArray().constData()); // path
+    metadata.name = strdup(query.value(3).toByteArray().constData()); // name
     metadata.type = VITA_DIR_TYPE_MASK_REGULAR;
-    metadata.dataType = (DataType)query.value("data_type").toInt();
-    metadata.size = query.value("size").toULongLong();
-    metadata.dateTimeCreated = query.value("date_created").toInt();
+    metadata.dataType = (DataType)query.value(5).toInt(); // data_type
+    metadata.size = query.value(6).toULongLong(); // size
+    metadata.dateTimeCreated = query.value(7).toInt(); // date_created
     metadata.next_metadata = NULL;
     //TODO: fill the rest of the metadata
 }
@@ -1246,55 +1247,65 @@ bool SQLiteDB::insertVirtualEntries()
 {
     int ohfi;
 
-    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Video)) > 0)
+    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Video)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Video)) > 0)
+    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Video)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Photo)) > 0)
+    if((ohfi = insertNodeEntry("Folders", VITA_DIR_TYPE_MASK_REGULAR, Photo)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Month", VITA_DIR_TYPE_MASK_MONTH, Photo)) > 0)
+    if((ohfi = insertNodeEntry("Month", VITA_DIR_TYPE_MASK_MONTH, Photo)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Photo)) > 0)
+    if((ohfi = insertNodeEntry("All", VITA_DIR_TYPE_MASK_ALL, Photo)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Artists", VITA_DIR_TYPE_MASK_ARTISTS, Music)) > 0)
+    if((ohfi = insertNodeEntry("Artists", VITA_DIR_TYPE_MASK_ARTISTS, Music)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Albums", VITA_DIR_TYPE_MASK_ALBUMS, Music)) > 0)
+    if((ohfi = insertNodeEntry("Albums", VITA_DIR_TYPE_MASK_ALBUMS, Music)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Songs", VITA_DIR_TYPE_MASK_SONGS, Music)) > 0)
+    if((ohfi = insertNodeEntry("Songs", VITA_DIR_TYPE_MASK_SONGS, Music)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Genres", VITA_DIR_TYPE_MASK_GENRES, Music)) > 0)
+    if((ohfi = insertNodeEntry("Genres", VITA_DIR_TYPE_MASK_GENRES, Music)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
-    if((ohfi = insertNodeEntry("Playlists", VITA_DIR_TYPE_MASK_PLAYLISTS, Music)) > 0)
+    if((ohfi = insertNodeEntry("Playlists", VITA_DIR_TYPE_MASK_PLAYLISTS, Music)) > 0) {
         insertVirtualEntry(ohfi);
-    else
+    } else {
         return false;
+    }
 
     return true;
 }
