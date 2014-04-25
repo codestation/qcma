@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils.h"
+#include "cmautils.h"
 #include "avdecoder.h"
 
 #include <QBuffer>
@@ -52,31 +52,37 @@ bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
     return false;
 }
 
-bool removeRecursively(const QString &dirName)
+bool removeRecursively(const QString &path)
 {
+    QFileInfo info(path);
+
+    if(info.isDir()) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    return QDir(dirName).removeRecursively();
+        return QDir(path).removeRecursively();
 #else
-    bool result = false;
-    QDir dir(dirName);
+        bool result = false;
+        QDir dir(path);
 
-    if(dir.exists(dirName)) {
-        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-            if(info.isDir()) {
-                result = removeRecursively(info.absoluteFilePath());
-            } else {
-                result = QFile::remove(info.absoluteFilePath());
-            }
+        if(dir.exists(path)) {
+            Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+                if(info.isDir()) {
+                    result = removeRecursively(info.absoluteFilePath());
+                } else {
+                    result = QFile::remove(info.absoluteFilePath());
+                }
 
-            if(!result) {
-                return result;
+                if(!result) {
+                    return result;
+                }
             }
+            result = dir.rmdir(path);
         }
-        result = dir.rmdir(dirName);
-    }
 
-    return result;
+        return result;
 #endif
+    } else {
+        return QFile::remove(path);
+    }
 }
 
 QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
@@ -156,7 +162,7 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
     return data;
 }
 
-QString readable_size(quint64 size, bool use_gib)
+QString readable_size(qint64 size, bool use_gib)
 {
     QStringList list;
     list << "KiB" << "MiB";

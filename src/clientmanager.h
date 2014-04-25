@@ -20,7 +20,7 @@
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
-#include "database.h"
+#include "qlistdb.h"
 #include "forms/pinform.h"
 #include "forms/progressform.h"
 
@@ -31,17 +31,17 @@ class ClientManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit ClientManager(QObject *parent = 0);
+    explicit ClientManager(Database *db, QObject *parent = 0);
     ~ClientManager();
 
     void start();
     void stop();
 
-    Database db;
-
 private:
     int thread_count;
     QMutex mutex;
+
+    Database *m_db;
 
     PinForm pinForm;
     ProgressForm progress;

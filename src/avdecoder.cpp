@@ -17,9 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils.h"
+#include "cmautils.h"
 #include "avdecoder.h"
-#include "cmaobject.h"
+#include "database.h"
 
 #include <QDebug>
 #include <QBuffer>

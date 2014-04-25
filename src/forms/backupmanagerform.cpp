@@ -22,7 +22,7 @@
 #include "cmaobject.h"
 #include "sforeader.h"
 #include "confirmdialog.h"
-#include "utils.h"
+#include "cmautils.h"
 #include "filterlineedit.h"
 
 #include <QDebug>
@@ -32,8 +32,8 @@
 
 #include <vitamtp.h>
 
-BackupManagerForm::BackupManagerForm(QWidget *parent) :
-    QWidget(parent),
+BackupManagerForm::BackupManagerForm(Database *db, QWidget *parent) :
+    QDialog(parent), m_db(db),
     ui(new Ui::BackupManagerForm)
 {
     ui->setupUi(this);
@@ -64,13 +64,11 @@ void BackupManagerForm::removeEntry(BackupItem *item)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *obj = db->ohfiToObject(item->ohfi);
-    if(obj) {
-        obj->removeReferencedObject();
-        db->remove(obj);
-    }
+    int parent_ohfi = m_db->getParentId(item->ohfi);
+    removeRecursively(m_db->getAbsolutePath(item->ohfi));
+    m_db->deleteEntry(item->ohfi);
 
     for(int i = 0; i < ui->tableWidget->rowCount(); ++i) {
         BackupItem *iter_item = static_cast<BackupItem *>(ui->tableWidget->cellWidget(i, 0));
@@ -80,13 +78,12 @@ void BackupManagerForm::removeEntry(BackupItem *item)
         }
     }
 
-    obj = db->ohfiToObject(obj->metadata.ohfiParent);
-    if(obj) {
-        setBackupUsage(obj->metadata.size);
+    if(parent_ohfi > 0) {
+        setBackupUsage(m_db->getObjectSize(parent_ohfi));
     }
 }
 
-void BackupManagerForm::setBackupUsage(quint64 size)
+void BackupManagerForm::setBackupUsage(qint64 size)
 {
     ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(size, true)));
 }
@@ -144,18 +141,17 @@ void BackupManagerForm::loadBackupListing(int index)
         sys_dir = true;
     }
 
-    db->mutex.lock();
+    m_db->mutex.lock();
 
-    // get the item list
-    metadata_t *meta;
-    int row_count = db->filterObjects(ohfi, &meta);
-
+    // get the item list    
+    metadata_t *meta = NULL;
+    int row_count = m_db->getObjectMetadatas(ohfi, &meta);
     ui->tableWidget->setRowCount(row_count);
 
     // exit if there aren't any items
     if(row_count == 0) {
         setBackupUsage(0);
-        db->mutex.unlock();
+        m_db->mutex.unlock();
         return;
     }
 
@@ -167,13 +163,14 @@ void BackupManagerForm::loadBackupListing(int index)
 #else
     horiz_header->setResizeMode(QHeaderView::Stretch);
 #endif
-    CMAObject *obj = db->ohfiToObject(ohfi);
-    setBackupUsage(obj->metadata.size);
-
+    qint64 backup_size = m_db->getObjectSize(ohfi);
+    setBackupUsage(backup_size);
+    QString path = m_db->getAbsolutePath(ohfi);
     QList<BackupItem *> item_list;
 
+    metadata_t *first = meta;
     while(meta) {
-        QString base_path = obj->path + QDir::separator() + meta->name;
+        QString base_path = path + QDir::separator() + meta->name;
         QString parent_path = sys_dir ? base_path + QDir::separator() + "sce_sys" : base_path;
         SfoReader reader;
         QString game_name;
@@ -213,12 +210,14 @@ void BackupManagerForm::loadBackupListing(int index)
 
         item->setItemInfo(game_name, size, info);
         item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
-        item->setDirectory(obj->path + QDir::separator() + meta->name);
+        item->setDirectory(path + QDir::separator() + meta->name);
         item->resize(646, 68);
 
         item_list << item;
         meta = meta->next_metadata;
     }
+
+    m_db->freeMetadata(first);
 
     qSort(item_list.begin(), item_list.end(), BackupItem::lessThan);
 
@@ -233,7 +232,7 @@ void BackupManagerForm::loadBackupListing(int index)
     }
 
     vert_header->setUpdatesEnabled(true);
-    db->mutex.unlock();
+    m_db->mutex.unlock();
 
     // apply filter
     this->on_filterLineEdit_textChanged(ui->filterLineEdit->text());

@@ -18,24 +18,22 @@
  */
 
 #include "cmaevent.h"
-#include "utils.h"
+#include "cmautils.h"
 
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QNetworkAccessManager>
 #include <QSettings>
+#include <QThread>
 #include <QUrl>
 
-#include <inttypes.h>
-
-Database *CmaEvent::db = NULL;
 QFile *CmaEvent::m_file = NULL;
 
-metadata_t CmaEvent::g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
+static metadata_t g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
 
-CmaEvent::CmaEvent(vita_device_t *s_device) :
-    device(s_device), is_active(true)
+CmaEvent::CmaEvent(Database *db, vita_device_t *s_device) :
+    device(s_device), m_db(db), is_active(true)
 {
 }
 
@@ -149,15 +147,13 @@ void CmaEvent::processEvent()
     qDebug("Ended event, code: 0x%x, id: %d", t_event.Code, t_event.Param1);
 }
 
-quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
+quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
 {
-    qDebug("Called %s, handle: %d, parent name: %s", Q_FUNC_INFO, handle, parent->metadata.name);
+    qDebug("Called %s, handle: %d, parent name: %s", Q_FUNC_INFO, handle, parent_metadata.name);
 
     char *name;
-    int fileType = -1;
     int dataType;
-
-    uint32_t *p_handles;
+    quint32 *p_handles;
     unsigned int p_len;
 
     if(VitaMTP_GetObject_Info(device, handle, &name, &dataType) != PTP_RC_OK) {
@@ -174,15 +170,17 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
 
     }
 
-    CMAObject *object =  db->pathToObject(name, parent->metadata.ohfi);
+    int ohfi = m_db->getPathId(name, parent_metadata.ohfi);
 
-    if(object) {
-        qDebug("Deleting %s", object->path.toStdString().c_str());
-        removeRecursively(object->path);
-        db->remove(object);
+    if(ohfi > 0) {
+        const QString fullpath = m_db->getAbsolutePath(ohfi);
+        qDebug() << "Deleting" << fullpath;
+        removeRecursively(fullpath);
+        m_db->deleteEntry(ohfi);
     }
 
-    QDir dir(parent->path);
+    QString fullpath = m_db->getAbsolutePath(parent_metadata.ohfi);
+    QDir dir(fullpath);
 
     if(dataType & Folder) {
         if(!dir.mkpath(name)) {
@@ -205,33 +203,24 @@ quint16 CmaEvent::processAllObjects(CMAObject *parent, quint32 handle)
             VitaMTP_GetObject_Callback(device, handle, &size, CmaEvent::writeCallback);
             m_file->close();
             delete m_file;
-
-            // get the root ohfi type
-            CMAObject *root_obj = parent;
-            while(root_obj->parent) {
-                root_obj = root_obj->parent;
-            }
-
-            fileType = Database::checkFileType(dir.absoluteFilePath(name), root_obj->metadata.ohfi);
         }
     }
 
-    QFileInfo info(dir, name);
-    object = new CMAObject(parent);
-    object->initObject(info, fileType);
-    object->metadata.handle = handle;
-    db->append(parent->metadata.ohfi, object);
+    int new_ohfi = m_db->insertObjectEntry(fullpath, name, parent_metadata.ohfi);
+    qDebug("Added object %s with OHFI %i to database", name, new_ohfi);
     free(name);
 
-    qDebug("Added object %s with OHFI %i to database", object->metadata.path, object->metadata.ohfi);
-
     if(dataType & Folder) {
+        metadata_t folder_metadata;
+        m_db->getObjectMetadata(new_ohfi, folder_metadata);
+        folder_metadata.handle = handle;
+
         for(unsigned int i = 0; i < p_len; i++) {
-            quint16 ret = processAllObjects(object, p_handles[i]);
+            quint16 ret = processAllObjects(folder_metadata, p_handles[i]);
 
             if(ret != PTP_RC_OK) {
-                qDebug("Deleteting object with OHFI %d", object->metadata.ohfi);
-                db->remove(object);
+                qDebug("Deleteting object with OHFI %d", new_ohfi);
+                m_db->deleteEntry(new_ohfi);
                 return ret;
             }
         }
@@ -251,17 +240,17 @@ void CmaEvent::vitaEventGetTreatObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *parent = db->ohfiToObject(treatObject.ohfiParent);
+    metadata_t metadata;
 
-    if(parent == NULL) {
+    if(!m_db->getObjectMetadata(treatObject.ohfiParent, metadata)) {
         qWarning("Cannot find parent OHFI %d", treatObject.ohfiParent);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    VitaMTP_ReportResult(device, eventId, processAllObjects(parent, treatObject.handle));
+    VitaMTP_ReportResult(device, eventId, processAllObjects(metadata, treatObject.handle));
 }
 
 void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventId)
@@ -274,23 +263,22 @@ void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventI
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    quint64 size = 0;
+    qint64 size;
+    qint64 total_size = 0;
 
     for(quint32 i = 0; i < info->count; i++) {
-        CMAObject *object;
-
-        if((object = db->ohfiToObject(info->ohfi[i])) == NULL) {
+        if((size = m_db->getObjectSize(info->ohfi[i])) < 0) {
             qWarning("Cannot find OHFI %d", info->ohfi[i]);
             free(info);
             return;
         }
 
-        size += object->metadata.size;
+        total_size += size;
     }
 
-    if(VitaMTP_SendCopyConfirmationInfo(device, eventId, info, size) != PTP_RC_OK) {
+    if(VitaMTP_SendCopyConfirmationInfo(device, eventId, info, total_size) != PTP_RC_OK) {
         qWarning("Error sending copy confirmation");
     } else {
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
@@ -309,21 +297,20 @@ void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *object = db->ohfiToObject(ohfi);
+    metadata_t metadata;
 
-    if(object == NULL) {
+    if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("Cannot find OHFI %d in database", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    metadata_t *metadata = &object->metadata;
-    metadata->next_metadata = NULL;
-    qDebug("Sending metadata for OHFI %d (%s)", ohfi, metadata->path);
+    metadata.next_metadata = NULL;
+    qDebug("Sending metadata for OHFI %d (%s)", ohfi, metadata.path);
 
-    quint16 ret = VitaMTP_SendObjectMetadata(device, eventId, metadata);
+    quint16 ret = VitaMTP_SendObjectMetadata(device, eventId, &metadata);
     if(ret != PTP_RC_OK) {
         qWarning("Error sending metadata. Code: %04X", ret);
     } else {
@@ -366,10 +353,10 @@ void CmaEvent::vitaEventSendNumOfObject(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    uint ohfi = event->Param2;
-    int items = db->filterObjects(ohfi, NULL);
+    int ohfi = event->Param2;
+    int items = m_db->childObjectCount(ohfi);
 
     if(VitaMTP_SendNumOfObject(device, eventId, items) != PTP_RC_OK) {
         qWarning("Error occured receiving object count for OHFI parent %d", ohfi);
@@ -389,10 +376,11 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
         qWarning("GetBrowseInfo failed");
         return;
     }
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    metadata_t *meta;
-    int count = db->filterObjects(browse.ohfiParent, &meta, browse.index, browse.numObjects);  // if meta is null, will return empty XML
+    metadata_t *meta = NULL;
+
+    int count = m_db->getObjectMetadatas(browse.ohfiParent, &meta, browse.index, browse.numObjects); // if meta is null, will return empty XML
     qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
     if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
@@ -400,6 +388,7 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
     } else {
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
+    m_db->freeMetadata(meta);
 }
 
 void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
@@ -408,33 +397,31 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
 
     int ohfi = event->Param2;
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
     qDebug("Searching object with OHFI %d", ohfi);
 
-    Database::find_data iters;
-    if(!db->find(ohfi, iters)) {
+    metadata_t *metadata = NULL;
+    if(!m_db->getObjectMetadatas(ohfi, &metadata)) {
         qWarning("Failed to find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    unsigned long len = 0;
-    CMAObject *object = *iters.it;
-    CMAObject *start = object;
-    uint parentHandle = event->Param3;
-    bool send_folder = object->metadata.dataType & Folder;
-    uint handle;
+    metadata_t *start = metadata;
+    quint32 parentHandle = event->Param3;
+    bool send_folder = metadata->dataType & Folder;
+    quint32 handle;
 
     do {
-        len = object->metadata.size;
-        m_file = new QFile(object->path);
+        unsigned long len = metadata->size;
+        m_file = new QFile(m_db->getAbsolutePath(metadata->ohfi));
 
         // read the file to send if it's not a directory
         // if it is a directory, data and len are not used by VitaMTP
-        if(object->metadata.dataType & File) {
+        if(metadata->dataType & File) {
             if(!m_file->open(QIODevice::ReadOnly)) {
-                qWarning("Failed to read %s", object->path.toStdString().c_str());
+                qWarning() << "Failed to read" << m_file->fileName();
                 delete m_file;
                 VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
                 return;
@@ -445,18 +432,20 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         // we know the parent has to be before the current node
         // the first time this is called, parentHandle is left untouched
 
-        if(start != object) {
-            parentHandle = object->parent->metadata.handle;
+        if(start != metadata) {
+            metadata_t parent_metadata;
+            m_db->getObjectMetadata(metadata->ohfiParent, parent_metadata);
+            parentHandle = parent_metadata.handle;
         }
 
         // send the data over
-        qDebug("Sending %s of %lu bytes to device", object->metadata.name, len);
+        qDebug("Sending %s of %lu bytes to device", metadata->name, len);
         qDebug("OHFI %d with handle 0x%08X", ohfi, parentHandle);
 
         VitaMTP_RegisterCancelEventId(eventId);
-        quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, &object->metadata, &CmaEvent::readCallback);
+        quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, metadata, &CmaEvent::readCallback);
         if(ret != PTP_RC_OK) {
-            qWarning("Sending of %s failed. Code: %04X", object->metadata.name, ret);
+            qWarning("Sending of %s failed. Code: %04X", metadata->name, ret);
             if(ret == PTP_ERROR_CANCEL) {
                 VitaMTP_ReportResult(device, eventId, PTP_RC_GeneralError);
             }
@@ -465,9 +454,9 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
             return;
         }
 
-        object->metadata.handle = handle;
+        metadata->handle = handle;
 
-        if(object->metadata.dataType & File) {
+        if(metadata->dataType & File) {
             m_file->close();
             delete m_file;
         }
@@ -477,9 +466,11 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
             break;
         }
 
-        object = *++iters.it;
+        metadata = metadata->next_metadata;
 
-    } while(iters.it != iters.end && object->metadata.ohfiParent >= OHFI_OFFSET); // get everything under this "folder"
+    } while(metadata && metadata->ohfiParent >= OHFI_BASE_VALUE); // get everything under this "folder"
+
+    m_db->freeMetadata(start);
 
     VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, handle);
 
@@ -571,20 +562,22 @@ void CmaEvent::vitaEventSendObjectStatus(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *object = db->pathToObject(objectstatus.title, objectstatus.ohfiRoot);
+    qDebug("Checking for path %s under ohfi %i", objectstatus.title, objectstatus.ohfiRoot);
+    int ohfi = m_db->getPathId(objectstatus.title, objectstatus.ohfiRoot);
 
-    if(object == NULL) { // not in database, don't return metadata
+    if(ohfi == 0) { // not in database, don't return metadata
         qDebug("Object %s not in database (OHFI: %i). Sending OK response for non-existence", objectstatus.title, objectstatus.ohfiRoot);
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     } else {
-        metadata_t *metadata = &object->metadata;
-        metadata->next_metadata = NULL;
-        qDebug("Sending metadata for OHFI %d", object->metadata.ohfi);
+        metadata_t metadata = metadata_t();
+        m_db->getObjectMetadata(ohfi, metadata);
+        metadata.next_metadata = NULL;
+        qDebug("Sending metadata for OHFI %d", ohfi);
 
-        if(VitaMTP_SendObjectMetadata(device, eventId, metadata) != PTP_RC_OK) {
-            qWarning("Error sending metadata for %d", object->metadata.ohfi);
+        if(VitaMTP_SendObjectMetadata(device, eventId, &metadata) != PTP_RC_OK) {
+            qWarning("Error sending metadata for %d", ohfi);
         } else {
             VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
         }
@@ -597,24 +590,27 @@ void CmaEvent::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    metadata_t metadata;
 
-    if(object == NULL) {
+    if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("Cannot find OHFI %d in database.", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    QByteArray data = getThumbnail(object->path, object->metadata.dataType, &g_thumbmeta);
+    QString fullpath = m_db->getAbsolutePath(ohfi);
+    QByteArray data = getThumbnail(fullpath, metadata.dataType, &g_thumbmeta);
 
     if(data.size() == 0) {
-        qWarning("Cannot find/read thumbnail for %s", object->path.toStdString().c_str());
+        qWarning() << "Cannot find/read thumbnail for" << fullpath;
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);
         return;
     }
+
+    //FIXME: remove this after fixing vitamtp
 
     // workaround for the vitamtp locale bug
     char *locale = strdup(setlocale(LC_ALL, NULL));
@@ -635,20 +631,21 @@ void CmaEvent::vitaEventDeleteObject(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    metadata_t metadata;
 
-    if(object == NULL) {
+    if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("OHFI %d not found", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    qDebug("Deleting %s, OHFI: %i", object->metadata.path, object->metadata.ohfi);
-    removeRecursively(object->path);
-    db->remove(object);
+    QString fullpath = m_db->getAbsolutePath(ohfi);
+    qDebug() << QString("Deleting %1, OHFI: %2").arg(fullpath, QString::number(ohfi));
+    removeRecursively(fullpath);
+    m_db->deleteEntry(ohfi);
 
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
 }
@@ -668,7 +665,7 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
     QSettings settings;
 
     if(settings.value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
-        db->setUUID(settingsinfo->current_account.accountId);
+        m_db->setUUID(settingsinfo->current_account.accountId);
         // set the database to be updated ASAP
         emit refreshDatabase();
     }
@@ -725,26 +722,28 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *object = db->ohfiToObject(part_init.ohfi);
+    QString fullpath = m_db->getAbsolutePath(part_init.ohfi);
 
-    if(object == NULL) {
+    if(fullpath.isNull()) {
         qWarning("Cannot find object for OHFI %d", part_init.ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Context);
         return;
     }
 
-    QFile file(object->path);
+    QFile file(fullpath);
 
     if(!file.open(QIODevice::ReadOnly)) {
-        qWarning("Cannot read %s", object->path.toStdString().c_str());
+        qWarning() << "Cannot read" << fullpath;
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
         return;
     } else {
         file.seek(part_init.offset);
         QByteArray data = file.read(part_init.size);
-        qDebug("Sending %s at file offset %" PRIu64" for %" PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
+        qDebug() << QString("Sending %1 at file offset %2 for %3 bytes").arg(
+                     fullpath, QString::number(part_init.offset), QString::number(part_init.size)
+                 );
 
         if(VitaMTP_SendPartOfObject(device, eventId, (unsigned char *)data.data(), data.size()) != PTP_RC_OK) {
             qWarning("Failed to send part of object OHFI %d", part_init.ohfi);
@@ -765,12 +764,12 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *root = db->ohfiToObject(operateobject.ohfi);
+    QString fullpath = m_db->getAbsolutePath(operateobject.ohfi);
 
     // end for renaming only
-    if(root == NULL) {
+    if(fullpath.isNull()) {
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
         return;
     }
@@ -779,64 +778,46 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
     case VITA_OPERATE_CREATE_FOLDER: {
         qDebug("Operate command %d: Create folder %s", operateobject.cmd, operateobject.title);
 
-        QDir dir(root->path);
+        QDir dir(fullpath);
         if(!dir.mkdir(operateobject.title)) {
             qWarning("Unable to create temporary folder: %s", operateobject.title);
             VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
-            CMAObject *newobj = new CMAObject(root);
-            newobj->initObject(QFileInfo(dir, operateobject.title));
-            db->append(operateobject.ohfi, newobj);
-            qDebug("Created folder %s with OHFI %d under parent %s", newobj->metadata.path, newobj->metadata.ohfi, root->metadata.path);
-            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, newobj->metadata.ohfi);
+            int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
+            qDebug("Created folder %s with OHFI %d", operateobject.title, new_ohfi);
+            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
         }
         break;
     }
     case VITA_OPERATE_CREATE_FILE: {
         qDebug("Operate command %d: Create file %s", operateobject.cmd, operateobject.title);
 
-        QFile file(root->path + QDir::separator() + operateobject.title);
+        QFile file(fullpath + QDir::separator() + operateobject.title);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             qWarning("Unable to create temporary file: %s", operateobject.title);
             VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
-            CMAObject *newobj = new CMAObject(root);
-            newobj->initObject(file);
-            db->append(root->metadata.ohfi, newobj);
-            qDebug("Created file %s with OHFI %d under parent %s", newobj->metadata.path, newobj->metadata.ohfi, root->metadata.path);
-            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, newobj->metadata.ohfi);
+            int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
+            //qDebug("Created file %s with OHFI %d under parent %s", newobj->metadata.path, new_ohfi, root->metadata.path);
+            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
         }
         break;
     }
     case VITA_OPERATE_RENAME: {
-        qDebug("Operate command %d: Rename %s to %s", operateobject.cmd, root->metadata.name, operateobject.title);
+        //qDebug("Operate command %d: Rename %s to %s", operateobject.cmd, root->metadata.name, operateobject.title);
 
-        QString oldpath = root->path;
-        QString oldname = root->metadata.name;
-
-        //rename the current object
-        root->rename(operateobject.title);
-        Database::find_data iters;
-        db->find(root->metadata.ohfi, iters);
-
-        // rename the rest of the list only if has the renamed parent in some part of the chain
-        while(iters.it != iters.end) {
-            CMAObject *obj = *iters.it++;
-
-            if(obj->hasParent(root)) {
-                obj->refreshPath();
-            }
-        }
+        m_db->renameObject(operateobject.ohfi, operateobject.title);
+        QString newpath = m_db->getAbsolutePath(operateobject.ohfi);
 
         // rename in filesystem
-        if(!QFile(oldpath).rename(root->path)) {
-            qWarning("Unable to rename %s to %s", oldname.toStdString().c_str(), operateobject.title);
+        if(!QFile(fullpath).rename(newpath)) {
+            qWarning("Unable to rename %s to %s", fullpath.toLocal8Bit().constData(), operateobject.title);
             VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
             break;
         }
 
-        qDebug("Renamed OHFI %d from %s to %s", root->metadata.ohfi, oldname.toStdString().c_str(), root->metadata.name);
-        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, root->metadata.ohfi);
+        qDebug("Renamed OHFI %d from %s to %s", operateobject.ohfi, fullpath.toLocal8Bit().constData(), newpath.toLocal8Bit().constData());
+        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, operateobject.ohfi);
         break;
     }
 
@@ -861,27 +842,33 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
-    CMAObject *object = db->ohfiToObject(part_init.ohfi);
+    QMutexLocker locker(&m_db->mutex);
+    QString fullpath = m_db->getAbsolutePath(part_init.ohfi);
 
-    if(object == NULL) {
+    if(fullpath.isNull()) {
         qWarning("Cannot find OHFI %d", part_init.ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         free(data);
         return;
     }
 
-    qDebug("Receiving %s at offset %" PRIu64" for %" PRIu64" bytes", object->metadata.path, part_init.offset, part_init.size);
+    qDebug() << QString("Receiving %1 at offset %2 for %3 bytes").arg(
+                 fullpath, QString::number(part_init.offset), QString::number(part_init.size)
+             );
 
-    QFile file(object->path);
+    QFile file(fullpath);
     if(!file.open(QIODevice::ReadWrite)) {
-        qWarning("Cannot write to file %s", object->path.toStdString().c_str());
+        qWarning() << "Cannot write to file" << fullpath;
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
     } else {
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
-        object->updateObjectSize(part_init.size);
-        qDebug("Written %" PRIu64" bytes to %s at offset %" PRIu64, part_init.size, object->path.toStdString().c_str(), part_init.offset);
+        m_db->setObjectSize(part_init.ohfi, part_init.size);
+
+        qDebug() << QString("Written %1 bytes to %2 at offset %3").arg(
+                     QString::number(part_init.size), fullpath, QString::number(part_init.offset)
+                 );
+
         VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
     }
 
@@ -892,23 +879,23 @@ void CmaEvent::vitaEventSendStorageSize(vita_event_t *event, int eventId)
 {
     qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
     int ohfi = event->Param2;
-    CMAObject *object = db->ohfiToObject(ohfi);
+    QString fullpath = m_db->getAbsolutePath(ohfi);
 
-    if(object == NULL) {
+    if(fullpath.isNull()) {
         qWarning("Error: Cannot find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     } else {
-        QFile file(object->path);
+        QFile file(fullpath);
 
         if(!file.exists()) {
             // create the directory if doesn't exist so the query don't fail
-            qDebug("Creating %s", object->path.toStdString().c_str());
+            qDebug() << "Creating" << fullpath;
 
-            if(!QDir(QDir::root()).mkpath(object->path)) {
+            if(!QDir(QDir::root()).mkpath(QDir(fullpath).absolutePath())) {
                 qWarning("Create directory failed");
                 VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
                 return;
@@ -919,7 +906,7 @@ void CmaEvent::vitaEventSendStorageSize(vita_event_t *event, int eventId)
     quint64 total;
     quint64 free;
 
-    if(!getDiskSpace(object->path, &free, &total)) {
+    if(!getDiskSpace(fullpath, &free, &total)) {
         qWarning("Cannot get disk space");
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
         return;
@@ -946,14 +933,14 @@ void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
         return;
     }
 
-    QMutexLocker locker(&db->mutex);
+    QMutexLocker locker(&m_db->mutex);
 
-    CMAObject *object = db->pathToObject(existance.name, 0);
+    int ohfi = m_db->getPathId(existance.name, 0);
 
-    if(object == NULL) {
+    if(ohfi == 0) {
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Different_Object);
     } else {
-        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_VITA_Same_Object, object->metadata.ohfi);
+        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_VITA_Same_Object, ohfi);
     }
 
     VitaMTP_ReportResult(device, eventId, PTP_RC_OK);

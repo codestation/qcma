@@ -1,91 +1,86 @@
-/*
- *  QCMA: Cross-platform content manager assistant for the PS Vita
- *
- *  Copyright (C) 2013  Codestation
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "cmarootobject.h"
-
-#include <QList>
-#include <QMap>
 #include <QMutex>
 #include <QObject>
-#include <QTimer>
 
 #include <vitamtp.h>
+
+typedef struct {
+    const char *file_ext;
+    int file_format;
+    int file_codec;
+} file_type;
+
+#define OHFI_BASE_VALUE 256
+
+#define FILE_FORMAT_MP4 1
+#define FILE_FORMAT_WAV 2
+#define FILE_FORMAT_MP3 3
+#define FILE_FORMAT_JPG 4
+#define FILE_FORMAT_PNG 5
+#define FILE_FORMAT_GIF 6
+#define FILE_FORMAT_BMP 7
+#define FILE_FORMAT_TIF 8
+
+#define CODEC_TYPE_MPEG4 2
+#define CODEC_TYPE_AVC 3
+#define CODEC_TYPE_MP3 12
+#define CODEC_TYPE_AAC 13
+#define CODEC_TYPE_PCM 15
+#define CODEC_TYPE_JPG 17
+#define CODEC_TYPE_PNG 18
+#define CODEC_TYPE_TIF 19
+#define CODEC_TYPE_BMP 20
+#define CODEC_TYPE_GIF 21
+
+extern const file_type audio_list[3];
+extern const file_type photo_list[7];
+extern const file_type video_list[1];
 
 class Database : public QObject
 {
     Q_OBJECT
 public:
-    typedef struct {
-        QList<CMAObject *>::const_iterator it;
-        QList<CMAObject *>::const_iterator end;
-    } find_data;
+    explicit Database(QObject *parent = 0);
 
-    explicit Database();
-    ~Database();
+    virtual bool load() = 0;
+    virtual bool rescan() = 0;
+    virtual void setUUID(const QString &uuid) = 0;
 
-    bool reload(bool &prepared);
-    void setUUID(const QString uuid);
-    void addEntries(CMAObject *root);
-    CMAObject *ohfiToObject(int ohfi);
-    bool find(int ohfi, find_data &data);
-    void append(int parent_ohfi, CMAObject *object);
-    bool remove(const CMAObject *obj, int ohfi_root = 0);
-    int filterObjects(int ohfiParent, metadata_t **p_head, int index = 0, int max_number = 0);
-    CMAObject *pathToObject(const char *path, int ohfiRoot);
-    int acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type);
+    virtual int childObjectCount(int parent_ohfi) = 0;
+    virtual bool deleteEntry(int ohfi, int root_ohfi = 0) = 0;
+    virtual QString getAbsolutePath(int ohfi) = 0;
+    virtual QString getRelativePath(int ohfi) = 0;
+    virtual bool getObjectMetadata(int ohfi, metadata_t &metadata) = 0;
+    virtual int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0) = 0;
+    virtual qint64 getObjectSize(int ohfi) = 0;
+    virtual int getPathId(const char *name, int ohfi) = 0;
+    virtual int insertObjectEntry(const QString &path, const QString &name, int parent_ohfi) = 0;
+    virtual bool renameObject(int ohfi, const QString &name) = 0;
+    virtual void setObjectSize(int ohfi, qint64 size) = 0;
+    virtual int getParentId(int ohfi) = 0;
+    virtual int getRootId(int ohfi) = 0;
+    virtual void freeMetadata(metadata_t *metadata) = 0;
 
     static int checkFileType(const QString path, int ohfi_root);
+    static void loadMusicMetadata(const QString &path, metadata_t &metadata);
+    static void loadPhotoMetadata(const QString &path, metadata_t &metadata);
+    static void loadVideoMetadata(const QString &path, metadata_t &metadata);
 
     QMutex mutex;
 
-private:
-    typedef QList<CMAObject *> root_list;
-    typedef QMap<int, root_list> map_list;
-
-    static const QStringList audio_types;
-    static const QStringList image_types;
-    static const QStringList video_types;
-
-
-    int create();
-    void destroy();
-    int scanRootDirectory(root_list &list,int ohfi_type);
-    int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
-    bool hasFilter(const CMARootObject *object,int ohfi);
-    bool removeInternal(root_list &list, const CMAObject *obj);
-    bool findInternal(const root_list &list, int ohfi, find_data &data);
-    CMAObject *getParent(CMAObject *last_dir, const QString &current_path);
-    CMAObject *pathToObjectInternal(const root_list &list, const char *path);
-    static bool lessThanComparator(const CMAObject *a, const CMAObject *b);
-    void dumpMetadataList(const metadata_t *p_head);
+protected:
     bool continueOperation();
+
+private:
+
+    virtual void clear() = 0;
+    virtual int create() = 0;
 
     // control variables
     QMutex cancel;
     bool cancel_operation;
-
-    QTimer *timer;
-    QThread *thread;
-    map_list object_list;
 
 signals:
     void fileAdded(QString);

@@ -20,9 +20,8 @@
 #ifndef CMACLIENT_H
 #define CMACLIENT_H
 
-#include "database.h"
+#include "qlistdb.h"
 #include "cmaevent.h"
-#include "cmaobject.h"
 #include "cmabroadcast.h"
 
 #include <QObject>
@@ -36,7 +35,7 @@ class CmaClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit CmaClient(QObject *parent = 0);
+    explicit CmaClient(Database *db, QObject *parent = 0);
 
     static bool isRunning();
     void launch();
@@ -56,6 +55,7 @@ private:
     static void registrationComplete();
 
     CmaBroadcast broadcast;
+    Database *m_db;
     static QString tempOnlineId;
 
     //TODO: move all the control variables to the client manager class

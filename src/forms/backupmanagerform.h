@@ -23,25 +23,25 @@
 #include "database.h"
 #include "backupitem.h"
 
-#include <QWidget>
+#include <QDialog>
 
 namespace Ui {
 class BackupManagerForm;
 }
 
-class BackupManagerForm : public QWidget
+class BackupManagerForm : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit BackupManagerForm(QWidget *parent = 0);
+    explicit BackupManagerForm(Database *db, QWidget *parent = 0);
     ~BackupManagerForm();
 
-    Database *db;
+    Database *m_db;
 
 private:
     void setupForm();
-    void setBackupUsage(quint64 size);
+    void setBackupUsage(qint64 size);
 
     Ui::BackupManagerForm *ui;
 

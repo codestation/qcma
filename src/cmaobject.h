@@ -27,26 +27,6 @@
 
 #define OHFI_OFFSET 256
 
-#define FILE_FORMAT_MP4 1
-#define FILE_FORMAT_WAV 2
-#define FILE_FORMAT_MP3 3
-#define FILE_FORMAT_JPG 4
-#define FILE_FORMAT_PNG 5
-#define FILE_FORMAT_GIF 6
-#define FILE_FORMAT_BMP 7
-#define FILE_FORMAT_TIF 8
-
-#define CODEC_TYPE_MPEG4 2
-#define CODEC_TYPE_AVC 3
-#define CODEC_TYPE_MP3 12
-#define CODEC_TYPE_AAC 13
-#define CODEC_TYPE_PCM 15
-#define CODEC_TYPE_JPG 17
-#define CODEC_TYPE_PNG 18
-#define CODEC_TYPE_TIF 19
-#define CODEC_TYPE_BMP 20
-#define CODEC_TYPE_GIF 21
-
 class CMAObject
 {
 public:
@@ -54,7 +34,6 @@ public:
     ~CMAObject();
 
     void refreshPath();
-    bool removeReferencedObject();
     void rename(const QString &name);
     void updateObjectSize(qint64 size);
     bool hasParent(const CMAObject *obj);
@@ -72,16 +51,6 @@ public:
         ohfi_count = OHFI_OFFSET;
     }
 
-    typedef struct {
-        const char *file_ext;
-        int file_format;
-        int file_codec;
-    } file_type;
-
-    static const file_type audio_list[3];
-    static const file_type photo_list[7];
-    static const char *video_list[1];
-
     QString path;
     CMAObject *parent;
     metadata_t metadata;
@@ -91,9 +60,6 @@ protected:
 
 private:
     void loadSfoMetadata(const QString &path);
-    void loadMusicMetadata(const QString &path);
-    void loadVideoMetadata(const QString &path);
-    void loadPhotoMetadata(const QString &path);
 };
 
 #endif // CMAOBJECT_H

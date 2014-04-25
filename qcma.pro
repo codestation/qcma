@@ -7,7 +7,8 @@
 QT       += core \
             gui \
             widgets \
-            network
+            network \
+            sql
 
 TARGET = qcma
 
@@ -17,10 +18,9 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp \
     src/capability.cpp \
-    src/database.cpp \
     src/cmaobject.cpp \
     src/cmarootobject.cpp \
-    src/utils.cpp \
+    src/cmautils.cpp \
     src/mainwidget.cpp \
     src/singleapplication.cpp \
     src/sforeader.cpp \
@@ -31,21 +31,23 @@ SOURCES += src/main.cpp \
     src/clientmanager.cpp \
     src/filterlineedit.cpp \
     src/dds.cpp \
+    src/sqlitedb.cpp \
+    src/httpdownloader.cpp \
+    src/qlistdb.cpp \
+    src/database.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
     src/forms/configwidget.cpp \
     src/forms/confirmdialog.cpp \
     src/forms/pinform.cpp \
-    src/forms/progressform.cpp \
-    src/httpdownloader.cpp
+    src/forms/progressform.cpp
 
 HEADERS += \
     src/capability.h \
-    src/database.h \
     src/cmaobject.h \
     src/cmarootobject.h \
-    src/utils.h \
+    src/cmautils.h \
     src/mainwidget.h \
     src/singleapplication.h \
     src/sforeader.h \
@@ -56,14 +58,17 @@ HEADERS += \
     src/clientmanager.h \
     src/filterlineedit.h \
     src/dds.h \
+    src/sqlitedb.h \
+    src/httpdownloader.h \
+    src/qlistdb.h \
+    src/database.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \
     src/forms/configwidget.h \
     src/forms/confirmdialog.h \
     src/forms/pinform.h \
-    src/forms/progressform.h \
-    src/httpdownloader.h
+    src/forms/progressform.h
 
 FORMS += \
     src/forms/configwidget.ui \
