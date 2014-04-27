@@ -86,7 +86,7 @@ win32 {
 # OS X config
 macx {
     # OS X icon
-    ICON = resources/images/$${TARGET}.icns
+    ICON = resources/images/qcma.icns
     # re-enable pkg-config on OS X (brew installs pkg-config files)
     QT_CONFIG -= no-pkg-config
 }
