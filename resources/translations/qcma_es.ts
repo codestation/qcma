@@ -83,12 +83,12 @@
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="244"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="246"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="102"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="99"/>
         <source>Default account</source>
         <translation>Cuenta por defecto</translation>
     </message>
@@ -98,7 +98,7 @@
         <translation>¿Estas seguro de borrar la siguiente entrada?</translation>
     </message>
     <message>
-        <location filename="../../src/forms/backupmanagerform.cpp" line="91"/>
+        <location filename="../../src/forms/backupmanagerform.cpp" line="88"/>
         <source>Backup disk usage: %1</source>
         <translation>Uso de disco en respaldos: %1</translation>
     </message>
@@ -134,32 +134,31 @@
         <translation type="obsolete">Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="44"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="44"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="46"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="46"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="59"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="60"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="120"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="120"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="129"/>
         <source>Cannot refresh the database while is in use</source>
-        <translation>No se puede actualizar la base de datos mientras se encuentre en uso</translation>
+        <translation type="vanished">No se puede actualizar la base de datos mientras se encuentre en uso</translation>
     </message>
     <message>
-        <location filename="../../src/clientmanager.cpp" line="131"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="131"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -171,8 +170,8 @@
         <translation type="obsolete">Conectado a </translation>
     </message>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="138"/>
-        <location filename="../../src/cmaclient.cpp" line="141"/>
+        <location filename="../../src/cmaclient.cpp" line="137"/>
+        <location filename="../../src/cmaclient.cpp" line="140"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -288,6 +287,26 @@
         <translation>Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
+        <location filename="../../src/forms/configwidget.ui" line="296"/>
+        <source>SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="306"/>
+        <source>Skip photo scanning</source>
+        <translation>Omitir el escaneo de fotos</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="313"/>
+        <source>Skip video scanning</source>
+        <translation>Omitir el escaneo de vídeos</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="320"/>
+        <source>Skip music scanning</source>
+        <translation>Omitir el escaneo de música</translation>
+    </message>
+    <message>
         <location filename="../../src/forms/configwidget.ui" line="254"/>
         <source>Disable USB monitoring</source>
         <translation>Deshabilitar monitoreo USB</translation>
@@ -308,27 +327,27 @@
         <translation>En memoria</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="101"/>
+        <location filename="../../src/forms/configwidget.cpp" line="106"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="106"/>
+        <location filename="../../src/forms/configwidget.cpp" line="111"/>
         <source>Select the folder to be used as a music source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="111"/>
+        <location filename="../../src/forms/configwidget.cpp" line="116"/>
         <source>Select the folder to be used as a video source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="116"/>
+        <location filename="../../src/forms/configwidget.cpp" line="121"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="121"/>
+        <location filename="../../src/forms/configwidget.cpp" line="126"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
     </message>
@@ -350,8 +369,8 @@
 <context>
     <name>FilterLineEdit</name>
     <message>
-        <location filename="../../src/filterlineedit.cpp" line="50"/>
-        <location filename="../../src/filterlineedit.cpp" line="71"/>
+        <location filename="../../src/gui/filterlineedit.cpp" line="50"/>
+        <location filename="../../src/gui/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
         <translation>Filtro</translation>
     </message>
@@ -359,7 +378,7 @@
 <context>
     <name>HTTPDownloader</name>
     <message>
-        <location filename="../../src/httpdownloader.cpp" line="153"/>
+        <location filename="../../src/httpdownloader.cpp" line="159"/>
         <source>Network error: %1</source>
         <translation>Error de red: %1</translation>
     </message>
@@ -367,7 +386,7 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="79"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="107"/>
         <source>Shutting down...</source>
         <translation>Cerrando...</translation>
     </message>
@@ -376,49 +395,64 @@
         <translation type="obsolete">Deteniendo QCMA...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="81"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="109"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation>Deteniendo QCMA (desconecte su PS Vita)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="98"/>
-        <location filename="../../src/mainwidget.cpp" line="229"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="126"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="284"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="99"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="127"/>
         <source>The device has been disconnected</source>
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="156"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="201"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="158"/>
-        <source>Copyright (C) 2013  Codestation</source>
-        <translation>Copyright (C) 2013  Codestation</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="203"/>
+        <source>Copyright (C) 2014  Codestation</source>
+        <translation type="unfinished">Copyright (C) 2013  Codestation {2014 ?}</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="160"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="205"/>
+        <source>Copyright (C) 2014  Codestation
+
+build hash: %1
+build branch: %2</source>
+        <translation type="unfinished">Copyright (C) 2013  Codestation
+
+Hash de compilación: %1
+Rama de compilación: %2 {2014 ?} {1
+?}</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2013  Codestation</source>
+        <translation type="vanished">Copyright (C) 2013  Codestation</translation>
+    </message>
+    <message>
         <source>Copyright (C) 2013  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation>Copyright (C) 2013  Codestation
+        <translation type="vanished">Copyright (C) 2013  Codestation
 
 Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="185"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="240"/>
         <source>&amp;About QCMA</source>
         <translation>&amp;Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="248"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="307"/>
         <source>Qcma - Information</source>
         <translation>Qcma - Información</translation>
     </message>
@@ -428,7 +462,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Copyright (C) 2013  Codestation\n</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="184"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="239"/>
         <source>&amp;Backup Manager</source>
         <translation>&amp;Gestor de Respaldos</translation>
     </message>
@@ -437,7 +471,7 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">&amp;Acerca de</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="186"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="241"/>
         <source>Abou&amp;t Qt</source>
         <translation>A&amp;cerca de Qt</translation>
     </message>
@@ -446,12 +480,12 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">PIN recibido: %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="182"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="237"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ajustes</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="183"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="238"/>
         <source>&amp;Refresh database</source>
         <translation>&amp;Refrescar base de datos</translation>
     </message>
@@ -460,17 +494,17 @@ Rama de compilación: %2</translation>
         <translation type="obsolete">Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="187"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="242"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="227"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
         <source>Qcma status</source>
         <translation>Estado de Qcma</translation>
     </message>
     <message>
-        <location filename="../../src/mainwidget.cpp" line="245"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="304"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
@@ -573,7 +607,8 @@ Rama de compilación: %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main.cpp" line="50"/>
+        <location filename="../../src/gui/main.cpp" line="50"/>
+        <location filename="../../src/cli/main_cli.cpp" line="52"/>
         <source>A instance of QCMA is already running</source>
         <translation>Otra instancia de QCMA ya se encuentra en ejecución</translation>
     </message>

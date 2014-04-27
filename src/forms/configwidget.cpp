@@ -84,6 +84,10 @@ void ConfigWidget::setDefaultData()
     ui->usbCheck->setChecked(settings.value("disableUSB", false).toBool());
     ui->wifiCheck->setChecked(settings.value("disableWireless", false).toBool());
     ui->databaseSelect->setCurrentIndex(settings.value("useMemoryStorage", true).toBool() ? 0 : 1);
+
+    ui->photoSkipCheck->setChecked(settings.value("photoSkip", false).toBool());
+    ui->videoSkipCheck->setChecked(settings.value("videoSkip", false).toBool());
+    ui->musicSkipCheck->setChecked(settings.value("musicSkip", false).toBool());
 }
 
 ConfigWidget::~ConfigWidget()
@@ -156,6 +160,9 @@ void ConfigWidget::accept()
     settings.setValue("disableUSB", ui->usbCheck->isChecked());
     settings.setValue("disableWireless", ui->wifiCheck->isChecked());
     settings.setValue("useMemoryStorage", ui->databaseSelect->currentIndex() == 0);
+    settings.setValue("photoSkip", ui->photoSkipCheck->isChecked());
+    settings.setValue("videoSkip", ui->videoSkipCheck->isChecked());
+    settings.setValue("musicSkip", ui->musicSkipCheck->isChecked());
     settings.sync();
 
     done(Accepted);

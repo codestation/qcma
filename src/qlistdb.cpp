@@ -103,18 +103,23 @@ int QListDB::create()
 
     for(int i = 0, max = sizeof(ohfi_array) / sizeof(int); i < max; i++) {
         CMARootObject *obj = new CMARootObject(ohfi_array[i]);
+        bool skipCurrent = false;
+        int dir_count;
 
         switch(ohfi_array[i]) {
         case VITA_OHFI_MUSIC:
             obj->initObject(settings.value("musicPath").toString());
+            skipCurrent = settings.value("musicSkip", false).toBool();
             break;
 
         case VITA_OHFI_PHOTO:
             obj->initObject(settings.value("photoPath").toString());
+            skipCurrent = settings.value("photoSkip", false).toBool();
             break;
 
         case VITA_OHFI_VIDEO:
             obj->initObject(settings.value("videoPath").toString());
+            skipCurrent = settings.value("videoSkip", false).toBool();
             break;
 
         case VITA_OHFI_BACKUP:
@@ -129,7 +134,12 @@ int QListDB::create()
         root_list list;
         list << obj;
         emit directoryAdded(obj->path);
-        int dir_count = recursiveScanRootDirectory(list, obj, ohfi_array[i]);
+
+        if(!skipCurrent) {
+            dir_count = recursiveScanRootDirectory(list, obj, ohfi_array[i]);
+        } else {
+            dir_count = 0;
+        }
 
         if(dir_count < 0) {
             return -1;

@@ -301,6 +301,27 @@
             </layout>
            </item>
            <item>
+            <widget class="QCheckBox" name="photoSkipCheck">
+             <property name="text">
+              <string>Skip photo scanning</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="videoSkipCheck">
+             <property name="text">
+              <string>Skip video scanning</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="musicSkipCheck">
+             <property name="text">
+              <string>Skip music scanning</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
