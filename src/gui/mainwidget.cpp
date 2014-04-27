@@ -152,7 +152,7 @@ void MainWidget::prepareApplication(bool showSystray)
         db = new SQLiteDB();
     }
 
-    configForm = new ConfigWidget(this);
+    configForm = new ConfigWidget();
     backupForm = new BackupManagerForm(db, this);
     managerForm = new ClientManager(db, this);
     connectSignals();
