@@ -8,6 +8,7 @@ qcma (0.3.0) unstable; urgency=low
   * Show correct directory separators on Windows.
   * Show if savedata, updates or dlc are present on backup manager.
   * New database backend. Disabled for now.
+  * Added options to disable multimedia indexing.
 
  -- codestation <codestation404@gmail.com>  Thu, 28 Mar 2014 00:00:00 -0000
 
