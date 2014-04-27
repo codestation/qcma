@@ -1,6 +1,26 @@
+/*
+ *  QCMA: Cross-platform content manager assistant for the PS Vita
+ *
+ *  Copyright (C) 2013  Codestation
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "database.h"
 #include "avdecoder.h"
 
+#include <QDebug>
 #include <QImage>
 #include <QSettings>
 #include <QThread>
@@ -30,7 +50,7 @@ Database::Database(QObject *parent) :
     mutex(QMutex::Recursive)
 {
 }
-#include <QDebug>
+
 void Database::process()
 {
     qDebug("Starting database_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
