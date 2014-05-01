@@ -2,7 +2,7 @@ Source: qcma
 Section: utils
 Priority: extra
 Maintainer: codestation <codestation404@gmail.com>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0), cdbs, libavformat-dev, libswscale-dev, qttools5-dev-tools, vitamtp-dev
 Standards-Version: 3.9.4
 Homepage: http://github.com/codestation/qcma
 Vcs-Git: git://github.com/codestation/qcma.git
