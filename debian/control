@@ -12,6 +12,7 @@ Build-Depends:
  libswscale-dev,
  qtbase5-dev,
  qttools5-dev-tools,
+ qt5-default,
  pkg-config,
  vitamtp-dev
 

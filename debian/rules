@@ -6,4 +6,4 @@ include /usr/share/cdbs/1/class/qmake.mk
 DEB_QMAKE_ARGS += PREFIX=/usr
 
 pre-build::
-	lrelease-qt5 resources/translations/*.ts
+	lrelease resources/translations/*.ts
