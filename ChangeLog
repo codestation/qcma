@@ -1,4 +1,4 @@
-qcma (0.3.0) unstable; urgency=low
+qcma (0.3.1) unstable; urgency=low
 
   * Headless qcma version.
   * Added dbus controls to qcma (Linux only)
