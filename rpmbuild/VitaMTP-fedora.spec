@@ -3,7 +3,7 @@
 # 
 
 Name:           libvitamtp
-Version:        2.5.0
+Version:        2.5.1
 Release:        0
 %define sonum   3
 Summary:        Low-level Vita communication library
