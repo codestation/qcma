@@ -289,7 +289,7 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="296"/>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="306"/>
@@ -418,7 +418,7 @@
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="203"/>
         <source>Copyright (C) 2014  Codestation</source>
-        <translation type="unfinished">Copyright (C) 2013  Codestation {2014 ?}</translation>
+        <translation>Copyright (C) 2014  Codestation</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="205"/>
@@ -426,11 +426,10 @@
 
 build hash: %1
 build branch: %2</source>
-        <translation type="unfinished">Copyright (C) 2013  Codestation
+        <translation>Copyright (C) 2014  Codestation
 
 Hash de compilación: %1
-Rama de compilación: %2 {2014 ?} {1
-?}</translation>
+Rama de compilación: %2</translation>
     </message>
     <message>
         <source>Copyright (C) 2013  Codestation</source>
