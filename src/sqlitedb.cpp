@@ -1309,3 +1309,10 @@ bool SQLiteDB::insertVirtualEntries()
 
     return true;
 }
+
+bool SQLiteDB::getObjectList(int ohfi, metadata_t **metadata)
+{
+    Q_UNUSED(ohfi);
+    Q_UNUSED(metadata);
+    return false;
+}

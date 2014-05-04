@@ -390,6 +390,24 @@ bool QListDB::deleteEntry(int ohfi, int root_ohfi)
     return false;
 }
 
+bool QListDB::getObjectList(int ohfi, metadata_t **metadata)
+{
+    find_data iters;
+    if(find(ohfi, iters)) {
+        CMAObject *object;
+        do {
+            object = *iters.it;
+            *metadata = &object->metadata;
+            metadata = &(*metadata)->next_metadata;
+            *metadata = NULL;
+            object = *++iters.it;
+        } while(iters.it != iters.end && object->metadata.ohfiParent >= OHFI_OFFSET);
+        return true;
+    }
+    return false;
+}
+
+
 int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index, int max_number)
 {
     QMutexLocker locker(&mutex);

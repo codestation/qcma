@@ -53,6 +53,7 @@ public:
     int childObjectCount(int parent_ohfi);
     bool deleteEntry(int ohfi, int root_ohfi = 0);
     QString getAbsolutePath(int ohfi);
+    bool getObjectList(int ohfi, metadata_t **metadata);
     bool getObjectMetadata(int ohfi, metadata_t &metadata);
     int getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int index = 0, int max_number = 0);
     qint64 getObjectSize(int ohfi);

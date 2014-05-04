@@ -402,7 +402,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
     qDebug("Searching object with OHFI %d", ohfi);
 
     metadata_t *metadata = NULL;
-    if(!m_db->getObjectMetadatas(ohfi, &metadata)) {
+    if(!m_db->getObjectList(ohfi, &metadata)) {
         qWarning("Failed to find OHFI %d", ohfi);
         VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
