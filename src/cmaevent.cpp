@@ -265,17 +265,55 @@ void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventI
 
     QMutexLocker locker(&m_db->mutex);
 
-    qint64 size;
     qint64 total_size = 0;
 
-    for(quint32 i = 0; i < info->count; i++) {
-        if((size = m_db->getObjectSize(info->ohfi[i])) < 0) {
-            qWarning("Cannot find OHFI %d", info->ohfi[i]);
-            free(info);
-            return;
-        }
+    // check if the item is a single folder
+    if(info->count == 1) {
+        metadata_t meta;
+        if(m_db->getObjectMetadata(info->ohfi[0], meta)) {
+            // got a folder
+            if(meta.dataType & Folder) {
+                metadata_t *meta_list = NULL;
+                if(m_db->getObjectList(info->ohfi[0], &meta_list)) {
+                    int count = 0;
+                    metadata_t *meta = meta_list;
+                    // count files
+                    while(meta) {
+                        if(meta->dataType & File) {
+                            count++;
+                        }
+                        meta = meta->next_metadata;
+                    }
+                    // create struct to hold all the file identifiers
+                    info = (copy_confirmation_info_t *)malloc(sizeof(uint32_t) * count + sizeof(copy_confirmation_info_t));
+                    meta = meta_list;
+                    info->count = 0;
+                    // copy all the file ohfi
+                    while(meta) {
+                        if(meta->dataType & File) {
+                            info->ohfi[info->count] = meta->ohfi;
+                            total_size += meta->size;
+                            info->count++;
+                        }
+                        meta = meta->next_metadata;
+                    }
 
-        total_size += size;
+                }
+                m_db->freeMetadata(meta_list);
+            }
+        }
+    } else {
+        qint64 size;
+
+        for(quint32 i = 0; i < info->count; i++) {
+            if((size = m_db->getObjectSize(info->ohfi[i])) < 0) {
+                qWarning("Cannot find OHFI %d", info->ohfi[i]);
+                free(info);
+                return;
+            }
+
+            total_size += size;
+        }
     }
 
     if(VitaMTP_SendCopyConfirmationInfo(device, eventId, info, total_size) != PTP_RC_OK) {
@@ -440,7 +478,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
 
         // send the data over
         qDebug("Sending %s of %lu bytes to device", metadata->name, len);
-        qDebug("OHFI %d with handle 0x%08X", ohfi, parentHandle);
+        qDebug("OHFI %d with handle 0x%08X", metadata->ohfi, parentHandle);
 
         VitaMTP_RegisterCancelEventId(eventId);
         quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, metadata, &CmaEvent::readCallback);

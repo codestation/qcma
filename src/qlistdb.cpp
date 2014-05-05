@@ -327,13 +327,16 @@ int QListDB::acceptFilteredObject(const CMAObject *parent, const CMAObject *curr
         result = (current->metadata.dataType & Music);
     }
 
-    if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS)) {
+    if(MASK_SET(type, VITA_DIR_TYPE_MASK_ARTISTS)) {
         // unimplemented
         return 0;
-    } else if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_GENRES)) {
+    } else if(MASK_SET(type, VITA_DIR_TYPE_MASK_GENRES)) {
         // unimplemented
         return 0;
-    } else if(type == (VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_PLAYLISTS)) {
+    } else if(MASK_SET(type, VITA_DIR_TYPE_MASK_PLAYLISTS)) {
+        // unimplemented
+        return 0;
+    } else if(MASK_SET(type, VITA_DIR_TYPE_MASK_MONTH)) {
         // unimplemented
         return 0;
     } else if(type & (VITA_DIR_TYPE_MASK_ALL | VITA_DIR_TYPE_MASK_SONGS)) {

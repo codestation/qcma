@@ -49,10 +49,11 @@ void CMARootObject::initObject(const QString &path)
     case VITA_OHFI_PHOTO:
         metadata.dataType = Photo;
         this->path = path;
-        num_filters = 2;
-        filters = new metadata_t[2];
-        createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
-        createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        num_filters = 3;
+        filters = new metadata_t[3];
+        createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        createFilter(&filters[1], "Month", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_MONTH);
+        createFilter(&filters[2], "Folders", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
         break;
 
     case VITA_OHFI_VIDEO:
@@ -60,8 +61,8 @@ void CMARootObject::initObject(const QString &path)
         this->path = path;
         num_filters = 2;
         filters = new metadata_t[2];
-        createFilter(&filters[0], "Folders", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
-        createFilter(&filters[1], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
+        createFilter(&filters[1], "Folders", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_REGULAR);
         break;
 
     case VITA_OHFI_VITAAPP:

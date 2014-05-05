@@ -93,6 +93,7 @@ void CmaClient::connectWireless()
     setActive(true);
 
     do {
+        qDebug("Waiting for wireless connection");
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
             qDebug("Starting new wireless connection");
             processNewConnection(vita);
