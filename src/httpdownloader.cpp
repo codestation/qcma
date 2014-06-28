@@ -31,8 +31,8 @@ QMutex HTTPDownloader::dataAvailable;
 QMutex HTTPDownloader::dataRead;
 
 char *HTTPDownloader::buffer = NULL;
-unsigned long HTTPDownloader::bufferSize = 0;
-unsigned long HTTPDownloader::downloadLeft = 0;
+qint64 HTTPDownloader::bufferSize = 0;
+qint64 HTTPDownloader::downloadLeft = 0;
 
 HTTPDownloader::HTTPDownloader(const QString &url, QObject *parent) :
     QObject(parent), remote_url(url), firstRead(true)

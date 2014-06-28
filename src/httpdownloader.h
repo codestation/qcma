@@ -58,8 +58,8 @@ private:
     volatile static qint64 m_contentLength;
 
     static char *buffer;
-    static unsigned long bufferSize;
-    static unsigned long downloadLeft;
+    static qint64 bufferSize;
+    static qint64 downloadLeft;
 };
 
 #endif // HTTPDOWNLOADER_H

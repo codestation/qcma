@@ -1,6 +1,6 @@
 include(qcma_common.pri)
 
-QT += dbus
+unix:!macx:QT += dbus
 
 TARGET = qcma_cli
 

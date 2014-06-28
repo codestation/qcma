@@ -6,7 +6,7 @@
 
 QT += core network sql
 
-VERSION = 0.3.2
+VERSION = 0.3.3
 
 TEMPLATE = app
 
@@ -51,7 +51,7 @@ OTHER_FILES += \
     qcma.rc
 
 INCLUDEPATH += src/
-
+QT_CONFIG -= no-pkg-config
 RESOURCES += qcmares.qrc translations.qrc
 
 # find packages using pkg-config

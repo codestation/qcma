@@ -27,14 +27,11 @@
 
 #ifdef Q_OS_WIN32
 #include <windows.h>
-#else
-#ifndef __ANDROID__
-#include <sys/statvfs.h>
-#else
+#elif defined Q_OS_ANDROID
 #include <sys/vfs.h>
 #define statvfs statfs
-#define fstatvfs fstatfs
-#endif
+#else
+#include <sys/statvfs.h>
 #endif
 
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)

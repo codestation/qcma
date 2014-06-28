@@ -452,7 +452,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
     quint32 handle;
 
     do {
-        unsigned long len = metadata->size;
+        quint64 len = metadata->size;
         m_file = new QFile(m_db->getAbsolutePath(metadata->ohfi));
 
         // read the file to send if it's not a directory
@@ -477,7 +477,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         }
 
         // send the data over
-        qDebug("Sending %s of %lu bytes to device", metadata->name, len);
+        qDebug("Sending %s of %llu bytes to device", metadata->name, len);
         qDebug("OHFI %d with handle 0x%08X", metadata->ohfi, parentHandle);
 
         VitaMTP_RegisterCancelEventId(eventId);

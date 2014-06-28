@@ -5,10 +5,15 @@
 #-------------------------------------------------
 
 TEMPLATE = subdirs
-SUBDIRS = qcma_gui.pro
+
+android {
+    SUBDIRS = qcma_android.pro
+} else {
+    SUBDIRS = qcma_gui.pro
+}
 
 # Compile the headless binary only on Linux because it depends on dbus
-unix:!macx {
+unix:!macx:!android {
     SUBDIRS += qcma_cli.pro
 }
 
