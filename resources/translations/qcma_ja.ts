@@ -4,23 +4,19 @@
 <context>
     <name>BackupItem</name>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;ゲーム名&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../src/forms/backupitem.ui" line="58"/>
         <source>&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;ゲーム名&lt;/span&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupitem.ui" line="79"/>
         <source>&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupitem.ui" line="92"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;[APP] [SAVE] [UPDATE] [DLC]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;[アプリ] [セーブ] [アップデート] [DLC]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupitem.ui" line="131"/>
@@ -89,7 +85,7 @@
         <location filename="../../src/forms/backupmanagerform.ui" line="122"/>
         <location filename="../../src/forms/backupmanagerform.cpp" line="246"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタ</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.cpp" line="99"/>
@@ -109,34 +105,26 @@
     <message>
         <location filename="../../src/forms/backupmanagerform.cpp" line="201"/>
         <source> [GAME]</source>
-        <translation type="unfinished"></translation>
+        <translation> [ゲーム]</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.cpp" line="204"/>
         <source> [SAVE]</source>
-        <translation type="unfinished"></translation>
+        <translation> [セーブ]</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.cpp" line="207"/>
         <source> [UPDATE]</source>
-        <translation type="unfinished"></translation>
+        <translation> [アップデート]</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.cpp" line="210"/>
         <source> [DLC]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> - (Launcher only)</source>
-        <translation type="vanished"> - (LiveArea専用)</translation>
+        <translation> [DLC]</translation>
     </message>
 </context>
 <context>
     <name>ClientManager</name>
-    <message>
-        <source>Added %1 entries to the database</source>
-        <translation type="obsolete">%1個の項目をデータベースに追加しました</translation>
-    </message>
     <message>
         <location filename="../../src/gui/clientmanager.cpp" line="44"/>
         <source>Added %1 items to the database</source>
@@ -150,34 +138,26 @@
     <message>
         <location filename="../../src/gui/clientmanager.cpp" line="60"/>
         <source>Cannot initialize VitaMTP library</source>
-        <translation type="unfinished"></translation>
+        <translation>VitaMTPライブラリを初期化できません</translation>
     </message>
     <message>
         <location filename="../../src/gui/clientmanager.cpp" line="120"/>
         <source>You must enable at least USB or Wireless monitoring</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot refresh the database while is in use</source>
-        <translation type="vanished">使用中にはデータベースを更新できません</translation>
+        <translation>少なくともUSBと無線のどちらかの監視を有効にする必要があります</translation>
     </message>
     <message>
         <location filename="../../src/gui/clientmanager.cpp" line="131"/>
         <source>No PS Vita system has been registered</source>
-        <translation type="unfinished"></translation>
+        <translation>PS Vitaが登録されていません</translation>
     </message>
 </context>
 <context>
     <name>CmaClient</name>
     <message>
-        <source>Connected to </source>
-        <translation type="obsolete">次のデバイスに接続しました </translation>
-    </message>
-    <message>
         <location filename="../../src/cmaclient.cpp" line="138"/>
         <location filename="../../src/cmaclient.cpp" line="141"/>
         <source>Connected to %1 (PS Vita)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (PS Vita) に接続されました</translation>
     </message>
 </context>
 <context>
@@ -201,7 +181,7 @@
         <location filename="../../src/forms/configwidget.ui" line="46"/>
         <location filename="../../src/forms/configwidget.ui" line="58"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>スクリーンショットや画像を保存/インポートする場所です。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="49"/>
@@ -222,7 +202,7 @@
         <location filename="../../src/forms/configwidget.ui" line="81"/>
         <location filename="../../src/forms/configwidget.ui" line="93"/>
         <source>This is the location your Videos are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>ビデオを保存/インポートする場所です。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="84"/>
@@ -233,7 +213,7 @@
         <location filename="../../src/forms/configwidget.ui" line="116"/>
         <location filename="../../src/forms/configwidget.ui" line="128"/>
         <source>This is the location your Music is Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>ミュージックを保存/インポートする場所です。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="119"/>
@@ -244,7 +224,7 @@
         <location filename="../../src/forms/configwidget.ui" line="151"/>
         <location filename="../../src/forms/configwidget.ui" line="163"/>
         <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>ゲームやアプリ、セーブデータ、システムバックアップを保存/インポートする場所です。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="154"/>
@@ -254,7 +234,7 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="186"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
-        <translation type="unfinished"></translation>
+        <translation>ソフトウェアアップデートとブラウザデータをを保存/インポートする場所です。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="189"/>
@@ -264,12 +244,12 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="198"/>
         <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
-        <translation type="unfinished"></translation>
+        <translation>この場所の全てのコンテンツをPS Vitaシステムが読み込み、ダウンロードを試みます。</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="219"/>
         <source>Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>パッケージ</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="247"/>
@@ -299,22 +279,22 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="321"/>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="331"/>
         <source>Skip photo scanning</source>
-        <translation></translation>
+        <translation>フォトのスキャンをスキップする</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="338"/>
         <source>Skip video scanning</source>
-        <translation type="unfinished"></translation>
+        <translation>ビデオのスキャンをスキップする</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="345"/>
         <source>Skip music scanning</source>
-        <translation type="unfinished"></translation>
+        <translation>ミュージックのスキャンをスキップする</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="279"/>
@@ -364,7 +344,7 @@
     <message>
         <location filename="../../src/forms/configwidget.cpp" line="141"/>
         <source>Select the folder to be used to software packages</source>
-        <translation type="unfinished"></translation>
+        <translation>ソフトウェアパッケージに使うフォルダを選択してください</translation>
     </message>
 </context>
 <context>
@@ -388,7 +368,7 @@
         <location filename="../../src/gui/filterlineedit.cpp" line="50"/>
         <location filename="../../src/gui/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタ</translation>
     </message>
 </context>
 <context>
@@ -396,7 +376,7 @@
     <message>
         <location filename="../../src/httpdownloader.cpp" line="159"/>
         <source>Network error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ネットワークエラー: %1</translation>
     </message>
 </context>
 <context>
@@ -407,13 +387,9 @@
         <translation>終了しています...</translation>
     </message>
     <message>
-        <source>Stopping QCMA...</source>
-        <translation type="obsolete">QCMAを停止しています...</translation>
-    </message>
-    <message>
         <location filename="../../src/gui/mainwidget.cpp" line="109"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
-        <translation type="unfinished"></translation>
+        <translation>QCMAを停止しています (PS Vitaとの接続を切断してください)</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="126"/>
@@ -429,12 +405,12 @@
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="201"/>
         <source>About QCMA</source>
-        <translation type="unfinished"></translation>
+        <translation>QCMAについて</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="203"/>
         <source>Copyright (C) 2014  Codestation</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright (C) 2014  Codestation</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="205"/>
@@ -442,55 +418,50 @@
 
 build hash: %1
 build branch: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright (C) 2014  Codestation
+
+ビルドハッシュ: %1
+ビルドブランチ: %2</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="239"/>
         <source>&amp;Backup Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>バックアップマネージャー (&amp;B)</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="240"/>
         <source>&amp;About QCMA</source>
-        <translation type="unfinished"></translation>
+        <translation>Q&amp;CMAについて</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="241"/>
         <source>Abou&amp;t Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Q&amp;tについて</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="307"/>
         <source>Qcma - Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Received PIN: %1</source>
-        <translation type="obsolete">受信したPIN: %1</translation>
+        <translation>Qcma - 情報</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="237"/>
         <source>&amp;Settings</source>
-        <translation>&amp;設定</translation>
+        <translation>設定 (&amp;S)</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="238"/>
         <source>&amp;Refresh database</source>
-        <translation>&amp;データベースを更新する</translation>
-    </message>
-    <message>
-        <source>Backup Manager</source>
-        <translation type="obsolete">バックアップマネージャー</translation>
+        <translation>データベースを更新する (&amp;R)</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="242"/>
         <source>&amp;Quit</source>
-        <translation>&amp;終了</translation>
+        <translation>終了 (&amp;Q)</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="282"/>
         <source>Qcma status</source>
-        <translation type="unfinished"></translation>
+        <translation>Qcmaステータス</translation>
     </message>
     <message>
         <location filename="../../src/gui/mainwidget.cpp" line="304"/>
@@ -500,10 +471,6 @@ build branch: %2</source>
 </context>
 <context>
     <name>PinForm</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">入力フォーム</translation>
-    </message>
     <message>
         <location filename="../../src/forms/pinform.ui" line="17"/>
         <source>Device pairing</source>
@@ -527,7 +494,7 @@ build branch: %2</source>
     <message>
         <location filename="../../src/forms/pinform.ui" line="55"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;12345678&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;12345678&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/pinform.ui" line="65"/>
@@ -560,7 +527,7 @@ build branch: %2</source>
     <message>
         <location filename="../../src/forms/progressform.ui" line="25"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Reading directory:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;読み込み中のディレクトリ:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/progressform.ui" line="32"/>
@@ -570,7 +537,7 @@ build branch: %2</source>
     <message>
         <location filename="../../src/forms/progressform.ui" line="39"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Processing file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;処理中のファイル:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/forms/progressform.ui" line="46"/>
