@@ -40,6 +40,8 @@
 
 #include <vitamtp.h>
 
+class TrayIndicator;
+
 class MainWidget : public QWidget
 {
     Q_OBJECT
@@ -66,23 +68,11 @@ private:
     ClientManager *managerForm;
     BackupManagerForm *backupForm;
 
-    //system tray
-    QAction *quit;
-    QAction *reload;
-    QAction *options;
-    QAction *backup;
-    QAction *about;
-    QAction *about_qt;
-
 #ifdef Q_OS_LINUX
     QDBusConnection dbus_conn;
 #endif
 
-#ifndef ENABLE_KDE_NOTIFIER
-    QSystemTrayIcon *trayIcon;
-#else
-    KDENotifier *notifierItem;
-#endif
+    TrayIndicator *trayIcon;
 
     const static QStringList path_list;
 

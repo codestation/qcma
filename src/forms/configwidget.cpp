@@ -62,6 +62,7 @@ void ConfigWidget::connectSignals()
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(browseBtnPressed(int)));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(ui->resetProtocolButton, SIGNAL(clicked()), this, SLOT(resetButtonPressed()));
 }
 
 void ConfigWidget::setDefaultData()
@@ -98,11 +99,18 @@ void ConfigWidget::setDefaultData()
     ui->photoSkipCheck->setChecked(settings.value("photoSkip", false).toBool());
     ui->videoSkipCheck->setChecked(settings.value("videoSkip", false).toBool());
     ui->musicSkipCheck->setChecked(settings.value("musicSkip", false).toBool());
+
+    ui->protocolEdit->setText(settings.value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toString());
 }
 
 ConfigWidget::~ConfigWidget()
 {
     delete ui;
+}
+
+void ConfigWidget::resetButtonPressed()
+{
+    ui->protocolEdit->setText(QString::number(VITAMTP_PROTOCOL_MAX_VERSION));
 }
 
 void ConfigWidget::browseBtnPressed(int btn)
@@ -179,6 +187,7 @@ void ConfigWidget::accept()
     settings.setValue("photoSkip", ui->photoSkipCheck->isChecked());
     settings.setValue("videoSkip", ui->videoSkipCheck->isChecked());
     settings.setValue("musicSkip", ui->musicSkipCheck->isChecked());
+    settings.setValue("protocolVersion", ui->protocolEdit->text().toLongLong());
     settings.sync();
 
     done(Accepted);

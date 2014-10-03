@@ -1,7 +1,7 @@
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
- *  Copyright (C) 2013  Codestation
+ *  Copyright (C) 2014  Codestation
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,46 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#ifndef QTRAYICON_H
+#define QTRAYICON_H
 
-#include <QDialog>
-#include <QLineEdit>
-#include <QSettings>
-#include <QSignalMapper>
+#include "trayindicator.h"
 
-namespace Ui {
-class ConfigWidget;
-}
+class QAction;
+class QSystemTrayIcon;
 
-class ConfigWidget : public QDialog
+class QTrayIcon : public TrayIndicator
 {
     Q_OBJECT
-
 public:
-    explicit ConfigWidget(QWidget *parent = 0);
-    ~ConfigWidget();
+    explicit QTrayIcon(QWidget *parent = 0);
+    void init();
+    void setIcon(const QString &icon);
+    bool isVisible();
+    void show();
+    void hide();
+
+#ifndef Q_OS_LINUX
+    void showMessage(const QString &title, const QString &message);
+#endif
 
 private:
-    enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL, BTN_PKG};
+    //system tray
+    QAction *quit;
+    QAction *reload;
+    QAction *options;
+    QAction *backup;
+    QAction *about;
+    QAction *about_qt;
 
-    void connectSignals();
-    void setDefaultData();
-    void savePath(QSettings &settings, const QLineEdit *edit, const QString &key);
+#ifndef ENABLE_KDE_NOTIFIER
+    QSystemTrayIcon *m_tray_icon;
+#else
+    KDENotifier *m_notifier_item;
+#endif
 
-    Ui::ConfigWidget *ui;
+public slots:
 
-private slots:
-    void browseBtnPressed(int from);
-    void resetButtonPressed();
-    void accept();
 };
 
-#endif // CONFIGWIDGET_H
+#endif // QTRAYICON_H

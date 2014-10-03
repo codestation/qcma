@@ -40,7 +40,7 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
     }
 
     QString hostname = QHostInfo::localHostName();
-    const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), vita_info.protocolVersion);
+    const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), VITAMTP_PROTOCOL_MAX_VERSION);
 
     // Next, we send the client's (this program) info (discard the const here)
     if(VitaMTP_SendInitiatorInfo(device, (initiator_info_t *)pc_info) != PTP_RC_OK) {

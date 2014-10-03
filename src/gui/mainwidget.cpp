@@ -28,21 +28,21 @@
 #include "qlistdb.h"
 #include "sqlitedb.h"
 
-#include <QAction>
+#ifdef ENABLE_APPINDICATOR
+#include "indicator/unityindicator.h"
+#else
+#include "indicator/qtrayicon.h"
+#endif
+
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
 #include <QGridLayout>
-#include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
 #include <QTimer>
 #include <QSettings>
 #include <QSpacerItem>
-
-#ifdef ENABLE_KDE_NOTIFIER
-#include <kmenu.h>
-#endif
 
 const QStringList MainWidget::path_list = QStringList() << "photoPath" << "musicPath" << "videoPath" << "appsPath" << "urlPath";
 
@@ -115,12 +115,12 @@ void MainWidget::deviceDisconnect()
 {
 #ifndef ENABLE_KDE_NOTIFIER
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_dc.png"));
+    trayIcon->setIcon("qcma_off.png");
 #else
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16_dc.png"));
+    trayIcon->setIcon("qcma_off_16.png");
 #endif
 #else
-    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/psv_icon_dc.png"));
+    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/tray/qcma_off.png"));
 #endif
     qDebug("Icon changed - disconnected");
     setTrayTooltip(tr("Disconnected"));
@@ -131,12 +131,12 @@ void MainWidget::deviceConnect(QString message)
 {
 #ifndef ENABLE_KDE_NOTIFIER
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon.png"));
+    trayIcon->setIcon("qcma_on.png");
 #else
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16.png"));
+    trayIcon->setIcon("qcma_off_16.png");
 #endif
 #else
-    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/psv_icon.png"));
+    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/tray/qcma_on.png"));
 #endif
     qDebug("Icon changed - connected");
     setTrayTooltip(message);
@@ -152,7 +152,7 @@ void MainWidget::prepareApplication(bool showSystray)
         db = new SQLiteDB();
     }
 
-    configForm = new ConfigWidget();
+    configForm = new ConfigWidget(this);
     backupForm = new BackupManagerForm(db, this);
     managerForm = new ClientManager(db, this);
     connectSignals();
@@ -234,56 +234,26 @@ void MainWidget::refreshDatabase()
 
 void MainWidget::createTrayIcon()
 {
-    options = new QAction(tr("&Settings"), this);
-    reload = new QAction(tr("&Refresh database"), this);
-    backup = new QAction(tr("&Backup Manager"), this);
-    about = new QAction(tr("&About QCMA"), this);
-    about_qt = new QAction(tr("Abou&t Qt"), this);
-    quit = new QAction(tr("&Quit"), this);
-
-    connect(options, SIGNAL(triggered()), this, SLOT(openConfig()));
-    connect(backup, SIGNAL(triggered()), this, SLOT(openManager()));
-    connect(reload, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
-    connect(about, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
-    connect(about_qt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
-    connect(quit, SIGNAL(triggered()), this, SLOT(stopServer()));
-
-#ifndef ENABLE_KDE_NOTIFIER
-    QMenu *trayIconMenu = new QMenu(this);
+#ifdef ENABLE_APPINDICATOR
+    trayIcon = new UnityIndicator(this);
 #else
-    KMenu *trayIconMenu = new KMenu(this);
+    trayIcon = new QTrayIcon(this);
 #endif
+    trayIcon->init();
 
-    trayIconMenu->addAction(options);
-    trayIconMenu->addAction(reload);
-    trayIconMenu->addAction(backup);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(about);
-    trayIconMenu->addAction(about_qt);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quit);
-
-#ifndef ENABLE_KDE_NOTIFIER
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(trayIconMenu);
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_dc.png"));
+    trayIcon->setIcon("qcma_off.png");
 #else
-    trayIcon->setIcon(QIcon(":/main/resources/images/psv_icon_16_dc.png"));
+    trayIcon->setIcon("qcma_off_16.png");
 #endif
     trayIcon->show();
-#else
-    notifierItem = new KDENotifier("QcmaNotifier", this);
-    notifierItem->setContextMenu(trayIconMenu);
-    notifierItem->setTitle("Qcma");
-    notifierItem->setCategory(KStatusNotifierItem::ApplicationStatus);
-    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/psv_icon_dc.png"));
-    notifierItem->setStatus(KStatusNotifierItem::Active);
-    notifierItem->setToolTipTitle(tr("Qcma status"));
-    notifierItem->setToolTipIconByPixmap(QIcon(":/main/resources/images/qcma.png"));
-    notifierItem->setToolTipSubTitle(tr("Disconnected"));
-    notifierItem->setStandardActionsEnabled(false);
-#endif
+
+    connect(trayIcon, SIGNAL(openConfig()), this, SLOT(openConfig()));
+    connect(trayIcon, SIGNAL(openManager()), this, SLOT(openManager()));
+    connect(trayIcon, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+    connect(trayIcon, SIGNAL(showAboutDialog()), this, SLOT(showAboutDialog()));
+    connect(trayIcon, SIGNAL(showAboutQt()), this, SLOT(showAboutQt()));
+    connect(trayIcon, SIGNAL(stopServer()), this, SLOT(stopServer()));
 
     connect(managerForm, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnect(QString)));
     connect(managerForm, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
@@ -299,14 +269,8 @@ void MainWidget::receiveMessage(QString message)
         sleptOnce = true;
     }
 
-#ifndef ENABLE_KDE_NOTIFIER
-    if(trayIcon->isVisible()) {
+    if(trayIcon->isVisible())
         trayIcon->showMessage(tr("Information"), message);
-    }
-#else
-    notifierItem->showMessage(tr("Qcma - Information"), message, "dialog-information", 3000);
-#endif
-
 }
 
 MainWidget::~MainWidget()

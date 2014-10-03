@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>450</height>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -211,28 +211,28 @@
                </item>
               </layout>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_9">
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>Packages</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>Packages</string>
-                 </property>
-                </widget>
+                <widget class="QLineEdit" name="pkgPath"/>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLineEdit" name="pkgPath"/>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pkgBtn">
-                   <property name="text">
-                    <string>Browse...</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <widget class="QPushButton" name="pkgBtn">
+                 <property name="text">
+                  <string>Browse...</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -299,6 +299,9 @@
            </item>
            <item>
             <layout class="QFormLayout" name="formLayout">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_8">
                <property name="text">
@@ -345,6 +348,31 @@
               <string>Skip music scanning</string>
              </property>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>CMA Protocol version</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="protocolEdit">
+               <property name="inputMask">
+                <string>9999999</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="resetProtocolButton">
+               <property name="text">
+                <string>Reset to default</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <spacer name="verticalSpacer">

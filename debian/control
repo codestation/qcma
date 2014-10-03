@@ -13,6 +13,7 @@ Build-Depends:
  qtbase5-dev,
  qttools5-dev-tools,
  qt5-default,
+ libnotify-dev,
  pkg-config,
  vitamtp-dev
 

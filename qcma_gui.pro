@@ -10,6 +10,8 @@ SOURCES += \
     src/gui/singleapplication.cpp \    
     src/gui/clientmanager.cpp \
     src/gui/filterlineedit.cpp \
+    src/indicator/trayindicator.cpp \
+    src/indicator/qtrayicon.cpp \
 # forms
     src/forms/backupitem.cpp \
     src/forms/backupmanagerform.cpp \
@@ -23,6 +25,9 @@ HEADERS += \
     src/gui/singleapplication.h \
     src/gui/clientmanager.h \
     src/gui/filterlineedit.h \
+    src/indicator/trayindicator_global.h \
+    src/indicator/trayindicator.h \
+    src/indicator/qtrayicon.h \
 # forms
     src/forms/backupitem.h \
     src/forms/backupmanagerform.h \
@@ -50,9 +55,20 @@ unix:!macx {
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps
     icon64.files += resources/images/$${TARGET}.png
 
+    # AppIndicator support
+    ENABLE_INDICATOR {
+        actions64.path = $$DATADIR/icons/hicolor/64x64/actions
+        actions64.files += resources/images/qcma_on.png
+        actions64.files += resources/images/qcma_off.png
+
+        SOURCES += src/indicator/unityindicator.cpp
+        HEADERS += src/indicator/unityindicator.h
+        PKGCONFIG += appindicator3-0.1
+        DEFINES += ENABLE_APPINDICATOR=1
+    }
     target.path = $$BINDIR
 
-    INSTALLS += target desktop icon64
+    INSTALLS += target desktop icon64 actions64
 
     # KDE support
     ENABLE_KDE {
@@ -67,6 +83,8 @@ unix:!macx {
 }
 
 unix:!macx {
+
+PKGCONFIG += libnotify
 
 QT += dbus
 

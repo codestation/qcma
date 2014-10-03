@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     qDebug("Starting main thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     // set the organization/application for QSettings to work properly
-    app.setOrganizationName("qcma");
+    app.setOrganizationName("codestation");
     app.setApplicationName("qcma");
 
     //TODO: check if this is actually needed since we don't have a main window by default

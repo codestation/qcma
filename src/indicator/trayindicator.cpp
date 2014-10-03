@@ -1,7 +1,7 @@
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
- *  Copyright (C) 2013  Codestation
+ *  Copyright (C) 2014  Codestation
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#include "trayindicator.h"
 
-#include <QDialog>
-#include <QLineEdit>
-#include <QSettings>
-#include <QSignalMapper>
+#undef signals
+extern "C" {
+#include <libnotify/notify.h>
+}
+#define signals public
 
-namespace Ui {
-class ConfigWidget;
+
+TrayIndicator::TrayIndicator(QWidget *parent)
+    : QWidget(parent)
+{
+#ifdef Q_OS_LINUX
+    notify_init("qcma");
+#endif
 }
 
-class ConfigWidget : public QDialog
+TrayIndicator::~TrayIndicator()
 {
-    Q_OBJECT
+#ifdef Q_OS_LINUX
+    notify_uninit();
+#endif
+}
 
-public:
-    explicit ConfigWidget(QWidget *parent = 0);
-    ~ConfigWidget();
-
-private:
-    enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL, BTN_PKG};
-
-    void connectSignals();
-    void setDefaultData();
-    void savePath(QSettings &settings, const QLineEdit *edit, const QString &key);
-
-    Ui::ConfigWidget *ui;
-
-private slots:
-    void browseBtnPressed(int from);
-    void resetButtonPressed();
-    void accept();
-};
-
-#endif // CONFIGWIDGET_H
+void TrayIndicator::showMessage(const QString &title, const QString &message)
+{
+#ifdef Q_OS_LINUX
+    NotifyNotification *notif = notify_notification_new(qPrintable(title), qPrintable(message), "dialog-information");
+    notify_notification_show(notif, NULL);
+    g_object_unref(G_OBJECT(notif));
+#else
+    Q_UNUSED(title);
+    Q_UNUSED(message);
+#endif
+}

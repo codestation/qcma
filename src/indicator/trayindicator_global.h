@@ -1,7 +1,7 @@
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
- *  Copyright (C) 2013  Codestation
+ *  Copyright (C) 2014  Codestation
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,39 +17,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#ifndef TRAYINDICATOR_GLOBAL_H
+#define TRAYINDICATOR_GLOBAL_H
 
-#include <QDialog>
-#include <QLineEdit>
-#include <QSettings>
-#include <QSignalMapper>
+#include <QtCore/qglobal.h>
 
-namespace Ui {
-class ConfigWidget;
-}
+#if defined(QCMA_TRAYINDICATOR_LIBRARY)
+#  define TRAYINDICATORSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define TRAYINDICATORSHARED_EXPORT Q_DECL_IMPORT
+#endif
 
-class ConfigWidget : public QDialog
-{
-    Q_OBJECT
-
-public:
-    explicit ConfigWidget(QWidget *parent = 0);
-    ~ConfigWidget();
-
-private:
-    enum browse_buttons {BTN_PHOTO, BTN_MUSIC, BTN_VIDEO, BTN_APPS, BTN_URL, BTN_PKG};
-
-    void connectSignals();
-    void setDefaultData();
-    void savePath(QSettings &settings, const QLineEdit *edit, const QString &key);
-
-    Ui::ConfigWidget *ui;
-
-private slots:
-    void browseBtnPressed(int from);
-    void resetButtonPressed();
-    void accept();
-};
-
-#endif // CONFIGWIDGET_H
+#endif // TRAYINDICATOR_GLOBAL_H
