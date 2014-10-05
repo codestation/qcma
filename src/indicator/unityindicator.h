@@ -1,6 +1,3 @@
-#ifndef UNITYINDICATOR_H
-#define UNITYINDICATOR_H
-
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
@@ -20,16 +17,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "indicator/trayindicator.h"
+#ifndef UNITYINDICATOR_H
+#define UNITYINDICATOR_H
 
-#undef signals
-extern "C" {
-#include <libappindicator/app-indicator.h>
-}
-#define signals public
+#include "trayindicator.h"
 
 #include <QVector>
 
+#undef signals
+
+extern "C" {
+#include <libappindicator/app-indicator.h>
+#include <gtk/gtk.h>
+
+void optionsIndicator(GtkMenu *menu, gpointer data);
+void reloadIndicator(GtkMenu *menu, gpointer data);
+void backupIndicator(GtkMenu *menu, gpointer data);
+void aboutIndicator(GtkMenu *menu, gpointer data);
+void aboutQtIndicator(GtkMenu *menu, gpointer data);
+void quitIndicator(GtkMenu *menu, gpointer data);
+}
+
+#define signals public
 
 class UnityIndicator : public TrayIndicator
 {
@@ -42,6 +51,7 @@ public:
     bool isVisible();
     void show();
     void hide();
+    void showMessage(const QString &title, const QString &message);
 
 private:
     AppIndicator *m_indicator;

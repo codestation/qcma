@@ -1,8 +1,3 @@
-#ifndef TRAYINDICATOR_H
-#define TRAYINDICATOR_H
-
-#include "trayindicator_global.h"
-
 /*
  *  QCMA: Cross-platform content manager assistant for the PS Vita
  *
@@ -22,23 +17,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef TRAYINDICATOR_H
+#define TRAYINDICATOR_H
+
 #include <QString>
 #include <QWidget>
 
-class TRAYINDICATORSHARED_EXPORT TrayIndicator : public QWidget
+#include "trayindicator_global.h"
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+// in Qt4 signals are protected
+#undef signals
+#define signals public
+#endif
+
+class TrayIndicator : public QWidget
 {
     Q_OBJECT
 public:
-    virtual ~TrayIndicator();
+    virtual ~TrayIndicator() {}
     virtual void init() = 0;
     virtual bool isVisible() = 0;
     virtual void setIcon(const QString &icon) = 0;
-    virtual void showMessage(const QString &title, const QString &message);
+    virtual void showMessage(const QString &title, const QString &message) = 0;
     virtual void show() = 0;
     virtual void hide() = 0;
 
 protected:
-    TrayIndicator(QWidget *parent = 0);
+    TrayIndicator(QWidget *parent = 0) : QWidget(parent) {}
 
 signals:
     void openConfig();
@@ -49,5 +55,8 @@ signals:
     void stopServer();
 
 };
+
+typedef TrayIndicator *(*TrayFunctionPointer)(QWidget *parent);
+extern "C" TRAYINDICATORSHARED_EXPORT TrayIndicator *createTrayIndicator(QWidget *parent = 0);
 
 #endif // TRAYINDICATOR_H

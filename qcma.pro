@@ -15,6 +15,16 @@ android {
 # Compile the headless binary only on Linux because it depends on dbus
 unix:!macx:!android {
     SUBDIRS += qcma_cli.pro
+    # The appindicator and kde extensions are linux only too
+    ENABLE_APPINDICATOR {
+        SUBDIRS += qcma_appindicator.pro
+    }
+    ENABLE_KDENOTIFIER {
+        greaterThan(QT_MAJOR_VERSION, 4) {
+            #error("ENABLE_KDE can only be used with Qt4")
+        }
+        SUBDIRS += qcma_kdenotifier.pro
+    }
 }
 
 TRANSLATIONS += \

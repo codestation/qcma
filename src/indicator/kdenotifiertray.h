@@ -17,38 +17,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef KDENOTIFIERTRAY_H
+#define KDENOTIFIERTRAY_H
+
 #include "trayindicator.h"
+#include "kdenotifier.h"
 
-#undef signals
-extern "C" {
-#include <libnotify/notify.h>
-}
-#define signals public
+class QAction;
+class QSystemTrayIcon;
 
-
-TrayIndicator::TrayIndicator(QWidget *parent)
-    : QWidget(parent)
+class KDENotifierTray : public TrayIndicator
 {
-#ifdef Q_OS_LINUX
-    notify_init("qcma");
-#endif
-}
+    Q_OBJECT
+public:
+    explicit KDENotifierTray(QWidget *parent = 0);
+    void init();
+    void setIcon(const QString &icon);
+    bool isVisible();
+    void show();
+    void hide();
+    void showMessage(const QString &title, const QString &message);
 
-TrayIndicator::~TrayIndicator()
-{
-#ifdef Q_OS_LINUX
-    notify_uninit();
-#endif
-}
+private:
+    //system tray
+    QAction *quit;
+    QAction *reload;
+    QAction *options;
+    QAction *backup;
+    QAction *about;
+    QAction *about_qt;
 
-void TrayIndicator::showMessage(const QString &title, const QString &message)
-{
-#ifdef Q_OS_LINUX
-    NotifyNotification *notif = notify_notification_new(qPrintable(title), qPrintable(message), "dialog-information");
-    notify_notification_show(notif, NULL);
-    g_object_unref(G_OBJECT(notif));
-#else
-    Q_UNUSED(title);
-    Q_UNUSED(message);
-#endif
-}
+    KDENotifier *m_notifier_item;
+
+public slots:
+
+};
+
+#endif // KDENOTIFIERTRAY_H

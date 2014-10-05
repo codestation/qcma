@@ -10,7 +10,6 @@ SOURCES += \
     src/gui/singleapplication.cpp \    
     src/gui/clientmanager.cpp \
     src/gui/filterlineedit.cpp \
-    src/indicator/trayindicator.cpp \
     src/indicator/qtrayicon.cpp \
 # forms
     src/forms/backupitem.cpp \
@@ -25,8 +24,7 @@ HEADERS += \
     src/gui/singleapplication.h \
     src/gui/clientmanager.h \
     src/gui/filterlineedit.h \
-    src/indicator/trayindicator_global.h \
-    src/indicator/trayindicator.h \
+    src/indicator/trayindicator_import.h \
     src/indicator/qtrayicon.h \
 # forms
     src/forms/backupitem.h \
@@ -46,6 +44,8 @@ FORMS += \
 
 #Linux-only config
 unix:!macx {
+    PKGCONFIG += libnotify
+
     DATADIR = $$PREFIX/share
 
     # config for desktop file and icon
@@ -55,46 +55,19 @@ unix:!macx {
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps
     icon64.files += resources/images/$${TARGET}.png
 
-    # AppIndicator support
-    ENABLE_INDICATOR {
-        actions64.path = $$DATADIR/icons/hicolor/64x64/actions
-        actions64.files += resources/images/qcma_on.png
-        actions64.files += resources/images/qcma_off.png
-
-        SOURCES += src/indicator/unityindicator.cpp
-        HEADERS += src/indicator/unityindicator.h
-        PKGCONFIG += appindicator3-0.1
-        DEFINES += ENABLE_APPINDICATOR=1
-    }
     target.path = $$BINDIR
 
-    INSTALLS += target desktop icon64 actions64
-
-    # KDE support
-    ENABLE_KDE {
-        greaterThan(QT_MAJOR_VERSION, 4) {
-            error("ENABLE_KDE can only be used with Qt4")
-        }
-        LIBS += -lkdeui
-        DEFINES += ENABLE_KDE_NOTIFIER=1
-        SOURCES += src/gui/kdenotifier.cpp
-        HEADERS += src/gui/kdenotifier.h
-    }
+    INSTALLS += target desktop icon64
 }
 
 unix:!macx {
-
-PKGCONFIG += libnotify
-
-QT += dbus
-
-# Create the introspection XML
-QT5_SUFFIX {
-    system(qdbuscpp2xml-qt5 -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
-} else {
-    system(qdbuscpp2xml -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
-}
-
-# Create the helper class
-DBUS_ADAPTORS = org.qcma.ClientManager.xml
+    QT += dbus
+    # Create the introspection XML
+    QT5_SUFFIX {
+        system(qdbuscpp2xml-qt5 -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+    } else {
+        system(qdbuscpp2xml -M -s src/gui/mainwidget.h -o org.qcma.ClientManager.xml)
+    }
+    # Create the helper class
+    DBUS_ADAPTORS = org.qcma.ClientManager.xml
 }

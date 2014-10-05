@@ -30,11 +30,13 @@ class QTrayIcon : public TrayIndicator
     Q_OBJECT
 public:
     explicit QTrayIcon(QWidget *parent = 0);
+    ~QTrayIcon();
     void init();
     void setIcon(const QString &icon);
     bool isVisible();
     void show();
     void hide();
+    void showMessage(const QString &title, const QString &message);
 
 #ifndef Q_OS_LINUX
     void showMessage(const QString &title, const QString &message);

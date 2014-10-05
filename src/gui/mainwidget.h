@@ -57,6 +57,7 @@ private:
     void connectSignals();
     void createTrayIcon();
     void checkSettings();
+    TrayIndicator *createTrayObject(QWidget *parent);
 
     bool first_run;
 

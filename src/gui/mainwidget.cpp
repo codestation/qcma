@@ -28,11 +28,7 @@
 #include "qlistdb.h"
 #include "sqlitedb.h"
 
-#ifdef ENABLE_APPINDICATOR
-#include "indicator/unityindicator.h"
-#else
 #include "indicator/qtrayicon.h"
-#endif
 
 #include <QApplication>
 #include <QDebug>
@@ -57,21 +53,13 @@ MainWidget::MainWidget(QWidget *parent) :
     // expose qcma over dbus so the database update can be triggered
     dbus.registerObject("/ClientManager", this);
     dbus.registerService("org.qcma.ClientManager");
-#ifndef ENABLE_KDE_NOTIFIER
     trayIcon = NULL;
-#else
-    notifierItem = NULL;
-#endif
 }
 #else
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL)
 {
-#ifndef ENABLE_KDE_NOTIFIER
     trayIcon = NULL;
-#else
-    notifierItem = NULL;
-#endif
 }
 #endif
 
@@ -113,14 +101,10 @@ void MainWidget::stopServer()
 
 void MainWidget::deviceDisconnect()
 {
-#ifndef ENABLE_KDE_NOTIFIER
 #ifndef Q_OS_WIN32
     trayIcon->setIcon("qcma_off.png");
 #else
     trayIcon->setIcon("qcma_off_16.png");
-#endif
-#else
-    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/tray/qcma_off.png"));
 #endif
     qDebug("Icon changed - disconnected");
     setTrayTooltip(tr("Disconnected"));
@@ -129,14 +113,10 @@ void MainWidget::deviceDisconnect()
 
 void MainWidget::deviceConnect(QString message)
 {
-#ifndef ENABLE_KDE_NOTIFIER
 #ifndef Q_OS_WIN32
     trayIcon->setIcon("qcma_on.png");
 #else
     trayIcon->setIcon("qcma_off_16.png");
-#endif
-#else
-    notifierItem->setIconByPixmap(QIcon(":/main/resources/images/tray/qcma_on.png"));
 #endif
     qDebug("Icon changed - connected");
     setTrayTooltip(message);
@@ -232,13 +212,41 @@ void MainWidget::refreshDatabase()
     managerForm->refreshDatabase();
 }
 
-void MainWidget::createTrayIcon()
+TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
 {
-#ifdef ENABLE_APPINDICATOR
-    trayIcon = new UnityIndicator(this);
-#else
-    trayIcon = new QTrayIcon(this);
+    TrayFunctionPointer create_tray = NULL;
+
+    QString desktop = getenv("XDG_CURRENT_DESKTOP");
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    if(desktop.toLower() == "kde")
+    {
+        // KDENotifier
+        QLibrary library("/usr/share/qcma/qcma_kdenotifier.so");
+        if(library.load())
+            create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
+        else
+            qDebug() << "Cannot load qcma_kdenotifier plugin";
+    }
+    else
 #endif
+    // if(desktop.toLower() == "unity")
+    {
+        // AppIndicator
+        QLibrary library("/usr/share/qcma/qcma_appindicator.so");
+        if(library.load())
+            create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
+        else
+            qDebug() << "Cannot load qcma_appindicator plugin";
+    }
+
+    // else QSystemTrayIcon
+    return (create_tray != NULL) ? create_tray(parent) : createTrayIndicator(parent);
+}
+
+void MainWidget::createTrayIcon()
+{    
+    trayIcon = createTrayObject(this);
     trayIcon->init();
 
 #ifndef Q_OS_WIN32
@@ -275,10 +283,8 @@ void MainWidget::receiveMessage(QString message)
 
 MainWidget::~MainWidget()
 {
-#ifndef ENABLE_KDE_NOTIFIER
     if(trayIcon) {
         trayIcon->hide();
     }
-#endif
     delete db;
 }
