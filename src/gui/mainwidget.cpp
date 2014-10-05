@@ -222,7 +222,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     if(desktop.toLower() == "kde")
     {
         // KDENotifier
-        QLibrary library("/usr/share/qcma/qcma_kdenotifier.so");
+        QLibrary library("/usr/lib/qcma/qcma_kdenotifier.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
@@ -233,7 +233,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     // if(desktop.toLower() == "unity")
     {
         // AppIndicator
-        QLibrary library("/usr/share/qcma/qcma_appindicator.so");
+        QLibrary library("/usr/lib/qcma/qcma_appindicator.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else

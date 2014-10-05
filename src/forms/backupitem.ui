@@ -37,7 +37,7 @@
         </size>
        </property>
        <property name="text">
-        <string/>
+        <string notr="true"/>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -55,7 +55,7 @@
        <item>
         <widget class="QLabel" name="gameLabel">
          <property name="text">
-          <string>&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;</string>
+          <string notr="true">&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;</string>
          </property>
         </widget>
        </item>
@@ -76,7 +76,7 @@
             </size>
            </property>
            <property name="text">
-            <string>&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;</string>
+            <string notr="true">&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0.00 GiB&lt;/span&gt;&lt;/p&gt;</string>
            </property>
           </widget>
          </item>
@@ -89,7 +89,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;[APP] [SAVE] [UPDATE] [DLC]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;[APP] [SAVE] [UPDATE] [DLC]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

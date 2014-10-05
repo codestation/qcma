@@ -21,6 +21,7 @@
 
 #include <QDebug>
 #include <QHostInfo>
+#include <QSettings>
 
 DeviceCapability::DeviceCapability() :
     vita_info()
@@ -40,7 +41,9 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
     }
 
     QString hostname = QHostInfo::localHostName();
-    const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), VITAMTP_PROTOCOL_MAX_VERSION);
+    int protocol_version = QSettings().value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
+    protocol_version = qMax(protocol_version, VITAMTP_PROTOCOL_MAX_VERSION);
+    const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), protocol_version);
 
     // Next, we send the client's (this program) info (discard the const here)
     if(VitaMTP_SendInitiatorInfo(device, (initiator_info_t *)pc_info) != PTP_RC_OK) {

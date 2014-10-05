@@ -54,7 +54,11 @@ dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUp
 
 * [VitaMTP fork](https://github.com/codestation/VitaMTP)
 
-* [FFmpeg](hhttp://www.ffmpeg.org/)
+* [FFmpeg](http://www.ffmpeg.org/)
+
+* [libnotify](http://library.gnome.org/devel/notification-spec/)
+
+* [libappindicator](https://launchpad.net/libappindicator)
 
 
 #### Where do I get the source code?
@@ -68,6 +72,8 @@ Contact me on [GitHub](https://github.com/codestation/)
 the reference implementation of OpenCMA.
 
 [Xian Nox] (https://github.com/xiannox) - for the Wiki and various contributions.
+
+[173210] (https://github.com/173210) - japanese translations.
 
 #### License
 GPL v3: since some parts of QCMA are based on the reference implementation of
