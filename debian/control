@@ -26,3 +26,8 @@ Package: qcma-cli
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (headless version)
+
+Package: qcma-appindicator
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Content Manager Assistant for the PS Vita (appindicator support)

@@ -1,5 +1,4 @@
 usr/bin/qcma
 resources/qcma.desktop usr/share/applications/qcma
 resources/images/qcma.png usr/share/icons/hicolor/64x64/apps
-resources/images/qcma_on.png usr/share/icons/hicolor/64x64/actions
-resources/images/qcma_off.png usr/share/icons/hicolor/64x64/actions
+
