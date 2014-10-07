@@ -7,7 +7,7 @@ DEFINES += QCMA_TRAYINDICATOR_LIBRARY
 
 QT_CONFIG -= no-pkg-config
 
-PKGCONFIG += appindicator-0.1 gtk+-2.0 libnotify
+PKGCONFIG = appindicator-0.1 libnotify
 INCLUDEPATH += src/
 
 SOURCES += \

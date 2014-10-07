@@ -4,6 +4,7 @@ TARGET = qcma_kdenotifier
 TEMPLATE = lib
 CONFIG += plugin
 DEFINES += QCMA_TRAYINDICATOR_LIBRARY
+PKGCONFIG =
 LIBS += -lkdeui
 INCLUDEPATH += src/
 

@@ -56,7 +56,7 @@ RESOURCES += qcmares.qrc translations.qrc
 
 # find packages using pkg-config
 CONFIG += link_pkgconfig
-PKGCONFIG += libvitamtp libavformat libavcodec libavutil libswscale
+PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
 
 # custom CXXFLAGS
 QMAKE_CXXFLAGS += -Wno-write-strings -Wall -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
