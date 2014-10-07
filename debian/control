@@ -10,24 +10,32 @@ Build-Depends:
  cdbs,
  libavformat-dev,
  libswscale-dev,
- qtbase5-dev,
- qttools5-dev-tools,
- qt5-default,
+ libqt4-dev,
+ qt4-dev-tools,
+ qt4-default,
+ kdelibs5-dev,
  libnotify-dev,
+ libgtk2.0-dev,
+ libappindicator-dev,
  pkg-config,
- vitamtp-dev
+ vitamtp-dev (>= 2.5.4)
 
 Package: qcma
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: vitamtp4 (>= 2.5.4), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita
 
 Package: qcma-cli
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: vitamtp4 (>= 2.5.4), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (headless version)
 
 Package: qcma-appindicator
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: qcma (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (appindicator support)
+
+Package: qcma-kdenotifier
+Architecture: any
+Depends: qcma (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Content Manager Assistant for the PS Vita (kdenotifier support)

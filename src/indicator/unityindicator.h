@@ -29,13 +29,6 @@
 extern "C" {
 #include <libappindicator/app-indicator.h>
 #include <gtk/gtk.h>
-
-void optionsIndicator(GtkMenu *menu, gpointer data);
-void reloadIndicator(GtkMenu *menu, gpointer data);
-void backupIndicator(GtkMenu *menu, gpointer data);
-void aboutIndicator(GtkMenu *menu, gpointer data);
-void aboutQtIndicator(GtkMenu *menu, gpointer data);
-void quitIndicator(GtkMenu *menu, gpointer data);
 }
 
 #define signals public

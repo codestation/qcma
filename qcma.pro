@@ -21,7 +21,7 @@ unix:!macx:!android {
     }
     ENABLE_KDENOTIFIER {
         greaterThan(QT_MAJOR_VERSION, 4) {
-            #error("ENABLE_KDE can only be used with Qt4")
+            error("ENABLE_KDE can only be used with Qt4")
         }
         SUBDIRS += qcma_kdenotifier.pro
     }

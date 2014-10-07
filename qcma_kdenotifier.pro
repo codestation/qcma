@@ -17,3 +17,5 @@ HEADERS += \
     src/indicator/kdenotifiertray.h
 
 target.path = /usr/lib/qcma
+
+INSTALLS += target

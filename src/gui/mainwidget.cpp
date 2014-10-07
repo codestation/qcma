@@ -102,9 +102,9 @@ void MainWidget::stopServer()
 void MainWidget::deviceDisconnect()
 {
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon("qcma_off.png");
+    trayIcon->setIcon("qcma_off");
 #else
-    trayIcon->setIcon("qcma_off_16.png");
+    trayIcon->setIcon("qcma_off_16");
 #endif
     qDebug("Icon changed - disconnected");
     setTrayTooltip(tr("Disconnected"));
@@ -114,9 +114,9 @@ void MainWidget::deviceDisconnect()
 void MainWidget::deviceConnect(QString message)
 {
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon("qcma_on.png");
+    trayIcon->setIcon("qcma_on");
 #else
-    trayIcon->setIcon("qcma_off_16.png");
+    trayIcon->setIcon("qcma_off_16");
 #endif
     qDebug("Icon changed - connected");
     setTrayTooltip(message);
@@ -217,27 +217,29 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     TrayFunctionPointer create_tray = NULL;
 
     QString desktop = getenv("XDG_CURRENT_DESKTOP");
+    qDebug() << "Current desktop: " << desktop;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if(desktop.toLower() == "kde")
     {
         // KDENotifier
-        QLibrary library("/usr/lib/qcma/qcma_kdenotifier.so");
+        QLibrary library("/usr/lib/qcma/libqcma_kdenotifier.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
-            qDebug() << "Cannot load qcma_kdenotifier plugin";
+            qDebug() << "Cannot load libqcma_kdenotifier plugin";
     }
     else
 #endif
+    // try to use the appindicator if is available
     // if(desktop.toLower() == "unity")
     {
         // AppIndicator
-        QLibrary library("/usr/lib/qcma/qcma_appindicator.so");
+        QLibrary library("/usr/lib/qcma/libqcma_appindicator.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
-            qDebug() << "Cannot load qcma_appindicator plugin";
+            qDebug() << "Cannot load libqcma_appindicator plugin";
     }
 
     // else QSystemTrayIcon
@@ -250,9 +252,9 @@ void MainWidget::createTrayIcon()
     trayIcon->init();
 
 #ifndef Q_OS_WIN32
-    trayIcon->setIcon("qcma_off.png");
+    trayIcon->setIcon("qcma_off");
 #else
-    trayIcon->setIcon("qcma_off_16.png");
+    trayIcon->setIcon("qcma_off_16");
 #endif
     trayIcon->show();
 

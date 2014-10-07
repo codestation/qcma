@@ -96,7 +96,8 @@ bool QTrayIcon::isVisible()
 
 void QTrayIcon::setIcon(const QString &icon)
 {
-    m_tray_icon->setIcon(QIcon(":/main/resources/images/tray/" + icon));
+    QIcon qicon(":/main/resources/images/" + icon + ".png");
+    m_tray_icon->setIcon(qicon);
 }
 
 void QTrayIcon::show()

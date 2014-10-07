@@ -27,6 +27,7 @@
 #define writableLocation storageLocation
 #endif
 
+#include <QDebug>
 #include <QDir>
 #include <QVector>
 
@@ -143,13 +144,13 @@ void UnityIndicator::init()
     gtk_widget_show(quit);
 
     m_indicator = app_indicator_new(
-        "unique-application-name",
-        "indicator-messages",
+        "qcma-appindicator",
+        "qcma-messages",
         APP_INDICATOR_CATEGORY_APPLICATION_STATUS
     );
 
     QString icon_path;
-    QString icon_name = "share/icons/hicolor/64x64/tray/qcma_on.png";
+    QString icon_name = "share/icons/hicolor/64x64/actions/qcma_on.png";
 
     if(QFile("/usr/" + icon_name).exists())
         icon_path = QFileInfo("/usr/" + icon_name).absolutePath();
@@ -157,7 +158,12 @@ void UnityIndicator::init()
         icon_path = QFileInfo("/usr/" + icon_name).absolutePath();
 
     if(!icon_path.isEmpty())
+    {
+        qDebug() << "Using " << icon_path << " as icon theme path";
         app_indicator_set_icon_theme_path(m_indicator, qPrintable(icon_path));
+    }
+    else
+        qDebug() << "Cannot find qcma icons.";
 
     app_indicator_set_status(m_indicator, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_menu(m_indicator, GTK_MENU(menu));
