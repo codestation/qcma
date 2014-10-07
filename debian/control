@@ -12,7 +12,6 @@ Build-Depends:
  libswscale-dev,
  libqt4-dev,
  qt4-dev-tools,
- qt4-default,
  kdelibs5-dev,
  libnotify-dev,
  libgtk2.0-dev,
