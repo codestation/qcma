@@ -22,10 +22,14 @@
 
 #include <QtCore/qglobal.h>
 
+#ifdef Q_OS_LINUX
 #if defined(QCMA_TRAYINDICATOR_LIBRARY)
 #  define TRAYINDICATORSHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define TRAYINDICATORSHARED_EXPORT Q_DECL_IMPORT
+#endif
+#else
+#  define TRAYINDICATORSHARED_EXPORT
 #endif
 
 #endif // TRAYINDICATOR_GLOBAL_H

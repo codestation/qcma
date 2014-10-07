@@ -215,7 +215,7 @@ void MainWidget::refreshDatabase()
 TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
 {
     TrayFunctionPointer create_tray = NULL;
-
+#ifdef Q_OS_LINUX
     QString desktop = getenv("XDG_CURRENT_DESKTOP");
     qDebug() << "Current desktop: " << desktop;
 
@@ -241,7 +241,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
         else
             qDebug() << "Cannot load libqcma_appindicator plugin";
     }
-
+#endif
     // else QSystemTrayIcon
     return (create_tray != NULL) ? create_tray(parent) : createTrayIndicator(parent);
 }

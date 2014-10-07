@@ -38,10 +38,6 @@ public:
     void hide();
     void showMessage(const QString &title, const QString &message);
 
-#ifndef Q_OS_LINUX
-    void showMessage(const QString &title, const QString &message);
-#endif
-
 private:
     //system tray
     QAction *quit;
