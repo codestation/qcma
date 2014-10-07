@@ -13,7 +13,7 @@ Group:          Productivity/File utilities
 Requires:       ffmpeg
 Requires:       libqt5-qtbase
 Requires:       libqt5-qtimageformats
-Requires:       libvitamtp3 >= 2.5.0
+Requires:       libvitamtp4 >= 2.5.4
 BuildRequires:  pkg-config
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel

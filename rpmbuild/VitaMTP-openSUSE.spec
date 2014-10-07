@@ -3,9 +3,9 @@
 # 
 
 Name:           libvitamtp
-Version:        2.5.1
+Version:        2.5.4
 Release:        0
-%define sonum   3
+%define sonum   4
 Summary:        Low-level Vita communication library
 License:        GPL-3.0
 Group:          System/Libraries
