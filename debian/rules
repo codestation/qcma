@@ -3,7 +3,7 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/qmake.mk
 
-DEB_QMAKE_ARGS += qcma.pro PREFIX=/usr CONFIG+="ENABLE_APPINDICATOR"
+DEB_QMAKE_ARGS += qcma.pro PREFIX=/usr CONFIG+="ENABLE_APPINDICATOR ENABLE_KDENOTIFIER"
 
 pre-build::
 	lrelease resources/translations/*.ts
