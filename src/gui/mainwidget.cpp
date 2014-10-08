@@ -104,7 +104,7 @@ void MainWidget::deviceDisconnect()
 #ifndef Q_OS_WIN32
     trayIcon->setIcon("qcma_off");
 #else
-    trayIcon->setIcon("qcma_off_16");
+    trayIcon->setIcon("tray/qcma_off_16");
 #endif
     qDebug("Icon changed - disconnected");
     setTrayTooltip(tr("Disconnected"));
@@ -116,7 +116,7 @@ void MainWidget::deviceConnect(QString message)
 #ifndef Q_OS_WIN32
     trayIcon->setIcon("qcma_on");
 #else
-    trayIcon->setIcon("qcma_off_16");
+    trayIcon->setIcon("tray/qcma_on_16");
 #endif
     qDebug("Icon changed - connected");
     setTrayTooltip(message);
@@ -254,7 +254,7 @@ void MainWidget::createTrayIcon()
 #ifndef Q_OS_WIN32
     trayIcon->setIcon("qcma_off");
 #else
-    trayIcon->setIcon("qcma_off_16");
+    trayIcon->setIcon("tray/qcma_off_16");
 #endif
     trayIcon->show();
 
