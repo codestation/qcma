@@ -85,10 +85,12 @@ void CmaBroadcast::readPendingDatagrams()
 void CmaBroadcast::setAvailable()
 {
     QMutexLocker locker(&mutex);
-    reply.clear();
+    int protocol_version = QSettings().value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
+
+    reply.clear();    
     reply.insert(0, broadcast_reply
                  .arg(broadcast_ok, uuid, "win", hostname)
-                 .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
+                 .arg(protocol_version, 8, 10, QChar('0'))
                  .arg(QCMA_REQUEST_PORT)
                  .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
     reply.append('\0');
@@ -97,10 +99,12 @@ void CmaBroadcast::setAvailable()
 void CmaBroadcast::setUnavailable()
 {
     QMutexLocker locker(&mutex);
+    int protocol_version = QSettings().value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
+
     reply.clear();
     reply.insert(0, broadcast_reply
                  .arg(broadcast_unavailable, uuid, "win", hostname)
-                 .arg(VITAMTP_PROTOCOL_MAX_VERSION, 8, 10, QChar('0'))
+                 .arg(protocol_version, 8, 10, QChar('0'))
                  .arg(QCMA_REQUEST_PORT)
                  .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
     reply.append('\0');

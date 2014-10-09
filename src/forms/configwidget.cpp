@@ -101,8 +101,6 @@ void ConfigWidget::setDefaultData()
     ui->musicSkipCheck->setChecked(settings.value("musicSkip", false).toBool());
 
     int protocol_version = settings.value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
-    protocol_version = qMax(protocol_version, VITAMTP_PROTOCOL_MAX_VERSION);
-
     ui->protocolEdit->setText(QString::number(protocol_version));
 }
 
@@ -190,7 +188,7 @@ void ConfigWidget::accept()
     settings.setValue("photoSkip", ui->photoSkipCheck->isChecked());
     settings.setValue("videoSkip", ui->videoSkipCheck->isChecked());
     settings.setValue("musicSkip", ui->musicSkipCheck->isChecked());
-    settings.setValue("protocolVersion", ui->protocolEdit->text().toLongLong());
+    settings.setValue("protocolVersion", ui->protocolEdit->text().toInt());
     settings.sync();
 
     done(Accepted);
