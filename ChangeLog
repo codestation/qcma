@@ -1,3 +1,9 @@
+qcma (0.3.5) unstable; urgency=low
+
+  * Do not override the user provided protocol version.
+
+ -- codestation <codestation404@gmail.com>  Thu, 09 Oct 2014 00:00:00 -0000
+
 qcma (0.3.4) unstable; urgency=low
 
   * Fixed compatibility with FW 3.30.
@@ -5,7 +11,7 @@ qcma (0.3.4) unstable; urgency=low
   * Added notifications via libnotify on Linux.
   * Added AppIndicator support for GNOME 3 and Unity.
 
- -- codestation <codestation404@gmail.com>  Thu, 28 Jun 2014 00:00:00 -0000
+ -- codestation <codestation404@gmail.com>  Thu, 07 Oct 2014 00:00:00 -0000
 
 qcma (0.3.3) unstable; urgency=low
 
