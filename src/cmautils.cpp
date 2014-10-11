@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QImage>
+#include <QSettings>
 
 #ifdef Q_OS_WIN32
 #include <windows.h>
@@ -183,4 +184,52 @@ QString readable_size(qint64 size, bool use_gib)
         size_f /= 1024.0;
     }
     return QString().setNum(size_f,'f',2) + " " + unit;
+}
+
+int getProtocolVersion()
+{
+    bool useCustom = QSettings().value("useCustomProtocol").toBool();
+    if(useCustom)
+    {
+        bool ok;
+        int protocol = QSettings().value("protocolVersion").toInt(&ok);
+        if(ok && protocol > 0)
+            return protocol;
+        else
+            return VITAMTP_PROTOCOL_MAX_VERSION;
+    }
+    else
+    {
+        int protocol;
+        int index = QSettings().value("protocolIndex").toInt();
+        switch(index)
+        {
+        case 0:
+            protocol = VITAMTP_PROTOCOL_FW_3_30;
+            break;
+        case 1:
+            protocol = VITAMTP_PROTOCOL_FW_3_10;
+            break;
+        case 2:
+            protocol = VITAMTP_PROTOCOL_FW_3_00;
+            break;
+        case 3:
+            protocol = VITAMTP_PROTOCOL_FW_2_60;
+            break;
+        case 4:
+            protocol = VITAMTP_PROTOCOL_FW_2_10;
+            break;
+        case 5:
+            protocol = VITAMTP_PROTOCOL_FW_2_00;
+            break;
+        case 6:
+            protocol = VITAMTP_WIRELESS_FW_2_00;
+            break;
+        default:
+            protocol = VITAMTP_PROTOCOL_MAX_VERSION;
+            break;
+        }
+
+        return protocol;
+    }
 }

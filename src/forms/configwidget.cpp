@@ -62,7 +62,6 @@ void ConfigWidget::connectSignals()
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(browseBtnPressed(int)));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    connect(ui->resetProtocolButton, SIGNAL(clicked()), this, SLOT(resetButtonPressed()));
 }
 
 void ConfigWidget::setDefaultData()
@@ -100,18 +99,21 @@ void ConfigWidget::setDefaultData()
     ui->videoSkipCheck->setChecked(settings.value("videoSkip", false).toBool());
     ui->musicSkipCheck->setChecked(settings.value("musicSkip", false).toBool());
 
-    int protocol_version = settings.value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
-    ui->protocolEdit->setText(QString::number(protocol_version));
+    ui->customProtocolCheckBox->setChecked(settings.value("useCustomProtocol", false).toBool());
+    ui->protocolBox->setCurrentIndex(settings.value("protocolIndex", 0).toInt());
+
+    bool ok;
+    int protocol_version = settings.value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt(&ok);
+
+    if(ok && protocol_version > 0)
+        ui->protocolEdit->setText(QString::number(protocol_version));
+    else
+        ui->protocolEdit->setText(QString::number(VITAMTP_PROTOCOL_MAX_VERSION));
 }
 
 ConfigWidget::~ConfigWidget()
 {
     delete ui;
-}
-
-void ConfigWidget::resetButtonPressed()
-{
-    ui->protocolEdit->setText(QString::number(VITAMTP_PROTOCOL_MAX_VERSION));
 }
 
 void ConfigWidget::browseBtnPressed(int btn)
@@ -188,7 +190,17 @@ void ConfigWidget::accept()
     settings.setValue("photoSkip", ui->photoSkipCheck->isChecked());
     settings.setValue("videoSkip", ui->videoSkipCheck->isChecked());
     settings.setValue("musicSkip", ui->musicSkipCheck->isChecked());
-    settings.setValue("protocolVersion", ui->protocolEdit->text().toInt());
+    settings.setValue("useCustomProtocol", ui->customProtocolCheckBox->isChecked());
+    settings.setValue("protocolIndex", ui->protocolBox->currentIndex());
+
+    bool ok;
+    int protocol = ui->protocolEdit->text().toInt(&ok);
+
+    if(ok && protocol > 0)
+        settings.setValue("protocolVersion", protocol);
+    else
+        settings.setValue("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION);
+
     settings.sync();
 
     done(Accepted);

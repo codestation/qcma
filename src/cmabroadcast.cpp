@@ -18,6 +18,7 @@
  */
 
 #include "cmabroadcast.h"
+#include "cmautils.h"
 
 #include <QDebug>
 #include <QHostInfo>
@@ -85,7 +86,7 @@ void CmaBroadcast::readPendingDatagrams()
 void CmaBroadcast::setAvailable()
 {
     QMutexLocker locker(&mutex);
-    int protocol_version = QSettings().value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
+    int protocol_version = getProtocolVersion();
 
     reply.clear();    
     reply.insert(0, broadcast_reply

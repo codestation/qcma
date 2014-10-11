@@ -158,156 +158,156 @@
         <translation>Directorios</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="34"/>
+        <location filename="../../src/forms/configwidget.ui" line="39"/>
         <source>Specify the folders that the PS Vita will access for each content type.</source>
         <translation>Especificar los directorios que el sistema PS Vita accederá para cada tipo de contenido.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="46"/>
-        <location filename="../../src/forms/configwidget.ui" line="58"/>
+        <location filename="../../src/forms/configwidget.ui" line="51"/>
+        <location filename="../../src/forms/configwidget.ui" line="63"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
         <translation>Esta es la ubicación donde tus capturas de pantalla e imágenes serán almacenadas o importadas.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="49"/>
+        <location filename="../../src/forms/configwidget.ui" line="54"/>
         <source>Photo Folder</source>
         <translation>Directorio de Fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="68"/>
-        <location filename="../../src/forms/configwidget.ui" line="103"/>
-        <location filename="../../src/forms/configwidget.ui" line="138"/>
-        <location filename="../../src/forms/configwidget.ui" line="173"/>
-        <location filename="../../src/forms/configwidget.ui" line="208"/>
-        <location filename="../../src/forms/configwidget.ui" line="233"/>
+        <location filename="../../src/forms/configwidget.ui" line="73"/>
+        <location filename="../../src/forms/configwidget.ui" line="108"/>
+        <location filename="../../src/forms/configwidget.ui" line="143"/>
+        <location filename="../../src/forms/configwidget.ui" line="178"/>
+        <location filename="../../src/forms/configwidget.ui" line="213"/>
+        <location filename="../../src/forms/configwidget.ui" line="238"/>
         <source>Browse...</source>
         <translation>Buscar...</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="81"/>
-        <location filename="../../src/forms/configwidget.ui" line="93"/>
+        <location filename="../../src/forms/configwidget.ui" line="86"/>
+        <location filename="../../src/forms/configwidget.ui" line="98"/>
         <source>This is the location your Videos are Saved to/Imported from.</source>
         <translation>Esta es la ubicación donde tus videos serán almacenados o importados.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="84"/>
+        <location filename="../../src/forms/configwidget.ui" line="89"/>
         <source>Video Folder</source>
         <translation>Directorio de Videos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="116"/>
-        <location filename="../../src/forms/configwidget.ui" line="128"/>
+        <location filename="../../src/forms/configwidget.ui" line="121"/>
+        <location filename="../../src/forms/configwidget.ui" line="133"/>
         <source>This is the location your Music is Saved to/Imported from.</source>
         <translation>Esta es la ubicación donde tu música será almacenada o importada.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="119"/>
+        <location filename="../../src/forms/configwidget.ui" line="124"/>
         <source>Music Folder</source>
         <translation>Directorio de Música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="151"/>
-        <location filename="../../src/forms/configwidget.ui" line="163"/>
+        <location filename="../../src/forms/configwidget.ui" line="156"/>
+        <location filename="../../src/forms/configwidget.ui" line="168"/>
         <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
         <translation>Esta es la ubicación donde tus juegos, aplicaciones, partidas salvadas y respaldos del sistema serán almacenados o importados.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="154"/>
+        <location filename="../../src/forms/configwidget.ui" line="159"/>
         <source>Applications / Backups</source>
         <translation>Aplicaciones / Juegos / Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="186"/>
+        <location filename="../../src/forms/configwidget.ui" line="191"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
         <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="189"/>
+        <location filename="../../src/forms/configwidget.ui" line="194"/>
         <source>Updates / Web content</source>
         <translation>Actualizaciones / Contenido Web</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="198"/>
+        <location filename="../../src/forms/configwidget.ui" line="203"/>
         <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
         <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="221"/>
+        <location filename="../../src/forms/configwidget.ui" line="226"/>
         <source>Packages</source>
         <translation>Archivos PKG</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="247"/>
+        <location filename="../../src/forms/configwidget.ui" line="265"/>
         <source>Other</source>
         <translation>Otros</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="255"/>
+        <location filename="../../src/forms/configwidget.ui" line="273"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Ajustes Avanzados&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="262"/>
+        <location filename="../../src/forms/configwidget.ui" line="280"/>
         <source>Offline Mode</source>
         <translation>Modo desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="272"/>
+        <location filename="../../src/forms/configwidget.ui" line="290"/>
         <source>Skip metadata extraction</source>
         <translation>Saltar la extracción de metadatos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="296"/>
+        <location filename="../../src/forms/configwidget.ui" line="314"/>
         <source>Update database automatically when files on the PC are changed</source>
         <translation>Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="324"/>
+        <location filename="../../src/forms/configwidget.ui" line="342"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="334"/>
+        <location filename="../../src/forms/configwidget.ui" line="352"/>
         <source>Skip photo scanning</source>
         <translation>Omitir el escaneo de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="341"/>
+        <location filename="../../src/forms/configwidget.ui" line="359"/>
         <source>Skip video scanning</source>
         <translation>Omitir el escaneo de vídeos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="348"/>
+        <location filename="../../src/forms/configwidget.ui" line="366"/>
         <source>Skip music scanning</source>
         <translation>Omitir el escaneo de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="357"/>
+        <location filename="../../src/forms/configwidget.ui" line="381"/>
         <source>CMA Protocol version</source>
         <translation>Versión del protocolo CMA</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="371"/>
-        <source>Reset to default</source>
-        <translation>Valor por defecto</translation>
+        <location filename="../../src/forms/configwidget.ui" line="436"/>
+        <source>Use custom version</source>
+        <translation>Usar versión personalizada</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="279"/>
+        <location filename="../../src/forms/configwidget.ui" line="297"/>
         <source>Disable USB monitoring</source>
         <translation>Deshabilitar monitoreo USB</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="286"/>
+        <location filename="../../src/forms/configwidget.ui" line="304"/>
         <source>Disable Wi-Fi monitoring</source>
         <translation>Deshabilitar monitoreo WiFi</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="308"/>
+        <location filename="../../src/forms/configwidget.ui" line="326"/>
         <source>Database backend</source>
         <translation>Almacenaje de base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="319"/>
+        <location filename="../../src/forms/configwidget.ui" line="337"/>
         <source>In Memory</source>
         <translation>En memoria</translation>
     </message>
@@ -460,7 +460,7 @@ Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="281"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="283"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
@@ -601,32 +601,32 @@ Rama de compilación: %2</translation>
 <context>
     <name>UnityIndicator</name>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="104"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="105"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="105"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="106"/>
         <source>Refresh database</source>
         <translation>Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="106"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="107"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="108"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="109"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="109"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="110"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/unityindicator.cpp" line="111"/>
+        <location filename="../../src/indicator/unityindicator.cpp" line="112"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>

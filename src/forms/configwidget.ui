@@ -368,25 +368,82 @@
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout_2">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
+             <item row="0" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
                 <string>CMA Protocol version</string>
                </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
               </widget>
              </item>
-             <item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="protocolBox">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 3.30 - 1900010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 3.10 - 1800010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 3.00 - 1700010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 2.60 - 1600010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 2.10 - 1500010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 2.00 - 1400010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string notr="true">FW 1.00 - 1000000</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="customProtocolCheckBox">
+               <property name="text">
+                <string>Use custom version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
               <widget class="QLineEdit" name="protocolEdit">
                <property name="inputMask">
                 <string notr="true">9999999</string>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="resetProtocolButton">
                <property name="text">
-                <string>Reset to default</string>
+                <string notr="true"/>
                </property>
               </widget>
              </item>

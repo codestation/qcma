@@ -48,7 +48,6 @@ private:
 
 private slots:
     void browseBtnPressed(int from);
-    void resetButtonPressed();
     void accept();
 };
 

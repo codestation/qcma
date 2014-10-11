@@ -1,6 +1,7 @@
 qcma (0.3.5) unstable; urgency=low
 
-  * Do not override the user provided protocol version.
+  * Added selector to override the default protocol version.
+  * Do not override the user provided protocol version with a default value.
 
  -- codestation <codestation404@gmail.com>  Thu, 09 Oct 2014 00:00:00 -0000
 
