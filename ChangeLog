@@ -1,3 +1,9 @@
+qcma (0.3.6) unstable; urgency=low
+
+  * Fix stupid bug with function scope.
+
+ -- codestation <codestation404@gmail.com>  Thu, 11 Oct 2014 00:00:00 -0000
+
 qcma (0.3.5) unstable; urgency=low
 
   * Added selector to override the default protocol version.

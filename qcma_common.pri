@@ -6,7 +6,7 @@
 
 QT += core network sql
 
-VERSION = 0.3.5
+VERSION = 0.3.6
 
 TEMPLATE = app
 

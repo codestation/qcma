@@ -18,6 +18,7 @@
  */
 
 #include "capability.h"
+#include "cmautils.h"
 
 #include <QDebug>
 #include <QHostInfo>
@@ -41,7 +42,7 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
     }
 
     QString hostname = QHostInfo::localHostName();
-    int protocol_version = getProtocolVersion();
+    int protocol_version = ::getVitaProtocolVersion();
     const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), protocol_version);
 
     // Next, we send the client's (this program) info (discard the const here)

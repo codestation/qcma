@@ -86,7 +86,7 @@ void CmaBroadcast::readPendingDatagrams()
 void CmaBroadcast::setAvailable()
 {
     QMutexLocker locker(&mutex);
-    int protocol_version = getProtocolVersion();
+    int protocol_version = ::getVitaProtocolVersion();
 
     reply.clear();    
     reply.insert(0, broadcast_reply
@@ -100,7 +100,7 @@ void CmaBroadcast::setAvailable()
 void CmaBroadcast::setUnavailable()
 {
     QMutexLocker locker(&mutex);
-    int protocol_version = QSettings().value("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION).toInt();
+    int protocol_version = ::getVitaProtocolVersion();
 
     reply.clear();
     reply.insert(0, broadcast_reply

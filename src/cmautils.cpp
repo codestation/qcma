@@ -186,7 +186,7 @@ QString readable_size(qint64 size, bool use_gib)
     return QString().setNum(size_f,'f',2) + " " + unit;
 }
 
-int getProtocolVersion()
+int getVitaProtocolVersion()
 {
     bool useCustom = QSettings().value("useCustomProtocol").toBool();
     if(useCustom)
