@@ -18,7 +18,11 @@
  */
 
 #include "kdenotifiertray.h"
+#if QT_VERSION < 0x050000
 #include <kmenu.h>
+#else
+#include <QMenu>
+#endif
 
 KDENotifierTray::KDENotifierTray(QWidget *parent)
     : TrayIndicator(parent)
@@ -41,7 +45,11 @@ void KDENotifierTray::init()
     connect(about_qt, SIGNAL(triggered()), this, SIGNAL(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SIGNAL(stopServer()));
 
+#if QT_VERSION < 0x050000
     KMenu *tray_icon_menu = new KMenu(this);
+#else
+    QMenu *tray_icon_menu = new QMenu(this);
+#endif
 
     tray_icon_menu->addAction(options);
     tray_icon_menu->addAction(reload);

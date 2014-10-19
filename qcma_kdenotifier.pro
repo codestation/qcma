@@ -5,8 +5,13 @@ TEMPLATE = lib
 CONFIG += plugin
 DEFINES += QCMA_TRAYINDICATOR_LIBRARY
 PKGCONFIG =
-LIBS += -lkdeui
 INCLUDEPATH += src/
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += KNotifications
+} else {
+    LIBS += -lkdeui
+}
 
 SOURCES += \
     src/indicator/kdenotifier.cpp \
