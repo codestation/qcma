@@ -18,6 +18,8 @@ HEADERS += \
     src/indicator/trayindicator.h \
     src/indicator/unityindicator.h
 
+DATADIR = $$PREFIX/share
+
 actions64.path = $$DATADIR/icons/hicolor/64x64/actions
 actions64.files += resources/images/qcma_on.png
 actions64.files += resources/images/qcma_off.png

@@ -425,7 +425,22 @@
                </item>
                <item>
                 <property name="text">
-                 <string notr="true">FW 1.00 - 1000000</string>
+                 <string>FW 1.80 - 1300010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>FW 1.60 - 1200010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>FW 1.50 - 1100010</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>FW 1.00 - 1000010</string>
                 </property>
                </item>
               </widget>

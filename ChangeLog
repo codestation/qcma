@@ -1,3 +1,10 @@
+qcma (0.3.7) unstable; urgency=low
+
+  * Added pre 2.00 protocol versions to the config dialog.
+  * Fixed installation of appindicator plguin on standalone mode.
+
+ -- codestation <codestation404@gmail.com>  Fri, 23 Oct 2014 00:00:00 -0000
+
 qcma (0.3.6) unstable; urgency=low
 
   * Fix stupid bug with function scope.
