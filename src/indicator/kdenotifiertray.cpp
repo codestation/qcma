@@ -18,7 +18,11 @@
  */
 
 #include "kdenotifiertray.h"
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <kmenu.h>
+#else
+#include <QMenu>
+#endif
 
 KDENotifierTray::KDENotifierTray(QWidget *parent)
     : TrayIndicator(parent)
@@ -41,7 +45,11 @@ void KDENotifierTray::init()
     connect(about_qt, SIGNAL(triggered()), this, SIGNAL(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SIGNAL(stopServer()));
 
+#if QT_VERSION < 0x050000
     KMenu *tray_icon_menu = new KMenu(this);
+#else
+    QMenu *tray_icon_menu = new QMenu(this);
+#endif
 
     tray_icon_menu->addAction(options);
     tray_icon_menu->addAction(reload);
@@ -56,7 +64,7 @@ void KDENotifierTray::init()
     m_notifier_item->setContextMenu(tray_icon_menu);
     m_notifier_item->setTitle("Qcma");
     m_notifier_item->setCategory(KStatusNotifierItem::ApplicationStatus);
-    m_notifier_item->setIconByPixmap(QIcon(":/main/resources/images/tray/qcma_off.png"));
+    m_notifier_item->setIconByPixmap(QIcon(":/main/resources/images/qcma_off.png"));
     m_notifier_item->setStatus(KStatusNotifierItem::Active);
     m_notifier_item->setToolTipTitle(tr("Qcma status"));
     m_notifier_item->setToolTipIconByPixmap(QIcon(":/main/resources/images/qcma.png"));
@@ -76,7 +84,7 @@ bool KDENotifierTray::isVisible()
 
 void KDENotifierTray::setIcon(const QString &icon)
 {
-    m_notifier_item->setIconByPixmap(QIcon(":/main/resources/images/tray/" + icon));
+    m_notifier_item->setIconByPixmap(QIcon(":/main/resources/images/" + icon));
 }
 
 void KDENotifierTray::show()

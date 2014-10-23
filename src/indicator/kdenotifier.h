@@ -21,7 +21,9 @@
 #define KDENOTIFIER_H
 
 #include <kstatusnotifieritem.h>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <kmenu.h>
+#endif
 
 class KDENotifier : public KStatusNotifierItem
 {

@@ -219,7 +219,6 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     QString desktop = getenv("XDG_CURRENT_DESKTOP");
     qDebug() << "Current desktop: " << desktop;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if(desktop.toLower() == "kde")
     {
         // KDENotifier
@@ -230,7 +229,6 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
             qDebug() << "Cannot load libqcma_kdenotifier plugin";
     }
     else
-#endif
     // try to use the appindicator if is available
     // if(desktop.toLower() == "unity")
     {
