@@ -92,13 +92,15 @@ void CmaClient::connectWireless()
 
     setActive(true);
 
-    broadcast = new CmaBroadcast(this);
+    CmaBroadcast *broadcast = new CmaBroadcast(this);
 
     do {
         qDebug("Waiting for wireless connection");
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
             qDebug("Starting new wireless connection");
+            broadcast->setUnavailable();
             processNewConnection(vita);
+            broadcast->setAvailable();
         } else {
             mutex.lock();
             if(in_progress) {
@@ -124,7 +126,6 @@ void CmaClient::processNewConnection(vita_device_t *device)
 {
     QMutexLocker locker(&mutex);
     in_progress = true;
-    broadcast->setUnavailable();
 
     qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
     DeviceCapability vita_info;
@@ -156,7 +157,6 @@ void CmaClient::processNewConnection(vita_device_t *device)
 
     emit deviceDisconnected();
 
-    broadcast->setAvailable();
     in_progress = false;
     sema.release();
 }

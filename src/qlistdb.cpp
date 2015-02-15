@@ -213,7 +213,7 @@ int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int 
 
     QDir dir(parent->path);
     dir.setSorting(QDir::Name | QDir::DirsFirst);
-    QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Time);
 
     foreach(const QFileInfo &info, qsl) {
 
