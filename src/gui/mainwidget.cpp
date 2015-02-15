@@ -215,14 +215,21 @@ void MainWidget::refreshDatabase()
 TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
 {
     TrayFunctionPointer create_tray = NULL;
+
 #ifdef Q_OS_LINUX
     QString desktop = getenv("XDG_CURRENT_DESKTOP");
     qDebug() << "Current desktop: " << desktop;
 
+#ifdef QT_DEBUG
+    QString library_path = QApplication::applicationDirPath();
+#else
+    QString library_path = "/usr/lib/qcma";
+#endif
+
     if(desktop.toLower() == "kde")
     {
         // KDENotifier
-        QLibrary library("/usr/lib/qcma/libqcma_kdenotifier.so");
+        QLibrary library(library_path + "/libqcma_kdenotifier.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
@@ -233,7 +240,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     // if(desktop.toLower() == "unity")
     {
         // AppIndicator
-        QLibrary library("/usr/lib/qcma/libqcma_appindicator.so");
+        QLibrary library(library_path + "/libqcma_appindicator.so");
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else

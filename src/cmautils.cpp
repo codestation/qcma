@@ -188,20 +188,14 @@ QString readable_size(qint64 size, bool use_gib)
 
 int getVitaProtocolVersion()
 {
-    bool useCustom = QSettings().value("useCustomProtocol").toBool();
-    if(useCustom)
+    QString protocol_mode = QSettings().value("protocolMode", "automatic").toString();
+
+    int protocol;
+
+    if(protocol_mode == "manual")
     {
-        bool ok;
-        int protocol = QSettings().value("protocolVersion").toInt(&ok);
-        if(ok && protocol > 0)
-            return protocol;
-        else
-            return VITAMTP_PROTOCOL_MAX_VERSION;
-    }
-    else
-    {
-        int protocol;
         int index = QSettings().value("protocolIndex").toInt();
+
         switch(index)
         {
         case 0:
@@ -223,13 +217,32 @@ int getVitaProtocolVersion()
             protocol = VITAMTP_PROTOCOL_FW_2_00;
             break;
         case 6:
-            protocol = VITAMTP_WIRELESS_FW_2_00;
+            protocol = 1300010; // VITAMTP_PROTOCOL_FW_1_80
+            break;
+        case 7:
+            protocol = 1200010; // VITAMTP_PROTOCOL_FW_1_60
+            break;
+        case 8:
+            protocol = 1100010; // VITAMTP_PROTOCOL_FW_1_50
+            break;
+        case 9:
+            protocol = 1000010; // VITAMTP_PROTOCOL_FW_1_00
             break;
         default:
             protocol = VITAMTP_PROTOCOL_MAX_VERSION;
             break;
         }
-
-        return protocol;
     }
+    else if(protocol_mode == "custom")
+    {
+        bool ok;
+        int protocol = QSettings().value("protocolVersion").toInt(&ok);
+
+        if(!ok || protocol <= 0)
+            protocol = VITAMTP_PROTOCOL_MAX_VERSION;
+    }
+    else
+        protocol = VITAMTP_PROTOCOL_MAX_VERSION;
+
+    return protocol;
 }

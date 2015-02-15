@@ -24,7 +24,7 @@ SOURCES += \
     src/sqlitedb.cpp \
     src/httpdownloader.cpp \
     src/qlistdb.cpp \
-    src/database.cpp \
+    src/database.cpp
 
 HEADERS += \
     src/capability.h \
@@ -40,7 +40,7 @@ HEADERS += \
     src/sqlitedb.h \
     src/httpdownloader.h \
     src/qlistdb.h \
-    src/database.h \
+    src/database.h
 
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml \

@@ -62,6 +62,32 @@ void ConfigWidget::connectSignals()
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(browseBtnPressed(int)));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    connect(ui->protocolModeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(protocolModeChanged(int)));
+}
+
+void ConfigWidget::protocolModeChanged(int index)
+{
+    switch(index)
+    {
+    case 0:
+        ui->protocolBox->setEnabled(false);
+        ui->protocolEdit->setEnabled(false);
+        break;
+    case 1:
+        ui->protocolBox->setEnabled(true);
+        ui->protocolEdit->setEnabled(false);
+        break;
+    case 2:
+        ui->protocolBox->setEnabled(false);
+        ui->protocolEdit->setEnabled(true);
+        break;
+    default:
+        ui->protocolBox->setEnabled(false);
+        ui->protocolEdit->setEnabled(false);
+        break;
+    }
+
 }
 
 void ConfigWidget::setDefaultData()
@@ -99,7 +125,17 @@ void ConfigWidget::setDefaultData()
     ui->videoSkipCheck->setChecked(settings.value("videoSkip", false).toBool());
     ui->musicSkipCheck->setChecked(settings.value("musicSkip", false).toBool());
 
-    ui->customProtocolCheckBox->setChecked(settings.value("useCustomProtocol", false).toBool());
+    QString protocol_mode = settings.value("protocolMode", "automatic").toString();
+
+    if(protocol_mode == "manual")
+        ui->protocolModeBox->setCurrentIndex(1);
+    else if(protocol_mode == "custom")
+        ui->protocolModeBox->setCurrentIndex(2);
+    else
+        ui->protocolModeBox->setCurrentIndex(0);
+
+    protocolModeChanged(ui->protocolModeBox->currentIndex());
+
     ui->protocolBox->setCurrentIndex(settings.value("protocolIndex", 0).toInt());
 
     bool ok;
@@ -190,8 +226,14 @@ void ConfigWidget::accept()
     settings.setValue("photoSkip", ui->photoSkipCheck->isChecked());
     settings.setValue("videoSkip", ui->videoSkipCheck->isChecked());
     settings.setValue("musicSkip", ui->musicSkipCheck->isChecked());
-    settings.setValue("useCustomProtocol", ui->customProtocolCheckBox->isChecked());
     settings.setValue("protocolIndex", ui->protocolBox->currentIndex());
+
+    if(ui->protocolModeBox->currentIndex() == 0)
+        settings.setValue("protocolMode", "automatic");
+    else if(ui->protocolModeBox->currentIndex() == 1)
+        settings.setValue("protocolMode", "manual");
+    else if(ui->protocolModeBox->currentIndex() == 2)
+        settings.setValue("protocolMode", "custom");
 
     bool ok;
     int protocol = ui->protocolEdit->text().toInt(&ok);

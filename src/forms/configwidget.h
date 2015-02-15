@@ -47,6 +47,7 @@ private:
     Ui::ConfigWidget *ui;
 
 private slots:
+    void protocolModeChanged(int index);
     void browseBtnPressed(int from);
     void accept();
 };

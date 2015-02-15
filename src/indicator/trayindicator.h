@@ -35,7 +35,7 @@ class TrayIndicator : public QWidget
 {
     Q_OBJECT
 public:
-    virtual ~TrayIndicator() {}
+    ~TrayIndicator() {}
     virtual void init() = 0;
     virtual bool isVisible() = 0;
     virtual void setIcon(const QString &icon) = 0;

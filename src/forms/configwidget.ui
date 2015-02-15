@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>457</height>
+    <width>519</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -375,17 +375,17 @@
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
              </property>
-             <item row="0" column="0">
+             <item row="1" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
-                <string>CMA Protocol version</string>
+                <string>CMA protocol version</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="1" column="1">
               <widget class="QComboBox" name="protocolBox">
                <property name="minimumSize">
                 <size>
@@ -425,40 +425,66 @@
                </item>
                <item>
                 <property name="text">
-                 <string>FW 1.80 - 1300010</string>
+                 <string notr="true">FW 1.80 - 1300010</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>FW 1.60 - 1200010</string>
+                 <string notr="true">FW 1.60 - 1200010</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>FW 1.50 - 1100010</string>
+                 <string notr="true">FW 1.50 - 1100010</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>FW 1.00 - 1000010</string>
+                 <string notr="true">FW 1.00 - 1000010</string>
                 </property>
                </item>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="customProtocolCheckBox">
-               <property name="text">
-                <string>Use custom version</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QLineEdit" name="protocolEdit">
                <property name="inputMask">
                 <string notr="true">9999999</string>
                </property>
                <property name="text">
                 <string notr="true"/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>CMA protocol selection</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="protocolModeBox">
+               <item>
+                <property name="text">
+                 <string>Latest</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Manual</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Custom</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>CMA custom version</string>
                </property>
               </widget>
              </item>
