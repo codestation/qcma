@@ -92,6 +92,8 @@ void CmaClient::connectWireless()
 
     setActive(true);
 
+    broadcast = new CmaBroadcast(this);
+
     do {
         qDebug("Waiting for wireless connection");
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
@@ -122,13 +124,17 @@ void CmaClient::processNewConnection(vita_device_t *device)
 {
     QMutexLocker locker(&mutex);
     in_progress = true;
-    broadcast.setUnavailable();
+    broadcast->setUnavailable();
 
     qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
     DeviceCapability vita_info;
 
     if(!vita_info.exchangeInfo(device)) {
         qCritical("Error while exchanging info with the vita");
+        if(VitaMTP_Get_Device_Type(device) == VitaDeviceUSB) {
+            // reset the device
+            VitaMTP_USB_Reset(device);
+        }
     } else {
         QSettings settings;
 
@@ -150,7 +156,7 @@ void CmaClient::processNewConnection(vita_device_t *device)
 
     emit deviceDisconnected();
 
-    broadcast.setAvailable();
+    broadcast->setAvailable();
     in_progress = false;
     sema.release();
 }

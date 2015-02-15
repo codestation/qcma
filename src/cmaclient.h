@@ -54,7 +54,7 @@ private:
     static int cancelCallback();
     static void registrationComplete();
 
-    CmaBroadcast broadcast;
+    CmaBroadcast *broadcast;
     Database *m_db;
     static QString tempOnlineId;
 
