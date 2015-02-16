@@ -5,9 +5,9 @@
 %define _version 0.3.7
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
-%define _verprefix
+%define _verprefix %{_version}
 %else
-%define _verprefix v
+%define _verprefix v%{_version}
 %endif
 
 Name:           qcma
@@ -16,7 +16,7 @@ License:        GPL-3.0
 Release:        1
 Version:        %{_version}
 URL:            https://github.com/codestation/qcma
-Source:         https://github.com/codestation/qcma/archive/%{_verprefix}%{_version}/qcma-%{_version}.tar.gz
+Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
 Requires:       ffmpeg
 Requires:       libqt5-qtbase
