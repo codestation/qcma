@@ -3,6 +3,8 @@ qcma (0.3.7) unstable; urgency=low
   * Added pre 2.00 protocol versions to the config dialog.
   * Fixed installation of appindicator plguin on standalone mode.
   * Added support for Plasma 5 notifier.
+  * Fixed file downloader.
+  * Do no start broadcast received if wireless mode is disabled.
 
  -- codestation <codestation404@gmail.com>  Fri, 23 Oct 2014 00:00:00 -0000
 
