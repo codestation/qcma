@@ -20,6 +20,7 @@
 #ifndef HTTPDOWNLOADER_H
 #define HTTPDOWNLOADER_H
 
+#include <QByteArray>
 #include <QMutex>
 #include <QNetworkReply>
 #include <QObject>
@@ -57,8 +58,8 @@ private:
     static QNetworkReply *reply;
     volatile static qint64 m_contentLength;
 
-    static char *buffer;
-    static qint64 bufferSize;
+    static QByteArray buffer;
+    static bool bufferReady;
     static qint64 downloadLeft;
 };
 

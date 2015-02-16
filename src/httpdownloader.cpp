@@ -30,8 +30,8 @@ volatile qint64 HTTPDownloader::m_contentLength = -1;
 QMutex HTTPDownloader::dataAvailable;
 QMutex HTTPDownloader::dataRead;
 
-char *HTTPDownloader::buffer = NULL;
-qint64 HTTPDownloader::bufferSize = 0;
+QByteArray HTTPDownloader::buffer;
+bool HTTPDownloader::bufferReady = false;
 qint64 HTTPDownloader::downloadLeft = 0;
 
 HTTPDownloader::HTTPDownloader(const QString &url, QObject *parent) :
@@ -44,7 +44,6 @@ HTTPDownloader::~HTTPDownloader()
 {
     lengthMutex.unlock();
     dataAvailable.unlock();
-    free(buffer);
 }
 
 void HTTPDownloader::downloadFile()
@@ -66,7 +65,9 @@ void HTTPDownloader::metadataChanged()
     QVariant len = reply->header(QNetworkRequest::ContentLengthHeader);
     if(len.isValid()) {
         m_contentLength = len.toInt();
-        downloadLeft = m_contentLength + 8;
+        buffer.resize(8);
+        *(uint64_t *)buffer.data() = m_contentLength;
+        downloadLeft = m_contentLength;
     } else {
         m_contentLength = -1;
     }
@@ -81,71 +82,40 @@ qint64 HTTPDownloader::getFileSize()
 
 void HTTPDownloader::readyRead()
 {
-    dataRead.lock();
+    QMutexLocker locker(&dataRead);
 
-    int currOffset = bufferSize;
+    downloadLeft -= reply->bytesAvailable();
 
-    if(bufferSize == 0) {
-        bufferSize = reply->bytesAvailable();
+    buffer.append(reply->readAll());
 
-        if(firstRead) {
-            bufferSize += 8;
-            currOffset += 8;
-
-            // start with a 16KiB buffer
-            buffer = (char *)malloc(16384);
-            *(uint64_t *)buffer = m_contentLength;
-            firstRead = false;
-        }
-
-    } else {
-        bufferSize += reply->bytesAvailable();
-
-        if(bufferSize > 16384) {
-            buffer = (char *)realloc(buffer, bufferSize);
-        }
-    }
-
-    reply->read(buffer + currOffset, reply->bytesAvailable());
-    downloadLeft -= bufferSize;
-
-    if(bufferSize >= 16384 || downloadLeft == 0) {
+    if(buffer.size() >= 16 * 1024 || downloadLeft == 0) {
         dataAvailable.unlock();
     }
-    dataRead.unlock();
+
+    if(downloadLeft == 0)
+        qDebug() << "remote download complete";
 }
 
 int HTTPDownloader::readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen)
 {
-    if(!dataAvailable.tryLock(30000)) {
+    if(downloadLeft && !dataAvailable.tryLock(30000)) {
         qWarning("Connection timeout while receiving data from network, aborting");
         return -1;
     }
 
-    dataRead.lock();
+    QMutexLocker locker(&dataRead);
 
-    if(bufferSize == 0) {
-        dataRead.unlock();
+    if(buffer.size() == 0)
         return -1;
-    }
 
-    if(bufferSize < wantlen) {
-        wantlen = bufferSize;
-    }
+    int read_size = wantlen > (unsigned long)buffer.size() ? buffer.size() : wantlen;
 
-    memcpy(data, buffer, wantlen);
-    bufferSize -= wantlen;
-    *gotlen = wantlen;
+    memcpy(data, buffer.data(), read_size);
+    buffer.remove(0, read_size);
 
-    if(bufferSize > 0) {
-        memmove(buffer, buffer + wantlen, bufferSize);
-        if(bufferSize >= 16384 || downloadLeft == 0) {
-            dataAvailable.unlock();
-        }
-    }
+    qDebug() << "sending data: " << read_size << ", left in buffer: " << buffer.size();
 
-    *gotlen = wantlen;
-    dataRead.unlock();
+    *gotlen = read_size;
 
     return PTP_RC_OK;
 }
@@ -158,9 +128,9 @@ void HTTPDownloader::error(QNetworkReply::NetworkError errorCode)
     qWarning() << "Network error:" << error;
     emit messageSent(tr("Network error: %1").arg(error));
 
-    // set buffer to zero so a read callback can be aborted
-    dataRead.lock();
-    bufferSize = 0;
-    dataRead.unlock();
     lengthMutex.unlock();
+
+    // clear the buffer so a read callback can be aborted
+    QMutexLocker locker(&dataRead);
+    buffer.clear();
 }
