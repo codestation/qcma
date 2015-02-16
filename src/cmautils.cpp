@@ -217,16 +217,16 @@ int getVitaProtocolVersion()
             protocol = VITAMTP_PROTOCOL_FW_2_00;
             break;
         case 6:
-            protocol = 1300010; // VITAMTP_PROTOCOL_FW_1_80
+            protocol = VITAMTP_PROTOCOL_FW_1_80;
             break;
         case 7:
-            protocol = 1200010; // VITAMTP_PROTOCOL_FW_1_60
+            protocol = VITAMTP_PROTOCOL_FW_1_60;
             break;
         case 8:
-            protocol = 1100010; // VITAMTP_PROTOCOL_FW_1_50
+            protocol = VITAMTP_PROTOCOL_FW_1_50;
             break;
         case 9:
-            protocol = 1000010; // VITAMTP_PROTOCOL_FW_1_00
+            protocol = VITAMTP_PROTOCOL_FW_1_00;
             break;
         default:
             protocol = VITAMTP_PROTOCOL_MAX_VERSION;
