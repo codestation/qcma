@@ -14,7 +14,7 @@ Name:           qcma
 Summary:        PSVita Content Manager Assistant
 License:        GPL-3.0
 Release:        1
-Version:        ${_version}
+Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}%{_version}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
