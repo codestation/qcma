@@ -10,6 +10,20 @@
 %define _verprefix v%{_version}
 %endif
 
+%if %{defined fedora}
+%define _qt5base qt5-qtbase
+%define _qt5imageformats qt5-qtimageformats
+%define _pkgconfig pkgconfig
+%define _qt5toolsdevel qt5-qttools-devel
+%define _qt5basedevel qt5-qtbase-devel
+%else
+%define _qt5base libqt5-qtbase
+%define _qt5imageformats libqt5-qtimageformats
+%define _pkgconfig pkg-config
+%define _qt5toolsdevel libqt5-qttools
+%define _qt5basedevel libqt5-qtbase-devel
+%endif
+
 Name:           qcma
 Summary:        PSVita Content Manager Assistant
 License:        GPL-3.0
@@ -20,16 +34,16 @@ Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%
 Group:          Productivity/File utilities
 Requires:       libnotify
 Requires:       ffmpeg
-Requires:       qt5-qtbase
-Requires:       qt5-qtimageformats
+Requires:       %{_qt5base}
+Requires:       %{_qt5imageformats}
 Requires:       libvitamtp4 >= 2.5.5
 BuildRequires:  gcc-c++ 
-BuildRequires:  pkgconfig
+BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
-BuildRequires:  qt5-qttools-devel
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  %{_qt5toolsdevel}
+BuildRequires:  %{_qt5basedevel}
 
 %description
 QCMA is an cross-platform application to provide a Open Source implementation
