@@ -18,11 +18,14 @@ Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
+Requires:       libnotify
 Requires:       ffmpeg
 Requires:       qt5-qtbase
 Requires:       qt5-qtimageformats
 Requires:       libvitamtp4 >= 2.5.5
+BuildRequires:  gcc-c++ 
 BuildRequires:  pkgconfig
+BuildRequires:  libnotify-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  qt5-qttools-devel
