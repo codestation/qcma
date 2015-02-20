@@ -7,7 +7,8 @@ DEFINES += QCMA_TRAYINDICATOR_LIBRARY
 PKGCONFIG =
 INCLUDEPATH += src/
 
-greaterThan(QT_MAJOR_VERSION, 4) {
+greaterThan(QT_MAJOR_VERSION, 4): ENABLE_KNOTIFICATIONS {
+    message("Enabling KDE5 notifications")
     QT += KNotifications
 } else {
     LIBS += -lkdeui
