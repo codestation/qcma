@@ -10,6 +10,7 @@ INCLUDEPATH += src/
 greaterThan(QT_MAJOR_VERSION, 4): ENABLE_KNOTIFICATIONS {
     message("Enabling KDE5 notifications")
     QT += KNotifications
+    DEFINES += ENABLE_KNOTIFICATIONS=1
 } else {
     LIBS += -lkdeui
 }

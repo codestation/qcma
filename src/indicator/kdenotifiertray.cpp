@@ -18,7 +18,7 @@
  */
 
 #include "kdenotifiertray.h"
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifndef ENABLE_KNOTIFICATIONS
 #include <kmenu.h>
 #else
 #include <QMenu>
@@ -45,7 +45,7 @@ void KDENotifierTray::init()
     connect(about_qt, SIGNAL(triggered()), this, SIGNAL(showAboutQt()));
     connect(quit, SIGNAL(triggered()), this, SIGNAL(stopServer()));
 
-#if QT_VERSION < 0x050000
+#ifndef ENABLE_KNOTIFICATIONS
     KMenu *tray_icon_menu = new KMenu(this);
 #else
     QMenu *tray_icon_menu = new QMenu(this);

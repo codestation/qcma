@@ -30,9 +30,6 @@
 #include <QWidget>
 
 #include <QSystemTrayIcon>
-#ifdef ENABLE_KDE_NOTIFIER
-#include "kdenotifier.h"
-#endif
 
 #ifdef Q_OS_LINUX
 #include <QDBusConnection>

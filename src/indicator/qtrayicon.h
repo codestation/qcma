@@ -47,14 +47,7 @@ private:
     QAction *about;
     QAction *about_qt;
 
-#ifndef ENABLE_KDE_NOTIFIER
     QSystemTrayIcon *m_tray_icon;
-#else
-    KDENotifier *m_notifier_item;
-#endif
-
-public slots:
-
 };
 
 #endif // QTRAYICON_H

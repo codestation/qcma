@@ -156,15 +156,9 @@ void MainWidget::connectSignals()
 
 void MainWidget::setTrayTooltip(QString message)
 {
-#ifndef ENABLE_KDE_NOTIFIER
     if(trayIcon) {
         trayIcon->setToolTip(message);
     }
-#else
-    if(notifierItem) {
-        notifierItem->setToolTipSubTitle(message);
-    }
-#endif
 }
 
 void MainWidget::openManager()
