@@ -16,12 +16,18 @@
 %define _pkgconfig pkgconfig
 %define _qt5toolsdevel qt5-qttools-devel
 %define _qt5basedevel qt5-qtbase-devel
+%define _knotifications kf5-knotifications
+%define _knotifications_devel kf5-knotifications-devel
+%define _appindicator libappindicator
 %else
 %define _qt5base libqt5-qtbase
 %define _qt5imageformats libqt5-qtimageformats
 %define _pkgconfig pkg-config
 %define _qt5toolsdevel libqt5-qttools
 %define _qt5basedevel libqt5-qtbase-devel
+%define _knotifications libKF5Notifications5
+%define _knotifications_devel knotifications-devel
+%define _appindicator libappindicator1
 %endif
 
 Name:           qcma
@@ -33,8 +39,6 @@ URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
 Requires:       libnotify
-Requires:       kf5-knotifications
-Requires:       libappindicator
 Requires:       ffmpeg
 Requires:       %{_qt5base}
 Requires:       %{_qt5imageformats}
@@ -42,7 +46,7 @@ Requires:       libvitamtp4 >= 2.5.5
 BuildRequires:  gcc-c++ 
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
-BuildRequires:  kf5-knotifications-devel
+BuildRequires:  %{_knotifications_devel}
 BuildRequires:  libappindicator-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
@@ -82,20 +86,22 @@ Headless version of Qcma
 
 %package appindicator
 Summary: Content Manager Assistant for the PS Vita (appindicator support)
+Requires: %{_appindicator}
 
 %description appindicator
 Appindicator plugin for Qcma
 
 %files appindicator
-%{_libdir}/qcma/libqcma_appindicator.so
+%{_prefix}/lib/qcma/libqcma_appindicator.so
 %{_prefix}/share/icons/hicolor/64x64/actions/qcma_on.png
 %{_prefix}/share/icons/hicolor/64x64/actions/qcma_off.png
 
 %package kdenotifier
 Summary: Content Manager Assistant for the PS Vita (kdenotifier support)
+Requires: %{_knotifications}
 
 %description kdenotifier
 KDENotifier plugin for Qcma
 
 %files kdenotifier
-%{_libdir}/qcma/libqcma_kdenotifier.so
+%{_prefix}/lib/qcma/libqcma_kdenotifier.so
