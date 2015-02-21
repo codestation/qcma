@@ -12,6 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): ENABLE_KNOTIFICATIONS {
     QT += KNotifications
     DEFINES += ENABLE_KNOTIFICATIONS=1
 } else {
+    QT += widgets
     LIBS += -lkdeui
 }
 

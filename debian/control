@@ -13,7 +13,6 @@ Build-Depends:
  qtbase5-dev,
  qttools5-dev-tools,
  qt5-default,
- kdelibs5-dev,
  libnotify-dev,
  libgtk2.0-dev,
  libappindicator-dev,
@@ -34,8 +33,3 @@ Package: qcma-appindicator
 Architecture: any
 Depends: qcma (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (appindicator support)
-
-Package: qcma-kdenotifier
-Architecture: any
-Depends: qcma (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Description: Content Manager Assistant for the PS Vita (kdenotifier support)
