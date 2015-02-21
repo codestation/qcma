@@ -34,6 +34,7 @@ Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%
 Group:          Productivity/File utilities
 Requires:       libnotify
 Requires:       kf5-knotifications
+Requires:       libappindicator
 Requires:       ffmpeg
 Requires:       %{_qt5base}
 Requires:       %{_qt5imageformats}
@@ -42,6 +43,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
 BuildRequires:  kf5-knotifications-devel
+BuildRequires:  libappindicator-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  %{_qt5toolsdevel}
