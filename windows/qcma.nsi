@@ -31,6 +31,10 @@ Function finishPageRunFunction
     ExecShell "" "$INSTDIR\${PRODUCT_EXE_NAME}"
 FunctionEnd
 
+Function finishpageaction
+    CreateShortcut "$desktop\Qcma.lnk" "$instdir\qcma.exe"
+FunctionEnd
+
 ### Variables
 Var StartMenuFolder
 
@@ -59,6 +63,11 @@ InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
 !insertmacro MUI_PAGE_INSTFILES
+
+!define MUI_FINISHPAGE_SHOWREADME ""
+!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "Create Desktop Shortcut"
+!define MUI_FINISHPAGE_SHOWREADME_FUNCTION finishpageaction
 
 !define MUI_FINISHPAGE_RUN ""
 !define MUI_FINISHPAGE_RUN_NOTCHECKED

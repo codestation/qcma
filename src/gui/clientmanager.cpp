@@ -95,8 +95,9 @@ void ClientManager::start()
     }
 
     if(!settings.value("disableWireless", false).toBool()) {
+        CmaBroadcast *broadcast = new CmaBroadcast(this);
         wireless_thread = new QThread();
-        client = new CmaClient(m_db);
+        client = new CmaClient(m_db, broadcast);
         wireless_thread->setObjectName("wireless_thread");
         connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
         connect(client, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)));

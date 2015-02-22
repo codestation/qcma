@@ -45,7 +45,14 @@ bool CmaClient::in_progress = false;
 CmaClient *CmaClient::this_object = NULL;
 
 CmaClient::CmaClient(Database *db, QObject *parent) :
-    QObject(parent), m_db(db)
+    QObject(parent), m_db(db), m_broadcast(NULL)
+{
+    this_object = this;
+}
+
+
+CmaClient::CmaClient(Database *db, CmaBroadcast *broadcast, QObject *parent) :
+    QObject(parent), m_db(db), m_broadcast(broadcast)
 {
     this_object = this;
 }
@@ -92,15 +99,13 @@ void CmaClient::connectWireless()
 
     setActive(true);
 
-    CmaBroadcast *broadcast = new CmaBroadcast(this);
-
     do {
         qDebug("Waiting for wireless connection");
         if((vita = VitaMTP_Get_First_Wireless_Vita(&host, 0, CC::deviceRegistered, CC::generatePin, CC::registrationComplete)) != NULL) {
             qDebug("Starting new wireless connection");
-            broadcast->setUnavailable();
+            m_broadcast->setUnavailable();
             processNewConnection(vita);
-            broadcast->setAvailable();
+            m_broadcast->setAvailable();
         } else {
             mutex.lock();
             if(in_progress) {

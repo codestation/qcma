@@ -59,8 +59,8 @@ CmaBroadcast::CmaBroadcast(QObject *parent) :
     setAvailable();
 
     socket = new QUdpSocket(this);
-    socket->bind(QHostAddress::Any, QCMA_REQUEST_PORT);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+    socket->bind(QHostAddress::AnyIPv4, QCMA_REQUEST_PORT);
 }
 
 void CmaBroadcast::readPendingDatagrams()
