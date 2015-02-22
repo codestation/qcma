@@ -1,51 +1,48 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Qcma : Cross-platform content manager assistant for the PS Vita" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-    <title>Qcma</title>
+    <title>Qcma by codestation</title>
   </head>
 
   <body>
+    <header>
+      <div class="inner">
+        <h1>Qcma</h1>
+        <h2>Cross-platform content manager assistant for the PS Vita</h2>
+        <a href="https://github.com/codestation/qcma" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/codestation/qcma">View on GitHub</a>
-
-          <h1 id="project_title">Qcma</h1>
-          <h2 id="project_tagline">Cross-platform content manager assistant for the PS Vita</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/codestation/qcma/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/codestation/qcma/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a name="qcma" class="anchor" href="#qcma"><span class="octicon octicon-link"></span></a>Qcma</h1>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="qcma" class="anchor" href="#qcma" aria-hidden="true"><span class="octicon octicon-link"></span></a>Qcma</h1>
 
 <p>Qcma is a cross-platform application to provide a Open Source implementation
-of the original Content Manager Assistant that comes with the PS Vita. QCMA is
+of the original Content Manager Assistant that comes with the PS Vita. Qcma is
 meant to be compatible with Linux, Windows and MAC OS X.</p>
 
 <h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <p>The aim of this project is to provide an implementation that is on par with the
 official CMA and also offer some features missing in the original one.</p>
 
 <h4>
-<a name="implemented-features" class="anchor" href="#implemented-features"><span class="octicon octicon-link"></span></a>Implemented features.</h4>
+<a id="implemented-features" class="anchor" href="#implemented-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implemented features.</h4>
 
 <ul>
 <li>Metadata for PSP savedatas.</li>
@@ -55,61 +52,99 @@ official CMA and also offer some features missing in the original one.</p>
 <li>Simple backup browser: view and delete the backups on your PC without a Vita.</li>
 <li>Easy wireless pairing (show PIN to the user when a Vita is detected).</li>
 <li>Ability to restart the connection if the Vita is reconnected.</li>
-</ul><h4>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO:</h4>
+</ul>
+
+<h4>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO:</h4>
 
 <ul>
 <li>Complete categories for music.</li>
-<li>SQLite backend for database.</li>
-</ul><h4>
-<a name="planned-features" class="anchor" href="#planned-features"><span class="octicon octicon-link"></span></a>Planned features</h4>
+<li>Persistent backend for database.</li>
+</ul>
+
+<h4>
+<a id="planned-features" class="anchor" href="#planned-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Planned features</h4>
 
 <ul>
 <li>
 <strong>Android version</strong>: port of Qcma to Android.</li>
-</ul><h2>
-<a name="headless-version" class="anchor" href="#headless-version"><span class="octicon octicon-link"></span></a>Headless version</h2>
+</ul>
+
+<h2>
+<a id="headless-version" class="anchor" href="#headless-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Headless version</h2>
 
 <p>There is a qcma_cli binary that doesn't need a X session running (useful for servers).
 The daemon provides minimal interaction via dbus. Here are some usage examples:</p>
 
 <h4>
-<a name="send-a-signal-to-refresh-the-database" class="anchor" href="#send-a-signal-to-refresh-the-database"><span class="octicon octicon-link"></span></a>Send a signal to refresh the database</h4>
+<a id="send-a-signal-to-refresh-the-database" class="anchor" href="#send-a-signal-to-refresh-the-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a signal to refresh the database</h4>
 
 <pre><code>dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
 </code></pre>
 
 <h4>
-<a name="send-a-signal-to-stop-the-daemon" class="anchor" href="#send-a-signal-to-stop-the-daemon"><span class="octicon octicon-link"></span></a>Send a signal to stop the daemon</h4>
+<a id="send-a-signal-to-stop-the-daemon" class="anchor" href="#send-a-signal-to-stop-the-daemon" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a signal to stop the daemon</h4>
 
 <pre><code>dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
 </code></pre>
 
 <h4>
-<a name="receive-confirmation-when-the-database-finished-updating" class="anchor" href="#receive-confirmation-when-the-database-finished-updating"><span class="octicon octicon-link"></span></a>Receive confirmation when the database finished updating</h4>
+<a id="receive-confirmation-when-the-database-finished-updating" class="anchor" href="#receive-confirmation-when-the-database-finished-updating" aria-hidden="true"><span class="octicon octicon-link"></span></a>Receive confirmation when the database finished updating</h4>
 
 <pre><code>dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUpdated'"
 </code></pre>
 
 <h2>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
 
 <ul>
-<li><p><a href="http://qt-project.org/">Qt 4.x or 5.x</a></p></li>
-<li><p><a href="https://github.com/codestation/VitaMTP">VitaMTP fork</a></p></li>
-<li><p><a>FFmpeg</a></p></li>
-</ul><h4>
-<a name="where-do-i-get-the-source-code" class="anchor" href="#where-do-i-get-the-source-code"><span class="octicon octicon-link"></span></a>Where do I get the source code?</h4>
+<li><p><a href="http://qt-project.org/">Qt 5.x</a></p></li>
+<li><p><a href="https://github.com/codestation/vitamtp">VitaMTP fork</a></p></li>
+<li><p>FFmpeg</p></li>
+</ul>
+
+<h2>
+<a id="downloads" class="anchor" href="#downloads" aria-hidden="true"><span class="octicon octicon-link"></span></a>Downloads</h2>
+
+<h3>
+<a id="linux" class="anchor" href="#linux" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linux</h3>
+
+<p><a href="https://aur.archlinux.org/packages/qcma">Archlinux AUR</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/ubuntu_trusty">Ubuntu 14.04 (64 bits)</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/ubuntu_trusty">Ubuntu 14.10 (64 bits)</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/debian_wheezy/">Debian Wheezy (64 bits)</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/debian_jessie/">Debian Jessie (64 bits)</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/fedora_21/">Fedora 21 (64 bits)</a></p>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/opensuse_13.2/">openSUSE 13.2 (64 bits)</a></p>
+
+<h3>
+<a id="windows" class="anchor" href="#windows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows</h3>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/windows/Qcma_setup_0.3.7.exe">Windows Installer</a></p>
+
+<h2>
+<a id="mac-os-x" class="anchor" href="#mac-os-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mac OS X</h2>
+
+<p><a href="http://codestation.nekmo.com/qcma/0.3.7/osx/qcma-0.3.7.dmg">OS X dmg</a></p>
+
+<h4>
+<a id="where-do-i-get-the-source-code" class="anchor" href="#where-do-i-get-the-source-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Where do I get the source code?</h4>
 
 <p>Check the GitHub repo here: <a href="https://github.com/codestation/qcma">https://github.com/codestation/qcma</a></p>
 
 <h4>
-<a name="i-want-to-contribute" class="anchor" href="#i-want-to-contribute"><span class="octicon octicon-link"></span></a>I want to contribute</h4>
+<a id="i-want-to-contribute" class="anchor" href="#i-want-to-contribute" aria-hidden="true"><span class="octicon octicon-link"></span></a>I want to contribute</h4>
 
 <p>Contact me on <a href="https://github.com/codestation/">GitHub</a> </p>
 
 <h2>
-<a name="thanks-to" class="anchor" href="#thanks-to"><span class="octicon octicon-link"></span></a>Thanks to</h2>
+<a id="thanks-to" class="anchor" href="#thanks-to" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks to</h2>
 
 <p><a href="https://github.com/yifanlu/vitamtp/">Yifan Lu</a> - for the vitamtp library and
 the reference implementation of OpenCMA.</p>
@@ -117,22 +152,30 @@ the reference implementation of OpenCMA.</p>
 <p><a href="https://github.com/xiannox">Xian Nox</a> - for the Wiki and various contributions.</p>
 
 <h4>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h4>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h4>
 
 <p>GPL v3: since some parts of QCMA are based on the reference implementation of
 OpenCMA.</p>
-      </section>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/codestation/qcma/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/codestation/qcma/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/codestation/qcma"></a> is maintained by <a href="https://github.com/codestation">codestation</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Qcma maintained by <a href="https://github.com/codestation">codestation</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-              <script type="text/javascript">
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -142,7 +185,6 @@ OpenCMA.</p>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
