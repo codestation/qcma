@@ -10,7 +10,7 @@
 !define PRODUCT_EXE_NAME "qcma.exe"
 !define PRODUCT_VERSION_MAJOR 0
 !define PRODUCT_VERSION_MINOR 3
-!define PRODUCT_VERSION_BUILD 6
+!define PRODUCT_VERSION_BUILD 7
 !define PRODUCT_PUBLISHER "codestation"
 !define PRODUCT_WEB_SITE "https://github.com/codestation/qcma"
 !define HELPURL "https://github.com/xiannox/qcma/wiki"
@@ -103,7 +103,6 @@ section "install"
         File "win_x86_64\avcodec-56.dll"
         File "win_x86_64\avformat-56.dll"
         File "win_x86_64\avutil-54.dll"
-        File "win_x86_64\iconv.dll"
         File "win_x86_64\libfreetype-6.dll"
         File "win_x86_64\libgcc_s_seh-1.dll"
         File "win_x86_64\libglib-2.0-0.dll"
@@ -145,7 +144,6 @@ section "install"
         File "win_i686\avcodec-56.dll"
         File "win_i686\avformat-56.dll"
         File "win_i686\avutil-54.dll"
-        File "win_i686\iconv.dll"
         File "win_i686\libfreetype-6.dll"
         File "win_i686\libgcc_s_sjlj-1.dll"
         File "win_i686\libglib-2.0-0.dll"
