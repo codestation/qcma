@@ -126,12 +126,12 @@
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="120"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="121"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="131"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="132"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -139,8 +139,8 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="138"/>
-        <location filename="../../src/cmaclient.cpp" line="141"/>
+        <location filename="../../src/cmaclient.cpp" line="150"/>
+        <location filename="../../src/cmaclient.cpp" line="153"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -283,13 +283,41 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="381"/>
-        <source>CMA Protocol version</source>
-        <translation>Versión del protocolo CMA</translation>
+        <source>CMA protocol version</source>
+        <translation>Versión de protocolo CMA</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="436"/>
+        <location filename="../../src/forms/configwidget.ui" line="461"/>
+        <source>CMA protocol selection</source>
+        <translation>Uso de protocolo CMA</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="469"/>
+        <source>Latest</source>
+        <translation>Último</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="474"/>
+        <source>Manual</source>
+        <translation>Manual</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="479"/>
+        <source>Custom</source>
+        <translation>Personalizado</translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="487"/>
+        <source>CMA custom version</source>
+        <translation>Versión personalizada CMA</translation>
+    </message>
+    <message>
+        <source>CMA Protocol version</source>
+        <translation type="vanished">Versión del protocolo CMA</translation>
+    </message>
+    <message>
         <source>Use custom version</source>
-        <translation>Usar versión personalizada</translation>
+        <translation type="vanished">Usar versión personalizada</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="297"/>
@@ -312,32 +340,32 @@
         <translation>En memoria</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="127"/>
+        <location filename="../../src/forms/configwidget.cpp" line="163"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="132"/>
+        <location filename="../../src/forms/configwidget.cpp" line="168"/>
         <source>Select the folder to be used as a music source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="137"/>
+        <location filename="../../src/forms/configwidget.cpp" line="173"/>
         <source>Select the folder to be used as a video source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="142"/>
+        <location filename="../../src/forms/configwidget.cpp" line="178"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="147"/>
+        <location filename="../../src/forms/configwidget.cpp" line="183"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="152"/>
+        <location filename="../../src/forms/configwidget.cpp" line="188"/>
         <source>Select the folder to be used to software packages</source>
         <translation>Seleccione el directorio a ser utilizado para almacenar archivos pkg</translation>
     </message>
@@ -368,7 +396,7 @@
 <context>
     <name>HTTPDownloader</name>
     <message>
-        <location filename="../../src/httpdownloader.cpp" line="159"/>
+        <location filename="../../src/httpdownloader.cpp" line="129"/>
         <source>Network error: %1</source>
         <translation>Error de red: %1</translation>
     </message>
@@ -376,42 +404,42 @@
 <context>
     <name>KDENotifierTray</name>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="30"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="31"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="35"/>
         <source>Refresh database</source>
         <translation>Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="32"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="36"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="33"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="37"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="38"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="35"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="39"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="61"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="69"/>
         <source>Qcma status</source>
         <translation>Estado de Qcma</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="63"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="71"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
@@ -439,17 +467,17 @@
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="181"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="175"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="183"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="177"/>
         <source>Copyright (C) 2014  Codestation</source>
         <translation>Copyright (C) 2014  Codestation</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="185"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="179"/>
         <source>Copyright (C) 2014  Codestation
 
 build hash: %1
@@ -460,7 +488,7 @@ Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="283"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>

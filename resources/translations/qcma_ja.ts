@@ -126,12 +126,12 @@
         <translation>VitaMTPライブラリを初期化できません</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="120"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="121"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>少なくともUSBと無線のどちらかの監視を有効にする必要があります</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="131"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="132"/>
         <source>No PS Vita system has been registered</source>
         <translation>PS Vitaが登録されていません</translation>
     </message>
@@ -139,8 +139,8 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="138"/>
-        <location filename="../../src/cmaclient.cpp" line="141"/>
+        <location filename="../../src/cmaclient.cpp" line="150"/>
+        <location filename="../../src/cmaclient.cpp" line="153"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>%1 (PS Vita) に接続されました</translation>
     </message>
@@ -283,13 +283,41 @@
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="381"/>
-        <source>CMA Protocol version</source>
-        <translation>CMAプロトコルバージョン</translation>
+        <source>CMA protocol version</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.ui" line="436"/>
+        <location filename="../../src/forms/configwidget.ui" line="461"/>
+        <source>CMA protocol selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="469"/>
+        <source>Latest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="474"/>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="479"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/forms/configwidget.ui" line="487"/>
+        <source>CMA custom version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMA Protocol version</source>
+        <translation type="vanished">CMAプロトコルバージョン</translation>
+    </message>
+    <message>
         <source>Use custom version</source>
-        <translation>カスタムバージョンを使用</translation>
+        <translation type="vanished">カスタムバージョンを使用</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="297"/>
@@ -312,32 +340,32 @@
         <translation>メモリ内</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="127"/>
+        <location filename="../../src/forms/configwidget.cpp" line="163"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>フォトの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="132"/>
+        <location filename="../../src/forms/configwidget.cpp" line="168"/>
         <source>Select the folder to be used as a music source</source>
         <translation>ミュージックの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="137"/>
+        <location filename="../../src/forms/configwidget.cpp" line="173"/>
         <source>Select the folder to be used as a video source</source>
         <translation>ビデオの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="142"/>
+        <location filename="../../src/forms/configwidget.cpp" line="178"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>PS Vitaのゲームとバックアップの保存に使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="147"/>
+        <location filename="../../src/forms/configwidget.cpp" line="183"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>ソフトウェアアップデートの取得に使用されるフォルダを選択してください</translation>
     </message>
     <message>
-        <location filename="../../src/forms/configwidget.cpp" line="152"/>
+        <location filename="../../src/forms/configwidget.cpp" line="188"/>
         <source>Select the folder to be used to software packages</source>
         <translation>ソフトウェアパッケージに使うフォルダを選択してください</translation>
     </message>
@@ -369,7 +397,7 @@
 <context>
     <name>HTTPDownloader</name>
     <message>
-        <location filename="../../src/httpdownloader.cpp" line="159"/>
+        <location filename="../../src/httpdownloader.cpp" line="129"/>
         <source>Network error: %1</source>
         <translation>ネットワークエラー: %1</translation>
     </message>
@@ -377,42 +405,42 @@
 <context>
     <name>KDENotifierTray</name>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="30"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="31"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="35"/>
         <source>Refresh database</source>
         <translation>データベースを更新する</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="32"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="36"/>
         <source>Backup Manager</source>
         <translation>バックアップマネージャー</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="33"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="37"/>
         <source>About QCMA</source>
         <translation>QCMAについて</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="38"/>
         <source>About Qt</source>
         <translation>Qtについて</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="35"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="39"/>
         <source>Quit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="61"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="69"/>
         <source>Qcma status</source>
         <translation>QCMAステータス</translation>
     </message>
     <message>
-        <location filename="../../src/indicator/kdenotifiertray.cpp" line="63"/>
+        <location filename="../../src/indicator/kdenotifiertray.cpp" line="71"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
@@ -440,17 +468,17 @@
         <translation>デバイスが切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="181"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="175"/>
         <source>About QCMA</source>
         <translation>QCMAについて</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="183"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="177"/>
         <source>Copyright (C) 2014  Codestation</source>
         <translation>Copyright (C) 2014  Codestation</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="185"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="179"/>
         <source>Copyright (C) 2014  Codestation
 
 build hash: %1
@@ -461,7 +489,7 @@ build branch: %2</source>
 ビルドブランチ: %2</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="283"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>
