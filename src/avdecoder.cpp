@@ -144,7 +144,11 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
 
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     AVFrame *pFrame = av_frame_alloc();
+#else
+    AVFrame *pFrame = avcodec_alloc_frame();
+#endif
 
     AVPacket packet;
     int frame_finished = 0;
@@ -159,7 +163,11 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
     if(frame_finished) {
         return pFrame;
     } else {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        av_frame_free(pFrame);
+#else
         av_free(pFrame);
+#endif
         return NULL;
     }
 }
@@ -188,7 +196,11 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
         return data;
     }
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     AVFrame *pFrameRGB = av_frame_alloc();
+#else
+    AVFrame *pFrameRGB = avcodec_alloc_frame();
+#endif
 
     int numBytes = avpicture_get_size(PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
     uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
@@ -235,8 +247,14 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     result.save(&imgbuffer, "JPEG");
 
     av_free(buffer);
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+    av_frame_free(pFrameRGB);
+    av_frame_free(pFrame);
+#else
     av_free(pFrameRGB);
     av_free(pFrame);
+#endif
 
     avcodec_close(pCodecCtx);
 
