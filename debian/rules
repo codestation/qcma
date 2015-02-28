@@ -1,9 +1,15 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/qmake.mk
-
-DEB_QMAKE_ARGS += qcma.pro PREFIX=/usr CONFIG+="ENABLE_APPINDICATOR"
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
 pre-build::
-	lrelease resources/translations/*.ts
+	lrelease resources/translations/qcma_*.ts
+
+%:
+	dh $@ --buildsystem=qmake
+
+override_dh_auto_configure:
+	dh_auto_configure -- qcma.pro CONFIG+="ENABLE_APPINDICATOR"
+
+.PHONY: override_dh_auto_configure

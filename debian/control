@@ -7,7 +7,6 @@ Homepage: http://github.com/codestation/qcma
 Vcs-Git: git://github.com/codestation/qcma.git
 Build-Depends:
  debhelper (>= 8.0.0),
- cdbs,
  libavformat-dev,
  libswscale-dev,
  qtbase5-dev,
