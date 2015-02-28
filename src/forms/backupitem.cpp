@@ -37,8 +37,8 @@ const QString BackupItem::infoTemplate = "<html><head/><body>"
         "<p><span style=\" font-size:10pt;\">&nbsp;%1</span></p>"
         "</body></html>";
 
-BackupItem::BackupItem(QWidget *parent) :
-    QWidget(parent),
+BackupItem::BackupItem(QWidget *obj_parent) :
+    QWidget(obj_parent),
     ui(new Ui::BackupItem)
 {
     ui->setupUi(this);
@@ -54,7 +54,7 @@ BackupItem::~BackupItem()
 
 void BackupItem::openDirectory()
 {
-    QDesktopServices::openUrl(QUrl("file:///" + path));
+    QDesktopServices::openUrl(QUrl("file:///" + m_path));
 }
 
 void BackupItem::removeEntry()
@@ -69,13 +69,13 @@ const QPixmap *BackupItem::getIconPixmap()
 
 void BackupItem::setDirectory(const QString &path)
 {
-    this->path = path;
+    m_path = path;
 }
 
-void BackupItem::setItemInfo(const QString &name, const QString &size, const QString &extra)
+void BackupItem::setItemInfo(const QString &name, const QString &item_size, const QString &extra)
 {
     ui->gameLabel->setText(gameTemplate.arg(name));
-    ui->sizeLabel->setText(sizeTemplate.arg(size));
+    ui->sizeLabel->setText(sizeTemplate.arg(item_size));
     ui->infoLabel->setText(infoTemplate.arg(extra));
 }
 
@@ -84,9 +84,9 @@ int BackupItem::getIconWidth()
     return ui->itemPicture->width();
 }
 
-void BackupItem::setItemIcon(const QString &path, int width, bool try_dds)
+void BackupItem::setItemIcon(const QString &path, int item_width, bool try_dds)
 {
-    ui->itemPicture->setMinimumWidth(width);
+    ui->itemPicture->setMinimumWidth(item_width);
     QPixmap pixmap(path);
     if((pixmap.width() <= 0 || pixmap.height() <= 0) && try_dds) {
         QImage image;

@@ -45,8 +45,8 @@ const QStringList MainWidget::path_list = QStringList() << "photoPath" << "music
 bool sleptOnce = false;
 
 #ifdef Q_OS_LINUX
-MainWidget::MainWidget(QWidget *parent) :
-    QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL), dbus_conn(QDBusConnection::sessionBus())
+MainWidget::MainWidget(QWidget *obj_parent) :
+    QWidget(obj_parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL), dbus_conn(QDBusConnection::sessionBus())
 {
     new ClientManagerAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
@@ -184,8 +184,8 @@ void MainWidget::showAboutDialog()
 
     // hack to expand the messagebox minimum size
     QSpacerItem* horizontalSpacer = new QSpacerItem(300, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QGridLayout* layout = (QGridLayout*)about.layout();
-    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    QGridLayout* widget_layout = (QGridLayout*)about.layout();
+    widget_layout->addItem(horizontalSpacer, widget_layout->rowCount(), 0, 1, widget_layout->columnCount());
 
     about.show();
     about.exec();
@@ -206,7 +206,7 @@ void MainWidget::refreshDatabase()
     managerForm->refreshDatabase();
 }
 
-TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
+TrayIndicator *MainWidget::createTrayObject(QWidget *obj_parent)
 {
     TrayFunctionPointer create_tray = NULL;
 
@@ -242,7 +242,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *parent)
     }
 #endif
     // else QSystemTrayIcon
-    return (create_tray != NULL) ? create_tray(parent) : createTrayIndicator(parent);
+    return (create_tray != NULL) ? create_tray(obj_parent) : createTrayIndicator(obj_parent);
 }
 
 void MainWidget::createTrayIcon()

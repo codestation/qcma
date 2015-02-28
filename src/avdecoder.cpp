@@ -142,7 +142,7 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
     return data;
 }
 
-AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index)
+AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
     AVFrame *pFrame = avcodec_alloc_frame();
 
@@ -150,8 +150,8 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index)
     int frame_finished = 0;
 
     while(!frame_finished && av_read_frame(pFormatCtx, &packet)>=0) {
-        if(packet.stream_index == stream_index) {
-            avcodec_decode_video2(pCodecCtx, pFrame, &frame_finished, &packet);
+        if(packet.stream_index == frame_stream_index) {
+            avcodec_decode_video2(codec_ctx, pFrame, &frame_finished, &packet);
         }
         av_free_packet(&packet);
     }

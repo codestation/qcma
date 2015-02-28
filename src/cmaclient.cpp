@@ -44,15 +44,15 @@ bool CmaClient::in_progress = false;
 
 CmaClient *CmaClient::this_object = NULL;
 
-CmaClient::CmaClient(Database *db, QObject *parent) :
-    QObject(parent), m_db(db), m_broadcast(NULL)
+CmaClient::CmaClient(Database *db, QObject *obj_parent) :
+    QObject(obj_parent), m_db(db), m_broadcast(NULL)
 {
     this_object = this;
 }
 
 
-CmaClient::CmaClient(Database *db, CmaBroadcast *broadcast, QObject *parent) :
-    QObject(parent), m_db(db), m_broadcast(broadcast)
+CmaClient::CmaClient(Database *db, CmaBroadcast *broadcast, QObject *obj_parent) :
+    QObject(obj_parent), m_db(db), m_broadcast(broadcast)
 {
     this_object = this;
 }
@@ -195,46 +195,46 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
 
 void CmaClient::enterEventLoop(vita_device_t *device)
 {
-    vita_event_t event;
+    vita_event_t obj_event;
 
     qDebug("Starting event loop");
 
     CmaEvent eventLoop(m_db, device);
-    QThread thread;
-    thread.setObjectName("event_thread");
+    QThread obj_thread;
+    obj_thread.setObjectName("event_thread");
 
-    eventLoop.moveToThread(&thread);
-    connect(&thread, SIGNAL(started()), &eventLoop, SLOT(process()));
+    eventLoop.moveToThread(&obj_thread);
+    connect(&obj_thread, SIGNAL(started()), &eventLoop, SLOT(process()));
     connect(&eventLoop, SIGNAL(refreshDatabase()), this, SIGNAL(refreshDatabase()), Qt::DirectConnection);
-    connect(&eventLoop, SIGNAL(finishedEventLoop()), &thread, SLOT(quit()), Qt::DirectConnection);
+    connect(&eventLoop, SIGNAL(finishedEventLoop()), &obj_thread, SLOT(quit()), Qt::DirectConnection);
     connect(&eventLoop, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)), Qt::DirectConnection);
-    thread.start();
+    obj_thread.start();
 
     while(isActive()) {
-        if(VitaMTP_Read_Event(device, &event) < 0) {
+        if(VitaMTP_Read_Event(device, &obj_event) < 0) {
             qWarning("Error reading event from Vita.");
             break;
         }
 
         // do not create a event for this since there aren't more events to read
-        if(event.Code == PTP_EC_VITA_RequestTerminate) {
+        if(obj_event.Code == PTP_EC_VITA_RequestTerminate) {
             qDebug("Terminating event thread");
             break;
 
             // this one shuold be processed inmediately
-        } else if(event.Code == PTP_EC_VITA_RequestCancelTask) {
-            eventLoop.vitaEventCancelTask(&event, event.Param1);
-            qDebug("Ended event, code: 0x%x, id: %d", event.Code, event.Param1);
+        } else if(obj_event.Code == PTP_EC_VITA_RequestCancelTask) {
+            eventLoop.vitaEventCancelTask(&obj_event, obj_event.Param1);
+            qDebug("Ended event, code: 0x%x, id: %d", obj_event.Code, obj_event.Param1);
             continue;
         }
 
         // the events are processed synchronously except for cancel/terminate
         qDebug("Sending new event");
-        eventLoop.setEvent(event);
+        eventLoop.setEvent(obj_event);
     }
 
     eventLoop.stop();
-    thread.wait();
+    obj_thread.wait();
     qDebug("Finishing event loop");
 }
 

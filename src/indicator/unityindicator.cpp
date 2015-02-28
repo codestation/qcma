@@ -47,8 +47,8 @@ void quitIndicator(GtkMenu *menu, gpointer data);
 
 #define signals public
 
-UnityIndicator::UnityIndicator(QWidget *parent) :
-    TrayIndicator(parent)
+UnityIndicator::UnityIndicator(QWidget *obj_parent) :
+    TrayIndicator(obj_parent)
 {
     notify_init("qcma");
 }

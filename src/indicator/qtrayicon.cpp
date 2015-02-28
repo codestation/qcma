@@ -31,8 +31,8 @@ extern "C" {
 #define signals public
 #endif
 
-QTrayIcon::QTrayIcon(QWidget *parent)
-    : TrayIndicator(parent)
+QTrayIcon::QTrayIcon(QWidget *obj_parent)
+    : TrayIndicator(obj_parent)
 {
 #ifdef Q_OS_LINUX
     notify_init("qcma");

@@ -44,7 +44,7 @@ public:
     virtual void hide() = 0;
 
 protected:
-    TrayIndicator(QWidget *parent = 0) : QWidget(parent) {}
+    TrayIndicator(QWidget *obj_parent = 0) : QWidget(obj_parent) {}
 
 signals:
     void openConfig();

@@ -109,7 +109,7 @@ void CMAObject::loadSfoMetadata(const QString &path)
     }
 }
 
-void CMAObject::initObject(const QFileInfo &file, int file_type)
+void CMAObject::initObject(const QFileInfo &file, int obj_file_type)
 {
     metadata.name = strdup(file.fileName().toUtf8().data());
     metadata.ohfiParent = parent->metadata.ohfi;
@@ -128,18 +128,18 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         loadSfoMetadata(file.absoluteFilePath());
     } else if(MASK_SET(metadata.dataType, Music | File)) {
 
-        if(file_type < 0) {
-            qWarning("Invalid file type for music: %i, setting it to zero", file_type);
-            file_type = 0;
+        if(obj_file_type < 0) {
+            qWarning("Invalid file type for music: %i, setting it to zero", obj_file_type);
+            obj_file_type = 0;
         }
 
         metadata.data.music.fileName = strdup(metadata.name);
-        metadata.data.music.fileFormatType = audio_list[file_type].file_format;
+        metadata.data.music.fileFormatType = audio_list[obj_file_type].file_format;
         metadata.data.music.statusType = 1;
         metadata.data.music.numTracks = 1;
         metadata.data.music.tracks = new media_track();
         metadata.data.music.tracks->type = VITA_TRACK_TYPE_AUDIO;
-        metadata.data.music.tracks->data.track_photo.codecType = audio_list[file_type].file_codec;
+        metadata.data.music.tracks->data.track_photo.codecType = audio_list[obj_file_type].file_codec;
         Database::loadMusicMetadata(file.absoluteFilePath(), metadata);
     } else if(MASK_SET(metadata.dataType, Video | File)) {
         metadata.data.video.fileName = strdup(metadata.name);
@@ -153,23 +153,23 @@ void CMAObject::initObject(const QFileInfo &file, int file_type)
         Database::loadVideoMetadata(file.absoluteFilePath(), metadata);
     } else if(MASK_SET(metadata.dataType, Photo | File)) {
 
-        if(file_type < 0) {
-            qWarning("Invalid file type for photos: %i, setting it to zero", file_type);
-            file_type = 0;
+        if(obj_file_type < 0) {
+            qWarning("Invalid file type for photos: %i, setting it to zero", obj_file_type);
+            obj_file_type = 0;
         }
 
         metadata.data.photo.fileName = strdup(metadata.name);
-        metadata.data.photo.fileFormatType = photo_list[file_type].file_format;
+        metadata.data.photo.fileFormatType = photo_list[obj_file_type].file_format;
         metadata.data.photo.statusType = 1;
         metadata.data.photo.dateTimeOriginal = file.created().toUTC().toTime_t();
         metadata.data.photo.numTracks = 1;
         metadata.data.photo.tracks = new media_track();
         metadata.data.photo.tracks->type = VITA_TRACK_TYPE_PHOTO;
-        metadata.data.photo.tracks->data.track_photo.codecType = photo_list[file_type].file_codec;
+        metadata.data.photo.tracks->data.track_photo.codecType = photo_list[obj_file_type].file_codec;
         Database::loadPhotoMetadata(file.absoluteFilePath(), metadata);
     }
 
-    path = file.absoluteFilePath();
+    m_path = file.absoluteFilePath();
 
     if(parent->metadata.path == NULL) {
         metadata.path = strdup(metadata.name);
@@ -201,7 +201,7 @@ void CMAObject::rename(const QString &newname)
         metadata.path = strdup(metadata_path.join("/").toUtf8().data());
     }
 
-    path = QFileInfo(path).absoluteDir().path() + "/" + newname;
+    m_path = QFileInfo(m_path).absoluteDir().path() + "/" + newname;
 }
 
 void CMAObject::refreshPath()
@@ -210,7 +210,7 @@ void CMAObject::refreshPath()
         free(metadata.path);
         QString newpath(QString(parent->metadata.path) + "/" + metadata.name);
         metadata.path = strdup(newpath.toUtf8().data());
-        path = parent->path + "/" + metadata.name;
+        m_path = parent->m_path + "/" + metadata.name;
     }
 }
 

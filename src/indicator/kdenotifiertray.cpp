@@ -24,8 +24,8 @@
 #include <QMenu>
 #endif
 
-KDENotifierTray::KDENotifierTray(QWidget *parent)
-    : TrayIndicator(parent)
+KDENotifierTray::KDENotifierTray(QWidget *obj_parent)
+    : TrayIndicator(obj_parent)
 {
 }
 

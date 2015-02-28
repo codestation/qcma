@@ -26,8 +26,8 @@
 
 #include <vitamtp.h>
 
-ClientManager::ClientManager(Database *db, QObject *parent) :
-    QObject(parent), m_db(db)
+ClientManager::ClientManager(Database *db, QObject *obj_parent) :
+    QObject(obj_parent), m_db(db)
 {
 }
 

@@ -51,7 +51,7 @@ public:
         ohfi_count = OHFI_OFFSET;
     }
 
-    QString path;
+    QString m_path;
     CMAObject *parent;
     metadata_t metadata;
 

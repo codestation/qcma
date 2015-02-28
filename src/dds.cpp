@@ -947,10 +947,7 @@ static bool LoadCubeMap( QDataStream & s, const DDSHeader & header, QImage & img
     return true;
 }
 
-
-
-
-bool canReadDDS(QIODevice *device)
+static bool canReadDDS(QIODevice *device)
 {
     if (!device) {
         qWarning("DDSHandler::canRead() called with no device");

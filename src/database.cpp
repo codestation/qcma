@@ -45,8 +45,8 @@ const file_type video_list[] = {
     {"mp4", FILE_FORMAT_MP4, 0}
 };
 
-Database::Database(QObject *parent) :
-    QObject(parent),
+Database::Database(QObject *obj_parent) :
+    QObject(obj_parent),
     mutex(QMutex::Recursive)
 {
 }

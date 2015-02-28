@@ -32,8 +32,8 @@
 
 #include <vitamtp.h>
 
-BackupManagerForm::BackupManagerForm(Database *db, QWidget *parent) :
-    QDialog(parent), m_db(db),
+BackupManagerForm::BackupManagerForm(Database *db, QWidget *obj_parent) :
+    QDialog(obj_parent), m_db(db),
     ui(new Ui::BackupManagerForm)
 {
     ui->setupUi(this);
@@ -83,9 +83,9 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     }
 }
 
-void BackupManagerForm::setBackupUsage(qint64 size)
+void BackupManagerForm::setBackupUsage(qint64 usage_size)
 {
-    ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(size, true)));
+    ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(usage_size, true)));
 }
 
 void BackupManagerForm::loadBackupListing(int index)
@@ -191,7 +191,7 @@ void BackupManagerForm::loadBackupListing(int index)
 
         // show better size info for multi GiB backups
         bool use_gb = ohfi == VITA_OHFI_BACKUP && meta->size > 1024*1024*1024;
-        QString size = readable_size(meta->size, use_gb);
+        QString read_size = readable_size(meta->size, use_gb);
 
         QString info;
 
@@ -211,7 +211,7 @@ void BackupManagerForm::loadBackupListing(int index)
             }
         }
 
-        item->setItemInfo(game_name, size, info);
+        item->setItemInfo(game_name, read_size, info);
         item->setItemIcon(QDir(parent_path).absoluteFilePath(sys_dir ? "icon0.png" : "ICON0.PNG"), img_width, ohfi == VITA_OHFI_PSMAPP);
         item->setDirectory(path + QDir::separator() + meta->name);
         item->resize(646, 68);

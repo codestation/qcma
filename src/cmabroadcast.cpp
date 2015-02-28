@@ -44,8 +44,8 @@ const char *CmaBroadcast::broadcast_query_end = " * HTTP/1.1\r\n";
 const char *CmaBroadcast::broadcast_ok = "HTTP/1.1 200 OK";
 const char *CmaBroadcast::broadcast_unavailable = "HTTP/1.1 503 NG";
 
-CmaBroadcast::CmaBroadcast(QObject *parent) :
-    QObject(parent)
+CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
+    QObject(obj_parent)
 {
     QSettings settings;
     // generate a GUID if doesn't exist yet in settings
@@ -69,14 +69,14 @@ void CmaBroadcast::readPendingDatagrams()
         QByteArray datagram;
         datagram.resize(socket->pendingDatagramSize());
 
-        QHostAddress sender;
+        QHostAddress cma_sender;
         quint16 senderPort;
 
-        socket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
+        socket->readDatagram(datagram.data(), datagram.size(), &cma_sender, &senderPort);
 
         if(datagram.startsWith(broadcast_query_start) && datagram.contains(broadcast_query_end)) {
             QMutexLocker locker(&mutex);
-            socket->writeDatagram(reply, sender, senderPort);
+            socket->writeDatagram(reply, cma_sender, senderPort);
         } else {
             qWarning("Unknown request: %.*s\n", datagram.length(), datagram.constData());
         }

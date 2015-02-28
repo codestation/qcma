@@ -23,8 +23,8 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 
-ProgressForm::ProgressForm(QWidget *parent) :
-    QWidget(parent),
+ProgressForm::ProgressForm(QWidget *obj_parent) :
+    QWidget(obj_parent),
     ui(new Ui::ProgressForm)
 {
     ui->setupUi(this);

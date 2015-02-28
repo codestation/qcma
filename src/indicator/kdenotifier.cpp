@@ -19,7 +19,7 @@
 
 #include "kdenotifier.h"
 
-KDENotifier::KDENotifier(const QString &id, QObject *parent) :
-    KStatusNotifierItem(id, parent)
+KDENotifier::KDENotifier(const QString &notifier_id, QObject *obj_parent) :
+    KStatusNotifierItem(notifier_id, obj_parent)
 {
 }

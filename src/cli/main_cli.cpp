@@ -36,11 +36,11 @@
 #include "headlessmanager.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
+static void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
 {
     const char * msg = str.toStdString().c_str();
 #else
-void noMessageOutput(QtMsgType type, const char *msg)
+static void noMessageOutput(QtMsgType type, const char *msg)
 {
 #endif
     Q_UNUSED(type);

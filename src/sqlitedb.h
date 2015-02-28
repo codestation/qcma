@@ -42,7 +42,7 @@ public:
     void close();
 
     bool reload(bool &prepared);
-    void setUUID(const QString &uuid);
+    void setUUID(const QString &m_uuid);
 
     bool open();
     int create();
@@ -95,7 +95,7 @@ private:
     QTimer *timer;
     QThread *thread;
 
-    QString uuid;
+    QString m_uuid;
     QSqlDatabase db;
 };
 

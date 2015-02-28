@@ -89,7 +89,7 @@ bool removeRecursively(const QString &path)
     }
 }
 
-QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
+static QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
 {
     QByteArray data;
     QDir folder(path);

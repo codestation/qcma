@@ -34,8 +34,8 @@ QByteArray HTTPDownloader::buffer;
 bool HTTPDownloader::bufferReady = false;
 qint64 HTTPDownloader::downloadLeft = 0;
 
-HTTPDownloader::HTTPDownloader(const QString &url, QObject *parent) :
-    QObject(parent), remote_url(url), firstRead(true)
+HTTPDownloader::HTTPDownloader(const QString &url, QObject *obj_parent) :
+    QObject(obj_parent), remote_url(url), firstRead(true)
 {
     lengthMutex.lock();
 }
@@ -123,10 +123,10 @@ int HTTPDownloader::readCallback(unsigned char *data, unsigned long wantlen, uns
 void HTTPDownloader::error(QNetworkReply::NetworkError errorCode)
 {
     Q_UNUSED(errorCode);
-    QString error = reply->errorString();
+    QString str_error = reply->errorString();
 
-    qWarning() << "Network error:" << error;
-    emit messageSent(tr("Network error: %1").arg(error));
+    qWarning() << "Network error:" << str_error;
+    emit messageSent(tr("Network error: %1").arg(str_error));
 
     lengthMutex.unlock();
 

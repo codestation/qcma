@@ -28,8 +28,8 @@
 #include <QSettings>
 #include <vitamtp.h>
 
-HeadlessManager::HeadlessManager(QObject *parent) :
-    QObject(parent), dbus_conn(QDBusConnection::sessionBus())
+HeadlessManager::HeadlessManager(QObject *obj_parent) :
+    QObject(obj_parent), dbus_conn(QDBusConnection::sessionBus())
 {
     new HeadlessManagerAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();

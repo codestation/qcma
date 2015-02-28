@@ -36,7 +36,7 @@ void CMARootObject::initObject(const QString &path)
     switch(root_ohfi) {
     case VITA_OHFI_MUSIC:
         metadata.dataType = Music;
-        this->path = path;
+        m_path = path;
         num_filters = 5;
         filters = new metadata_t[5];
         createFilter(&filters[0], "Artists", VITA_DIR_TYPE_MASK_MUSIC | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ARTISTS);
@@ -48,7 +48,7 @@ void CMARootObject::initObject(const QString &path)
 
     case VITA_OHFI_PHOTO:
         metadata.dataType = Photo;
-        this->path = path;
+        m_path = path;
         num_filters = 3;
         filters = new metadata_t[3];
         createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_PHOTO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
@@ -58,7 +58,7 @@ void CMARootObject::initObject(const QString &path)
 
     case VITA_OHFI_VIDEO:
         metadata.dataType = Video;
-        this->path = path;
+        m_path = path;
         num_filters = 2;
         filters = new metadata_t[2];
         createFilter(&filters[0], "All", VITA_DIR_TYPE_MASK_VIDEO | VITA_DIR_TYPE_MASK_ROOT | VITA_DIR_TYPE_MASK_ALL);
@@ -67,48 +67,48 @@ void CMARootObject::initObject(const QString &path)
 
     case VITA_OHFI_VITAAPP:
         metadata.dataType = App;
-        this->path = QDir(QDir(path).absoluteFilePath("APP")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("APP")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_PSPAPP:
         metadata.dataType = App;
-        this->path = QDir(QDir(path).absoluteFilePath("PGAME")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("PGAME")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_PSPSAVE:
         metadata.dataType = SaveData;
-        this->path = QDir(QDir(path).absoluteFilePath("PSAVEDATA")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("PSAVEDATA")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_PSXAPP:
         metadata.dataType = App;
-        this->path = QDir(QDir(path).absoluteFilePath("PSGAME")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("PSGAME")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_PSMAPP:
         metadata.dataType = App;
-        this->path = QDir(QDir(path).absoluteFilePath("PSM")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("PSM")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_BACKUP:
         metadata.dataType = App;
-        this->path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
+        m_path = QDir(QDir(path).absoluteFilePath("SYSTEM")).absoluteFilePath(uuid);
         num_filters = 0;
         break;
 
     case VITA_OHFI_PACKAGE:
         metadata.dataType = Package;
-        this->path = path;
+        m_path = path;
         num_filters = 0;
     }
 
     // create the backup directories
-    QDir dir(this->path);
+    QDir dir(m_path);
     dir.mkpath(dir.absolutePath());
 }
 

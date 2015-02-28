@@ -35,8 +35,8 @@ public:
     ~BackupItem();
 
     void setItemInfo(const QString &name, const QString &size, const QString &extra);
-    void setItemIcon(const QString &path, int width = 48, bool try_dds = false);
-    void setDirectory(const QString &path);
+    void setItemIcon(const QString &m_path, int width = 48, bool try_dds = false);
+    void setDirectory(const QString &m_path);
     const QPixmap *getIconPixmap();
     int getIconWidth();
 
@@ -46,7 +46,7 @@ public:
     QString title;
 
 private:
-    QString path;
+    QString m_path;
     Ui::BackupItem *ui;
     static const QString gameTemplate;
     static const QString sizeTemplate;

@@ -28,8 +28,8 @@ const QString PinForm::pinFormat =
     "<p><span style=\"font-size:24pt; font-weight:600;\">%1</span></p>"
     "</body></html>";
 
-PinForm::PinForm(QWidget *parent) :
-    QWidget(parent),
+PinForm::PinForm(QWidget *obj_parent) :
+    QWidget(obj_parent),
     ui(new Ui::PinForm)
 {
     ui->setupUi(this);

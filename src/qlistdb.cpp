@@ -28,8 +28,8 @@
 #include <QThread>
 #include <QDebug>
 
-QListDB::QListDB(QObject *parent) :
-    Database(parent)
+QListDB::QListDB(QObject *obj_parent) :
+    Database(obj_parent)
 {
     QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     CMARootObject::uuid  = uuid;
@@ -138,7 +138,7 @@ int QListDB::create()
 
         root_list list;
         list << obj;
-        emit directoryAdded(obj->path);
+        emit directoryAdded(obj->m_path);
 
         if(!skipCurrent) {
             dir_count = recursiveScanRootDirectory(list, obj, ohfi_array[i]);
@@ -160,7 +160,7 @@ int QListDB::create()
 
 CMAObject *QListDB::getParent(CMAObject *last_dir, const QString &current_path)
 {
-    while(last_dir && current_path != last_dir->path) {
+    while(last_dir && current_path != last_dir->m_path) {
         last_dir = last_dir->parent;
     }
 
@@ -169,10 +169,10 @@ CMAObject *QListDB::getParent(CMAObject *last_dir, const QString &current_path)
 
 int QListDB::scanRootDirectory(root_list &list, int ohfi_type)
 {
-    int file_type = -1;
+    int obj_file_type = -1;
     int total_objects = 0;
     CMAObject *last_dir = list.first();
-    QDir dir(last_dir->path);
+    QDir dir(last_dir->m_path);
     dir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     QDirIterator it(dir, QDirIterator::Subdirectories);
 
@@ -186,14 +186,14 @@ int QListDB::scanRootDirectory(root_list &list, int ohfi_type)
         QFileInfo info = it.fileInfo();
 
         if(info.isFile()) {
-            if((file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
+            if((obj_file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
                 //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());
                 continue;
             }
         }
 
         CMAObject *obj = new CMAObject(getParent(last_dir, info.path()));
-        obj->initObject(info, file_type);
+        obj->initObject(info, obj_file_type);
         //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
         list << obj;
 
@@ -206,12 +206,12 @@ int QListDB::scanRootDirectory(root_list &list, int ohfi_type)
     return total_objects;
 }
 
-int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type)
+int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *obj_parent, int ohfi_type)
 {
-    int file_type = -1;
+    int obj_file_type = -1;
     int total_objects = 0;
 
-    QDir dir(parent->path);
+    QDir dir(obj_parent->m_path);
     dir.setSorting(QDir::Name | QDir::DirsFirst);
     QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Time);
 
@@ -221,16 +221,16 @@ int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *parent, int 
             return -1;
         }
 
-        if(info.isFile() && (file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
+        if(info.isFile() && (obj_file_type = checkFileType(info.absoluteFilePath(), ohfi_type)) < 0) {
             //qDebug("Excluding %s from database", info.absoluteFilePath().toStdString().c_str());>
         } else {
-            CMAObject *obj = new CMAObject(parent);
-            obj->initObject(info, file_type);
+            CMAObject *obj = new CMAObject(obj_parent);
+            obj->initObject(info, obj_file_type);
             emit fileAdded(obj->metadata.name);
             //qDebug("Added %s to database with OHFI %d", obj->metadata.name, obj->metadata.ohfi);
             list << obj;
             if(info.isDir()) {
-                emit directoryAdded(obj->path);
+                emit directoryAdded(obj->m_path);
                 total_objects += recursiveScanRootDirectory(list, obj, ohfi_type);
             } else {
                 total_objects++;
@@ -319,7 +319,7 @@ CMAObject *QListDB::pathToObjectInternal(const root_list &list, const char *path
     return NULL;
 }
 
-int QListDB::acceptFilteredObject(const CMAObject *parent, const CMAObject *current, int type)
+int QListDB::acceptFilteredObject(const CMAObject *obj_parent, const CMAObject *current, int type)
 {
     QMutexLocker locker(&mutex);
     int result = 0;
@@ -347,7 +347,7 @@ int QListDB::acceptFilteredObject(const CMAObject *parent, const CMAObject *curr
     } else if(type & (VITA_DIR_TYPE_MASK_ALL | VITA_DIR_TYPE_MASK_SONGS)) {
         result = result && (current->metadata.dataType & File);
     } else if(type & (VITA_DIR_TYPE_MASK_REGULAR)) {
-        result = (parent->metadata.ohfi == current->metadata.ohfiParent);
+        result = (obj_parent->metadata.ohfi == current->metadata.ohfiParent);
     }
 
     // TODO: Support other filter types
@@ -420,26 +420,26 @@ int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int inde
 {
     QMutexLocker locker(&mutex);
 
-    CMARootObject *parent = static_cast<CMARootObject *>(ohfiToObject(parent_ohfi));
+    CMARootObject *obj_parent = static_cast<CMARootObject *>(ohfiToObject(parent_ohfi));
 
-    if(parent == NULL) {
+    if(obj_parent == NULL) {
         return 0;
     }
 
-    if(parent->metadata.dataType & File) {
-        *metadata = &parent->metadata;
+    if(obj_parent->metadata.dataType & File) {
+        *metadata = &obj_parent->metadata;
         return 1;
     }
 
-    int type = parent->metadata.type;
+    int type = obj_parent->metadata.type;
 
-    if(parent->metadata.ohfi < OHFI_OFFSET && parent->filters) { // if we have filters
-        if(parent_ohfi == parent->metadata.ohfi) { // if we are looking at root
-            return parent->getFilters(metadata);
+    if(obj_parent->metadata.ohfi < OHFI_OFFSET && obj_parent->filters) { // if we have filters
+        if(parent_ohfi == obj_parent->metadata.ohfi) { // if we are looking at root
+            return obj_parent->getFilters(metadata);
         } else { // we are looking at a filter
-            for(int j = 0; j < parent->num_filters; j++) {
-                if(parent->filters[j].ohfi == parent_ohfi) {
-                    type = parent->filters[j].type;
+            for(int j = 0; j < obj_parent->num_filters; j++) {
+                if(obj_parent->filters[j].ohfi == parent_ohfi) {
+                    type = obj_parent->filters[j].type;
                     break;
                 }
             }
@@ -453,7 +453,7 @@ int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int inde
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         for(root_list::iterator object = (*root).begin(); object != (*root).end(); ++object) {
-            if(acceptFilteredObject(parent, *object, type)) {
+            if(acceptFilteredObject(obj_parent, *object, type)) {
                 if(offset++ >= index) {
                     tail->next_metadata = &(*object)->metadata;
                     tail = tail->next_metadata;
@@ -538,7 +538,7 @@ QString QListDB::getAbsolutePath(int ohfi)
 {
     QMutexLocker locker(&mutex);
     CMAObject *obj = ohfiToObject(ohfi);
-    return obj ? obj->path : NULL;
+    return obj ? obj->m_path : NULL;
 }
 
 QString QListDB::getRelativePath(int ohfi)

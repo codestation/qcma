@@ -64,10 +64,10 @@ private:
 
     void processEvent();
     bool isActive();
-    void setDevice(vita_device_t *device);
+    void setDevice(vita_device_t *m_device);
 
-    vita_device_t *device;
-    vita_event_t t_event;
+    vita_device_t *m_device;
+    vita_event_t m_event;
 
     Database *m_db;
 

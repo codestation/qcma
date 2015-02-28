@@ -35,8 +35,8 @@ class CmaClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit CmaClient(Database *db, QObject *parent = 0);
-    explicit CmaClient(Database *db, CmaBroadcast *broadcast, QObject *parent = 0);
+    explicit CmaClient(Database *db, QObject *obj_parent = 0);
+    explicit CmaClient(Database *db, CmaBroadcast *broadcast, QObject *obj_parent = 0);
 
     static bool isRunning();
     void launch();

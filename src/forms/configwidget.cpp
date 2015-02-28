@@ -35,8 +35,8 @@ extern "C" {
 #define writableLocation storageLocation
 #endif
 
-ConfigWidget::ConfigWidget(QWidget *parent) :
-    QDialog(parent),
+ConfigWidget::ConfigWidget(QWidget *obj_parent) :
+    QDialog(obj_parent),
     ui(new Ui::ConfigWidget)
 {
     ui->setupUi(this);

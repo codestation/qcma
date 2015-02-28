@@ -33,7 +33,7 @@ QFile *CmaEvent::m_file = NULL;
 static metadata_t g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
 
 CmaEvent::CmaEvent(Database *db, vita_device_t *s_device) :
-    device(s_device), m_db(db), is_active(true)
+    m_device(s_device), m_db(db), is_active(true)
 {
 }
 
@@ -46,9 +46,9 @@ void CmaEvent::process()
         if(!isActive()) {
             break;
         }
-        mutex.lock();
+
+        QMutexLocker locker(&mutex);
         processEvent();
-        mutex.unlock();
     }
     qDebug("Finishing event_thread");
     emit finishedEventLoop();
@@ -70,81 +70,81 @@ void CmaEvent::stop()
 void CmaEvent::setDevice(vita_device_t *device)
 {
     QMutexLocker locker(&mutex);
-    this->device = device;
+    m_device = device;
 }
 
-void CmaEvent::setEvent(vita_event_t event)
+void CmaEvent::setEvent(vita_event_t cma_event)
 {
-    mutex.lock();
-    this->t_event = event;
-    mutex.unlock();
+    QMutexLocker locker(&mutex);
+    m_event = cma_event;
+    locker.unlock();
     sema.release();
 }
 
 void CmaEvent::processEvent()
 {
-    switch(t_event.Code) {
+    switch(m_event.Code) {
     case PTP_EC_VITA_RequestSendNumOfObject:
-        vitaEventSendNumOfObject(&t_event, t_event.Param1);
+        vitaEventSendNumOfObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendObjectMetadata:
-        vitaEventSendObjectMetadata(&t_event, t_event.Param1);
+        vitaEventSendObjectMetadata(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendObject:
-        vitaEventSendObject(&t_event, t_event.Param1);
+        vitaEventSendObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendHttpObjectFromURL:
-        vitaEventSendHttpObjectFromURL(&t_event, t_event.Param1);
+        vitaEventSendHttpObjectFromURL(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_Unknown1: // unimplemented
-        vitaEventUnimplementated(&t_event, t_event.Param1);
+        vitaEventUnimplementated(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendObjectStatus:
-        vitaEventSendObjectStatus(&t_event, t_event.Param1);
+        vitaEventSendObjectStatus(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendObjectThumb:
-        vitaEventSendObjectThumb(&t_event, t_event.Param1);
+        vitaEventSendObjectThumb(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestDeleteObject:
-        vitaEventDeleteObject(&t_event, t_event.Param1);
+        vitaEventDeleteObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestGetSettingInfo:
-        vitaEventGetSettingInfo(&t_event, t_event.Param1);
+        vitaEventGetSettingInfo(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendHttpObjectPropFromURL:
-        vitaEventSendHttpObjectPropFromURL(&t_event, t_event.Param1);
+        vitaEventSendHttpObjectPropFromURL(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendPartOfObject:
-        vitaEventSendPartOfObject(&t_event, t_event.Param1);
+        vitaEventSendPartOfObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestOperateObject:
-        vitaEventOperateObject(&t_event, t_event.Param1);
+        vitaEventOperateObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestGetPartOfObject:
-        vitaEventGetPartOfObject(&t_event, t_event.Param1);
+        vitaEventGetPartOfObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendStorageSize:
-        vitaEventSendStorageSize(&t_event, t_event.Param1);
+        vitaEventSendStorageSize(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestCheckExistance:
-        vitaEventCheckExistance(&t_event, t_event.Param1);
+        vitaEventCheckExistance(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestGetTreatObject:
-        vitaEventGetTreatObject(&t_event, t_event.Param1);
+        vitaEventGetTreatObject(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendCopyConfirmationInfo:
-        vitaEventSendCopyConfirmationInfo(&t_event, t_event.Param1);
+        vitaEventSendCopyConfirmationInfo(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendObjectMetadataItems:
-        vitaEventSendObjectMetadataItems(&t_event, t_event.Param1);
+        vitaEventSendObjectMetadataItems(&m_event, m_event.Param1);
         break;
     case PTP_EC_VITA_RequestSendNPAccountInfo:
-        vitaEventSendNPAccountInfo(&t_event, t_event.Param1);
+        vitaEventSendNPAccountInfo(&m_event, m_event.Param1);
         break;
     default:
-        vitaEventUnimplementated(&t_event, t_event.Param1);
+        vitaEventUnimplementated(&m_event, m_event.Param1);
     }
-    qDebug("Ended event, code: 0x%x, id: %d", t_event.Code, t_event.Param1);
+    qDebug("Ended event, code: 0x%x, id: %d", m_event.Code, m_event.Param1);
 }
 
 quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
@@ -156,13 +156,13 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
     quint32 *p_handles;
     unsigned int p_len;
 
-    if(VitaMTP_GetObject_Info(device, handle, &name, &dataType) != PTP_RC_OK) {
+    if(VitaMTP_GetObject_Info(m_device, handle, &name, &dataType) != PTP_RC_OK) {
         qWarning("Cannot get object for handle %d", handle);
         return PTP_RC_VITA_Invalid_Data;
     }
 
     if(dataType & Folder) {
-        if(VitaMTP_GetObject_Folder(device, handle, &p_handles, &p_len) != PTP_RC_OK) {
+        if(VitaMTP_GetObject_Folder(m_device, handle, &p_handles, &p_len) != PTP_RC_OK) {
             qWarning("Cannot get folder handles for handle %d", handle);
             return PTP_RC_VITA_Invalid_Data;
         }
@@ -200,7 +200,7 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
             // the size gets ignored because we can also get it via info.size()
             uint64_t size;
 
-            VitaMTP_GetObject_Callback(device, handle, &size, CmaEvent::writeCallback);
+            VitaMTP_GetObject_Callback(m_device, handle, &size, CmaEvent::writeCallback);
             m_file->close();
             delete m_file;
         }
@@ -229,13 +229,13 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
     return PTP_RC_OK;
 }
 
-void CmaEvent::vitaEventGetTreatObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventGetTreatObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     treat_object_t treatObject;
 
-    if(VitaMTP_GetTreatObject(device, eventId, &treatObject) != PTP_RC_OK) {
+    if(VitaMTP_GetTreatObject(m_device, eventId, &treatObject) != PTP_RC_OK) {
         qWarning("Cannot get information on object to get");
         return;
     }
@@ -246,19 +246,19 @@ void CmaEvent::vitaEventGetTreatObject(vita_event_t *event, int eventId)
 
     if(!m_db->getObjectMetadata(treatObject.ohfiParent, metadata)) {
         qWarning("Cannot find parent OHFI %d", treatObject.ohfiParent);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
-    VitaMTP_ReportResult(device, eventId, processAllObjects(metadata, treatObject.handle));
+    VitaMTP_ReportResult(m_device, eventId, processAllObjects(metadata, treatObject.handle));
 }
 
-void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     copy_confirmation_info_t *info;
-    if(VitaMTP_SendCopyConfirmationInfoInit(device, eventId, &info) != PTP_RC_OK) {
+    if(VitaMTP_SendCopyConfirmationInfoInit(m_device, eventId, &info) != PTP_RC_OK) {
         qWarning("Error recieving initial information.");
         return;
     }
@@ -269,33 +269,33 @@ void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventI
 
     // check if the item is a single folder
     if(info->count == 1) {
-        metadata_t meta;
-        if(m_db->getObjectMetadata(info->ohfi[0], meta)) {
+        metadata_t obj_meta;
+        if(m_db->getObjectMetadata(info->ohfi[0], obj_meta)) {
             // got a folder
-            if(meta.dataType & Folder) {
+            if(obj_meta.dataType & Folder) {
                 metadata_t *meta_list = NULL;
                 if(m_db->getObjectList(info->ohfi[0], &meta_list)) {
                     int count = 0;
-                    metadata_t *meta = meta_list;
+                    metadata_t *single_meta = meta_list;
                     // count files
-                    while(meta) {
-                        if(meta->dataType & File) {
+                    while(single_meta) {
+                        if(single_meta->dataType & File) {
                             count++;
                         }
-                        meta = meta->next_metadata;
+                        single_meta = single_meta->next_metadata;
                     }
                     // create struct to hold all the file identifiers
                     info = (copy_confirmation_info_t *)malloc(sizeof(uint32_t) * count + sizeof(copy_confirmation_info_t));
-                    meta = meta_list;
+                    single_meta = meta_list;
                     info->count = 0;
                     // copy all the file ohfi
-                    while(meta) {
-                        if(meta->dataType & File) {
-                            info->ohfi[info->count] = meta->ohfi;
-                            total_size += meta->size;
+                    while(single_meta) {
+                        if(single_meta->dataType & File) {
+                            info->ohfi[info->count] = single_meta->ohfi;
+                            total_size += single_meta->size;
                             info->count++;
                         }
-                        meta = meta->next_metadata;
+                        single_meta = single_meta->next_metadata;
                     }
 
                 }
@@ -316,21 +316,21 @@ void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *event, int eventI
         }
     }
 
-    if(VitaMTP_SendCopyConfirmationInfo(device, eventId, info, total_size) != PTP_RC_OK) {
+    if(VitaMTP_SendCopyConfirmationInfo(m_device, eventId, info, total_size) != PTP_RC_OK) {
         qWarning("Error sending copy confirmation");
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 
     free(info);
 }
 
-void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     quint32 ohfi;
-    if(VitaMTP_SendObjectMetadataItems(device, eventId, &ohfi) != PTP_RC_OK) {
+    if(VitaMTP_SendObjectMetadataItems(m_device, eventId, &ohfi) != PTP_RC_OK) {
         qWarning("Cannot get OHFI for retreving metadata");
         return;
     }
@@ -341,76 +341,75 @@ void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *event, int eventId
 
     if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("Cannot find OHFI %d in database", ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
     metadata.next_metadata = NULL;
     qDebug("Sending metadata for OHFI %d (%s)", ohfi, metadata.path);
 
-    quint16 ret = VitaMTP_SendObjectMetadata(device, eventId, &metadata);
+    quint16 ret = VitaMTP_SendObjectMetadata(m_device, eventId, &metadata);
     if(ret != PTP_RC_OK) {
         qWarning("Error sending metadata. Code: %04X", ret);
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 }
 
-void CmaEvent::vitaEventSendNPAccountInfo(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendNPAccountInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
     // AFAIK, Sony hasn't even implemented this in their CMA
-    qWarning("Event 0x%x unimplemented!", event->Code);
+    qWarning("Event 0x%x unimplemented!", cma_event->Code);
 }
 
-void CmaEvent::vitaEventUnimplementated(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventUnimplementated(vita_event_t *cma_event, int eventId)
 {
-    qWarning("Unknown event not handled, code: 0x%x, id: %d", event->Code, eventId);
-    qWarning("Param1: 0x%08X, Param2: 0x%08X, Param3: 0x%08X", event->Param1, event->Param2, event->Param3);
+    qWarning("Unknown event not handled, code: 0x%x, id: %d", cma_event->Code, eventId);
+    qWarning("Param1: 0x%08X, Param2: 0x%08X, Param3: 0x%08X", cma_event->Param1, cma_event->Param2, cma_event->Param3);
 }
 
-void CmaEvent::vitaEventCancelTask(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventCancelTask(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
-    quint32 eventIdToCancel = event->Param2;
+    quint32 eventIdToCancel = cma_event->Param2;
     qDebug("Cancelling event %d", eventIdToCancel);
-    quint16 ret = VitaMTP_CancelTask(device, eventIdToCancel);
+    quint16 ret = VitaMTP_CancelTask(m_device, eventIdToCancel);
 
     // wait until the current event finishes so we can report the result to the device
 
     qDebug("Waiting for send event to finish");
-    mutex.lock();
+    QMutexLocker locker(&mutex);
     if(ret == PTP_RC_OK) {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
-    mutex.unlock();
 }
 
-void CmaEvent::vitaEventSendNumOfObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendNumOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
-    int ohfi = event->Param2;
+    int ohfi = cma_event->Param2;
     int items = m_db->childObjectCount(ohfi);
 
-    if(VitaMTP_SendNumOfObject(device, eventId, items) != PTP_RC_OK) {
+    if(VitaMTP_SendNumOfObject(m_device, eventId, items) != PTP_RC_OK) {
         qWarning("Error occured receiving object count for OHFI parent %d", ohfi);
     } else {
         qDebug("Returned count of %d objects for OHFI parent %d", items, ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 }
 
-void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     browse_info_t browse;
 
-    if(VitaMTP_GetBrowseInfo(device, eventId, &browse) != PTP_RC_OK) {
+    if(VitaMTP_GetBrowseInfo(m_device, eventId, &browse) != PTP_RC_OK) {
         qWarning("GetBrowseInfo failed");
         return;
     }
@@ -421,19 +420,19 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *event, int eventId)
     int count = m_db->getObjectMetadatas(browse.ohfiParent, &meta, browse.index, browse.numObjects); // if meta is null, will return empty XML
     qDebug("Sending %i metadata filtered objects for OHFI %d", count, browse.ohfiParent);
 
-    if(VitaMTP_SendObjectMetadata(device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
+    if(VitaMTP_SendObjectMetadata(m_device, eventId, meta) != PTP_RC_OK) {  // send all objects with OHFI parent
         qWarning("Sending metadata for OHFI parent %d failed", browse.ohfiParent);
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
     m_db->freeMetadata(meta);
 }
 
-void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
-    int ohfi = event->Param2;
+    int ohfi = cma_event->Param2;
 
     QMutexLocker locker(&m_db->mutex);
 
@@ -442,12 +441,12 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
     metadata_t *metadata = NULL;
     if(!m_db->getObjectList(ohfi, &metadata)) {
         qWarning("Failed to find OHFI %d", ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
     metadata_t *start = metadata;
-    quint32 parentHandle = event->Param3;
+    quint32 parentHandle = cma_event->Param3;
     bool send_folder = metadata->dataType & Folder;
     quint32 handle;
 
@@ -461,7 +460,7 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
             if(!m_file->open(QIODevice::ReadOnly)) {
                 qWarning() << "Failed to read" << m_file->fileName();
                 delete m_file;
-                VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
+                VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Not_Exist_Object);
                 return;
             }
         }
@@ -481,11 +480,11 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
         qDebug("OHFI %d with handle 0x%08X", metadata->ohfi, parentHandle);
 
         VitaMTP_RegisterCancelEventId(eventId);
-        quint16 ret = VitaMTP_SendObject_Callback(device, &parentHandle, &handle, metadata, &CmaEvent::readCallback);
+        quint16 ret = VitaMTP_SendObject_Callback(m_device, &parentHandle, &handle, metadata, &CmaEvent::readCallback);
         if(ret != PTP_RC_OK) {
             qWarning("Sending of %s failed. Code: %04X", metadata->name, ret);
             if(ret == PTP_ERROR_CANCEL) {
-                VitaMTP_ReportResult(device, eventId, PTP_RC_GeneralError);
+                VitaMTP_ReportResult(m_device, eventId, PTP_RC_GeneralError);
             }
             m_file->close();
             delete m_file;
@@ -510,17 +509,17 @@ void CmaEvent::vitaEventSendObject(vita_event_t *event, int eventId)
 
     m_db->freeMetadata(start);
 
-    VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, handle);
+    VitaMTP_ReportResultWithParam(m_device, eventId, PTP_RC_OK, handle);
 
-    VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);  // TODO: Send thumbnail
+    VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Data);  // TODO: Send thumbnail
 }
 
-void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     char *url;
-    if(VitaMTP_GetUrl(device, eventId, &url) != PTP_RC_OK) {
+    if(VitaMTP_GetUrl(m_device, eventId, &url) != PTP_RC_OK) {
         qWarning("Failed to recieve URL");
         return;
     }
@@ -558,15 +557,15 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
                 remote_size += 8;
                 qDebug("Sending %i bytes of data for HTTP request %s", remote_size, url);
 
-                if(VitaMTP_SendData_Callback(device, eventId, PTP_OC_VITA_SendHttpObjectFromURL, remote_size, HTTPDownloader::readCallback) != PTP_RC_OK) {
+                if(VitaMTP_SendData_Callback(m_device, eventId, PTP_OC_VITA_SendHttpObjectFromURL, remote_size, HTTPDownloader::readCallback) != PTP_RC_OK) {
                     qWarning("Failed to send HTTP object");
                 } else {
-                    VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+                    VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
                 }
 
             } else {
                 qWarning("No valid content-length in header, aborting");
-                VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Download);
+                VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Download);
             }
 
             free(url);
@@ -581,22 +580,22 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *event, int eventId)
 
     qDebug("Sending %i bytes of data for HTTP request %s", data.size(), url);
 
-    if(VitaMTP_SendHttpObjectFromURL(device, eventId, data.data(), data.size()) != PTP_RC_OK) {
+    if(VitaMTP_SendHttpObjectFromURL(m_device, eventId, data.data(), data.size()) != PTP_RC_OK) {
         qWarning("Failed to send HTTP object");
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 
     free(url);
 }
 
-void CmaEvent::vitaEventSendObjectStatus(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendObjectStatus(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     object_status_t objectstatus;
 
-    if(VitaMTP_SendObjectStatus(device, eventId, &objectstatus) != PTP_RC_OK) {
+    if(VitaMTP_SendObjectStatus(m_device, eventId, &objectstatus) != PTP_RC_OK) {
         qWarning("Failed to get information for object status.");
         return;
     }
@@ -608,35 +607,35 @@ void CmaEvent::vitaEventSendObjectStatus(vita_event_t *event, int eventId)
 
     if(ohfi == 0) { // not in database, don't return metadata
         qDebug("Object %s not in database (OHFI: %i). Sending OK response for non-existence", objectstatus.title, objectstatus.ohfiRoot);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     } else {
         metadata_t metadata = metadata_t();
         m_db->getObjectMetadata(ohfi, metadata);
         metadata.next_metadata = NULL;
         qDebug("Sending metadata for OHFI %d", ohfi);
 
-        if(VitaMTP_SendObjectMetadata(device, eventId, &metadata) != PTP_RC_OK) {
+        if(VitaMTP_SendObjectMetadata(m_device, eventId, &metadata) != PTP_RC_OK) {
             qWarning("Error sending metadata for %d", ohfi);
         } else {
-            VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+            VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
         }
     }
 
     free(objectstatus.title);
 }
 
-void CmaEvent::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendObjectThumb(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
-    int ohfi = event->Param2;
+    int ohfi = cma_event->Param2;
     metadata_t metadata;
 
     if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("Cannot find OHFI %d in database.", ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
@@ -645,7 +644,7 @@ void CmaEvent::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
 
     if(data.size() == 0) {
         qWarning() << "Cannot find/read thumbnail for" << fullpath;
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Data);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Data);
         return;
     }
 
@@ -655,10 +654,10 @@ void CmaEvent::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
     char *locale = strdup(setlocale(LC_ALL, NULL));
     setlocale(LC_ALL, "C");
 
-    if(VitaMTP_SendObjectThumb(device, eventId, (metadata_t *)&g_thumbmeta, (uchar *)data.data(), data.size()) != PTP_RC_OK) {
+    if(VitaMTP_SendObjectThumb(m_device, eventId, (metadata_t *)&g_thumbmeta, (uchar *)data.data(), data.size()) != PTP_RC_OK) {
         qWarning("Error sending thumbnail");
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 
     // restore locale
@@ -666,18 +665,18 @@ void CmaEvent::vitaEventSendObjectThumb(vita_event_t *event, int eventId)
     free(locale);
 }
 
-void CmaEvent::vitaEventDeleteObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventDeleteObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
-    int ohfi = event->Param2;
+    int ohfi = cma_event->Param2;
     metadata_t metadata;
 
     if(!m_db->getObjectMetadata(ohfi, metadata)) {
         qWarning("OHFI %d not found", ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     }
 
@@ -686,15 +685,15 @@ void CmaEvent::vitaEventDeleteObject(vita_event_t *event, int eventId)
     removeRecursively(fullpath);
     m_db->deleteEntry(ohfi);
 
-    VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+    VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
 }
 
-void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventGetSettingInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     settings_info_t *settingsinfo;
-    if(VitaMTP_GetSettingInfo(device, eventId, &settingsinfo) != PTP_RC_OK) {
+    if(VitaMTP_GetSettingInfo(m_device, eventId, &settingsinfo) != PTP_RC_OK) {
         qWarning("Failed to get setting info from Vita.");
         return;
     }
@@ -711,15 +710,15 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *event, int eventId)
 
     // free all the information
     VitaMTP_Data_Free_Settings(settingsinfo);
-    VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+    VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
 }
 
-void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     char *url;
-    if(VitaMTP_GetUrl(device, eventId, &url) != PTP_RC_OK) {
+    if(VitaMTP_GetUrl(m_device, eventId, &url) != PTP_RC_OK) {
         qWarning("Failed to get URL");
         return;
     }
@@ -730,7 +729,7 @@ void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *event, int event
 
     if(!file.exists()) {
         qWarning("The file %s is not accesible", url);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Download);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Download);
         free(url);
         return;
     }
@@ -741,22 +740,22 @@ void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *event, int event
     httpobjectprop.timestamp = timestamp.toUtf8().data();
     httpobjectprop.timestamp_len = timestamp.toUtf8().size();
 
-    if(VitaMTP_SendHttpObjectPropFromURL(device, eventId, &httpobjectprop) != PTP_RC_OK) {
+    if(VitaMTP_SendHttpObjectPropFromURL(m_device, eventId, &httpobjectprop) != PTP_RC_OK) {
         qWarning("Failed to send object properties");
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 
     free(url);
 }
 
-void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendPartOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     send_part_init_t part_init;
 
-    if(VitaMTP_SendPartOfObjectInit(device, eventId, &part_init) != PTP_RC_OK) {
+    if(VitaMTP_SendPartOfObjectInit(m_device, eventId, &part_init) != PTP_RC_OK) {
         qWarning("Cannot get information on object to send");
         return;
     }
@@ -767,7 +766,7 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
 
     if(fullpath.isNull()) {
         qWarning("Cannot find object for OHFI %d", part_init.ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Context);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Context);
         return;
     }
 
@@ -775,7 +774,7 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
 
     if(!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot read" << fullpath;
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Not_Exist_Object);
         return;
     } else {
         file.seek(part_init.offset);
@@ -784,21 +783,21 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *event, int eventId)
                      fullpath, QString::number(part_init.offset), QString::number(part_init.size)
                  );
 
-        if(VitaMTP_SendPartOfObject(device, eventId, (unsigned char *)data.data(), data.size()) != PTP_RC_OK) {
+        if(VitaMTP_SendPartOfObject(m_device, eventId, (unsigned char *)data.data(), data.size()) != PTP_RC_OK) {
             qWarning("Failed to send part of object OHFI %d", part_init.ohfi);
         } else {
-            VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+            VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
         }
     }
 }
 
-void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventOperateObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     operate_object_t operateobject;
 
-    if(VitaMTP_OperateObject(device, eventId, &operateobject) != PTP_RC_OK) {
+    if(VitaMTP_OperateObject(m_device, eventId, &operateobject) != PTP_RC_OK) {
         qWarning("Cannot get information on object to operate");
         return;
     }
@@ -809,7 +808,7 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
 
     // end for renaming only
     if(fullpath.isNull()) {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Not_Exist_Object);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Not_Exist_Object);
         return;
     }
 
@@ -820,11 +819,11 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
         QDir dir(fullpath);
         if(!dir.mkdir(operateobject.title)) {
             qWarning("Unable to create temporary folder: %s", operateobject.title);
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
+            VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
             int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
             qDebug("Created folder %s with OHFI %d", operateobject.title, new_ohfi);
-            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
+            VitaMTP_ReportResultWithParam(m_device, eventId, PTP_RC_OK, new_ohfi);
         }
         break;
     }
@@ -834,11 +833,11 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
         QFile file(fullpath + QDir::separator() + operateobject.title);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             qWarning("Unable to create temporary file: %s", operateobject.title);
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
+            VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         } else {
             int new_ohfi = m_db->insertObjectEntry(fullpath, operateobject.title, operateobject.ohfi);
             //qDebug("Created file %s with OHFI %d under parent %s", newobj->metadata.path, new_ohfi, root->metadata.path);
-            VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, new_ohfi);
+            VitaMTP_ReportResultWithParam(m_device, eventId, PTP_RC_OK, new_ohfi);
         }
         break;
     }
@@ -851,32 +850,32 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *event, int eventId)
         // rename in filesystem
         if(!QFile(fullpath).rename(newpath)) {
             qWarning("Unable to rename %s to %s", fullpath.toLocal8Bit().constData(), operateobject.title);
-            VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
+            VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Operate_Object);
             break;
         }
 
         qDebug("Renamed OHFI %d from %s to %s", operateobject.ohfi, fullpath.toLocal8Bit().constData(), newpath.toLocal8Bit().constData());
-        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_OK, operateobject.ohfi);
+        VitaMTP_ReportResultWithParam(m_device, eventId, PTP_RC_OK, operateobject.ohfi);
         break;
     }
 
     default:
         qWarning("Operate command %d: Not implemented", operateobject.cmd);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Failed_Operate_Object);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Failed_Operate_Object);
         break;
     }
 
     free(operateobject.title);
 }
 
-void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventGetPartOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     unsigned char *data;
     send_part_init_t part_init;
 
-    if(VitaMTP_GetPartOfObject(device, eventId, &part_init, &data) != PTP_RC_OK) {
+    if(VitaMTP_GetPartOfObject(m_device, eventId, &part_init, &data) != PTP_RC_OK) {
         qWarning("Cannot get object from device");
         return;
     }
@@ -886,7 +885,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
 
     if(fullpath.isNull()) {
         qWarning("Cannot find OHFI %d", part_init.ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         free(data);
         return;
     }
@@ -898,7 +897,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
     QFile file(fullpath);
     if(!file.open(QIODevice::ReadWrite)) {
         qWarning() << "Cannot write to file" << fullpath;
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Permission);
     } else {
         file.seek(part_init.offset);
         file.write((const char *)data, part_init.size);
@@ -908,24 +907,24 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *event, int eventId)
                      QString::number(part_init.size), fullpath, QString::number(part_init.offset)
                  );
 
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 
     free(data);
 }
 
-void CmaEvent::vitaEventSendStorageSize(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventSendStorageSize(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
-    int ohfi = event->Param2;
+    int ohfi = cma_event->Param2;
     QString fullpath = m_db->getAbsolutePath(ohfi);
 
     if(fullpath.isNull()) {
         qWarning("Error: Cannot find OHFI %d", ohfi);
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_OHFI);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_OHFI);
         return;
     } else {
         QFile file(fullpath);
@@ -936,7 +935,7 @@ void CmaEvent::vitaEventSendStorageSize(vita_event_t *event, int eventId)
 
             if(!QDir(QDir::root()).mkpath(QDir(fullpath).absolutePath())) {
                 qWarning("Create directory failed");
-                VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
+                VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Permission);
                 return;
             }
         }
@@ -947,27 +946,27 @@ void CmaEvent::vitaEventSendStorageSize(vita_event_t *event, int eventId)
 
     if(!getDiskSpace(fullpath, &free, &total)) {
         qWarning("Cannot get disk space");
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Invalid_Permission);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Invalid_Permission);
         return;
     }
 
     qDebug("Storage stats for drive containing OHFI %d, free: %llu, total: %llu", ohfi, free, total);
 
-    if(VitaMTP_SendStorageSize(device, eventId, total, free) != PTP_RC_OK) {
+    if(VitaMTP_SendStorageSize(m_device, eventId, total, free) != PTP_RC_OK) {
         qWarning("Send storage size failed");
     } else {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
     }
 }
 
-void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
+void CmaEvent::vitaEventCheckExistance(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, event->Code, eventId);
+    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
-    int handle = event->Param2;
+    int handle = cma_event->Param2;
     existance_object_t existance;
 
-    if(VitaMTP_CheckExistance(device, handle, &existance) != PTP_RC_OK) {
+    if(VitaMTP_CheckExistance(m_device, handle, &existance) != PTP_RC_OK) {
         qWarning("Cannot read information on object to be sent");
         return;
     }
@@ -977,12 +976,12 @@ void CmaEvent::vitaEventCheckExistance(vita_event_t *event, int eventId)
     int ohfi = m_db->getPathId(existance.name, 0);
 
     if(ohfi == 0) {
-        VitaMTP_ReportResult(device, eventId, PTP_RC_VITA_Different_Object);
+        VitaMTP_ReportResult(m_device, eventId, PTP_RC_VITA_Different_Object);
     } else {
-        VitaMTP_ReportResultWithParam(device, eventId, PTP_RC_VITA_Same_Object, ohfi);
+        VitaMTP_ReportResultWithParam(m_device, eventId, PTP_RC_VITA_Same_Object, ohfi);
     }
 
-    VitaMTP_ReportResult(device, eventId, PTP_RC_OK);
+    VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
 }
 
 int CmaEvent::readCallback(unsigned char *data, unsigned long wantlen, unsigned long *gotlen)

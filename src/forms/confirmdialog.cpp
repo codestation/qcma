@@ -25,8 +25,8 @@ const QString ConfirmDialog::messageTemplate = "<html><head/><body>"
         "<p><span style=\"font-size:12pt; font-weight:600;\">%2</span></p>"
         "</body></html>";
 
-ConfirmDialog::ConfirmDialog(QWidget *parent) :
-    QDialog(parent),
+ConfirmDialog::ConfirmDialog(QWidget *obj_parent) :
+    QDialog(obj_parent),
     ui(new Ui::ConfirmDialog)
 {
     ui->setupUi(this);
@@ -38,10 +38,10 @@ void ConfirmDialog::setMessageText(const QString message, const QString game_tit
     ui->confirmText->setText(messageTemplate.arg(message, game_title));
 }
 
-void ConfirmDialog::setMessagePixmap(const QPixmap &pixmap, int width)
+void ConfirmDialog::setMessagePixmap(const QPixmap &pixmap, int dialog_width)
 {
     ui->itemPicture->setPixmap(pixmap);
-    ui->itemPicture->setMinimumWidth(width);
+    ui->itemPicture->setMinimumWidth(dialog_width);
 }
 
 ConfirmDialog::~ConfirmDialog()

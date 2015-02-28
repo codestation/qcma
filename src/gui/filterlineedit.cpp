@@ -22,8 +22,8 @@
 #include <QIcon>
 #include <QStyle>
 
-FilterLineEdit::FilterLineEdit(QWidget *parent) :
-    QLineEdit(parent)
+FilterLineEdit::FilterLineEdit(QWidget *obj_parent) :
+    QLineEdit(obj_parent)
 {
     int frame_width = frameWidth();
     clearButton = new QToolButton(this);
@@ -45,9 +45,9 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
                    qMax(min_size_hint.height(), clearButton->sizeHint().height() + frame_width));
 }
 
-void FilterLineEdit::updateCloseButton(const QString& text)
+void FilterLineEdit::updateCloseButton(const QString& filter_text)
 {
-    if(text.isEmpty() || text == tr("Filter")) {
+    if(filter_text.isEmpty() || filter_text == tr("Filter")) {
         clearButton->setVisible(false);
     } else {
         clearButton->setVisible(true);

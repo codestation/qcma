@@ -145,10 +145,10 @@ static const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VI
                                   VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP, VITA_OHFI_PSMAPP
                                 };
 
-SQLiteDB::SQLiteDB(QObject *parent) :
-    Database(parent)
+SQLiteDB::SQLiteDB(QObject *obj_parent) :
+    Database(obj_parent)
 {
-    uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
+    m_uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     thread = new QThread();
     moveToThread(thread);
     timer = new QTimer();
@@ -179,7 +179,7 @@ SQLiteDB::~SQLiteDB()
 
 void SQLiteDB::setUUID(const QString &uuid)
 {
-    this->uuid = uuid;
+    m_uuid = uuid;
     QSettings().setValue("lastAccountId", uuid);
 }
 
@@ -209,7 +209,7 @@ bool SQLiteDB::load()
 bool SQLiteDB::rescan()
 {
     if(mutex.tryLock(1000)) {
-        if(uuid != "ffffffffffffffff") {
+        if(m_uuid != "ffffffffffffffff") {
             timer->start();
             return true;
         } else {
@@ -304,22 +304,22 @@ QString SQLiteDB::getBasePath(int root_ohfi)
         base_path = settings.value("photoPath").toString();
         break;
     case VITA_OHFI_BACKUP:
-        base_path = settings.value("appsPath").toString() + "/SYSTEM/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/SYSTEM/" + m_uuid;
         break;
     case VITA_OHFI_VITAAPP:
-        base_path = settings.value("appsPath").toString() + "/APP/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/APP/" + m_uuid;
         break;
     case VITA_OHFI_PSPAPP:
-        base_path = settings.value("appsPath").toString() + "/PGAME/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/PGAME/" + m_uuid;
         break;
     case VITA_OHFI_PSPSAVE:
-        base_path = settings.value("appsPath").toString() + "/PSAVEDATA/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/PSAVEDATA/" + m_uuid;
         break;
     case VITA_OHFI_PSXAPP:
-        base_path = settings.value("appsPath").toString() + "/PSGAME/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/PSGAME/" + m_uuid;
         break;
     case VITA_OHFI_PSMAPP:
-        base_path = settings.value("appsPath").toString() + "/PSM/" + uuid;
+        base_path = settings.value("appsPath").toString() + "/PSM/" + m_uuid;
         break;
     }
     return base_path;
@@ -463,11 +463,11 @@ bool SQLiteDB::deleteEntry(int ohfi)
     return ret;
 }
 
-bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
+bool SQLiteDB::updateAdjacencyList(int ohfi, int id_parent)
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM adjacent_objects WHERE parent_id == :parent_id AND child_id == :child_id");
-    query.bindValue(0, parent);
+    query.bindValue(0, id_parent);
     query.bindValue(1, ohfi);
 
     if(query.exec() && query.next()) {
@@ -476,7 +476,7 @@ bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
 
     query.prepare("INSERT INTO adjacent_objects (parent_id, child_id)"
                   "VALUES (:parentid, :child_id)");
-    query.bindValue(0, parent);
+    query.bindValue(0, id_parent);
     query.bindValue(1, ohfi);
     bool ret = query.exec();
     if(!ret) {
@@ -485,7 +485,7 @@ bool SQLiteDB::updateAdjacencyList(int ohfi, int parent)
     return ret;
 }
 
-int SQLiteDB::insertDefaultEntry(const QString &path, const QString &name, const QString &title, int parent, int type)
+int SQLiteDB::insertDefaultEntry(const QString &path, const QString &name, const QString &title, int id_parent, int type)
 {
     int ohfi = 0;
 
@@ -493,7 +493,7 @@ int SQLiteDB::insertDefaultEntry(const QString &path, const QString &name, const
         return 0;
     }
 
-    if(parent >= OHFI_BASE_VALUE && !updateAdjacencyList(ohfi, parent)) {
+    if(id_parent >= OHFI_BASE_VALUE && !updateAdjacencyList(ohfi, id_parent)) {
         return 0;
     }
 
@@ -550,7 +550,7 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path, const QStr
     return ret;
 }
 
-uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int parent, int type)
+uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int id_parent, int type)
 {
     bool ok;
     int ohfi;
@@ -559,8 +559,8 @@ uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int pa
     const char *artist, *album, *albumartist, *genre, *track, *title;
     int file_format, audio_codec, audio_bitrate, genre_id, artist_id, track_id, album_id, track_number;
 
-    int file_type = checkFileType(name, VITA_OHFI_MUSIC);
-    if(file_type < 0) {
+    int cma_file_type = checkFileType(name, VITA_OHFI_MUSIC);
+    if(cma_file_type < 0) {
         //qDebug() << "Excluding from database:" << path;
         return 0;
     }
@@ -589,13 +589,13 @@ uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int pa
 
     duration = decoder.getDuration();
 
-    file_format = audio_list[file_type].file_format;
-    audio_codec = audio_list[file_type].file_codec;
+    file_format = audio_list[cma_file_type].file_format;
+    audio_codec = audio_list[cma_file_type].file_codec;
 
     QByteArray basename = QFileInfo(name).baseName().toUtf8();
     title = decoder.getMetadataEntry("title", basename.constData());
 
-    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
+    if((ohfi = insertDefaultEntry(path, name, title, id_parent, type)) == 0) {
         return 0;
     }
 
@@ -667,7 +667,7 @@ uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int pa
     return ohfi;
 }
 
-uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int parent, int type)
+uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int id_parent, int type)
 {
     int ohfi;
     AVDecoder decoder;
@@ -679,8 +679,8 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int pa
         return 0;
     }
 
-    int file_type = checkFileType(name, VITA_OHFI_VIDEO);
-    if(file_type < 0) {
+    int cma_file_type = checkFileType(name, VITA_OHFI_VIDEO);
+    if(cma_file_type < 0) {
         //qDebug() << "Excluding from database:" << path;
         return 0;
     }
@@ -693,7 +693,7 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int pa
     duration = decoder.getDuration();
     video_codec = CODEC_TYPE_AVC;
     video_bitrate = decoder.getBitrate();
-    file_format = video_list[file_type].file_format;
+    file_format = video_list[cma_file_type].file_format;
 
     if(decoder.loadCodec(AVDecoder::CODEC_AUDIO)) {
         audio_codec = CODEC_TYPE_AAC;
@@ -708,7 +708,7 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int pa
     title = basename.constData();
 
 
-    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
+    if((ohfi = insertDefaultEntry(path, name, title, id_parent, type)) == 0) {
         return 0;
     }
 
@@ -738,15 +738,15 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int pa
     return ohfi;
 }
 
-uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int parent, int type)
+uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int id_parent, int type)
 {
     int ohfi;
     QImage img;
     uint date_created;
     int width, height, file_format, photo_codec;
 
-    int file_type = checkFileType(name, VITA_OHFI_PHOTO);
-    if(file_type < 0) {
+    int cma_file_type = checkFileType(name, VITA_OHFI_PHOTO);
+    if(cma_file_type < 0) {
         //qDebug() << "Excluding from database:" << path;
         return 0;
     }
@@ -761,12 +761,12 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int pa
 
     width = img.width();
     height = img.height();
-    file_format = photo_list[file_type].file_format;
-    photo_codec = photo_list[file_type].file_codec;
+    file_format = photo_list[cma_file_type].file_format;
+    photo_codec = photo_list[cma_file_type].file_codec;
 
     QByteArray basename = QFileInfo(name).baseName().toUtf8();
 
-    if((ohfi = insertDefaultEntry(path, name, basename, parent, type)) == 0) {
+    if((ohfi = insertDefaultEntry(path, name, basename, id_parent, type)) == 0) {
         return 0;
     }
 
@@ -790,7 +790,7 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int pa
     return ohfi;
 }
 
-uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int parent, int type)
+uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int id_parent, int type)
 {
     int ohfi;
     SfoReader reader;
@@ -809,7 +809,7 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int
         date_updated = QFileInfo(path + "/" + name).lastModified().toUTC().toTime_t();
     }
 
-    if((ohfi = insertDefaultEntry(path, name, title, parent, type)) == 0) {
+    if((ohfi = insertDefaultEntry(path, name, title, id_parent, type)) == 0) {
         return 0;
     }
 
@@ -822,7 +822,7 @@ uint SQLiteDB::insertSavedataEntry(const QString &path, const QString &name, int
                   "(object_id, detail, dir_name, title, date_updated)"
                   "VALUES (:object_id, :detail, :dir_name, :title, :updated)");
 
-    query.bindValue(0, parent);
+    query.bindValue(0, id_parent);
     query.bindValue(1, savedata_detail);
     query.bindValue(2, savedata_directory);
     query.bindValue(3, title);
