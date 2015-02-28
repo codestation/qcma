@@ -164,7 +164,7 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
         return pFrame;
     } else {
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
-        av_frame_free(pFrame);
+        av_frame_free(&pFrame);
 #else
         av_free(pFrame);
 #endif
@@ -249,8 +249,8 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     av_free(buffer);
 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
-    av_frame_free(pFrameRGB);
-    av_frame_free(pFrame);
+    av_frame_free(&pFrameRGB);
+    av_frame_free(&pFrame);
 #else
     av_free(pFrameRGB);
     av_free(pFrame);
