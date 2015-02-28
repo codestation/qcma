@@ -60,7 +60,9 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
 
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
-    socket->bind(QHostAddress::AnyIPv4, QCMA_REQUEST_PORT);
+    if(!socket->bind(QHostAddress::AnyIPv4, QCMA_REQUEST_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
+        qDebug() << "Failed to bind address for UDP broadcast";
+    }
 }
 
 void CmaBroadcast::readPendingDatagrams()
