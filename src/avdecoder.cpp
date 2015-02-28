@@ -144,7 +144,7 @@ QByteArray AVDecoder::getAudioThumbnail(int width, int height)
 
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
-    AVFrame *pFrame = avcodec_alloc_frame();
+    AVFrame *pFrame = av_frame_alloc();
 
     AVPacket packet;
     int frame_finished = 0;
@@ -188,7 +188,7 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
         return data;
     }
 
-    AVFrame *pFrameRGB = avcodec_alloc_frame();
+    AVFrame *pFrameRGB = av_frame_alloc();
 
     int numBytes = avpicture_get_size(PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
     uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
