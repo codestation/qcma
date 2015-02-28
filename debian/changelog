@@ -1,8 +1,16 @@
+qcma (0.3.9) unstable; urgency=low
+
+  * Set correct organization name in qcma_cli.
+  * Fix for protocolMode "custom".
+  * Use updated avcodec function calls.
+
+ -- codestation <codestation404@gmail.com>  Sat, 28 Feb 2015 00:00:00 -0000
+
 qcma (0.3.8) unstable; urgency=low
 
   * Fix broadcast in qcma_cli
 
- -- codestation <codestation404@gmail.com>  Fri, 23 Oct 2014 00:00:00 -0000
+ -- codestation <codestation404@gmail.com>  Fri, 27 Feb 2015 00:00:00 -0000
 
 qcma (0.3.7) unstable; urgency=low
 
