@@ -189,6 +189,7 @@ QString readable_size(qint64 size, bool use_gib)
 int getVitaProtocolVersion()
 {
     QString protocol_mode = QSettings().value("protocolMode", "automatic").toString();
+    qDebug() << "Using protocol mode: " << protocol_mode;
 
     int protocol;
 
@@ -236,7 +237,7 @@ int getVitaProtocolVersion()
     else if(protocol_mode == "custom")
     {
         bool ok;
-        int protocol = QSettings().value("protocolVersion").toInt(&ok);
+        protocol = QSettings().value("protocolVersion").toInt(&ok);
 
         if(!ok || protocol <= 0)
             protocol = VITAMTP_PROTOCOL_MAX_VERSION;
