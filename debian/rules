@@ -3,13 +3,11 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-pre-build::
-	lrelease resources/translations/qcma_*.ts
-
 %:
 	dh $@ --buildsystem=qmake
 
 override_dh_auto_configure:
+	lrelease resources/translations/qcma_*.ts
 	dh_auto_configure -- qcma.pro CONFIG+="ENABLE_APPINDICATOR"
 
 .PHONY: override_dh_auto_configure
