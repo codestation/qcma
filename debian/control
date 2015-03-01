@@ -2,11 +2,11 @@ Source: qcma
 Section: utils
 Priority: extra
 Maintainer: codestation <codestation404@gmail.com>
-Standards-Version: 3.9.4
+Standards-Version: 3.9.6
 Homepage: http://github.com/codestation/qcma
 Vcs-Git: git://github.com/codestation/qcma.git
 Build-Depends:
- debhelper (>= 8.0.0),
+ debhelper (>= 9),
  libavformat-dev,
  libswscale-dev,
  qtbase5-dev,
@@ -22,6 +22,9 @@ Package: qcma
 Architecture: any
 Depends: vitamtp4 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita
+  QCMA will allow you to backup your PS Vita games & manage
+  your songs, videos & photos.
+  You can connect your Vita wirelessly or via USB.
 
 Package: qcma-cli
 Architecture: any

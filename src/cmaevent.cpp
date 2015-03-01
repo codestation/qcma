@@ -231,7 +231,7 @@ quint16 CmaEvent::processAllObjects(metadata_t &parent_metadata, quint32 handle)
 
 void CmaEvent::vitaEventGetTreatObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     treat_object_t treatObject;
 
@@ -255,11 +255,11 @@ void CmaEvent::vitaEventGetTreatObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     copy_confirmation_info_t *info;
     if(VitaMTP_SendCopyConfirmationInfoInit(m_device, eventId, &info) != PTP_RC_OK) {
-        qWarning("Error recieving initial information.");
+        qWarning("Error receiving initial information.");
         return;
     }
 
@@ -327,7 +327,7 @@ void CmaEvent::vitaEventSendCopyConfirmationInfo(vita_event_t *cma_event, int ev
 
 void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     quint32 ohfi;
     if(VitaMTP_SendObjectMetadataItems(m_device, eventId, &ohfi) != PTP_RC_OK) {
@@ -358,7 +358,7 @@ void CmaEvent::vitaEventSendObjectMetadataItems(vita_event_t *cma_event, int eve
 
 void CmaEvent::vitaEventSendNPAccountInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
     // AFAIK, Sony hasn't even implemented this in their CMA
     qWarning("Event 0x%x unimplemented!", cma_event->Code);
 }
@@ -371,7 +371,7 @@ void CmaEvent::vitaEventUnimplementated(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventCancelTask(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     quint32 eventIdToCancel = cma_event->Param2;
     qDebug("Cancelling event %d", eventIdToCancel);
@@ -388,7 +388,7 @@ void CmaEvent::vitaEventCancelTask(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendNumOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
@@ -405,7 +405,7 @@ void CmaEvent::vitaEventSendNumOfObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     browse_info_t browse;
 
@@ -430,7 +430,7 @@ void CmaEvent::vitaEventSendObjectMetadata(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     int ohfi = cma_event->Param2;
 
@@ -516,11 +516,11 @@ void CmaEvent::vitaEventSendObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     char *url;
     if(VitaMTP_GetUrl(m_device, eventId, &url) != PTP_RC_OK) {
-        qWarning("Failed to recieve URL");
+        qWarning("Failed to receive URL");
         return;
     }
 
@@ -591,7 +591,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
 
 void CmaEvent::vitaEventSendObjectStatus(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     object_status_t objectstatus;
 
@@ -626,7 +626,7 @@ void CmaEvent::vitaEventSendObjectStatus(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendObjectThumb(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
@@ -667,7 +667,7 @@ void CmaEvent::vitaEventSendObjectThumb(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventDeleteObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
@@ -690,7 +690,7 @@ void CmaEvent::vitaEventDeleteObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventGetSettingInfo(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     settings_info_t *settingsinfo;
     if(VitaMTP_GetSettingInfo(m_device, eventId, &settingsinfo) != PTP_RC_OK) {
@@ -715,7 +715,7 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     char *url;
     if(VitaMTP_GetUrl(m_device, eventId, &url) != PTP_RC_OK) {
@@ -751,7 +751,7 @@ void CmaEvent::vitaEventSendHttpObjectPropFromURL(vita_event_t *cma_event, int e
 
 void CmaEvent::vitaEventSendPartOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     send_part_init_t part_init;
 
@@ -793,7 +793,7 @@ void CmaEvent::vitaEventSendPartOfObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventOperateObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     operate_object_t operateobject;
 
@@ -870,7 +870,7 @@ void CmaEvent::vitaEventOperateObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventGetPartOfObject(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     unsigned char *data;
     send_part_init_t part_init;
@@ -915,7 +915,7 @@ void CmaEvent::vitaEventGetPartOfObject(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventSendStorageSize(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     QMutexLocker locker(&m_db->mutex);
 
@@ -961,7 +961,7 @@ void CmaEvent::vitaEventSendStorageSize(vita_event_t *cma_event, int eventId)
 
 void CmaEvent::vitaEventCheckExistance(vita_event_t *cma_event, int eventId)
 {
-    qDebug("Event recieved in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
+    qDebug("Event received in %s, code: 0x%x, id: %d", Q_FUNC_INFO, cma_event->Code, eventId);
 
     int handle = cma_event->Param2;
     existance_object_t existance;
