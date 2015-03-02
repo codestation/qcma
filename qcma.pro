@@ -26,4 +26,5 @@ unix:!macx:!android {
 
 TRANSLATIONS += \
     resources/translations/qcma_es.ts \
+    resources/translations/qcma_fr.ts \
     resources/translations/qcma_ja.ts

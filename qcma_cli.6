@@ -20,11 +20,11 @@ You can control qcma_cli over DBus:
 .TP
 Send a signal to refresh the database:
 .BR
-dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
+dbus-send \-\-session \-\-type=method_call \-\-dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
 .TP
 Send a signal to stop the daemon:
 .BR
-dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
+dbus-send \-\-session \-\-type=method_call \-\-dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
 
 .SH "SEE ALSO"
 .I /usr/share/doc/qcma/README.md
