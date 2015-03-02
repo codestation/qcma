@@ -21,6 +21,7 @@
 #include "cmautils.h"
 
 #include <QDebug>
+#include <QHostAddress>
 #include <QHostInfo>
 #include <QMutexLocker>
 #include <QSettings>
@@ -60,7 +61,14 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
 
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
-    if(!socket->bind(QHostAddress::AnyIPv4, QCMA_REQUEST_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QHostAddress host_address(QHostAddress::Any);
+#else
+    QHostAddress host_address(QHostAddress::AnyIPv4);
+#endif
+
+    if(!socket->bind(host_address, QCMA_REQUEST_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
         qDebug() << "Failed to bind address for UDP broadcast";
     }
 }
