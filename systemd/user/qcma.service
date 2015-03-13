@@ -1,0 +1,12 @@
+[Unit]
+Description="Qcma daemon"
+Documentation=man:qcma_cli(6)
+ConditionPathExists=%h/.config/codestation/qcma.conf
+
+[Service]
+ExecStart=/usr/bin/qcma_cli --verbose
+ExecStop=/usr/bin/dbus-send --print-reply --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
+
+[Install]
+Alias=qcma_cli.service
+WantedBy=default.target
