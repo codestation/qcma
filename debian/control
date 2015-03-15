@@ -11,27 +11,32 @@ Build-Depends:
  libswscale-dev,
  qtbase5-dev,
  qttools5-dev-tools,
- qt5-default,
  libnotify-dev,
  libgtk2.0-dev,
  libappindicator-dev,
  pkg-config,
- vitamtp-dev (>= 2.5.5)
+ libvitamtp-dev (>= 2.5.5)
 
 Package: qcma
 Architecture: any
-Depends: vitamtp4 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp4 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
+Recommends: qcma-appindicator
 Description: Content Manager Assistant for the PS Vita
-  QCMA will allow you to backup your PS Vita games & manage
-  your songs, videos & photos.
-  You can connect your Vita wirelessly or via USB.
+ QCMA will allow you to backup your PS Vita games & manage
+ your songs, videos & photos.
+ You can connect your Vita wirelessly or via USB.
 
 Package: qcma-cli
 Architecture: any
-Depends: vitamtp4 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp4 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (headless version)
+ Command-line client to backup your PS Vita games & manage
+ your songs, videos & photos.
+ You can connect your Vita wirelessly or via USB.
 
 Package: qcma-appindicator
 Architecture: any
 Depends: qcma (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (appindicator support)
+ This desktop tray indicator will let you known if you PS Vita
+ is currently recognized by QCMA
