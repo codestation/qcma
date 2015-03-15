@@ -155,12 +155,12 @@ void MainWidget::showAboutDialog()
 {
     QMessageBox about;
 
-    about.setText(QString("QCMA ") + QCMA_VER);
-    about.setWindowTitle(tr("About QCMA"));
+    about.setText(QString("Qcma ") + QCMA_VER);
+    about.setWindowTitle(tr("About Qcma"));
 #ifndef QCMA_BUILD_HASH
-    about.setInformativeText(tr("Copyright (C) 2014  Codestation") + "\n");
+    about.setInformativeText(tr("Copyright (C) 2015  Codestation") + "\n");
 #else
-    about.setInformativeText(tr("Copyright (C) 2014  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
+    about.setInformativeText(tr("Copyright (C) 2015  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
 #endif
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
@@ -211,7 +211,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *obj_parent)
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
-            qDebug() << "Cannot load libqcma_kdenotifier plugin";
+            qWarning() << "Cannot load libqcma_kdenotifier plugin";
     }
     else
     // try to use the appindicator if is available
@@ -222,7 +222,7 @@ TrayIndicator *MainWidget::createTrayObject(QWidget *obj_parent)
         if(library.load())
             create_tray = reinterpret_cast<TrayFunctionPointer>(library.resolve("createTrayIndicator"));
         else
-            qDebug() << "Cannot load libqcma_appindicator plugin";
+            qWarning() << "Cannot load libqcma_appindicator plugin";
     }
 #endif
     // else QSystemTrayIcon

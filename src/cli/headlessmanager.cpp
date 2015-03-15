@@ -63,14 +63,14 @@ void HeadlessManager::refreshDatabase()
     QTextStream(stdout) << "Database scan has started" << endl;
 
     if(!m_db->rescan()) {
-        qDebug("No PS Vita system has been registered");
+        qWarning("No PS Vita system has been registered");
     }
 }
 
 void HeadlessManager::start()
 {
     if(VitaMTP_Init() < 0) {
-        qDebug("Cannot initialize VitaMTP library");
+        qCritical("Cannot initialize VitaMTP library");
         return;
     }
 
@@ -127,7 +127,7 @@ void HeadlessManager::start()
     }
 
     if(thread_count == 0) {
-        qDebug("You must enable at least USB or Wireless monitoring");
+        qCritical("You must enable at least USB or Wireless monitoring");
     }
 }
 

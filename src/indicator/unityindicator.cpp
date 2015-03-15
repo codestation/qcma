@@ -163,7 +163,7 @@ void UnityIndicator::init()
         app_indicator_set_icon_theme_path(m_indicator, qPrintable(icon_path));
     }
     else
-        qDebug() << "Cannot find qcma icons.";
+        qWarning() << "Cannot find qcma icons.";
 
     app_indicator_set_status(m_indicator, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_menu(m_indicator, GTK_MENU(menu));

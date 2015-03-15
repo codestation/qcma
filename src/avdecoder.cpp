@@ -21,7 +21,6 @@
 #include "avdecoder.h"
 #include "database.h"
 
-#include <QDebug>
 #include <QBuffer>
 #include <QFile>
 #include <QImage>

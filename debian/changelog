@@ -1,3 +1,13 @@
+qcma (0.3.10) unstable; urgency=low
+
+  * debian: switch to libvitamtp*
+  * Added manpages.
+  * Added french translation.
+  * Added systemd unit file for qcma_cli.
+  * Replaced dbus with unix signals.
+
+ -- codestation <codestation404@gmail.com>  Sun, 15 Mar 2015 14:35:04 -0000
+
 qcma (0.3.9) unstable; urgency=low
 
   * Set correct organization name in qcma_cli.

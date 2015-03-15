@@ -69,7 +69,7 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
 #endif
 
     if(!socket->bind(host_address, QCMA_REQUEST_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
-        qDebug() << "Failed to bind address for UDP broadcast";
+        qCritical() << "Failed to bind address for UDP broadcast";
     }
 }
 

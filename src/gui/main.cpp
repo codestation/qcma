@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     if(translator.load("qcma_" + locale, ":/resources/translations")) {
         app.installTranslator(&translator);
     } else {
-        qDebug() << "Cannot load translation for locale:" << locale;
+        qWarning() << "Cannot load translation for locale:" << locale;
     }
 
     QTranslator system_translator;
