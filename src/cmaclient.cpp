@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QImage>
+#include <QTextStream>
 #include <QTime>
 #include <QSettings>
 #include <QUrl>
@@ -132,7 +133,7 @@ void CmaClient::processNewConnection(vita_device_t *device)
     QMutexLocker locker(&mutex);
     in_progress = true;
 
-    qDebug("Vita connected: id %s", VitaMTP_Get_Identification(device));
+    QTextStream(stdout) << "Vita connected, id: " << VitaMTP_Get_Identification(device) << endl;
     DeviceCapability vita_info;
 
     if(!vita_info.exchangeInfo(device)) {
@@ -187,7 +188,12 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     tempOnlineId = QString(info->name);
     qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
     int pin = rand() % 10000 * 10000 | rand() % 10000;
-    qDebug("Your registration PIN for %s is: %08d", info->name, pin);
+    QTextStream out(stdout);
+    out << "Your registration PIN for " << info->name << " is: ";
+    out.setFieldWidth(8);
+    out.setPadChar('0');
+    out << pin << endl;
+
     *p_err = 0;
     emit this_object->receivedPin(info->name, pin);
     return pin;
@@ -240,6 +246,8 @@ void CmaClient::enterEventLoop(vita_device_t *device)
 
 int CmaClient::stop()
 {
+    QTextStream(stdout) << "Stopping Qcma" << endl;
+
     if(!isActive()) {
         return -1;
     }

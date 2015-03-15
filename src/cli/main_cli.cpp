@@ -70,12 +70,18 @@ static bool setup_handlers()
         return false;
     }
 
+    if (sigaction(SIGINT, &term, NULL) != 0) {
+        qCritical("SIGINT signal handle failed");
+        return false;
+    }
+
     return true;
 }
 
 int main(int argc, char *argv[])
 {
-    if(SingleCoreApplication::sendMessage(QObject::tr("An instance of Qcma is already running"))) {
+    if(SingleCoreApplication::sendMessage("Another instance of Qcma tried to start")) {
+        QTextStream(stdout) << "An instance of Qcma is already running" << endl;
         return 0;
     }
 
@@ -137,6 +143,10 @@ int main(int argc, char *argv[])
     app.setApplicationName("qcma");
 
     HeadlessManager manager;
+
+    // receive the message from another process
+    QObject::connect(&app, SIGNAL(messageAvailable(QString)), &manager, SLOT(receiveMessage(QString)));
+
     manager.start();
 
     return app.exec();

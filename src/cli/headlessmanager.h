@@ -70,6 +70,7 @@ public slots:
 
 private slots:
     void threadStopped();
+    void receiveMessage(QString message);
 };
 
 #endif // HEADLESSMANAGER_H

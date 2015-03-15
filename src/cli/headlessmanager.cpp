@@ -25,6 +25,7 @@
 
 #include <QCoreApplication>
 #include <QSettings>
+#include <QTextStream>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <vitamtp.h>
@@ -58,6 +59,8 @@ void HeadlessManager::refreshDatabase()
     if(m_db->load()) {
         return;
     }
+
+    QTextStream(stdout) << "Database scan has started" << endl;
 
     if(!m_db->rescan()) {
         qDebug("No PS Vita system has been registered");
@@ -126,6 +129,11 @@ void HeadlessManager::start()
     if(thread_count == 0) {
         qDebug("You must enable at least USB or Wireless monitoring");
     }
+}
+
+void HeadlessManager::receiveMessage(QString message)
+{
+    QTextStream(stdout) << message << endl;
 }
 
 void HeadlessManager::stop()

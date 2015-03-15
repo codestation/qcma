@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QImage>
 #include <QSettings>
+#include <QTextStream>
 #include <QThread>
 
 const file_type audio_list[] = {
@@ -58,7 +59,7 @@ void Database::process()
     cancel_operation = false;
     int count = create();
     cancel_operation = false;
-    qDebug("Total entries added to the database: %i", count);
+    QTextStream(stdout) << "Total entries added to the database: " << count << endl;
     if(count < 0) {
         clear();
     }
