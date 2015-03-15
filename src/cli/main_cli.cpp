@@ -47,20 +47,47 @@ static void noMessageOutput(QtMsgType type, const char *msg)
     Q_UNUSED(msg);
 }
 
+static bool setup_handlers()
+{
+    struct sigaction hup, term;
+
+    hup.sa_handler = HeadlessManager::hupSignalHandler;
+    sigemptyset(&hup.sa_mask);
+    hup.sa_flags = 0;
+    hup.sa_flags |= SA_RESTART;
+
+    if (sigaction(SIGHUP, &hup, NULL) != 0) {
+        qCritical("SIGHUP signal handle failed");
+        return false;
+    }
+
+    term.sa_handler = HeadlessManager::termSignalHandler;
+    sigemptyset(&term.sa_mask);
+    term.sa_flags |= SA_RESTART;
+
+    if (sigaction(SIGTERM, &term, NULL) != 0) {
+        qCritical("SIGTERM signal handle failed");
+        return false;
+    }
+
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
-    if(SingleCoreApplication::sendMessage(QObject::tr("A instance of QCMA is already running"))) {
+    if(SingleCoreApplication::sendMessage(QObject::tr("An instance of Qcma is already running"))) {
         return 0;
     }
 
     SingleCoreApplication app(argc, argv);
 
-#ifndef Q_OS_WIN32
     // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
     // the proper fix is to libmtp to handle the cancel properly or ignoring
     // SIGPIPE on the socket
     signal(SIGPIPE, SIG_IGN);
-#endif
+
+    if(!setup_handlers())
+        return 1;
 
     if(app.arguments().contains("--with-debug")) {
         VitaMTP_Set_Logging(VitaMTP_DEBUG);
@@ -79,7 +106,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 #endif
 
-    qDebug("Starting QCMA %s", QCMA_VER);
+    QTextStream(stdout) << "Starting Qcma " << QCMA_VER << endl;
 
     QTranslator translator;
     QString locale = QLocale().system().name();

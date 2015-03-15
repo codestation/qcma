@@ -12,7 +12,7 @@ android {
     SUBDIRS = qcma_gui.pro
 }
 
-# Compile the headless binary only on Linux because it depends on dbus
+# Compile the headless binary only on Linux
 unix:!macx:!android {
     SUBDIRS += qcma_cli.pro
     # The appindicator and kde extensions are linux only too

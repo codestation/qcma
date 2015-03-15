@@ -22,20 +22,29 @@
 #include "sqlitedb.h"
 #include "qlistdb.h"
 #include "headlessmanager.h"
-#include "headlessmanager_adaptor.h"
 
 #include <QCoreApplication>
 #include <QSettings>
+#include <sys/socket.h>
+#include <unistd.h>
 #include <vitamtp.h>
 
+int HeadlessManager::sighup_fd[2];
+int HeadlessManager::sigterm_fd[2];
+
 HeadlessManager::HeadlessManager(QObject *obj_parent) :
-    QObject(obj_parent), dbus_conn(QDBusConnection::sessionBus())
+    QObject(obj_parent)
 {
-    new HeadlessManagerAdaptor(this);
-    QDBusConnection dbus = QDBusConnection::sessionBus();
-    // expose qcma over dbus so the database update can be triggered
-    dbus.registerObject("/HeadlessManager", this);
-    dbus.registerService("org.qcma.HeadlessManager");
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighup_fd))
+       qFatal("Couldn't create HUP socketpair");
+
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigterm_fd))
+       qFatal("Couldn't create TERM socketpair");
+
+    sn_hup = new QSocketNotifier(sighup_fd[1], QSocketNotifier::Read, this);
+    connect(sn_hup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
+    sn_term = new QSocketNotifier(sigterm_fd[1], QSocketNotifier::Read, this);
+    connect(sn_term, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
 }
 
 HeadlessManager::~HeadlessManager()
@@ -71,7 +80,7 @@ void HeadlessManager::start()
     // initializing database for the first use
     refreshDatabase();
 
-    // send a signal over dbus of the connected peers knows when the update is finished
+    // send a signal when the update is finished
     connect(m_db, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
 
     thread_count = 0;
@@ -133,4 +142,38 @@ void HeadlessManager::threadStopped()
         QCoreApplication::quit();
     }
     mutex.unlock();
+}
+
+void HeadlessManager::hupSignalHandler(int)
+{
+    char a = 1;
+    ::write(sighup_fd[0], &a, sizeof(a));
+}
+
+void HeadlessManager::termSignalHandler(int)
+{
+    char a = 1;
+    ::write(sigterm_fd[0], &a, sizeof(a));
+}
+
+void HeadlessManager::handleSigTerm()
+{
+    sn_term->setEnabled(false);
+    char tmp;
+    ::read(sigterm_fd[1], &tmp, sizeof(tmp));
+
+    stop();
+
+    sn_term->setEnabled(true);
+}
+
+void HeadlessManager::handleSigHup()
+{
+    sn_hup->setEnabled(false);
+    char tmp;
+    ::read(sighup_fd[1], &tmp, sizeof(tmp));
+
+    refreshDatabase();
+
+    sn_hup->setEnabled(true);
 }

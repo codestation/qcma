@@ -26,9 +26,29 @@
 
 #include <vitamtp.h>
 
+#ifdef Q_OS_UNIX
+#include <sys/socket.h>
+#include <unistd.h>
+
+int ClientManager::sighup_fd[2];
+int ClientManager::sigterm_fd[2];
+#endif
+
 ClientManager::ClientManager(Database *db, QObject *obj_parent) :
     QObject(obj_parent), m_db(db)
 {
+#ifdef Q_OS_UNIX
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighup_fd))
+       qFatal("Couldn't create HUP socketpair");
+
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigterm_fd))
+       qFatal("Couldn't create TERM socketpair");
+
+    sn_hup = new QSocketNotifier(sighup_fd[1], QSocketNotifier::Read, this);
+    connect(sn_hup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
+    sn_term = new QSocketNotifier(sigterm_fd[1], QSocketNotifier::Read, this);
+    connect(sn_term, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
+#endif
 }
 
 ClientManager::~ClientManager()
@@ -150,3 +170,39 @@ void ClientManager::threadStopped()
     }
     mutex.unlock();
 }
+
+#ifdef Q_OS_UNIX
+void ClientManager::hupSignalHandler(int)
+{
+    char a = 1;
+    ::write(sighup_fd[0], &a, sizeof(a));
+}
+
+void ClientManager::termSignalHandler(int)
+{
+    char a = 1;
+    ::write(sigterm_fd[0], &a, sizeof(a));
+}
+
+void ClientManager::handleSigTerm()
+{
+    sn_term->setEnabled(false);
+    char tmp;
+    ::read(sigterm_fd[1], &tmp, sizeof(tmp));
+
+    stop();
+
+    sn_term->setEnabled(true);
+}
+
+void ClientManager::handleSigHup()
+{
+    sn_hup->setEnabled(false);
+    char tmp;
+    ::read(sighup_fd[1], &tmp, sizeof(tmp));
+
+    refreshDatabase();
+
+    sn_hup->setEnabled(true);
+}
+#endif

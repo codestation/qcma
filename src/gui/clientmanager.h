@@ -27,6 +27,10 @@
 #include <QObject>
 #include <QThread>
 
+#ifdef Q_OS_UNIX
+#include <QSocketNotifier>
+#endif
+
 class ClientManager : public QObject
 {
     Q_OBJECT
@@ -36,6 +40,12 @@ public:
 
     void start();
     void stop();
+
+#ifdef Q_OS_UNIX
+    // unix signal handlers
+    static void hupSignalHandler(int);
+    static void termSignalHandler(int);
+#endif
 
 private:
     int thread_count;
@@ -49,6 +59,15 @@ private:
     QThread *usb_thread;
     QThread *wireless_thread;
 
+#ifdef Q_OS_UNIX
+    // signal handling
+    static int sighup_fd[2];
+    static int sigterm_fd[2];
+
+    QSocketNotifier *sn_hup;
+    QSocketNotifier *sn_term;
+#endif
+
 signals:
     void updated(int);
     void stopped();
@@ -59,6 +78,12 @@ signals:
 
 public slots:
     void refreshDatabase();
+
+#ifdef Q_OS_UNIX
+    // Qt signal handlers
+    void handleSigHup();
+    void handleSigTerm();
+#endif
 
 private slots:
     void threadStopped();

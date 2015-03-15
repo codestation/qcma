@@ -29,37 +29,32 @@ official CMA and also offer some features missing in the original one.
 ## Headless version
 
 There is a qcma_cli binary that doesn't need a X session running (useful for servers).
-The daemon provides minimal interaction via dbus. Here are some usage examples:
+The daemon provides minimal interaction via unix signals. Here are some usage examples:
 
 #### Send a signal to refresh the database
 
 ```
-dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
+kill -HUP $(pgrep qcma_cli)
 ```
 
 #### Send a signal to stop the daemon
 
 ```
-dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
-```
-
-#### Receive confirmation when the database finished updating
-
-```
-dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUpdated'"
+kill $(pgrep qcma_cli)
 ```
 
 ## Dependencies
-* [Qt 4.x or 5.x](http://qt-project.org/)
+* [Qt 4.x or 5.x](http://www.qt.io/)
 
-* [VitaMTP fork](https://github.com/codestation/VitaMTP)
+* [VitaMTP fork](https://github.com/codestation/vitamtp)
 
 * [FFmpeg](http://www.ffmpeg.org/)
 
 * [libnotify](http://library.gnome.org/devel/notification-spec/)
 
-* [libappindicator](https://launchpad.net/libappindicator)
+* [libappindicator (optional)](https://launchpad.net/libappindicator)
 
+* [KNotifications (optional)](https://projects.kde.org/projects/frameworks/knotifications)
 
 #### Where do I get the source code?
 Check the GitHub repo here: https://github.com/codestation/qcma
@@ -71,10 +66,7 @@ Contact me on [GitHub](https://github.com/codestation/)
 [Yifan Lu](https://github.com/yifanlu/vitamtp/) - for the vitamtp library and
 the reference implementation of OpenCMA.
 
-[Xian Nox] (https://github.com/xiannox) - for the Wiki and various contributions.
-
-[173210] (https://github.com/173210) - japanese translations.
+Other contributors: check [here](https://github.com/codestation/qcma/graphs/contributors)
 
 #### License
-GPL v3: since some parts of QCMA are based on the reference implementation of
-OpenCMA.
+GPLv3

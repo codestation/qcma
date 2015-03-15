@@ -24,18 +24,21 @@
 
 #include <QObject>
 #include <QThread>
-#include <QDBusConnection>
+#include <QSocketNotifier>
 
 class HeadlessManager : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qcma.HeadlessManager")
 
 public:
     explicit HeadlessManager(QObject *parent = 0);
     ~HeadlessManager();
 
     void start();
+
+    // unix signal handlers
+    static void hupSignalHandler(int);
+    static void termSignalHandler(int);
 
 private:
     int thread_count;
@@ -45,15 +48,25 @@ private:
 
     QThread *usb_thread;
     QThread *wireless_thread;
-    QDBusConnection dbus_conn;
+
+    // signal handling
+    static int sighup_fd[2];
+    static int sigterm_fd[2];
+
+    QSocketNotifier *sn_hup;
+    QSocketNotifier *sn_term;
 
 signals:
     void stopped();
-    Q_SCRIPTABLE void databaseUpdated(int count);
+    void databaseUpdated(int count);
 
 public slots:
     void refreshDatabase();
     void stop();
+
+    // Qt signal handlers
+    void handleSigHup();
+    void handleSigTerm();
 
 private slots:
     void threadStopped();

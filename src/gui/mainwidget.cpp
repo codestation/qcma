@@ -21,10 +21,6 @@
 #include "cmaclient.h"
 #include "cmautils.h"
 
-#ifdef Q_OS_LINUX
-#include "clientmanager_adaptor.h"
-#endif
-
 #include "qlistdb.h"
 #include "sqlitedb.h"
 
@@ -34,6 +30,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QGridLayout>
+#include <QLibrary>
 #include <QMessageBox>
 #include <QSettings>
 #include <QTimer>
@@ -44,24 +41,11 @@ const QStringList MainWidget::path_list = QStringList() << "photoPath" << "music
 
 bool sleptOnce = false;
 
-#ifdef Q_OS_LINUX
 MainWidget::MainWidget(QWidget *obj_parent) :
-    QWidget(obj_parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL), dbus_conn(QDBusConnection::sessionBus())
-{
-    new ClientManagerAdaptor(this);
-    QDBusConnection dbus = QDBusConnection::sessionBus();
-    // expose qcma over dbus so the database update can be triggered
-    dbus.registerObject("/ClientManager", this);
-    dbus.registerService("org.qcma.ClientManager");
-    trayIcon = NULL;
-}
-#else
-MainWidget::MainWidget(QWidget *parent) :
-    QWidget(parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL)
+    QWidget(obj_parent), db(NULL), configForm(NULL), managerForm(NULL), backupForm(NULL)
 {
     trayIcon = NULL;
 }
-#endif
 
 void MainWidget::checkSettings()
 {
