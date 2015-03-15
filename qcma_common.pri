@@ -58,9 +58,9 @@ RESOURCES += qcmares.qrc translations.qrc
 CONFIG += link_pkgconfig
 PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
 
-CXXFLAGS_WARNINGS = -Wall -Wextra -Wshadow -Wcast-align -Wctor-dtor-privacy \
-                    -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations \
-                    -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls \
+CXXFLAGS_WARNINGS = -Wall -Wextra -Wcast-align \
+                    -Wdisabled-optimization -Wformat=2 -Winit-self \
+                    -Wmissing-include-dirs -Woverloaded-virtual \
                     -Wstrict-overflow=5 -Wundef -Wno-unused -Wno-missing-field-initializers \
                     -Wno-format-nonliteral
 

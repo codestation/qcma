@@ -120,19 +120,19 @@ void UnityIndicator::init()
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator2);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), quit);
 
-    gulong handle;
-    handle = g_signal_connect(options, "activate", G_CALLBACK(optionsIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(options, handle));
-    handle = g_signal_connect(reload, "activate", G_CALLBACK(reloadIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(reload, handle));
-    handle = g_signal_connect(backup, "activate", G_CALLBACK(backupIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(backup, handle));
-    handle = g_signal_connect(about, "activate", G_CALLBACK(aboutIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(about, handle));
-    handle = g_signal_connect(about_qt, "activate", G_CALLBACK(aboutQtIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(about_qt, handle));
-    handle = g_signal_connect(quit, "activate", G_CALLBACK(quitIndicator), this);
-    m_handlers.append(QPair<gpointer, gulong>(quit, handle));
+    gulong gobject_handler;
+    gobject_handler = g_signal_connect(options, "activate", G_CALLBACK(optionsIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(options, gobject_handler));
+    gobject_handler = g_signal_connect(reload, "activate", G_CALLBACK(reloadIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(reload, gobject_handler));
+    gobject_handler = g_signal_connect(backup, "activate", G_CALLBACK(backupIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(backup, gobject_handler));
+    gobject_handler = g_signal_connect(about, "activate", G_CALLBACK(aboutIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(about, gobject_handler));
+    gobject_handler = g_signal_connect(about_qt, "activate", G_CALLBACK(aboutQtIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(about_qt, gobject_handler));
+    gobject_handler = g_signal_connect(quit, "activate", G_CALLBACK(quitIndicator), this);
+    m_handlers.append(QPair<gpointer, gulong>(quit, gobject_handler));
 
     gtk_widget_show(options);
     gtk_widget_show(reload);

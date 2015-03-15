@@ -24,8 +24,8 @@
 const int SingleApplication::timeout = 500;
 const QString SingleApplication::SHARED_KEY = "QCMA_KEY";
 
-SingleApplication::SingleApplication(int &argc, char **argv) :
-    QApplication(argc, argv)
+SingleApplication::SingleApplication(int &s_argc, char **s_argv) :
+    QApplication(s_argc, s_argv)
 {
     server = new QLocalServer(this);
     connect(server, SIGNAL(newConnection()), this, SLOT(receiveMessage()));
