@@ -48,6 +48,8 @@ unix:!macx {
 
     DATADIR = $$PREFIX/share
 
+    MANDIR = $$DATADIR/man/man1
+
     # config for desktop file and icon
     desktop.path = $$DATADIR/applications/$${TARGET}
     desktop.files += resources/$${TARGET}.desktop
@@ -55,7 +57,10 @@ unix:!macx {
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps
     icon64.files += resources/images/$${TARGET}.png
 
+    man.files = man/qcma.1
+    man.path = $$MANDIR
+
     target.path = $$BINDIR
 
-    INSTALLS += target desktop icon64
+    INSTALLS += target desktop icon64 man
 }

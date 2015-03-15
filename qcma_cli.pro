@@ -13,7 +13,14 @@ HEADERS += \
 
 # Linux-only config
 unix:!macx {
+
+    DATADIR = $$PREFIX/share
+    MANDIR = $$DATADIR/man/man1
+
+    man_cli.files = man/qcma_cli.1
+    man_cli.path = $$MANDIR
+
     target.path = $$BINDIR
 
-    INSTALLS += target
+    INSTALLS += target man_cli
 }
