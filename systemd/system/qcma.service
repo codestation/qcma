@@ -1,0 +1,13 @@
+[Unit]
+Description="Qcma daemon"
+Documentation=man:qcma_cli(6)
+ConditionPathExists=/home/qcma/.config/codestation/qcma.conf
+
+[Service]
+ExecStart=/usr/bin/qcma_cli --verbose
+ExecReload=/bin/kill -HUP $MAINPID
+User=qcma
+
+[Install]
+Alias=qcma_cli.service
+WantedBy=default.target
