@@ -36,15 +36,27 @@
 #include "headlessmanager.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-static void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
+static void noDebugOutput(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {
-    const char * msg = str.toStdString().c_str();
+    QByteArray localMsg = msg.toLocal8Bit();
+    const char *message = localMsg.constData();
 #else
-static void noMessageOutput(QtMsgType type, const char *msg)
+static void noDebugOutput(QtMsgType type, const char *message)
 {
 #endif
-    Q_UNUSED(type);
-    Q_UNUSED(msg);
+    switch (type) {
+    case QtDebugMsg:
+        break;
+    case QtWarningMsg:
+        fprintf(stderr, "Warning: %s\n", message);
+        break;
+    case QtCriticalMsg:
+        fprintf(stderr, "Critical: %s\n", message);
+        break;
+    case QtFatalMsg:
+        fprintf(stderr, "Fatal: %s\n", message);
+        abort();
+    }
 }
 
 static bool setup_handlers()
@@ -102,9 +114,9 @@ int main(int argc, char *argv[])
     } else {
         VitaMTP_Set_Logging(VitaMTP_NONE);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        qInstallMessageHandler(noMessageOutput);
+        qInstallMessageHandler(noDebugOutput);
 #else
-        qInstallMsgHandler(noMessageOutput);
+        qInstallMsgHandler(noDebugOutput);
 #endif
     }
 

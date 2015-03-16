@@ -35,6 +35,13 @@
 #include <sys/statvfs.h>
 #endif
 
+#ifdef Q_OS_LINUX
+#include <sys/types.h>
+#include <grp.h>
+#include <pwd.h>
+#include <unistd.h>
+#endif
+
 bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total)
 {
 #ifdef Q_OS_WIN32
@@ -249,3 +256,50 @@ int getVitaProtocolVersion()
 
     return protocol;
 }
+
+#ifdef Q_OS_LINUX
+bool belongsToGroup(const char *groupname)
+{
+    int size_max = sysconf(_SC_GETGR_R_SIZE_MAX);
+
+    if(size_max == -1)
+        size_max = 1024;
+
+    QByteArray buf(size_max, Qt::Uninitialized);
+
+    group *result = NULL;
+    group entry;
+
+    getgrnam_r(groupname, &entry, buf.data(), buf.size(), &result);
+
+    if(result != NULL && *result->gr_mem != NULL) {
+        char **user_list = result->gr_mem;
+
+        int user_size_max = sysconf(_SC_GETPW_R_SIZE_MAX);
+
+        if(user_size_max == -1)
+            user_size_max = 1024;
+
+        std::vector<char> user_buf(user_size_max);
+
+        uid_t user_id = getuid();
+
+        while(*user_list != NULL) {
+            char *user_name = *user_list;
+
+            passwd *pw = NULL;
+            passwd entry;
+
+            getpwnam_r(user_name, &entry, user_buf.data(), user_buf.size(), &pw);
+
+            if(pw != NULL && pw->pw_uid == user_id) {
+                return true;
+            }
+
+            user_list++;
+        }
+    }
+
+    return false;
+}
+#endif

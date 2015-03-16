@@ -6,7 +6,7 @@
     <message>
         <location filename="../../src/forms/backupitem.ui" line="131"/>
         <source>Delete entry</source>
-        <translation>Supprimer l'entrée</translation>
+        <translation>Supprimer l&apos;entrée</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupitem.ui" line="144"/>
@@ -24,7 +24,7 @@
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="24"/>
         <source>Online ID / Username</source>
-        <translation>ID Online / Nom d'utilisateur</translation>
+        <translation>ID Online / Nom d&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../../src/forms/backupmanagerform.ui" line="41"/>
@@ -111,27 +111,32 @@
 <context>
     <name>ClientManager</name>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="44"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="64"/>
         <source>Added %1 items to the database</source>
         <translation>%1 éléments ont été rajoutés à la base de données</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="46"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="66"/>
         <source>Database indexing aborted by user</source>
-        <translation>Mise à jour de la base de données annulée par l'utilisateur</translation>
+        <translation>Mise à jour de la base de données annulée par l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="60"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="80"/>
         <source>Cannot initialize VitaMTP library</source>
-        <translation>Impossible d'initaliser la librairie VitaMTP</translation>
+        <translation>Impossible d&apos;initaliser la librairie VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="121"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="101"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/clientmanager.cpp" line="147"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>Vous devez soit activer la connexion par Wifi, soit activer celle par USB</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="132"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="158"/>
         <source>No PS Vita system has been registered</source>
         <translation>Aucunne PS Vita reconnue</translation>
     </message>
@@ -139,8 +144,8 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="150"/>
-        <location filename="../../src/cmaclient.cpp" line="153"/>
+        <location filename="../../src/cmaclient.cpp" line="151"/>
+        <location filename="../../src/cmaclient.cpp" line="154"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Connecté à %1 (PS Vita)</translation>
     </message>
@@ -166,7 +171,7 @@
         <location filename="../../src/forms/configwidget.ui" line="51"/>
         <location filename="../../src/forms/configwidget.ui" line="63"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
-        <translation>Emplacement pour Copier/Importer les Copies d'écrans et les Photos.</translation>
+        <translation>Emplacement pour Copier/Importer les Copies d&apos;écrans et les Photos.</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="54"/>
@@ -254,7 +259,7 @@
     <message>
         <location filename="../../src/forms/configwidget.ui" line="290"/>
         <source>Skip metadata extraction</source>
-        <translation>Passer l'extracion de métadonnées</translation>
+        <translation>Passer l&apos;extracion de métadonnées</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="314"/>
@@ -310,14 +315,6 @@
         <location filename="../../src/forms/configwidget.ui" line="487"/>
         <source>CMA custom version</source>
         <translation>Version CMA personalisée</translation>
-    </message>
-    <message>
-        <source>CMA Protocol version</source>
-        <translation type="vanished">Version du protocol CMA</translation>
-    </message>
-    <message>
-        <source>Use custom version</source>
-        <translation type="vanished">Utiliser une version personalisée</translation>
     </message>
     <message>
         <location filename="../../src/forms/configwidget.ui" line="297"/>
@@ -402,6 +399,14 @@
     </message>
 </context>
 <context>
+    <name>HeadlessManager</name>
+    <message>
+        <location filename="../../src/cli/headlessmanager.cpp" line="97"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>KDENotifierTray</name>
     <message>
         <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
@@ -447,48 +452,49 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
         <translation>Fin du programme...</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="97"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation>Arrêter QCMA (déconnecte votre PS Vita)</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="110"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="94"/>
         <source>Disconnected</source>
         <translation>Déconnecté</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="111"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
         <source>The device has been disconnected</source>
-        <translation>L'appareil a été déconnecté</translation>
+        <translation>L&apos;appareil a été déconnecté</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="175"/>
-        <source>About QCMA</source>
-        <translation>À propos de QCMA</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="159"/>
+        <source>About Qcma</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="177"/>
-        <source>Copyright (C) 2014  Codestation</source>
-        <translation>Copyright (C) 2014  Codestation</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="161"/>
+        <source>Copyright (C) 2015  Codestation</source>
+        <translation type="unfinished">Copyright (C) 2014  Codestation {2015 ?}</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="179"/>
-        <source>Copyright (C) 2014  Codestation
+        <location filename="../../src/gui/mainwidget.cpp" line="163"/>
+        <source>Copyright (C) 2015  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation>Copyright (C) 2014  Codestation
+        <translation type="unfinished">Copyright (C) 2014  Codestation
 
 Hash de compilación: %1
-Rama de compilación: %2</translation>
+Rama de compilación: %2 {2015 ?} {1
+?}</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="266"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
@@ -498,7 +504,7 @@ Rama de compilación: %2</translation>
     <message>
         <location filename="../../src/forms/pinform.ui" line="17"/>
         <source>Device pairing</source>
-        <translation>Pairage d'appareil</translation>
+        <translation>Pairage d&apos;appareil</translation>
     </message>
     <message>
         <location filename="../../src/forms/pinform.ui" line="25"/>
@@ -513,7 +519,7 @@ Rama de compilación: %2</translation>
     <message>
         <location filename="../../src/forms/pinform.ui" line="45"/>
         <source>Input the following number in the PS Vita system to register it with QCMA</source>
-        <translation>Introduisez ce numero d'identification dans le systême PS Vita pour l'enregistrer avec QCMA</translation>
+        <translation>Introduisez ce numero d&apos;identification dans le systême PS Vita pour l&apos;enregistrer avec QCMA</translation>
     </message>
     <message>
         <location filename="../../src/forms/pinform.ui" line="55"/>
@@ -587,10 +593,9 @@ Rama de compilación: %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/gui/main.cpp" line="50"/>
-        <location filename="../../src/cli/main_cli.cpp" line="52"/>
-        <source>A instance of QCMA is already running</source>
-        <translation>Une autre instance de QCMA est en cours d'exécution</translation>
+        <location filename="../../src/gui/main.cpp" line="78"/>
+        <source>An instance of Qcma is already running</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

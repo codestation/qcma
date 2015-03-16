@@ -51,4 +51,9 @@ bool getDiskSpace(const QString &dir, quint64 *free, quint64 *total);
 QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata);
 int getVitaProtocolVersion();
 
+#ifdef Q_OS_LINUX
+bool belongsToGroup(const char *groupname);
+#endif
+
+
 #endif // UTILS_H

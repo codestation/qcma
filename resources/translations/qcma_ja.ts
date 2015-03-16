@@ -111,27 +111,32 @@
 <context>
     <name>ClientManager</name>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="44"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="64"/>
         <source>Added %1 items to the database</source>
         <translation>%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="46"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="66"/>
         <source>Database indexing aborted by user</source>
         <translation>データベース構築がユーザーにより中止されました</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="60"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="80"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation>VitaMTPライブラリを初期化できません</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="121"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="101"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/clientmanager.cpp" line="147"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>少なくともUSBと無線のどちらかの監視を有効にする必要があります</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="132"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="158"/>
         <source>No PS Vita system has been registered</source>
         <translation>PS Vitaが登録されていません</translation>
     </message>
@@ -139,8 +144,8 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="150"/>
-        <location filename="../../src/cmaclient.cpp" line="153"/>
+        <location filename="../../src/cmaclient.cpp" line="151"/>
+        <location filename="../../src/cmaclient.cpp" line="154"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>%1 (PS Vita) に接続されました</translation>
     </message>
@@ -312,14 +317,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CMA Protocol version</source>
-        <translation type="vanished">CMAプロトコルバージョン</translation>
-    </message>
-    <message>
-        <source>Use custom version</source>
-        <translation type="vanished">カスタムバージョンを使用</translation>
-    </message>
-    <message>
         <location filename="../../src/forms/configwidget.ui" line="297"/>
         <source>Disable USB monitoring</source>
         <translation>USBの監視を無効にする</translation>
@@ -403,6 +400,14 @@
     </message>
 </context>
 <context>
+    <name>HeadlessManager</name>
+    <message>
+        <location filename="../../src/cli/headlessmanager.cpp" line="97"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>KDENotifierTray</name>
     <message>
         <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
@@ -448,48 +453,49 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
         <translation>終了しています...</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="97"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation>QCMAを停止しています (PS Vitaとの接続を切断してください)</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="110"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="94"/>
         <source>Disconnected</source>
         <translation>切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="111"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
         <source>The device has been disconnected</source>
         <translation>デバイスが切断されました</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="175"/>
-        <source>About QCMA</source>
-        <translation>QCMAについて</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="159"/>
+        <source>About Qcma</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="177"/>
-        <source>Copyright (C) 2014  Codestation</source>
-        <translation>Copyright (C) 2014  Codestation</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="161"/>
+        <source>Copyright (C) 2015  Codestation</source>
+        <translation type="unfinished">Copyright (C) 2014  Codestation {2015 ?}</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="179"/>
-        <source>Copyright (C) 2014  Codestation
+        <location filename="../../src/gui/mainwidget.cpp" line="163"/>
+        <source>Copyright (C) 2015  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation>Copyright (C) 2014  Codestation
+        <translation type="unfinished">Copyright (C) 2014  Codestation
 
 ビルドハッシュ: %1
-ビルドブランチ: %2</translation>
+ビルドブランチ: %2 {2015 ?} {1
+?}</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="266"/>
         <source>Information</source>
         <translation>情報</translation>
     </message>
@@ -588,10 +594,9 @@ build branch: %2</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/gui/main.cpp" line="50"/>
-        <location filename="../../src/cli/main_cli.cpp" line="52"/>
-        <source>A instance of QCMA is already running</source>
-        <translation>QCMAのプロセスがすでに実行しています</translation>
+        <location filename="../../src/gui/main.cpp" line="78"/>
+        <source>An instance of Qcma is already running</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

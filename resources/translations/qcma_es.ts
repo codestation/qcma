@@ -111,27 +111,32 @@
 <context>
     <name>ClientManager</name>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="44"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="64"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="46"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="66"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="60"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="80"/>
         <source>Cannot initialize VitaMTP library</source>
         <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="121"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="101"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/clientmanager.cpp" line="147"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
     </message>
     <message>
-        <location filename="../../src/gui/clientmanager.cpp" line="132"/>
+        <location filename="../../src/gui/clientmanager.cpp" line="158"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -139,8 +144,8 @@
 <context>
     <name>CmaClient</name>
     <message>
-        <location filename="../../src/cmaclient.cpp" line="150"/>
-        <location filename="../../src/cmaclient.cpp" line="153"/>
+        <location filename="../../src/cmaclient.cpp" line="151"/>
+        <location filename="../../src/cmaclient.cpp" line="154"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
     </message>
@@ -312,14 +317,6 @@
         <translation>Versión personalizada CMA</translation>
     </message>
     <message>
-        <source>CMA Protocol version</source>
-        <translation type="vanished">Versión del protocolo CMA</translation>
-    </message>
-    <message>
-        <source>Use custom version</source>
-        <translation type="vanished">Usar versión personalizada</translation>
-    </message>
-    <message>
         <location filename="../../src/forms/configwidget.ui" line="297"/>
         <source>Disable USB monitoring</source>
         <translation>Deshabilitar monitoreo USB</translation>
@@ -402,6 +399,15 @@
     </message>
 </context>
 <context>
+    <name>HeadlessManager</name>
+    <message>
+        <location filename="../../src/cli/headlessmanager.cpp" line="97"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translatorcomment>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translatorcomment>
+        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+    </message>
+</context>
+<context>
     <name>KDENotifierTray</name>
     <message>
         <location filename="../../src/indicator/kdenotifiertray.cpp" line="34"/>
@@ -447,48 +453,48 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
         <translation>Cerrando...</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="97"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
         <translation>Deteniendo QCMA (desconecte su PS Vita)</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="110"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="94"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="111"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="95"/>
         <source>The device has been disconnected</source>
         <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="175"/>
-        <source>About QCMA</source>
-        <translation>Acerca de QCMA</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="159"/>
+        <source>About Qcma</source>
+        <translation>Acerca de Qcma</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="177"/>
-        <source>Copyright (C) 2014  Codestation</source>
-        <translation>Copyright (C) 2014  Codestation</translation>
+        <location filename="../../src/gui/mainwidget.cpp" line="161"/>
+        <source>Copyright (C) 2015  Codestation</source>
+        <translation>Copyright (C) 2015  Codestation</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="179"/>
-        <source>Copyright (C) 2014  Codestation
+        <location filename="../../src/gui/mainwidget.cpp" line="163"/>
+        <source>Copyright (C) 2015  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation>Copyright (C) 2014  Codestation
+        <translation>Copyright (C) 2015  Codestation
 
 Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
-        <location filename="../../src/gui/mainwidget.cpp" line="282"/>
+        <location filename="../../src/gui/mainwidget.cpp" line="266"/>
         <source>Information</source>
         <translation>Información</translation>
     </message>
@@ -587,10 +593,9 @@ Rama de compilación: %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/gui/main.cpp" line="50"/>
-        <location filename="../../src/cli/main_cli.cpp" line="52"/>
-        <source>A instance of QCMA is already running</source>
-        <translation>Otra instancia de QCMA ya se encuentra en ejecución</translation>
+        <location filename="../../src/gui/main.cpp" line="78"/>
+        <source>An instance of Qcma is already running</source>
+        <translation>Otra instancia de Qcma ya se encuentra en ejecución</translation>
     </message>
 </context>
 <context>
