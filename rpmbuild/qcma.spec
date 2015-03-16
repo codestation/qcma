@@ -74,6 +74,7 @@ make install INSTALL_ROOT=%{buildroot}
 %{_bindir}/qcma
 %{_prefix}/share/applications/qcma/qcma.desktop
 %{_prefix}/share/icons/hicolor/64x64/apps/qcma.png
+%{_prefix}/share/man/man1/qcma.1.gz
 
 %changelog
 
@@ -83,6 +84,7 @@ Summary: Content Manager Assistant for the PS Vita (headless version)
 Headless version of Qcma
 %files cli
 %{_bindir}/qcma_cli
+%{_prefix}/share/man/man1/qcma_cli.1.gz
 
 %package appindicator
 Summary: Content Manager Assistant for the PS Vita (appindicator support)
