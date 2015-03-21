@@ -15,10 +15,6 @@ HEADERS += \
            singlecoreapplication.h \
            headlessmanager.h
 
-
-# find packages using pkg-config
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
 PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
 
 # Linux-only config

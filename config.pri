@@ -1,15 +1,20 @@
+VERSION = 0.3.10
+
+# enable pkg-config on osx/windows
+QT_CONFIG -= no-pkg-config
+
+# enable pkg-config
+CONFIG += link_pkgconfig
+
+# disable extra debug/release directories
+CONFIG -= debug_and_release
+
 CXXFLAGS_WARNINGS = -Wall -Wextra -Wdisabled-optimization -Wformat=2 -Winit-self \
                     -Wmissing-include-dirs -Woverloaded-virtual -Wundef -Wno-unused \
                     -Wno-missing-field-initializers -Wno-format-nonliteral
 
 # custom CXXFLAGS
 QMAKE_CXXFLAGS += -Wno-write-strings -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS $$CXXFLAGS_WARNINGS
-
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
-CONFIG -= debug_and_release
-
-VERSION = 0.3.10
 
 #Linux-only config
 unix:!macx {

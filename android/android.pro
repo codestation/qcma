@@ -10,20 +10,14 @@ QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp libavformat l
 LIBS += $$system(pkg-config --static --libs libvitamtp libavformat libavcodec libavutil libswscale)
 
 SOURCES += \
-           main_android.cpp
+           main_android.cpp \
+    qtandroidservice.cpp
 #           headlessmanager.cpp
 
 #HEADERS += \
 #           headlessmanager.h
 
 DISTFILES += \
-    ../android-src/gradle/wrapper/gradle-wrapper.jar \
-    ../android-src/AndroidManifest.xml \
-    ../android-src/gradlew.bat \
-    ../android-src/res/values/libs.xml \
-    ../android-src/build.gradle \
-    ../android-src/gradle/wrapper/gradle-wrapper.properties \
-    ../android-src/gradlew \
     android-src/gradle/wrapper/gradle-wrapper.jar \
     android-src/AndroidManifest.xml \
     android-src/gradlew.bat \

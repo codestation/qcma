@@ -5,26 +5,29 @@
 #-------------------------------------------------
 
 TEMPLATE = subdirs
+CONFIG += ordered
+SUBDIRS = common
 
-android {
-    SUBDIRS = qcma_android.pro
-} else {
-    SUBDIRS = qcma_gui.pro
-}
-
-# Compile the headless binary only on Linux
 unix:!macx:!android {
-    SUBDIRS += qcma_cli.pro
+    # Compile the headless binary only on Linux
+    SUBDIRS += cli
+    cli.depends = common
+
     # The appindicator and kde extensions are linux only too
     ENABLE_APPINDICATOR {
-        SUBDIRS += qcma_appindicator.pro
+        SUBDIRS += appindicator
+        appindicator.depends = gui
     }
     ENABLE_KDENOTIFIER {
-        SUBDIRS += qcma_kdenotifier.pro
+        SUBDIRS += kdenotifier
+        kdenotifier.depends = gui
     }
 }
 
-TRANSLATIONS += \
-    resources/translations/qcma_es.ts \
-    resources/translations/qcma_fr.ts \
-    resources/translations/qcma_ja.ts
+android {
+    SUBDIRS += android
+    android.depends = common
+} else {
+    SUBDIRS += gui
+    gui.depends = common
+}
