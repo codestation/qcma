@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/main">
+        <file>resources/images/tray/qcma_on.png</file>
+        <file>resources/images/tray/qcma_on_16.png</file>
+        <file>resources/images/qcma.png</file>
+        <file>resources/images/edit-clear-locationbar-rtl.png</file>
+        <file>resources/images/tray/qcma_off.png</file>
+        <file>resources/images/tray/qcma_off_16.png</file>
+        <file>resources/images/qcma_on.png</file>
+        <file>resources/images/qcma_off.png</file>
+    </qresource>
+</RCC>

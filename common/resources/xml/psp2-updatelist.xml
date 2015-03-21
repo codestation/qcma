@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update_data_list>
+<region id="au">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="eu">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="jp">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="kr">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="mx">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="ru">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="tw">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="uk">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+<region id="us">
+    <np level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <np_d level0_system_version="00.000.000" level1_system_version="00.000.000" level2_system_version="00.000.000" map="00.000.000" />
+    <version system_version="00.000.000" label="0.00">
+      <update_data update_type="full">
+        <image size="0">http://www.example.com/PSP2UPDAT.PUP</image>
+      </update_data>
+    </version>
+</region>
+</update_data_list>

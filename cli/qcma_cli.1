@@ -1,0 +1,33 @@
+.TH QCMA-CLI 1 "MARCH 2015"
+.SH NAME
+qcma-cli \- Content manager for the PlayStation Vita
+.SH SYNOPSIS
+.B qcma_cli \fR[options]
+
+.TP
+.B \-\-verbose
+print detailed output
+
+.TP
+.B \-\-with-debug
+print very verbose output (including hexdump transfers)
+
+.SH DESCRIPTION
+\fBqcma_cli\fR is a cross-platform application to provide an Open Source implementation
+of the original Content Manager Assistant that comes with the PS Vita.
+.TP
+Qcma will let you backup your games, songs, photos & videos via USB or wireless.
+
+.SH SIGNALS
+You can control \fBqcma_cli\fR using signals, i.e. using the \fBkill\fR command to send a signal to the process.
+
+.TP
+.B  SIGHUP
+Refreshes the database.
+
+.TP
+.B  SIGTERM or SIGINT
+Shuts down the process but waits until the current event is finished.
+
+.SH "SEE ALSO"
+.I /usr/share/doc/qcma/README.md
