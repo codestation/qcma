@@ -21,40 +21,27 @@
 #include "cmautils.h"
 #include "sqlitedb.h"
 #include "qlistdb.h"
-#include "headlessmanager.h"
+#include "servicemanager.h"
 
 #include <QCoreApplication>
+#include <QDir>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QTextStream>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <vitamtp.h>
 
-int HeadlessManager::sighup_fd[2];
-int HeadlessManager::sigterm_fd[2];
-
-HeadlessManager::HeadlessManager(QObject *obj_parent) :
+ServiceManager::ServiceManager(QObject *obj_parent) :
     QObject(obj_parent)
 {
-    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighup_fd))
-       qFatal("Couldn't create HUP socketpair");
-
-    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigterm_fd))
-       qFatal("Couldn't create TERM socketpair");
-
-    sn_hup = new QSocketNotifier(sighup_fd[1], QSocketNotifier::Read, this);
-    connect(sn_hup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
-    sn_term = new QSocketNotifier(sigterm_fd[1], QSocketNotifier::Read, this);
-    connect(sn_term, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
 }
 
-HeadlessManager::~HeadlessManager()
+ServiceManager::~ServiceManager()
 {
     VitaMTP_Cleanup();
     delete m_db;
 }
 
-void HeadlessManager::refreshDatabase()
+void ServiceManager::refreshDatabase()
 {
     if(m_db->load()) {
         return;
@@ -67,12 +54,14 @@ void HeadlessManager::refreshDatabase()
     }
 }
 
-void HeadlessManager::start()
+void ServiceManager::start()
 {
     if(VitaMTP_Init() < 0) {
         qCritical("Cannot initialize VitaMTP library");
         return;
     }
+
+    loadDefaultSettings();
 
     if(QSettings().value("useMemoryStorage", true).toBool()) {
         m_db = new QListDB();
@@ -92,9 +81,6 @@ void HeadlessManager::start()
     QSettings settings;
 
     if(!settings.value("disableUSB", false).toBool()) {
-
-        if(!belongsToGroup("vitamtp"))
-            qCritical() << tr("This user doesn't belong to the vitamtp group, there could be a problem while reading the USB bus.");
 
         usb_thread = new QThread();
         client = new CmaClient(m_db);
@@ -135,19 +121,19 @@ void HeadlessManager::start()
     }
 }
 
-void HeadlessManager::receiveMessage(QString message)
+void ServiceManager::receiveMessage(QString message)
 {
     QTextStream(stdout) << message << endl;
 }
 
-void HeadlessManager::stop()
+void ServiceManager::stop()
 {
     if(CmaClient::stop() < 0) {
         QCoreApplication::quit();
     }
 }
 
-void HeadlessManager::threadStopped()
+void ServiceManager::threadStopped()
 {
     mutex.lock();
     if(--thread_count == 0) {
@@ -156,36 +142,54 @@ void HeadlessManager::threadStopped()
     mutex.unlock();
 }
 
-void HeadlessManager::hupSignalHandler(int)
+void ServiceManager::loadDefaultSettings()
 {
-    char a = 1;
-    ::write(sighup_fd[0], &a, sizeof(a));
-}
+    QString defaultdir;
+    QSettings settings;
 
-void HeadlessManager::termSignalHandler(int)
-{
-    char a = 1;
-    ::write(sigterm_fd[0], &a, sizeof(a));
-}
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    qDebug("photoPath: %s", qPrintable(defaultdir));
+    settings.setValue("photoPath", defaultdir);
 
-void HeadlessManager::handleSigTerm()
-{
-    sn_term->setEnabled(false);
-    char tmp;
-    ::read(sigterm_fd[1], &tmp, sizeof(tmp));
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    qDebug("musicPath: %s", qPrintable(defaultdir));
+    settings.setValue("musicPath", defaultdir);
 
-    stop();
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    qDebug("photoPath: %s", qPrintable(defaultdir));
+    settings.setValue("videoPath", defaultdir);
 
-    sn_term->setEnabled(true);
-}
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir.append(QDir::separator()).append("PS Vita");
+    qDebug("appsPath: %s", qPrintable(defaultdir));
+    settings.setValue("appsPath", defaultdir);
 
-void HeadlessManager::handleSigHup()
-{
-    sn_hup->setEnabled(false);
-    char tmp;
-    ::read(sighup_fd[1], &tmp, sizeof(tmp));
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir.append(QDir::separator()).append("PSV Updates");
+    qDebug("urlPath: %s", qPrintable(defaultdir));
+    settings.setValue("urlPath", defaultdir);
 
-    refreshDatabase();
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir.append(QDir::separator()).append("PSV Packages");
+    qDebug("pkgPath: %s", qPrintable(defaultdir));
+    settings.setValue("pkgPath", defaultdir);
 
-    sn_hup->setEnabled(true);
+    settings.setValue("offlineMode", true);
+    settings.setValue("skipMetadata", false);
+
+    // disable USB for now
+    settings.setValue("disableUSB", true);
+
+    settings.setValue("disableWireless", false);
+    settings.setValue("useMemoryStorage", true);
+
+    settings.setValue("photoSkip", false);
+    settings.setValue("videoSkip", false);
+    settings.setValue("musicSkip", false);
+
+    settings.setValue("protocolMode", "automatic");
+
+    settings.setValue("protocolIndex", 0);
+
+    settings.setValue("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION);
 }

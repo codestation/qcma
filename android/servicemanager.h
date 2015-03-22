@@ -17,30 +17,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HEADLESSMANAGER_H
-#define HEADLESSMANAGER_H
+#ifndef SERVICEMANAGER_H
+#define SERVICEMANAGER_H
 
 #include "database.h"
 
 #include <QObject>
 #include <QThread>
-#include <QSocketNotifier>
 
-class HeadlessManager : public QObject
+class ServiceManager : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit HeadlessManager(QObject *parent = 0);
-    ~HeadlessManager();
+    explicit ServiceManager(QObject *parent = 0);
+    ~ServiceManager();
 
     void start();
 
-    // unix signal handlers
-    static void hupSignalHandler(int);
-    static void termSignalHandler(int);
-
 private:
+    void loadDefaultSettings();
+
     int thread_count;
     QMutex mutex;
 
@@ -48,13 +45,6 @@ private:
 
     QThread *usb_thread;
     QThread *wireless_thread;
-
-    // signal handling
-    static int sighup_fd[2];
-    static int sigterm_fd[2];
-
-    QSocketNotifier *sn_hup;
-    QSocketNotifier *sn_term;
 
 signals:
     void stopped();
@@ -64,13 +54,9 @@ public slots:
     void refreshDatabase();
     void stop();
 
-    // Qt signal handlers
-    void handleSigHup();
-    void handleSigTerm();
-
 private slots:
     void threadStopped();
     void receiveMessage(QString message);
 };
 
-#endif // HEADLESSMANAGER_H
+#endif // SERVICEMANAGER_H

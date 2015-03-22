@@ -3,6 +3,7 @@ include(../common/defines.pri)
 
 TARGET = qcma_android
 TEMPLATE=app
+QT += network sql
 LIBS += -L../common -lqcma_common
 
 # this library needs to link statically their deps but Qt doesn't pass --static to PKGCONFIG
@@ -10,11 +11,11 @@ QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp libavformat l
 LIBS += $$system(pkg-config --static --libs libvitamtp libavformat libavcodec libavutil libswscale)
 
 SOURCES += \
-           main_android.cpp
-#           headlessmanager.cpp
+    main_android.cpp \
+    sevicemanager.cpp
 
-#HEADERS += \
-#           headlessmanager.h
+HEADERS += \
+    servicemanager.h
 
 DISTFILES += \
     android-src/gradle/wrapper/gradle-wrapper.jar \
