@@ -10,8 +10,7 @@ QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp libavformat l
 LIBS += $$system(pkg-config --static --libs libvitamtp libavformat libavcodec libavutil libswscale)
 
 SOURCES += \
-           main_android.cpp \
-    qtandroidservice.cpp
+           main_android.cpp
 #           headlessmanager.cpp
 
 #HEADERS += \

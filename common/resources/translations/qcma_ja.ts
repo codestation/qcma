@@ -4,110 +4,141 @@
 <context>
     <name>BackupItem</name>
     <message>
+        <location filename="../../../gui/forms/backupitem.ui" line="131"/>
         <source>Delete entry</source>
-        <translation type="vanished">項目を削除する</translation>
+        <translation>項目を削除する</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupitem.ui" line="144"/>
         <source>Open folder</source>
-        <translation type="vanished">フォルダを開く</translation>
+        <translation>フォルダを開く</translation>
     </message>
 </context>
 <context>
     <name>BackupManagerForm</name>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="14"/>
         <source>Backup Manager</source>
-        <translation type="vanished">バックアップマネージャー</translation>
+        <translation>バックアップマネージャー</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="24"/>
         <source>Online ID / Username</source>
-        <translation type="vanished">オンラインID / ユーザー名</translation>
+        <translation>オンラインID / ユーザー名</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="41"/>
         <source>Backup Type</source>
-        <translation type="vanished">バックアップの種類</translation>
+        <translation>バックアップの種類</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="52"/>
         <source>PS Vita Games</source>
-        <translation type="vanished">PS Vitaゲーム</translation>
+        <translation>PS Vitaゲーム</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="57"/>
         <source>PSP Games</source>
-        <translation type="vanished">PSPゲーム</translation>
+        <translation>PSPゲーム</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="62"/>
         <source>PSM Games</source>
-        <translation type="vanished">PSMゲーム</translation>
+        <translation>PSMゲーム</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="67"/>
         <source>PSOne Games</source>
-        <translation type="vanished">PS1ゲーム</translation>
+        <translation>PS1ゲーム</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="72"/>
         <source>PSP Savedatas</source>
-        <translation type="vanished">PSPセーブデータ</translation>
+        <translation>PSPセーブデータ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="77"/>
         <source>Backups</source>
-        <translation type="vanished">バックアップ</translation>
+        <translation>バックアップ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="99"/>
         <source>Backup disk usage</source>
-        <translation type="vanished">バックアップディスク使用容量</translation>
+        <translation>バックアップディスク使用容量</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="122"/>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="246"/>
         <source>Filter</source>
-        <translation type="vanished">フィルタ</translation>
+        <translation>フィルタ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="99"/>
         <source>Default account</source>
-        <translation type="vanished">標準アカウント</translation>
+        <translation>標準アカウント</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="60"/>
         <source>Are you sure to remove the backup of the following entry?</source>
-        <translation type="vanished">次の項目のバックアップを削除してもよろしいですか?</translation>
+        <translation>次の項目のバックアップを削除してもよろしいですか?</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="88"/>
         <source>Backup disk usage: %1</source>
-        <translation type="vanished">バックアップディスク使用容量: %1</translation>
+        <translation>バックアップディスク使用容量: %1</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="201"/>
         <source> [GAME]</source>
-        <translation type="vanished"> [ゲーム]</translation>
+        <translation> [ゲーム]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="204"/>
         <source> [SAVE]</source>
-        <translation type="vanished"> [セーブ]</translation>
+        <translation> [セーブ]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="207"/>
         <source> [UPDATE]</source>
-        <translation type="vanished"> [アップデート]</translation>
+        <translation> [アップデート]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="210"/>
         <source> [DLC]</source>
-        <translation type="vanished"> [DLC]</translation>
+        <translation> [DLC]</translation>
     </message>
 </context>
 <context>
     <name>ClientManager</name>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="64"/>
         <source>Added %1 items to the database</source>
-        <translation type="vanished">%1個の項目をデータベースに追加しました</translation>
+        <translation>%1個の項目をデータベースに追加しました</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="66"/>
         <source>Database indexing aborted by user</source>
-        <translation type="vanished">データベース構築がユーザーにより中止されました</translation>
+        <translation>データベース構築がユーザーにより中止されました</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="80"/>
         <source>Cannot initialize VitaMTP library</source>
-        <translation type="vanished">VitaMTPライブラリを初期化できません</translation>
+        <translation>VitaMTPライブラリを初期化できません</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="101"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/clientmanager.cpp" line="147"/>
         <source>You must enable at least USB or Wireless monitoring</source>
-        <translation type="vanished">少なくともUSBと無線のどちらかの監視を有効にする必要があります</translation>
+        <translation>少なくともUSBと無線のどちらかの監視を有効にする必要があります</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="158"/>
         <source>No PS Vita system has been registered</source>
-        <translation type="vanished">PS Vitaが登録されていません</translation>
+        <translation>PS Vitaが登録されていません</translation>
     </message>
 </context>
 <context>
@@ -122,164 +153,235 @@
 <context>
     <name>ConfigWidget</name>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="14"/>
         <source>QCMA Settings</source>
-        <translation type="vanished">QCMA設定</translation>
+        <translation>QCMA設定</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="26"/>
         <source>Folders</source>
-        <translation type="vanished">フォルダ</translation>
+        <translation>フォルダ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="39"/>
         <source>Specify the folders that the PS Vita will access for each content type.</source>
-        <translation type="vanished">PS Vitaがアクセスするフォルダーをコンテンツの種類ごとに指定してください。</translation>
+        <translation>PS Vitaがアクセスするフォルダーをコンテンツの種類ごとに指定してください。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="51"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="63"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
-        <translation type="vanished">スクリーンショットや画像を保存/インポートする場所です。</translation>
+        <translation>スクリーンショットや画像を保存/インポートする場所です。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="54"/>
         <source>Photo Folder</source>
-        <translation type="vanished">フォト</translation>
+        <translation>フォト</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="73"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="108"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="143"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="178"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="213"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="238"/>
         <source>Browse...</source>
-        <translation type="vanished">参照...</translation>
+        <translation>参照...</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="86"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="98"/>
         <source>This is the location your Videos are Saved to/Imported from.</source>
-        <translation type="vanished">ビデオを保存/インポートする場所です。</translation>
+        <translation>ビデオを保存/インポートする場所です。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="89"/>
         <source>Video Folder</source>
-        <translation type="vanished">ビデオ</translation>
+        <translation>ビデオ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="121"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="133"/>
         <source>This is the location your Music is Saved to/Imported from.</source>
-        <translation type="vanished">ミュージックを保存/インポートする場所です。</translation>
+        <translation>ミュージックを保存/インポートする場所です。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="124"/>
         <source>Music Folder</source>
-        <translation type="vanished">ミュージック</translation>
+        <translation>ミュージック</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="156"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="168"/>
         <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
-        <translation type="vanished">ゲームやアプリ、セーブデータ、システムバックアップを保存/インポートする場所です。</translation>
+        <translation>ゲームやアプリ、セーブデータ、システムバックアップを保存/インポートする場所です。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="159"/>
         <source>Applications / Backups</source>
-        <translation type="vanished">アプリケーション/バックアップファイル</translation>
+        <translation>アプリケーション/バックアップファイル</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="191"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
-        <translation type="vanished">ソフトウェアアップデートとブラウザデータをを保存/インポートする場所です。</translation>
+        <translation>ソフトウェアアップデートとブラウザデータをを保存/インポートする場所です。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="194"/>
         <source>Updates / Web content</source>
-        <translation type="vanished">アップデート/Webコンテンツ</translation>
+        <translation>アップデート/Webコンテンツ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="203"/>
         <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
-        <translation type="vanished">この場所の全てのコンテンツをPS Vitaシステムが読み込み、ダウンロードを試みます。</translation>
+        <translation>この場所の全てのコンテンツをPS Vitaシステムが読み込み、ダウンロードを試みます。</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="226"/>
         <source>Packages</source>
-        <translation type="vanished">パッケージ</translation>
+        <translation>パッケージ</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="265"/>
         <source>Other</source>
-        <translation type="vanished">その他</translation>
+        <translation>その他</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="273"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;詳細設定&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;詳細設定&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="280"/>
         <source>Offline Mode</source>
-        <translation type="vanished">オフラインモード</translation>
+        <translation>オフラインモード</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="290"/>
         <source>Skip metadata extraction</source>
-        <translation type="vanished">メタデータの展開をスキップする</translation>
+        <translation>メタデータの展開をスキップする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="314"/>
         <source>Update database automatically when files on the PC are changed</source>
-        <translation type="vanished">PCのファイルが変更された際にデータベースを自動的に更新する</translation>
+        <translation>PCのファイルが変更された際にデータベースを自動的に更新する</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="342"/>
         <source>SQLite</source>
-        <translation type="vanished">SQLite</translation>
+        <translation>SQLite</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="352"/>
         <source>Skip photo scanning</source>
-        <translation type="vanished">フォトのスキャンをスキップする</translation>
+        <translation>フォトのスキャンをスキップする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="359"/>
         <source>Skip video scanning</source>
-        <translation type="vanished">ビデオのスキャンをスキップする</translation>
+        <translation>ビデオのスキャンをスキップする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="366"/>
         <source>Skip music scanning</source>
-        <translation type="vanished">ミュージックのスキャンをスキップする</translation>
+        <translation>ミュージックのスキャンをスキップする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="381"/>
+        <source>CMA protocol version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="461"/>
+        <source>CMA protocol selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="469"/>
+        <source>Latest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="474"/>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="479"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="487"/>
+        <source>CMA custom version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="297"/>
         <source>Disable USB monitoring</source>
-        <translation type="vanished">USBの監視を無効にする</translation>
+        <translation>USBの監視を無効にする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="304"/>
         <source>Disable Wi-Fi monitoring</source>
-        <translation type="vanished">Wi-Fiの監視を無効にする</translation>
+        <translation>Wi-Fiの監視を無効にする</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="326"/>
         <source>Database backend</source>
-        <translation type="vanished">データベース保存</translation>
+        <translation>データベース保存</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="337"/>
         <source>In Memory</source>
-        <translation type="vanished">メモリ内</translation>
+        <translation>メモリ内</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="163"/>
         <source>Select the folder to be used as a photo source</source>
-        <translation type="vanished">フォトの参照先として使用されるフォルダを選択してください</translation>
+        <translation>フォトの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="168"/>
         <source>Select the folder to be used as a music source</source>
-        <translation type="vanished">ミュージックの参照先として使用されるフォルダを選択してください</translation>
+        <translation>ミュージックの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="173"/>
         <source>Select the folder to be used as a video source</source>
-        <translation type="vanished">ビデオの参照先として使用されるフォルダを選択してください</translation>
+        <translation>ビデオの参照先として使用されるフォルダを選択してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="178"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
-        <translation type="vanished">PS Vitaのゲームとバックアップの保存に使用されるフォルダを選択してください</translation>
+        <translation>PS Vitaのゲームとバックアップの保存に使用されるフォルダを選択してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="183"/>
         <source>Select the folder to be used to fetch software updates</source>
-        <translation type="vanished">ソフトウェアアップデートの取得に使用されるフォルダを選択してください</translation>
+        <translation>ソフトウェアアップデートの取得に使用されるフォルダを選択してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="188"/>
         <source>Select the folder to be used to software packages</source>
-        <translation type="vanished">ソフトウェアパッケージに使うフォルダを選択してください</translation>
+        <translation>ソフトウェアパッケージに使うフォルダを選択してください</translation>
     </message>
 </context>
 <context>
     <name>ConfirmDialog</name>
     <message>
+        <location filename="../../../gui/forms/confirmdialog.ui" line="14"/>
         <source>Confirmation Message</source>
-        <translation type="vanished">確認メッセージ</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Are you sure to delete the backup of the following game?&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Game Name&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;次のゲームのバックアップを削除してもよろしいですか?&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;ゲーム名&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
-</translation>
+        <translation>確認メッセージ</translation>
     </message>
 </context>
 <context>
     <name>FilterLineEdit</name>
     <message>
+        <location filename="../../../gui/filterlineedit.cpp" line="50"/>
+        <location filename="../../../gui/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
-        <translation type="vanished">フィルタ</translation>
+        <translation>フィルタ</translation>
     </message>
 </context>
 <context>
@@ -291,200 +393,264 @@
     </message>
 </context>
 <context>
+    <name>HeadlessManager</name>
+    <message>
+        <location filename="../../../cli/headlessmanager.cpp" line="97"/>
+        <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>KDENotifierTray</name>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="34"/>
         <source>Settings</source>
-        <translation type="vanished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="35"/>
         <source>Refresh database</source>
-        <translation type="vanished">データベースを更新する</translation>
+        <translation>データベースを更新する</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="36"/>
         <source>Backup Manager</source>
-        <translation type="vanished">バックアップマネージャー</translation>
+        <translation>バックアップマネージャー</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="37"/>
         <source>About QCMA</source>
-        <translation type="vanished">QCMAについて</translation>
+        <translation>QCMAについて</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="38"/>
         <source>About Qt</source>
-        <translation type="vanished">Qtについて</translation>
+        <translation>Qtについて</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="39"/>
         <source>Quit</source>
-        <translation type="vanished">終了</translation>
+        <translation>終了</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="69"/>
         <source>Qcma status</source>
-        <translation type="vanished">QCMAステータス</translation>
+        <translation>QCMAステータス</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="71"/>
         <source>Disconnected</source>
-        <translation type="vanished">切断されました</translation>
+        <translation>切断されました</translation>
     </message>
 </context>
 <context>
     <name>MainWidget</name>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
-        <translation type="vanished">終了しています...</translation>
+        <translation>終了しています...</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
-        <translation type="vanished">QCMAを停止しています (PS Vitaとの接続を切断してください)</translation>
+        <translation>QCMAを停止しています (PS Vitaとの接続を切断してください)</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="94"/>
         <source>Disconnected</source>
-        <translation type="vanished">切断されました</translation>
+        <translation>切断されました</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="95"/>
         <source>The device has been disconnected</source>
-        <translation type="vanished">デバイスが切断されました</translation>
+        <translation>デバイスが切断されました</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="159"/>
+        <source>About Qcma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../gui/mainwidget.cpp" line="161"/>
         <source>Copyright (C) 2015  Codestation</source>
-        <translation type="obsolete">Copyright (C) 2014  Codestation {2015 ?}</translation>
+        <translation type="unfinished">Copyright (C) 2014  Codestation {2015 ?}</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="163"/>
         <source>Copyright (C) 2015  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation type="obsolete">Copyright (C) 2014  Codestation
+        <translation type="unfinished">Copyright (C) 2014  Codestation
 
 ビルドハッシュ: %1
 ビルドブランチ: %2 {2015 ?} {1
 ?}</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="272"/>
         <source>Information</source>
-        <translation type="vanished">情報</translation>
+        <translation>情報</translation>
     </message>
 </context>
 <context>
     <name>PinForm</name>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="17"/>
         <source>Device pairing</source>
-        <translation type="vanished">端末のペアリング</translation>
+        <translation>端末のペアリング</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="25"/>
         <source>An unregistered PS Vita system is connecting with QCMA via Wi-Fi</source>
-        <translation type="vanished">登録されていないPS VitaがWi-Fi経由でQCMAで接続しています</translation>
+        <translation>登録されていないPS VitaがWi-Fi経由でQCMAで接続しています</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="35"/>
         <source>Device: PS Vita</source>
-        <translation type="vanished">端末: PS Vita</translation>
+        <translation>端末: PS Vita</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="45"/>
         <source>Input the following number in the PS Vita system to register it with QCMA</source>
-        <translation type="vanished">QCMAでPS Vitaを登録するために次の番号をPS Vitaで入力してください</translation>
+        <translation>QCMAでPS Vitaを登録するために次の番号をPS Vitaで入力してください</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="65"/>
         <source>Time remaining: 300 seconds</source>
-        <translation type="vanished">残り時間: 300秒</translation>
+        <translation>残り時間: 300秒</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="90"/>
         <source>Cancel</source>
-        <translation type="vanished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.cpp" line="45"/>
         <source>Device: %1 (PS Vita)</source>
-        <translation type="vanished">端末: %1 (PS Vita)</translation>
+        <translation>端末: %1 (PS Vita)</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.cpp" line="65"/>
         <source>Time remaining: %1 seconds</source>
-        <translation type="vanished">残り時間: %1秒</translation>
+        <translation>残り時間: %1秒</translation>
     </message>
 </context>
 <context>
     <name>ProgressForm</name>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="17"/>
         <source>Refreshing database...</source>
-        <translation type="vanished">データベースを更新しています...</translation>
+        <translation>データベースを更新しています...</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="25"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Reading directory:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="32"/>
         <source>directory name</source>
-        <translation type="vanished">ディレクトリ名</translation>
+        <translation>ディレクトリ名</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="39"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Processing file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="46"/>
         <source>file name</source>
-        <translation type="vanished">ファイル名</translation>
+        <translation>ファイル名</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="68"/>
         <source>Cancel</source>
-        <translation type="vanished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.cpp" line="45"/>
         <source>Database indexing in progress</source>
-        <translation type="vanished">データベース構築が進行中です</translation>
+        <translation>データベース構築が進行中です</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.cpp" line="46"/>
         <source>Are you sure to cancel the database indexing?</source>
-        <translation type="vanished">データベース構築をキャンセルしてもよろしいですか?</translation>
+        <translation>データベース構築をキャンセルしてもよろしいですか?</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../../../gui/main.cpp" line="79"/>
+        <source>An instance of Qcma is already running</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QTrayIcon</name>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="51"/>
         <source>Settings</source>
-        <translation type="vanished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="52"/>
         <source>Refresh database</source>
-        <translation type="vanished">データベースを更新する</translation>
+        <translation>データベースを更新する</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="53"/>
         <source>Backup Manager</source>
-        <translation type="vanished">バックアップマネージャー</translation>
+        <translation>バックアップマネージャー</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="54"/>
         <source>About QCMA</source>
-        <translation type="vanished">QCMAについて</translation>
+        <translation>QCMAについて</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="55"/>
         <source>About Qt</source>
-        <translation type="vanished">Qtについて</translation>
+        <translation>Qtについて</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="56"/>
         <source>Quit</source>
-        <translation type="vanished">終了</translation>
+        <translation>終了</translation>
     </message>
 </context>
 <context>
     <name>UnityIndicator</name>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="105"/>
         <source>Settings</source>
-        <translation type="vanished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="106"/>
         <source>Refresh database</source>
-        <translation type="vanished">データベースを更新する</translation>
+        <translation>データベースを更新する</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="107"/>
         <source>Backup Manager</source>
-        <translation type="vanished">バックアップマネージャー</translation>
+        <translation>バックアップマネージャー</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="109"/>
         <source>About QCMA</source>
-        <translation type="vanished">QCMAについて</translation>
+        <translation>QCMAについて</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="110"/>
         <source>About Qt</source>
-        <translation type="vanished">Qtについて</translation>
+        <translation>Qtについて</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="112"/>
         <source>Quit</source>
-        <translation type="vanished">終了</translation>
+        <translation>終了</translation>
     </message>
 </context>
 </TS>

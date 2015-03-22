@@ -4,114 +4,141 @@
 <context>
     <name>BackupItem</name>
     <message>
+        <location filename="../../../gui/forms/backupitem.ui" line="131"/>
         <source>Delete entry</source>
-        <translation type="vanished">Borrar entrada</translation>
+        <translation>Borrar entrada</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupitem.ui" line="144"/>
         <source>Open folder</source>
-        <translation type="vanished">Abrir directorio</translation>
+        <translation>Abrir directorio</translation>
     </message>
 </context>
 <context>
     <name>BackupManagerForm</name>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="14"/>
         <source>Backup Manager</source>
-        <translation type="vanished">Gestor de Respaldos</translation>
+        <translation>Gestor de Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="24"/>
         <source>Online ID / Username</source>
-        <translation type="vanished">ID Online / Nombre de usuario</translation>
+        <translation>ID Online / Nombre de usuario</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="41"/>
         <source>Backup Type</source>
-        <translation type="vanished">Tipo de respaldo</translation>
+        <translation>Tipo de respaldo</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="52"/>
         <source>PS Vita Games</source>
-        <translation type="vanished">Juegos PS Vita</translation>
+        <translation>Juegos PS Vita</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="57"/>
         <source>PSP Games</source>
-        <translation type="vanished">Juegos PSP</translation>
+        <translation>Juegos PSP</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="62"/>
         <source>PSM Games</source>
-        <translation type="vanished">Juegos PSM</translation>
+        <translation>Juegos PSM</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="67"/>
         <source>PSOne Games</source>
-        <translation type="vanished">Juegos PSOne</translation>
+        <translation>Juegos PSOne</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="72"/>
         <source>PSP Savedatas</source>
-        <translation type="vanished">Salvados PSP</translation>
+        <translation>Salvados PSP</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="77"/>
         <source>Backups</source>
-        <translation type="vanished">Respaldos</translation>
+        <translation>Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="99"/>
         <source>Backup disk usage</source>
-        <translation type="vanished">Uso de disco en respaldos</translation>
+        <translation>Uso de disco en respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.ui" line="122"/>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="246"/>
         <source>Filter</source>
-        <translation type="vanished">Filtro</translation>
+        <translation>Filtro</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="99"/>
         <source>Default account</source>
-        <translation type="vanished">Cuenta por defecto</translation>
+        <translation>Cuenta por defecto</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="60"/>
         <source>Are you sure to remove the backup of the following entry?</source>
-        <translation type="vanished">¿Estas seguro de borrar la siguiente entrada?</translation>
+        <translation>¿Estas seguro de borrar la siguiente entrada?</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="88"/>
         <source>Backup disk usage: %1</source>
-        <translation type="vanished">Uso de disco en respaldos: %1</translation>
+        <translation>Uso de disco en respaldos: %1</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="201"/>
         <source> [GAME]</source>
-        <translation type="vanished"> [JUEGO]</translation>
+        <translation> [JUEGO]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="204"/>
         <source> [SAVE]</source>
-        <translation type="vanished"> [SALVADO]</translation>
+        <translation> [SALVADO]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="207"/>
         <source> [UPDATE]</source>
-        <translation type="vanished"> [ACTUALIZACIÓN]</translation>
+        <translation> [ACTUALIZACIÓN]</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/backupmanagerform.cpp" line="210"/>
         <source> [DLC]</source>
-        <translation type="vanished"> [DLC]</translation>
+        <translation> [DLC]</translation>
     </message>
 </context>
 <context>
     <name>ClientManager</name>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="64"/>
         <source>Added %1 items to the database</source>
-        <translation type="vanished">Agregadas %1 entradas a la base de datos</translation>
+        <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="66"/>
         <source>Database indexing aborted by user</source>
-        <translation type="vanished">Actualización de la base de datos cancelada por el usuario</translation>
+        <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="80"/>
         <source>Cannot initialize VitaMTP library</source>
-        <translation type="vanished">No se pudo inicializar VitaMTP</translation>
+        <translation>No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="101"/>
         <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
-        <translation type="vanished">Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="147"/>
         <source>You must enable at least USB or Wireless monitoring</source>
-        <translation type="vanished">Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
+        <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
     </message>
     <message>
+        <location filename="../../../gui/clientmanager.cpp" line="158"/>
         <source>No PS Vita system has been registered</source>
-        <translation type="vanished">Nigún sistema PS Vita ha sido registrado</translation>
+        <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
 </context>
 <context>
@@ -126,182 +153,235 @@
 <context>
     <name>ConfigWidget</name>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="14"/>
         <source>QCMA Settings</source>
-        <translation type="vanished">Ajustes QCMA</translation>
+        <translation>Ajustes QCMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="26"/>
         <source>Folders</source>
-        <translation type="vanished">Directorios</translation>
+        <translation>Directorios</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="39"/>
         <source>Specify the folders that the PS Vita will access for each content type.</source>
-        <translation type="vanished">Especificar los directorios que el sistema PS Vita accederá para cada tipo de contenido.</translation>
+        <translation>Especificar los directorios que el sistema PS Vita accederá para cada tipo de contenido.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="51"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="63"/>
         <source>This is the location your Screenshots and Pictures are Saved to/Imported from.</source>
-        <translation type="vanished">Esta es la ubicación donde tus capturas de pantalla e imágenes serán almacenadas o importadas.</translation>
+        <translation>Esta es la ubicación donde tus capturas de pantalla e imágenes serán almacenadas o importadas.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="54"/>
         <source>Photo Folder</source>
-        <translation type="vanished">Directorio de Fotos</translation>
+        <translation>Directorio de Fotos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="73"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="108"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="143"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="178"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="213"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="238"/>
         <source>Browse...</source>
-        <translation type="vanished">Buscar...</translation>
+        <translation>Buscar...</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="86"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="98"/>
         <source>This is the location your Videos are Saved to/Imported from.</source>
-        <translation type="vanished">Esta es la ubicación donde tus videos serán almacenados o importados.</translation>
+        <translation>Esta es la ubicación donde tus videos serán almacenados o importados.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="89"/>
         <source>Video Folder</source>
-        <translation type="vanished">Directorio de Videos</translation>
+        <translation>Directorio de Videos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="121"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="133"/>
         <source>This is the location your Music is Saved to/Imported from.</source>
-        <translation type="vanished">Esta es la ubicación donde tu música será almacenada o importada.</translation>
+        <translation>Esta es la ubicación donde tu música será almacenada o importada.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="124"/>
         <source>Music Folder</source>
-        <translation type="vanished">Directorio de Música</translation>
+        <translation>Directorio de Música</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="156"/>
+        <location filename="../../../gui/forms/configwidget.ui" line="168"/>
         <source>This is the location your Games, Apps, Savegames, and System Backups are Saved to/Imported from.</source>
-        <translation type="vanished">Esta es la ubicación donde tus juegos, aplicaciones, partidas salvadas y respaldos del sistema serán almacenados o importados.</translation>
+        <translation>Esta es la ubicación donde tus juegos, aplicaciones, partidas salvadas y respaldos del sistema serán almacenados o importados.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="159"/>
         <source>Applications / Backups</source>
-        <translation type="vanished">Aplicaciones / Juegos / Respaldos</translation>
+        <translation>Aplicaciones / Juegos / Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="191"/>
         <source>This is the location your Software Updates and Browser Data is Saved to/Imported from.</source>
-        <translation type="vanished">Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
+        <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="194"/>
         <source>Updates / Web content</source>
-        <translation type="vanished">Actualizaciones / Contenido Web</translation>
+        <translation>Actualizaciones / Contenido Web</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="203"/>
         <source>This is the location your PS Vita system will read all the content that it tries to download.</source>
-        <translation type="vanished">Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
+        <translation>Esta es la ubicación donde el sistema PS Vita leerá los contenidos que intente descargar.</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="226"/>
         <source>Packages</source>
-        <translation type="vanished">Archivos PKG</translation>
+        <translation>Archivos PKG</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="265"/>
         <source>Other</source>
-        <translation type="vanished">Otros</translation>
+        <translation>Otros</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="273"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Advanced settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Ajustes Avanzados&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Ajustes Avanzados&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="280"/>
         <source>Offline Mode</source>
-        <translation type="vanished">Modo desconectado</translation>
+        <translation>Modo desconectado</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="290"/>
         <source>Skip metadata extraction</source>
-        <translation type="vanished">Saltar la extracción de metadatos</translation>
+        <translation>Saltar la extracción de metadatos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="314"/>
         <source>Update database automatically when files on the PC are changed</source>
-        <translation type="vanished">Actualizar la base de datos automaticamente</translation>
+        <translation>Actualizar la base de datos automaticamente</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="342"/>
         <source>SQLite</source>
-        <translation type="vanished">SQLite</translation>
+        <translation>SQLite</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="352"/>
         <source>Skip photo scanning</source>
-        <translation type="vanished">Omitir el escaneo de fotos</translation>
+        <translation>Omitir el escaneo de fotos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="359"/>
         <source>Skip video scanning</source>
-        <translation type="vanished">Omitir el escaneo de vídeos</translation>
+        <translation>Omitir el escaneo de vídeos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="366"/>
         <source>Skip music scanning</source>
-        <translation type="vanished">Omitir el escaneo de música</translation>
+        <translation>Omitir el escaneo de música</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="381"/>
         <source>CMA protocol version</source>
-        <translation type="vanished">Versión de protocolo CMA</translation>
+        <translation>Versión de protocolo CMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="461"/>
         <source>CMA protocol selection</source>
-        <translation type="vanished">Uso de protocolo CMA</translation>
+        <translation>Uso de protocolo CMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="469"/>
         <source>Latest</source>
-        <translation type="vanished">Último</translation>
+        <translation>Último</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="474"/>
         <source>Manual</source>
-        <translation type="vanished">Manual</translation>
+        <translation>Manual</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="479"/>
         <source>Custom</source>
-        <translation type="vanished">Personalizado</translation>
+        <translation>Personalizado</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="487"/>
         <source>CMA custom version</source>
-        <translation type="vanished">Versión personalizada CMA</translation>
+        <translation>Versión personalizada CMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="297"/>
         <source>Disable USB monitoring</source>
-        <translation type="vanished">Deshabilitar monitoreo USB</translation>
+        <translation>Deshabilitar monitoreo USB</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="304"/>
         <source>Disable Wi-Fi monitoring</source>
-        <translation type="vanished">Deshabilitar monitoreo WiFi</translation>
+        <translation>Deshabilitar monitoreo WiFi</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="326"/>
         <source>Database backend</source>
-        <translation type="vanished">Almacenaje de base de datos</translation>
+        <translation>Almacenaje de base de datos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.ui" line="337"/>
         <source>In Memory</source>
-        <translation type="vanished">En memoria</translation>
+        <translation>En memoria</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="163"/>
         <source>Select the folder to be used as a photo source</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado como origen de fotos</translation>
+        <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="168"/>
         <source>Select the folder to be used as a music source</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado como origen de música</translation>
+        <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="173"/>
         <source>Select the folder to be used as a video source</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado como origen de videos</translation>
+        <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="178"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
+        <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="183"/>
         <source>Select the folder to be used to fetch software updates</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
+        <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/configwidget.cpp" line="188"/>
         <source>Select the folder to be used to software packages</source>
-        <translation type="vanished">Seleccione el directorio a ser utilizado para almacenar archivos pkg</translation>
+        <translation>Seleccione el directorio a ser utilizado para almacenar archivos pkg</translation>
     </message>
 </context>
 <context>
     <name>ConfirmDialog</name>
     <message>
+        <location filename="../../../gui/forms/confirmdialog.ui" line="14"/>
         <source>Confirmation Message</source>
-        <translation type="vanished">Mensaje de confirmación</translation>
+        <translation>Mensaje de confirmación</translation>
     </message>
 </context>
 <context>
     <name>FilterLineEdit</name>
     <message>
+        <location filename="../../../gui/filterlineedit.cpp" line="50"/>
+        <location filename="../../../gui/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
-        <translation type="vanished">Filtro</translation>
+        <translation>Filtro</translation>
     </message>
 </context>
 <context>
@@ -315,216 +395,262 @@
 <context>
     <name>HeadlessManager</name>
     <message>
+        <location filename="../../../cli/headlessmanager.cpp" line="97"/>
         <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
         <translatorcomment>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translatorcomment>
-        <translation type="vanished">Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
     </message>
 </context>
 <context>
     <name>KDENotifierTray</name>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="34"/>
         <source>Settings</source>
-        <translation type="vanished">Ajustes</translation>
+        <translation>Ajustes</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="35"/>
         <source>Refresh database</source>
-        <translation type="vanished">Refrescar base de datos</translation>
+        <translation>Refrescar base de datos</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="36"/>
         <source>Backup Manager</source>
-        <translation type="vanished">Gestor de Respaldos</translation>
+        <translation>Gestor de Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="37"/>
         <source>About QCMA</source>
-        <translation type="vanished">Acerca de QCMA</translation>
+        <translation>Acerca de QCMA</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="38"/>
         <source>About Qt</source>
-        <translation type="vanished">Acerca de Qt</translation>
+        <translation>Acerca de Qt</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="39"/>
         <source>Quit</source>
-        <translation type="vanished">Salir</translation>
+        <translation>Salir</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="69"/>
         <source>Qcma status</source>
-        <translation type="vanished">Estado de Qcma</translation>
+        <translation>Estado de Qcma</translation>
     </message>
     <message>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="71"/>
         <source>Disconnected</source>
-        <translation type="vanished">Desconectado</translation>
+        <translation>Desconectado</translation>
     </message>
 </context>
 <context>
     <name>MainWidget</name>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="79"/>
         <source>Shutting down...</source>
-        <translation type="vanished">Cerrando...</translation>
+        <translation>Cerrando...</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="81"/>
         <source>Stopping QCMA (disconnect your PS Vita)</source>
-        <translation type="vanished">Deteniendo QCMA (desconecte su PS Vita)</translation>
+        <translation>Deteniendo QCMA (desconecte su PS Vita)</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="94"/>
         <source>Disconnected</source>
-        <translation type="vanished">Desconectado</translation>
+        <translation>Desconectado</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="95"/>
         <source>The device has been disconnected</source>
-        <translation type="vanished">El dispositivo se ha desconectado</translation>
+        <translation>El dispositivo se ha desconectado</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="159"/>
         <source>About Qcma</source>
-        <translation type="vanished">Acerca de Qcma</translation>
+        <translation>Acerca de Qcma</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="161"/>
         <source>Copyright (C) 2015  Codestation</source>
-        <translation type="vanished">Copyright (C) 2015  Codestation</translation>
+        <translation>Copyright (C) 2015  Codestation</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="163"/>
         <source>Copyright (C) 2015  Codestation
 
 build hash: %1
 build branch: %2</source>
-        <translation type="vanished">Copyright (C) 2015  Codestation
+        <translation>Copyright (C) 2015  Codestation
 
 Hash de compilación: %1
 Rama de compilación: %2</translation>
     </message>
     <message>
+        <location filename="../../../gui/mainwidget.cpp" line="272"/>
         <source>Information</source>
-        <translation type="vanished">Información</translation>
+        <translation>Información</translation>
     </message>
 </context>
 <context>
     <name>PinForm</name>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="17"/>
         <source>Device pairing</source>
-        <translation type="vanished">Emparejamiento de dispositivo</translation>
+        <translation>Emparejamiento de dispositivo</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="25"/>
         <source>An unregistered PS Vita system is connecting with QCMA via Wi-Fi</source>
-        <translation type="vanished">Un sistema PS Vita no registrado se intenta conectar con QCMA mediante Wi-Fi</translation>
+        <translation>Un sistema PS Vita no registrado se intenta conectar con QCMA mediante Wi-Fi</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="35"/>
         <source>Device: PS Vita</source>
-        <translation type="vanished">Dispositivo: PS Vita</translation>
+        <translation>Dispositivo: PS Vita</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="45"/>
         <source>Input the following number in the PS Vita system to register it with QCMA</source>
-        <translation type="vanished">Introduce el siguiente número en el sistema PS Vita para registrarlo con QCMA</translation>
+        <translation>Introduce el siguiente número en el sistema PS Vita para registrarlo con QCMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="65"/>
         <source>Time remaining: 300 seconds</source>
-        <translation type="vanished">Tiempo restante: 300 segundos</translation>
+        <translation>Tiempo restante: 300 segundos</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.ui" line="90"/>
         <source>Cancel</source>
-        <translation type="vanished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.cpp" line="45"/>
         <source>Device: %1 (PS Vita)</source>
-        <translation type="vanished">Dispositivo: %1 (PS Vita)</translation>
+        <translation>Dispositivo: %1 (PS Vita)</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/pinform.cpp" line="65"/>
         <source>Time remaining: %1 seconds</source>
-        <translation type="vanished">Tiempo restante: %1 segundos</translation>
+        <translation>Tiempo restante: %1 segundos</translation>
     </message>
 </context>
 <context>
     <name>ProgressForm</name>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="17"/>
         <source>Refreshing database...</source>
-        <translation type="vanished">Actualizando base de datos...</translation>
+        <translation>Actualizando base de datos...</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="25"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Reading directory:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Leyendo directorio:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="32"/>
         <source>directory name</source>
-        <translation type="vanished">Cargando nombre de directorio</translation>
+        <translation>Cargando nombre de directorio</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="39"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Processing file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Procesando archivo:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="46"/>
         <source>file name</source>
-        <translation type="vanished">Cargando nombre de archivo</translation>
+        <translation>Cargando nombre de archivo</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.ui" line="68"/>
         <source>Cancel</source>
-        <translation type="vanished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.cpp" line="45"/>
         <source>Database indexing in progress</source>
-        <translation type="vanished">Actualización de base de datos en progreso</translation>
+        <translation>Actualización de base de datos en progreso</translation>
     </message>
     <message>
+        <location filename="../../../gui/forms/progressform.cpp" line="46"/>
         <source>Are you sure to cancel the database indexing?</source>
-        <translation type="vanished">¿Estas seguro de cancelar la actualización a la base de datos?</translation>
+        <translation>¿Estas seguro de cancelar la actualización a la base de datos?</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
+        <location filename="../../../gui/main.cpp" line="79"/>
         <source>An instance of Qcma is already running</source>
-        <translation type="vanished">Otra instancia de Qcma ya se encuentra en ejecución</translation>
+        <translation>Otra instancia de Qcma ya se encuentra en ejecución</translation>
     </message>
 </context>
 <context>
     <name>QTrayIcon</name>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="51"/>
         <source>Settings</source>
-        <translation type="vanished">Ajustes</translation>
+        <translation>Ajustes</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="52"/>
         <source>Refresh database</source>
-        <translation type="vanished">Refrescar base de datos</translation>
+        <translation>Refrescar base de datos</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="53"/>
         <source>Backup Manager</source>
-        <translation type="vanished">Gestor de Respaldos</translation>
+        <translation>Gestor de Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="54"/>
         <source>About QCMA</source>
-        <translation type="vanished">Acerca de QCMA</translation>
+        <translation>Acerca de QCMA</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="55"/>
         <source>About Qt</source>
-        <translation type="vanished">Acerca de Qt</translation>
+        <translation>Acerca de Qt</translation>
     </message>
     <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="56"/>
         <source>Quit</source>
-        <translation type="vanished">Salir</translation>
+        <translation>Salir</translation>
     </message>
 </context>
 <context>
     <name>UnityIndicator</name>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="105"/>
         <source>Settings</source>
-        <translation type="vanished">Ajustes</translation>
+        <translation>Ajustes</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="106"/>
         <source>Refresh database</source>
-        <translation type="vanished">Refrescar base de datos</translation>
+        <translation>Refrescar base de datos</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="107"/>
         <source>Backup Manager</source>
-        <translation type="vanished">Gestor de Respaldos</translation>
+        <translation>Gestor de Respaldos</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="109"/>
         <source>About QCMA</source>
-        <translation type="vanished">Acerca de QCMA</translation>
+        <translation>Acerca de QCMA</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="110"/>
         <source>About Qt</source>
-        <translation type="vanished">Acerca de Qt</translation>
+        <translation>Acerca de Qt</translation>
     </message>
     <message>
+        <location filename="../../../appindicator/unityindicator.cpp" line="112"/>
         <source>Quit</source>
-        <translation type="vanished">Salir</translation>
+        <translation>Salir</translation>
     </message>
 </context>
 </TS>
