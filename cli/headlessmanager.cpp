@@ -51,6 +51,7 @@ HeadlessManager::HeadlessManager(QObject *obj_parent) :
 HeadlessManager::~HeadlessManager()
 {
     VitaMTP_Cleanup();
+    VitaMTP_USB_Exit();
     delete m_db;
 }
 
@@ -69,8 +70,10 @@ void HeadlessManager::refreshDatabase()
 
 void HeadlessManager::start()
 {
-    if(VitaMTP_Init() < 0) {
-        qCritical("Cannot initialize VitaMTP library");
+    VitaMTP_Init();
+
+    if(VitaMTP_USB_Init() < 0) {
+        emit messageSent(tr("Cannot initialize VitaMTP USB library"));
         return;
     }
 

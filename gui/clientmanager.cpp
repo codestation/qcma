@@ -54,6 +54,7 @@ ClientManager::ClientManager(Database *db, QObject *obj_parent) :
 ClientManager::~ClientManager()
 {
     VitaMTP_Cleanup();
+    VitaMTP_USB_Exit();
 }
 
 void ClientManager::databaseUpdated(int count)
@@ -76,8 +77,10 @@ void ClientManager::showPinDialog(QString name, int pin)
 
 void ClientManager::start()
 {
-    if(VitaMTP_Init() < 0) {
-        emit messageSent(tr("Cannot initialize VitaMTP library"));
+    VitaMTP_Init();
+
+    if(VitaMTP_USB_Init() < 0) {
+        emit messageSent(tr("Cannot initialize VitaMTP USB library"));
         return;
     }
 
