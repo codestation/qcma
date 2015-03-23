@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextStream>
+#include <QAndroidJniObject>
 #include <vitamtp.h>
 
 ServiceManager::ServiceManager(QObject *obj_parent) :
@@ -56,10 +57,7 @@ void ServiceManager::refreshDatabase()
 
 void ServiceManager::start()
 {
-    if(VitaMTP_Init() < 0) {
-        qCritical("Cannot initialize VitaMTP library");
-        return;
-    }
+    VitaMTP_Init();
 
     loadDefaultSettings();
 
@@ -144,8 +142,18 @@ void ServiceManager::threadStopped()
 
 void ServiceManager::loadDefaultSettings()
 {
-    QString defaultdir;
+    QString defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+
+    // save config to /sdcard, remove when the app works properly
+    qputenv("XDG_CONFIG_HOME", defaultdir.toLocal8Bit());
+
     QSettings settings;
+
+    // skip initialization if some config is already present
+    if(!settings.value("appsPath").isNull())
+        return;
+
+    qDebug("saving to: %s", qPrintable(settings.fileName()));
 
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     qDebug("photoPath: %s", qPrintable(defaultdir));
@@ -159,23 +167,23 @@ void ServiceManager::loadDefaultSettings()
     qDebug("photoPath: %s", qPrintable(defaultdir));
     settings.setValue("videoPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
     defaultdir.append(QDir::separator()).append("PS Vita");
     qDebug("appsPath: %s", qPrintable(defaultdir));
     settings.setValue("appsPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
     defaultdir.append(QDir::separator()).append("PSV Updates");
     qDebug("urlPath: %s", qPrintable(defaultdir));
     settings.setValue("urlPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
     defaultdir.append(QDir::separator()).append("PSV Packages");
     qDebug("pkgPath: %s", qPrintable(defaultdir));
     settings.setValue("pkgPath", defaultdir);
 
     settings.setValue("offlineMode", true);
-    settings.setValue("skipMetadata", false);
+    settings.setValue("skipMetadata", true);
 
     // disable USB for now
     settings.setValue("disableUSB", true);
@@ -192,4 +200,12 @@ void ServiceManager::loadDefaultSettings()
     settings.setValue("protocolIndex", 0);
 
     settings.setValue("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION);
+
+    QString deviceName = QAndroidJniObject::getStaticObjectField(
+                "android/os/Build", "MODEL", "Ljava/lang/String;").toString();
+
+    qDebug("Detected device model: %s", qPrintable(deviceName));
+    settings.setValue("hostName", deviceName);
+
+    settings.sync();
 }

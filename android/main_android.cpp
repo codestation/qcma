@@ -21,20 +21,57 @@
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QFile>
 #include <QStringList>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
+#include <QStandardPaths>
 
 #include <inttypes.h>
+#include <unistd.h>
+
 #include <vitamtp.h>
 
+#include <android/log.h>
+
 #include "servicemanager.h"
+
+static QString getAppName()
+{
+    pid_t pid = getpid();
+    QString cmdline = QString("/proc/%1/cmdline").arg(pid);
+    QFile file(cmdline);
+    return file.open(QIODevice::ReadOnly) ? file.readLine() : "";
+}
+
+
+static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QString & msg)
+{
+    QByteArray localMsg = msg.toLocal8Bit();
+    const char *message = localMsg.constData();
+
+    switch (type) {
+    case QtDebugMsg:
+        __android_log_print(ANDROID_LOG_INFO, "qcma", "%s", message);
+        break;
+    case QtWarningMsg:
+        __android_log_print(ANDROID_LOG_WARN, "qcma", "%s", message);
+        break;
+    case QtCriticalMsg:
+        __android_log_print(ANDROID_LOG_ERROR, "qcma", "%s", message);
+        break;
+    case QtFatalMsg:
+        __android_log_print(ANDROID_LOG_FATAL, "qcma", "%s", message);
+        abort();
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationName("Qcma");
+    app.setApplicationName("qcma");
 
     // FIXME: libmtp sends SIGPIPE if a socket write fails crashing the whole app
     // the proper fix is to libmtp to handle the cancel properly or ignoring
@@ -44,7 +81,17 @@ int main(int argc, char *argv[])
     // stdout goes to /dev/null on android
     VitaMTP_Set_Logging(VitaMTP_NONE);
 
+    qInstallMessageHandler(cleanOutput);
+
     qDebug("Starting Qcma %s", QCMA_VER);
+
+    QString appname = getAppName();
+    qDebug("Class name: %s", qPrintable(appname));
+
+    // set $HOME, Qt/Android doesn't currently do this
+    qputenv("HOME", QString("/data/data/%1").arg(appname).toLocal8Bit());
+
+    app.addLibraryPath(appname + "/lib");
 
     QTranslator translator;
     QString locale = "en"; //QLocale().system().name();
@@ -71,7 +118,7 @@ int main(int argc, char *argv[])
     qDebug("Starting main thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     // set the organization/application for QSettings to work properly
-    app.setOrganizationName("codestation");
+    app.setOrganizationName("qcma");
     app.setApplicationName("qcma");
 
     ServiceManager manager;

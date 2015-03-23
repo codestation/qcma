@@ -3,7 +3,7 @@ include(../common/defines.pri)
 
 TARGET = qcma_android
 TEMPLATE=app
-QT += network sql
+QT += network sql androidextras
 LIBS += -L../common -lqcma_common
 
 # this library needs to link statically their deps but Qt doesn't pass --static to PKGCONFIG
