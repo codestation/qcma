@@ -187,12 +187,29 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
     // save the device name in a temporal variable, just in case the pin is rejected
     tempOnlineId = QString(info->name);
     qDebug("Registration request from %s (MAC: %s)", info->name, info->mac_addr);
-    int pin = rand() % 10000 * 10000 | rand() % 10000;
+
+    QString staticPin = QSettings().value("staticPin").toString();
+
+    int pin;
+
+    if(!staticPin.isNull() && staticPin.length() == 8) {
+        bool ok;
+        pin = staticPin.toInt(&ok);
+
+        if(!ok) {
+            pin = rand() % 10000 * 10000 | rand() % 10000;
+        }
+    } else {
+        pin = rand() % 10000 * 10000 | rand() % 10000;
+    }
+
     QTextStream out(stdout);
     out << "Your registration PIN for " << info->name << " is: ";
     out.setFieldWidth(8);
     out.setPadChar('0');
     out << pin << endl;
+
+    qDebug("PIN: %08i", pin);
 
     *p_err = 0;
     emit this_object->receivedPin(info->name, pin);

@@ -56,7 +56,7 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
         settings.setValue("guid", uuid);
     }
 
-    hostname = QHostInfo::localHostName();
+    hostname = settings.value("hostName", QHostInfo::localHostName()).toString();
     setAvailable();
 
     socket = new QUdpSocket(this);

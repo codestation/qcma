@@ -41,11 +41,13 @@ bool DeviceCapability::exchangeInfo(vita_device_t *device)
                  vita_info.protocolVersion, VITAMTP_PROTOCOL_MAX_VERSION);
     }
 
-    QString hostname = QHostInfo::localHostName();
+    QSettings settings;
+    QString hostname = settings.value("hostName", QHostInfo::localHostName()).toString();
 
     int protocol_version = ::getVitaProtocolVersion();
 
     qDebug() << "Sending Qcma protocol version:" << protocol_version;
+    qDebug() << "Identifying as" << hostname;
 
     const initiator_info_t *pc_info = VitaMTP_Data_Initiator_New(hostname.toUtf8().data(), protocol_version);
 
