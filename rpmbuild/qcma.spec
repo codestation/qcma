@@ -62,7 +62,7 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 %setup -n %{name}-%{version}
 
 %build
-lrelease-qt5 resources/translations/*.ts
+lrelease-qt5 common/resources/translations/*.ts
 qmake-qt5 PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX ENABLE_KNOTIFICATIONS ENABLE_APPINDICATOR ENABLE_KDENOTIFIER"
 make %{?_smp_mflags}
 

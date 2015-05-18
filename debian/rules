@@ -10,7 +10,7 @@ export QT_SELECT=qt5
 	dh $@ --buildsystem=qmake
 
 override_dh_auto_configure:
-	lrelease resources/translations/qcma_*.ts
+	lrelease common/resources/translations/qcma_*.ts
 	dh_auto_configure -- qcma.pro CONFIG+="ENABLE_APPINDICATOR"
 
 .PHONY: override_dh_auto_configure

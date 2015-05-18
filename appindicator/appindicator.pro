@@ -29,8 +29,8 @@ QMAKE_CXXFLAGS += -Wno-write-strings -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MA
 DATADIR = $$PREFIX/share
 
 actions64.path = $$DATADIR/icons/hicolor/64x64/actions
-actions64.files += resources/images/qcma_on.png
-actions64.files += resources/images/qcma_off.png
+actions64.files += ../gui/resources/images/qcma_on.png
+actions64.files += ../gui/resources/images/qcma_off.png
 
 target.path = /usr/lib/qcma
 INSTALLS += target actions64
