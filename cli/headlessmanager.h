@@ -59,6 +59,7 @@ private:
 signals:
     void stopped();
     void databaseUpdated(int count);
+    void messageSent(QString);
 
 public slots:
     void refreshDatabase();
