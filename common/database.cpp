@@ -21,7 +21,6 @@
 #include "avdecoder.h"
 
 #include <QDebug>
-#include <QImage>
 #include <QSettings>
 #include <QTextStream>
 #include <QThread>
@@ -141,12 +140,13 @@ void Database::loadVideoMetadata(const QString &path, metadata_t &metadata)
 
 void Database::loadPhotoMetadata(const QString &path, metadata_t &metadata)
 {
-    QImage img;
-    bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
+    //FIXME: use avdecoder
+    //QImage img;
+    //bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
 
-    if(!skipMetadata && img.load(path)) {
-        metadata.data.photo.tracks->data.track_photo.width = img.width();
-        metadata.data.photo.tracks->data.track_photo.height = img.height();
-    }
+    //if(!skipMetadata && img.load(path)) {
+    //    metadata.data.photo.tracks->data.track_photo.width = img.width();
+    //    metadata.data.photo.tracks->data.track_photo.height = img.height();
+    //}
     metadata.data.photo.title = strdup(metadata.name);
 }

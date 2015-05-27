@@ -23,7 +23,6 @@
 #include <QBuffer>
 #include <QDebug>
 #include <QDir>
-#include <QImage>
 #include <QSettings>
 
 #ifdef Q_OS_WIN32
@@ -112,14 +111,12 @@ static QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
             foreach(const QString &ext, ext_list) {
                 if(file.compare(QString("%1.%2").arg(cover, ext), Qt::CaseInsensitive) == 0) {
                     qDebug() << "Trying to load album art from" << folder.absoluteFilePath(file);
-                    QImage img;
-                    if(img.load(folder.absoluteFilePath(file))) {
-                        QBuffer buffer(&data);
-                        buffer.open(QIODevice::WriteOnly);
-                        QImage result = img.scaled(256, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                        result.save(&buffer, "JPEG");
-                        metadata->data.thumbnail.width = result.width();
-                        metadata->data.thumbnail.height = result.height();
+                    AVDecoder decoder;
+                    if(decoder.open(folder.absoluteFilePath(file))) {
+                        int width, height;
+                        data = decoder.getThumbnail(width, height);
+                        metadata->data.thumbnail.width = width;
+                        metadata->data.thumbnail.height = height;
                     }
                     // only try with the first match
                     break;
@@ -140,16 +137,14 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
         if(file.open(QIODevice::ReadOnly)) {
             data = file.readAll();
         }
-    } else if(MASK_SET(type, Photo)) {
-        QImage img;
+    } else if(MASK_SET(type, Photo)) {        
+        AVDecoder decoder;
 
-        if(img.load(path)) {
-            QBuffer buffer(&data);
-            buffer.open(QIODevice::WriteOnly);
-            QImage result = img.scaled(240, 136, Qt::KeepAspectRatio, Qt::FastTransformation);
-            result.save(&buffer, "JPEG");
-            metadata->data.thumbnail.width = result.width();
-            metadata->data.thumbnail.height = result.height();
+        if(decoder.open(path)) {
+            int width, height;
+            data = decoder.getThumbnail(width, height);
+            metadata->data.thumbnail.width = width;
+            metadata->data.thumbnail.height = height;
         }
     } else if(MASK_SET(type, Music)) {
         if(MASK_SET(type, Folder)) {
@@ -159,17 +154,23 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
             AVDecoder decoder;
 
             if(decoder.open(path)) {
-                data = decoder.getAudioThumbnail(256, 256);
-                metadata->data.thumbnail.width = 256;
-                metadata->data.thumbnail.height = 256;
+                int width, height;
+                data = decoder.getThumbnail(width, height);
+                metadata->data.thumbnail.width = width;
+                metadata->data.thumbnail.height = height;
             }
         }
     }  else if(MASK_SET(type, Video)) {
         AVDecoder decoder;
         if(decoder.open(path)) {
-            data = decoder.getVideoThumbnail(256, 256);
-            metadata->data.thumbnail.width = 256;
-            metadata->data.thumbnail.height = 256;
+            int percentage = QSettings().value("videoThumbnailSeekPercentage", 30).toInt();
+            decoder.seekVideo(percentage);
+
+            int width, height;
+
+            data = decoder.getThumbnail(width, height);
+            metadata->data.thumbnail.width = width;
+            metadata->data.thumbnail.height = height;
         }
     }
     return data;

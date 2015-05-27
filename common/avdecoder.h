@@ -42,9 +42,9 @@ public:
     bool open(const QString filename);
     void close();
     bool loadCodec(codec_type codec);
+    bool seekVideo(int percentage);
 
-    QByteArray getAudioThumbnail(int width, int height);
-    QByteArray getVideoThumbnail(int width, int height);
+    QByteArray getThumbnail(int &width, int &height);
     void getAudioMetadata(metadata_t &metadata);
     void getVideoMetadata(metadata_t &metadata);
     const char *getMetadataEntry(const char *key, const char *default_value = NULL);
@@ -80,6 +80,7 @@ public:
 
 private:
     AVFrame *getDecodedFrame(AVCodecContext *pCodecCtx, int stream_index);
+    QByteArray WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int width, int height);
 
     AVFormatContext *pFormatCtx;
     AVCodecContext *pCodecCtx;

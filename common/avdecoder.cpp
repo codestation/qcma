@@ -22,6 +22,7 @@
 #include "database.h"
 
 #include <QBuffer>
+#include <QDebug>
 #include <QFile>
 #include <QImage>
 #include <QSettings>
@@ -120,27 +121,6 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
     }
 }
 
-QByteArray AVDecoder::getAudioThumbnail(int width, int height)
-{
-    QByteArray data;
-
-    if(!loadCodec(CODEC_VIDEO)) {
-        return data;
-    }
-
-    AVPacket pkt;
-    if(av_read_frame(pFormatCtx, &pkt) >= 0) {
-        // first frame == first thumbnail (hopefully)
-        QBuffer imgbuffer(&data);
-        imgbuffer.open(QIODevice::WriteOnly);
-        QImage img = QImage::fromData(QByteArray((const char *)pkt.data, pkt.size));
-        QImage result = img.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        result.save(&imgbuffer, "JPEG");
-    }
-
-    return data;
-}
-
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
@@ -171,26 +151,96 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
     }
 }
 
-QByteArray AVDecoder::getVideoThumbnail(int width, int height)
+
+bool AVDecoder::seekVideo(int percentage)
 {
-    QByteArray data;
-    AVFrame *pFrame;
-
-    int percentage = QSettings().value("videoThumbnailSeekPercentage", 30).toInt();
-
-    if(!loadCodec(CODEC_VIDEO)) {
-        return data;
-    }
-
     qint64 seek_pos = pFormatCtx->duration * percentage / (AV_TIME_BASE * 100);
     qint64 frame = av_rescale(seek_pos, av_stream->time_base.den, av_stream->time_base.num);
 
     if(avformat_seek_file(pFormatCtx, stream_index, 0, frame, frame, AVSEEK_FLAG_FRAME) < 0) {
         avcodec_close(pCodecCtx);
+        return false;
+    }
+
+    return true;
+}
+
+static void calculate_thumbnail_dimensions(int src_width, int src_height,
+                                           int src_sar_num, int src_sar_den,
+                                           int &dst_width, int &dst_height) {
+
+    if ((src_sar_num <= 0) || (src_sar_den <= 0)) {
+        src_sar_num = 1;
+        src_sar_den = 1;
+    }
+
+    if ((src_width * src_sar_num) / src_sar_den > src_height) {
+        dst_width = 256;
+        dst_height = (dst_width * src_height) / ((src_width * src_sar_num) / src_sar_den);
+    } else {
+        dst_height = 256;
+        dst_width = (dst_height * ((src_width * src_sar_num) / src_sar_den)) / src_height;
+    }
+
+    if (dst_width < 8)
+        dst_width = 8;
+
+    if (dst_height < 1)
+        dst_height = 1;
+}
+
+QByteArray AVDecoder::getThumbnail(int &width, int &height)
+{
+    QByteArray data;
+
+    if(!loadCodec(CODEC_VIDEO)) {
         return data;
     }
 
-    if((pFrame = getDecodedFrame(pCodecCtx, stream_index)) == NULL) {
+    AVFrame *pFrame = getDecodedFrame(pCodecCtx, stream_index);
+
+    if(pFrame != NULL) {
+
+        calculate_thumbnail_dimensions(pCodecCtx->width, pCodecCtx->height,
+                                       pCodecCtx->sample_aspect_ratio.num,
+                                       pCodecCtx->sample_aspect_ratio.den,
+                                       width, height);
+
+        data = WriteJPEG(pCodecCtx, pFrame, width, height);
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        av_frame_free(&pFrame);
+#else
+        av_free(pFrame);
+#endif
+    }
+
+    avcodec_close(pCodecCtx);
+
+    return data;
+}
+
+QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int width, int height)
+{
+    AVCodecContext *pOCodecCtx;
+    AVCodec        *pOCodec;
+
+    QByteArray data;
+
+    pOCodec = avcodec_find_encoder(AV_CODEC_ID_MJPEG);
+
+    if (!pOCodec) {
+        return data;
+    }
+
+    SwsContext *sws_ctx = sws_getContext(
+                pCodecCtx->width, pCodecCtx->height,
+                pCodecCtx->pix_fmt,
+                width, height,
+                PIX_FMT_YUVJ420P, SWS_BICUBIC,
+                NULL, NULL, NULL);
+
+    if(!sws_ctx) {
         avcodec_close(pCodecCtx);
         return data;
     }
@@ -201,28 +251,26 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
     AVFrame *pFrameRGB = avcodec_alloc_frame();
 #endif
 
-    int numBytes = avpicture_get_size(PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
-    uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
-
-    avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
-
-    SwsContext *sws_ctx = sws_getContext(
-                              pCodecCtx->width,
-                              pCodecCtx->height,
-                              pCodecCtx->pix_fmt,
-                              pCodecCtx->width,
-                              pCodecCtx->height,
-                              PIX_FMT_RGB24,
-                              SWS_BICUBIC,
-                              NULL,
-                              NULL,
-                              NULL
-                          );
-
-    if(!sws_ctx) {
-        avcodec_close(pCodecCtx);
+    if(pFrameRGB == NULL) {
+        sws_freeContext(sws_ctx);
         return data;
     }
+
+    int numBytes = avpicture_get_size(PIX_FMT_YUVJ420P, width, height);
+
+    uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
+
+    if(!buffer) {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        av_frame_free(&pFrameRGB);
+#else
+        av_free(pFrameRGB);
+#endif
+        sws_freeContext(sws_ctx);
+        return data;
+    }
+
+    avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_YUVJ420P, width, height);
 
     sws_scale(
         sws_ctx,
@@ -234,30 +282,63 @@ QByteArray AVDecoder::getVideoThumbnail(int width, int height)
         pFrameRGB->linesize
     );
 
-    QImage image(pCodecCtx->width, pCodecCtx->height, QImage::Format_RGB888);
+    pOCodecCtx = avcodec_alloc_context3(pOCodec);
 
-    for(int y = 0, h = pCodecCtx->height, w = pCodecCtx->width; y < h; y++) {
-        memcpy(image.scanLine(y), pFrameRGB->data[0] + y * pFrameRGB->linesize[0], w * 3);
+    if(pOCodecCtx == NULL) {
+        av_free(buffer);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        av_frame_free(&pFrameRGB);
+#else
+        av_free(&pFrameRGB);
+#endif
+        sws_freeContext(sws_ctx);
+        return  0;
     }
 
-    QBuffer imgbuffer(&data);
-    imgbuffer.open(QIODevice::WriteOnly);
-    QImage result = image.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    result.save(&imgbuffer, "JPEG");
+    pOCodecCtx->bit_rate      = pCodecCtx->bit_rate;
+    pOCodecCtx->width         = width;
+    pOCodecCtx->height        = height;
+    pOCodecCtx->pix_fmt       = AV_PIX_FMT_YUVJ420P;
+    pOCodecCtx->codec_id      = AV_CODEC_ID_MJPEG;
+    pOCodecCtx->codec_type    = AVMEDIA_TYPE_VIDEO;
+    pOCodecCtx->time_base.num = pCodecCtx->time_base.num;
+    pOCodecCtx->time_base.den = pCodecCtx->time_base.den;
+
+    AVDictionary *opts = NULL;
+    if(avcodec_open2(pOCodecCtx, pOCodec, &opts) < 0) {
+         return  0;
+    }
+
+    pOCodecCtx->mb_lmin        = pOCodecCtx->lmin = pOCodecCtx->qmin * FF_QP2LAMBDA;
+    pOCodecCtx->mb_lmax        = pOCodecCtx->lmax = pOCodecCtx->qmax * FF_QP2LAMBDA;
+    pOCodecCtx->flags          = CODEC_FLAG_QSCALE;
+    pOCodecCtx->global_quality = pOCodecCtx->qmin * FF_QP2LAMBDA;
+
+    pFrame->pts     = 1;
+    pFrame->quality = pOCodecCtx->global_quality;
+
+    AVPacket pkt;
+    av_init_packet(&pkt);
+    pkt.data = NULL;
+    pkt.size = 0;
+
+    int gotPacket;
+
+    avcodec_encode_video2(pOCodecCtx, &pkt, pFrameRGB, &gotPacket);
+
+    QByteArray buffer2(reinterpret_cast<char *>(pkt.data), pkt.size);
+    avcodec_close(pOCodecCtx);
 
     av_free(buffer);
-
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     av_frame_free(&pFrameRGB);
-    av_frame_free(&pFrame);
 #else
-    av_free(pFrameRGB);
-    av_free(pFrame);
+    av_free(&pFrameRGB);
 #endif
+    avcodec_close(pOCodecCtx);
+    sws_freeContext(sws_ctx);
 
-    avcodec_close(pCodecCtx);
-
-    return data;
+    return buffer2;
 }
 
 void AVDecoder::close()

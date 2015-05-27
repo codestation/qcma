@@ -3,7 +3,8 @@ include(../common/defines.pri)
 
 TARGET = qcma_cli
 TEMPLATE += app
-QT += network sql
+QT += network sql core
+QT -= gui
 LIBS += -L../common -lqcma_common
 
 SOURCES += \

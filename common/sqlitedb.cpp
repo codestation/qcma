@@ -26,7 +26,6 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
-#include <QImage>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QStandardPaths>
@@ -741,7 +740,7 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int id
 uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int id_parent, int type)
 {
     int ohfi;
-    QImage img;
+    //QImage img;
     uint date_created;
     int width, height, file_format, photo_codec;
 
@@ -751,18 +750,18 @@ uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int id
         return 0;
     }
 
-    if(!img.load(path + "/" + name)) {
-        return 0;
-    }
+    //if(!img.load(path + "/" + name)) {
+    //    return 0;
+    //}
 
     QDateTime date = QFileInfo(path + "/" + name).created();
     date_created = date.toUTC().toTime_t();
     QString month_created = date.toString("yyyy/MM");
 
-    width = img.width();
-    height = img.height();
-    file_format = photo_list[cma_file_type].file_format;
-    photo_codec = photo_list[cma_file_type].file_codec;
+    width = 0; //img.width();
+    height = 0; //img.height();
+    file_format = 0; //photo_list[cma_file_type].file_format;
+    photo_codec = 0; //photo_list[cma_file_type].file_codec;
 
     QByteArray basename = QFileInfo(name).baseName().toUtf8();
 
