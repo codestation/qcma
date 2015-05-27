@@ -183,7 +183,7 @@ void ServiceManager::loadDefaultSettings()
     settings.setValue("pkgPath", defaultdir);
 
     settings.setValue("offlineMode", true);
-    settings.setValue("skipMetadata", true);
+    settings.setValue("skipMetadata", false);
 
     // disable USB for now
     settings.setValue("disableUSB", true);

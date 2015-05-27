@@ -4,11 +4,12 @@ include(../common/defines.pri)
 TARGET = qcma_android
 TEMPLATE=app
 QT += network sql androidextras
+QT -= gui
 LIBS += -L../common -lqcma_common
 
 # this library needs to link statically their deps but Qt doesn't pass --static to PKGCONFIG
 QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp libavformat libavcodec libavutil libswscale)
-LIBS += $$system(pkg-config --static --libs libvitamtp libavformat libavcodec libavutil libswscale)
+LIBS += $$system(pkg-config --static --libs libvitamtp libavformat libavcodec libavutil libswscale) -liconv
 
 SOURCES += \
     main_android.cpp \
