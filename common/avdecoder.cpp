@@ -24,7 +24,6 @@
 #include <QBuffer>
 #include <QDebug>
 #include <QFile>
-#include <QImage>
 #include <QSettings>
 
 AVDecoder::AvInit init;
@@ -157,12 +156,7 @@ bool AVDecoder::seekVideo(int percentage)
     qint64 seek_pos = pFormatCtx->duration * percentage / (AV_TIME_BASE * 100);
     qint64 frame = av_rescale(seek_pos, av_stream->time_base.den, av_stream->time_base.num);
 
-    if(avformat_seek_file(pFormatCtx, stream_index, 0, frame, frame, AVSEEK_FLAG_FRAME) < 0) {
-        avcodec_close(pCodecCtx);
-        return false;
-    }
-
-    return true;
+    return avformat_seek_file(pFormatCtx, stream_index, 0, frame, frame, AVSEEK_FLAG_FRAME) >= 0;
 }
 
 static void calculate_thumbnail_dimensions(int src_width, int src_height,
@@ -215,8 +209,6 @@ QByteArray AVDecoder::getThumbnail(int &width, int &height)
 #endif
     }
 
-    avcodec_close(pCodecCtx);
-
     return data;
 }
 
@@ -241,7 +233,6 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
                 NULL, NULL, NULL);
 
     if(!sws_ctx) {
-        avcodec_close(pCodecCtx);
         return data;
     }
 
@@ -285,6 +276,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
     pOCodecCtx = avcodec_alloc_context3(pOCodec);
 
     if(pOCodecCtx == NULL) {
+        avcodec_free_context(&pOCodecCtx);
         av_free(buffer);
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
@@ -306,6 +298,14 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 
     AVDictionary *opts = NULL;
     if(avcodec_open2(pOCodecCtx, pOCodec, &opts) < 0) {
+        avcodec_free_context(&pOCodecCtx);
+        av_free(buffer);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        av_frame_free(&pFrameRGB);
+#else
+        av_free(&pFrameRGB);
+#endif
+        sws_freeContext(sws_ctx);
          return  0;
     }
 
@@ -327,8 +327,8 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
     avcodec_encode_video2(pOCodecCtx, &pkt, pFrameRGB, &gotPacket);
 
     QByteArray buffer2(reinterpret_cast<char *>(pkt.data), pkt.size);
-    avcodec_close(pOCodecCtx);
 
+    avcodec_free_context(&pOCodecCtx);
     av_free(buffer);
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     av_frame_free(&pFrameRGB);

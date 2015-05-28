@@ -51,6 +51,9 @@ static bool setup_handlers()
 {
     struct sigaction hup, term;
 
+    memset(&hup, 0, sizeof(hup));
+    memset(&term, 0, sizeof(term));
+
     hup.sa_handler = ClientManager::hupSignalHandler;
     sigemptyset(&hup.sa_mask);
     hup.sa_flags = 0;
