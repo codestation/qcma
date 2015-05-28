@@ -87,6 +87,7 @@ private:
     AVStream *av_stream;
     AVCodec *av_codec;
     int stream_index;
+    bool codec_loaded;
 };
 
 #endif // AVDECODER_H

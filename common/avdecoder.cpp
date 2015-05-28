@@ -29,7 +29,7 @@
 AVDecoder::AvInit init;
 
 AVDecoder::AVDecoder() :
-    pFormatCtx(NULL), pCodecCtx(NULL), av_stream(NULL), av_codec(NULL), stream_index(-1)
+    pFormatCtx(NULL), pCodecCtx(NULL), av_stream(NULL), av_codec(NULL), stream_index(-1), codec_loaded(false)
 {
 }
 
@@ -59,6 +59,10 @@ bool AVDecoder::open(const QString filename)
 
 bool AVDecoder::loadCodec(codec_type codec)
 {
+    if(codec_loaded) {
+        return true;
+    }
+
     AVDictionary *opts = NULL;
 
     if((stream_index = av_find_best_stream(pFormatCtx, (AVMediaType)codec, -1, -1, &av_codec, 0)) < 0) {
@@ -69,9 +73,11 @@ bool AVDecoder::loadCodec(codec_type codec)
     pCodecCtx = av_stream->codec;
 
     if(avcodec_open2(pCodecCtx, av_codec, &opts) < 0) {
+        codec_loaded = false;
         return false;
     }
 
+    codec_loaded = true;
     return true;
 }
 
@@ -153,6 +159,10 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
 
 bool AVDecoder::seekVideo(int percentage)
 {
+    if(!loadCodec(CODEC_VIDEO)) {
+        return false;
+    }
+
     qint64 seek_pos = pFormatCtx->duration * percentage / (AV_TIME_BASE * 100);
     qint64 frame = av_rescale(seek_pos, av_stream->time_base.den, av_stream->time_base.num);
 
