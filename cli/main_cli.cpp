@@ -56,6 +56,10 @@ static void noDebugOutput(QtMsgType type, const char *message)
     case QtFatalMsg:
         fprintf(stderr, "Fatal: %s\n", message);
         abort();
+        break;
+    case QtInfoMsg:
+        fprintf(stderr, "Info: %s\n", message);
+        break;
     }
 }
 

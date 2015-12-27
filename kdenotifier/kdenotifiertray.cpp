@@ -27,6 +27,7 @@
 KDENotifierTray::KDENotifierTray(QWidget *obj_parent)
     : TrayIndicator(obj_parent)
 {
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 void KDENotifierTray::init()

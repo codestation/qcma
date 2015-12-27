@@ -37,6 +37,7 @@ QTrayIcon::QTrayIcon(QWidget *obj_parent)
 #ifdef Q_OS_LINUX
     notify_init("qcma");
 #endif
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 QTrayIcon::~QTrayIcon()

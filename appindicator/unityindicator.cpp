@@ -51,6 +51,7 @@ UnityIndicator::UnityIndicator(QWidget *obj_parent) :
     TrayIndicator(obj_parent)
 {
     notify_init("qcma");
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 UnityIndicator::~UnityIndicator()
