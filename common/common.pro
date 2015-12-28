@@ -40,6 +40,6 @@ HEADERS += \
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml
 
-RESOURCES += common.qrc translations.qrc
+RESOURCES += commonrc.qrc translations.qrc
 
 PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale

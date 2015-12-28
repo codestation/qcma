@@ -99,6 +99,9 @@ static bool setup_handlers()
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(commonrc);
+    Q_INIT_RESOURCE(translations);
+
     if(SingleCoreApplication::sendMessage("Another instance of Qcma tried to start")) {
         QTextStream(stdout) << "An instance of Qcma is already running" << endl;
         return 0;
