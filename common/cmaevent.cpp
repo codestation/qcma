@@ -540,6 +540,23 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
             res.open(QIODevice::ReadOnly);
             data = res.readAll();
 
+            // fetch country code from url
+            QString countryCode;
+            QStringList parts = QUrl(url).path().split('/');
+            if(parts.size() >= 2) {
+                parts.removeLast();
+                countryCode = parts.last();
+                qDebug() << "Detected country code from URL: " << countryCode;
+
+                if(countryCode != "us") {
+                    QString regionTag = QString("<region id=\"%1\">").arg(countryCode);
+                    data.replace("<region id=\"us\">", qPrintable(regionTag));
+                }
+
+            } else {
+                qWarning() << "No country code found in URL, defaulting to \"us\"";
+            }
+
         } else if(!offlineMode) {
             qDebug("URL: %s", url);
             HTTPDownloader downloader(url);
