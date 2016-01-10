@@ -10,11 +10,11 @@
 %define _verprefix v%{_version}
 %endif
 
-%if 0%{?fedora} || 0%{?centos}
+%if 0%{?fedora}
 %define _qt5base qt5-qtbase
 %define _qt5imageformats qt5-qtimageformats
 %define _pkgconfig pkgconfig
-%define _qt5toolsdevel qt5-qttools-devel
+%define _qt5linguist qt5-linguist
 %define _qt5basedevel qt5-qtbase-devel
 %define _knotifications kf5-knotifications
 %define _knotifications_devel kf5-knotifications-devel
@@ -23,7 +23,7 @@
 %define _qt5base libqt5-qtbase
 %define _qt5imageformats libqt5-qtimageformats
 %define _pkgconfig pkg-config
-%define _qt5toolsdevel libqt5-qttools
+%define _qt5linguist  libqt5-linguist
 %define _qt5basedevel libqt5-qtbase-devel
 %define _knotifications libKF5Notifications5
 %define _knotifications_devel knotifications-devel
@@ -50,7 +50,7 @@ BuildRequires:  %{_knotifications_devel}
 BuildRequires:  libappindicator-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
-BuildRequires:  %{_qt5toolsdevel}
+BuildRequires:  %{_qt5linguist}
 BuildRequires:  %{_qt5basedevel}
 
 %description
