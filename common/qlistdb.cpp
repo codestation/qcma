@@ -20,6 +20,7 @@
 #include "cmautils.h"
 #include "qlistdb.h"
 #include "cmaobject.h"
+#include "sforeader.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -27,6 +28,30 @@
 #include <QTextStream>
 #include <QThread>
 #include <QDebug>
+
+static bool nameLessThan(const QFileInfo &v1, const QFileInfo &v2)
+{
+    if(v1.isDir() && v2.isDir()) {
+        SfoReader sfo;
+        QString t1, t2;
+
+        if(sfo.load(v1.absoluteFilePath() + QDir::separator() + "sce_sys" + QDir::separator() + "param.sfo") ||
+               sfo.load(v1.absoluteFilePath() + QDir::separator() + "PARAM.SFO")) {
+            t1 = QString(sfo.value("TITLE", ""));
+        }
+
+        if(sfo.load(v2.absoluteFilePath() + QDir::separator() + "sce_sys" + QDir::separator() + "param.sfo") ||
+                sfo.load(v2.absoluteFilePath() + QDir::separator() + "PARAM.SFO")) {
+            t2 = QString(sfo.value("TITLE", ""));
+        }
+
+        if(!t1.isEmpty() && !t2.isEmpty()) {
+            return t1 < t2;
+        }
+    }
+
+    return v1.absoluteFilePath() < v2.absoluteFilePath();
+}
 
 QListDB::QListDB(QObject *obj_parent) :
     Database(obj_parent)
@@ -151,7 +176,6 @@ int QListDB::create()
         }
 
         qDebug("Added objects for OHFI 0x%02X: %i", ohfi_array[i], dir_count);
-
         total_objects += dir_count;
         object_list[ohfi_array[i]] = list;
     }
@@ -214,6 +238,10 @@ int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *obj_parent, 
     QDir dir(obj_parent->m_path);
     dir.setSorting(QDir::Name | QDir::DirsFirst);
     QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Time);
+
+    if(obj_parent && !obj_parent->parent) {
+        qSort(qsl.begin(), qsl.end(), nameLessThan);
+    }
 
     foreach(const QFileInfo &info, qsl) {
 
