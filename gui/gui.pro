@@ -4,7 +4,6 @@ include(../common/defines.pri)
 TARGET = qcma
 TEMPLATE += app
 QT += gui widgets network sql
-LIBS += -L../common -lqcma_common
 
 SOURCES += \
     main.cpp \
@@ -81,3 +80,11 @@ win32 {
     # Windows icon
     RC_FILE = qcma.rc
 }
+
+unix|win32: LIBS += -L$$OUT_PWD/../common/ -lqcma_common
+
+INCLUDEPATH += $$PWD/../common
+DEPENDPATH += $$PWD/../common
+
+win32:!win32-g++: PRE_TARGETDEPS += $$OUT_PWD/../common/qcma_common.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$OUT_PWD/../common/libqcma_common.a
