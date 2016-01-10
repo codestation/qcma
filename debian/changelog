@@ -5,8 +5,10 @@ qcma (0.3.10) unstable; urgency=low
   * Added french translation.
   * Added systemd unit file for qcma_cli.
   * Replaced dbus with unix signals.
+  * Show sorted game entries on Vita side.
+  * Fixed offline mode on vitas that connect to PSN from non-main countries.
 
- -- codestation <codestation404@gmail.com>  Sun, 15 Mar 2015 14:35:04 -0000
+ -- codestation <codestation404@gmail.com>  Sun, 10 Jan 2016 00:00:00 -0000
 
 qcma (0.3.9) unstable; urgency=low
 
