@@ -57,9 +57,11 @@ static void noDebugOutput(QtMsgType type, const char *message)
         fprintf(stderr, "Fatal: %s\n", message);
         abort();
         break;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     case QtInfoMsg:
         fprintf(stderr, "Info: %s\n", message);
         break;
+#endif
     }
 }
 
