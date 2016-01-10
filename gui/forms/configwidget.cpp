@@ -103,15 +103,21 @@ void ConfigWidget::setDefaultData()
     defaultdir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     ui->videoPath->setText(QDir::toNativeSeparators(settings.value("videoPath", defaultdir).toString()));
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+#ifdef Q_OS_WIN
+    QString appLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
+    QString appLocation = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+#endif
+
+    defaultdir = appLocation;
     defaultdir.append(QDir::separator()).append("PS Vita");
     ui->appPath->setText(QDir::toNativeSeparators(settings.value("appsPath", defaultdir).toString()));
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir = appLocation;
     defaultdir.append(QDir::separator()).append("PSV Updates");
     ui->urlPath->setText(QDir::toNativeSeparators(settings.value("urlPath", defaultdir).toString()));
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    defaultdir = appLocation;
     defaultdir.append(QDir::separator()).append("PSV Packages");
     ui->pkgPath->setText(QDir::toNativeSeparators(settings.value("pkgPath", defaultdir).toString()));
 
