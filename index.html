@@ -65,25 +65,14 @@ official CMA and also offer some features missing in the original one.</p>
 <a id="headless-version" class="anchor" href="#headless-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Headless version</h2>
 
 <p>There is a qcma_cli binary that doesn't need a X session running (useful for servers).
-The daemon provides minimal interaction via dbus. Here are some usage examples:</p>
+The daemon provides minimal interaction via UNIX signals.</p>
 
-<h4>
-<a id="send-a-signal-to-refresh-the-database" class="anchor" href="#send-a-signal-to-refresh-the-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a signal to refresh the database</h4>
-
-<pre><code>dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.refreshDatabase
-</code></pre>
-
-<h4>
-<a id="send-a-signal-to-stop-the-daemon" class="anchor" href="#send-a-signal-to-stop-the-daemon" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a signal to stop the daemon</h4>
-
-<pre><code>dbus-send --session --type=method_call --dest=org.qcma.HeadlessManager /HeadlessManager org.qcma.HeadlessManager.stop
-</code></pre>
-
-<h4>
-<a id="receive-confirmation-when-the-database-finished-updating" class="anchor" href="#receive-confirmation-when-the-database-finished-updating" aria-hidden="true"><span class="octicon octicon-link"></span></a>Receive confirmation when the database finished updating</h4>
-
-<pre><code>dbus-monitor "type='signal',sender='org.qcma.HeadlessManager',member='databaseUpdated'"
-</code></pre>
+<ul>
+<li>
+<strong>SIGHUP</strong>: Refreshes the database.</li>
+<li>
+<strong>SIGTERM</strong> or <strong>SIGINT</strong>: Shuts down the process but waits until the current event is finished.</li>
+</ul>
 
 <h2>
 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
@@ -114,7 +103,7 @@ sudo apt-get install qcma</pre></div>
 
 <p><a href="http://codestation.nekmo.com/qcma/0.3.10/debian_jessie/">Debian Jessie (64 bits)</a></p>
 
-<p><a href="http://codestation.nekmo.com/qcma/0.3.10/fedora_23/">Fedora 2 (64 bits)</a></p>
+<p><a href="http://codestation.nekmo.com/qcma/0.3.10/fedora_23/">Fedora 23 (64 bits)</a></p>
 
 <p><a href="http://codestation.nekmo.com/qcma/0.3.10/opensuse_13.2/">openSUSE 13.2 (64 bits)</a></p>
 
