@@ -1,4 +1,4 @@
-VERSION = 0.3.10
+VERSION = 0.3.11
 
 # enable pkg-config on osx/windows
 QT_CONFIG -= no-pkg-config

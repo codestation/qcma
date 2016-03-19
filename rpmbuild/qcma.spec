@@ -2,7 +2,7 @@
 # qcma spec file
 # 
 
-%define _version 0.3.10
+%define _version 0.3.11
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
 %define _verprefix %{_version}
