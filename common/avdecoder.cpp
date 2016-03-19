@@ -141,7 +141,11 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
         if(packet.stream_index == frame_stream_index) {
             avcodec_decode_video2(codec_ctx, pFrame, &frame_finished, &packet);
         }
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57,7,0)
+        av_packet_unref(&packet);
+#else
         av_free_packet(&packet);
+#endif
     }
 
     if(frame_finished) {
@@ -150,7 +154,7 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrame);
 #else
-        av_free(pFrame);
+        avcodec_free_frame(&pFrame);
 #endif
         return NULL;
     }
@@ -211,11 +215,10 @@ QByteArray AVDecoder::getThumbnail(int &width, int &height)
                                        width, height);
 
         data = WriteJPEG(pCodecCtx, pFrame, width, height);
-
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrame);
 #else
-        av_free(pFrame);
+        avcodec_free_frame(&pFrame);
 #endif
     }
 
@@ -239,7 +242,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
                 pCodecCtx->width, pCodecCtx->height,
                 pCodecCtx->pix_fmt,
                 width, height,
-                PIX_FMT_YUVJ420P, SWS_BICUBIC,
+                AV_PIX_FMT_YUV420P, SWS_BICUBIC,
                 NULL, NULL, NULL);
 
     if(!sws_ctx) {
@@ -257,7 +260,13 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
         return data;
     }
 
+    // detect ffmpeg (>= 100) or libav (< 100)
+#if (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,63,100)) || \
+    (LIBAVUTIL_VERSION_MICRO < 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54,6,0))
+    int numBytes = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, width, height, 16);
+#else
     int numBytes = avpicture_get_size(PIX_FMT_YUVJ420P, width, height);
+#endif
 
     uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
 
@@ -265,13 +274,19 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
 #else
-        av_free(pFrameRGB);
+        avcodec_free_frame(&pFrameRGB);
 #endif
         sws_freeContext(sws_ctx);
         return data;
     }
 
+    // detect ffmpeg (>= 100) or libav (< 100)
+#if (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,63,100)) || \
+    (LIBAVUTIL_VERSION_MICRO < 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54,6,0))
+    av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, AV_PIX_FMT_YUV420P, width, height, 1);
+#else
     avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_YUVJ420P, width, height);
+#endif
 
     sws_scale(
         sws_ctx,
@@ -296,7 +311,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
 #else
-        av_free(&pFrameRGB);
+        avcodec_free_frame(&pFrameRGB);
 #endif
         sws_freeContext(sws_ctx);
         return  0;
@@ -306,6 +321,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
     pOCodecCtx->width         = width;
     pOCodecCtx->height        = height;
     pOCodecCtx->pix_fmt       = AV_PIX_FMT_YUVJ420P;
+    pOCodecCtx->color_range   = AVCOL_RANGE_JPEG;
     pOCodecCtx->codec_id      = AV_CODEC_ID_MJPEG;
     pOCodecCtx->codec_type    = AVMEDIA_TYPE_VIDEO;
     pOCodecCtx->time_base.num = pCodecCtx->time_base.num;
@@ -323,14 +339,17 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
 #else
-        av_free(&pFrameRGB);
+        avcodec_free_frame(&pFrameRGB);
 #endif
         sws_freeContext(sws_ctx);
          return  0;
     }
 
-    pOCodecCtx->mb_lmin        = pOCodecCtx->lmin = pOCodecCtx->qmin * FF_QP2LAMBDA;
-    pOCodecCtx->mb_lmax        = pOCodecCtx->lmax = pOCodecCtx->qmax * FF_QP2LAMBDA;
+    av_opt_set_int(pOCodecCtx, "lmin", pOCodecCtx->qmin * FF_QP2LAMBDA, 0);
+    av_opt_set_int(pOCodecCtx, "lmax", pOCodecCtx->qmax * FF_QP2LAMBDA, 0);
+
+    pOCodecCtx->mb_lmin        = pOCodecCtx->qmin * FF_QP2LAMBDA;
+    pOCodecCtx->mb_lmax        = pOCodecCtx->qmax * FF_QP2LAMBDA;
     pOCodecCtx->flags          = CODEC_FLAG_QSCALE;
     pOCodecCtx->global_quality = pOCodecCtx->qmin * FF_QP2LAMBDA;
 
@@ -358,7 +377,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     av_frame_free(&pFrameRGB);
 #else
-    av_free(&pFrameRGB);
+    avcodec_free_frame(&pFrameRGB);
 #endif
     avcodec_close(pOCodecCtx);
     sws_freeContext(sws_ctx);

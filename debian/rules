@@ -11,6 +11,6 @@ export QT_SELECT=qt5
 
 override_dh_auto_configure:
 	lrelease common/resources/translations/qcma_*.ts
-	dh_auto_configure -- qcma.pro CONFIG+="ENABLE_APPINDICATOR"
+	dh_auto_configure -- qcma.pro
 
 .PHONY: override_dh_auto_configure
