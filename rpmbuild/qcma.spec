@@ -60,7 +60,7 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 
 %build
 lrelease-qt5 common/resources/translations/*.ts
-qmake-qt5 PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX ENABLE_KNOTIFICATIONS ENABLE_KDENOTIFIER"
+qmake-qt5 PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX"
 make %{?_smp_mflags}
 
 %install
@@ -82,13 +82,3 @@ Headless version of Qcma
 %files cli
 %{_bindir}/qcma_cli
 %{_prefix}/share/man/man1/qcma_cli.1.gz
-
-%package kdenotifier
-Summary: Content Manager Assistant for the PS Vita (kdenotifier support)
-Requires: %{_knotifications}
-
-%description kdenotifier
-KDENotifier plugin for Qcma
-
-%files kdenotifier
-%{_prefix}/lib/qcma/libqcma_kdenotifier.so
