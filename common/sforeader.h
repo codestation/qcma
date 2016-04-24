@@ -21,6 +21,21 @@
 #define SFOREADER_H
 
 #include <QString>
+#include <QtEndian>
+
+template<class T> class uilsb
+{
+public:
+    operator T () const { return qFromLittleEndian<T>(data); }
+    const T operator=(const T v) {
+        qToLittleEndian<T>(v, data);
+        return v;
+    }
+
+private:
+    static const int nBytes = sizeof(T);
+    uchar data[nBytes];
+};
 
 class SfoReader
 {
@@ -31,21 +46,21 @@ public:
 
 private:
     typedef struct {
-        quint16 key_offset;
+        uilsb<quint16> key_offset;
         uchar alignment;
         uchar data_type;
-        quint32 value_size;
-        quint32 value_size_with_padding;
-        quint32 data_offset;
-    } __attribute__((packed)) sfo_index;
+        uilsb<quint32> value_size;
+        uilsb<quint32> value_size_with_padding;
+        uilsb<quint32> data_offset;
+    } sfo_index;
 
     typedef struct {
         char id[4];
-        quint32 version;
-        quint32 key_offset;
-        quint32 value_offset;
-        quint32 pair_count;
-    } __attribute__((packed)) sfo_header;
+        uilsb<quint32> version;
+        uilsb<quint32> key_offset;
+        uilsb<quint32> value_offset;
+        uilsb<quint32> pair_count;
+    } sfo_header;
 
     QByteArray data;
     const char *key_offset;
