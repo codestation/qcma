@@ -61,7 +61,7 @@ unix:!macx {
     PKGCONFIG += libnotify
 
     # config for desktop file and icon
-    desktop.path = $$DATADIR/applications/$${TARGET}
+    desktop.path = $$DATADIR/applications
     desktop.files += resources/$${TARGET}.desktop
 
     icon64.path = $$DATADIR/icons/hicolor/64x64/apps

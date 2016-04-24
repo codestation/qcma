@@ -69,7 +69,7 @@ make install INSTALL_ROOT=%{buildroot}
 %files
 %defattr(-,root,root)
 %{_bindir}/qcma
-%{_prefix}/share/applications/qcma/qcma.desktop
+%{_prefix}/share/applications/qcma.desktop
 %{_prefix}/share/icons/hicolor/64x64/apps/qcma.png
 %{_prefix}/share/man/man1/qcma.1.gz
 
