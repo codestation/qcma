@@ -1,3 +1,10 @@
+qcma (0.3.12) unstable; urgency=low
+
+  * Added support for host endianess.
+  * removed systray plugins compilation build on rpm, too unstable.
+
+ -- codestation <codestation404@gmail.com>  Sun, 24 Apr 2016 00:00:00 -0000
+
 qcma (0.3.11) unstable; urgency=low
 
   * fixed compilation with newer ffmpeg.
