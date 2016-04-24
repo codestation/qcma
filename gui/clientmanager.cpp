@@ -98,12 +98,6 @@ void ClientManager::start()
     QSettings settings;
 
     if(!settings.value("disableUSB", false).toBool()) {
-
-#ifdef Q_OS_LINUX
-        if(!belongsToGroup("vitamtp"))
-            emit messageSent(tr("This user doesn't belong to the vitamtp group, there could be a problem while reading the USB bus."));
-#endif
-
         usb_thread = new QThread();
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");

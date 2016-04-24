@@ -35,7 +35,7 @@ QTrayIcon::QTrayIcon(QWidget *obj_parent)
     : TrayIndicator(obj_parent)
 {
 #ifdef Q_OS_LINUX
-    notify_init("qcma");
+    notify_init("Qcma");
 #endif
     setAttribute(Qt::WA_TransparentForMouseEvents);
 }
@@ -52,7 +52,7 @@ void QTrayIcon::init()
     options = new QAction(tr("Settings"), this);
     reload = new QAction(tr("Refresh database"), this);
     backup = new QAction(tr("Backup Manager"), this);
-    about = new QAction(tr("About QCMA"), this);
+    about = new QAction(tr("About Qcma"), this);
     about_qt = new QAction(tr("About Qt"), this);
     quit = new QAction(tr("Quit"), this);
 
@@ -75,6 +75,7 @@ void QTrayIcon::init()
     tray_icon_menu->addAction(quit);
 
     m_tray_icon = new QSystemTrayIcon(this);
+    m_tray_icon->setToolTip("Qcma");
     m_tray_icon->setContextMenu(tray_icon_menu);
 }
 

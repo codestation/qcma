@@ -95,10 +95,6 @@ void HeadlessManager::start()
     QSettings settings;
 
     if(!settings.value("disableUSB", false).toBool()) {
-
-        if(!belongsToGroup("vitamtp"))
-            qCritical() << tr("This user doesn't belong to the vitamtp group, there could be a problem while reading the USB bus.");
-
         usb_thread = new QThread();
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
