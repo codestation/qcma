@@ -19,6 +19,7 @@
 
 #include "cmaevent.h"
 #include "cmautils.h"
+#include <locale.h>
 
 #include <QDateTime>
 #include <QDebug>
