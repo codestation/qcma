@@ -46,7 +46,8 @@ private:
     Ui::BackupManagerForm *ui;
 
 public slots:
-    void loadBackupListing(int index);
+    void loadBackupListing();
+    void loadBackupListing(const QString& account, int index);
     void removeEntry(BackupItem *item);
 private slots:
     void on_filterLineEdit_textChanged(const QString &arg1);

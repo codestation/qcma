@@ -56,13 +56,22 @@ void Database::process()
     qDebug("Starting database_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
     clear();
     cancel_operation = false;
-    int count = create();
-    cancel_operation = false;
-    QTextStream(stdout) << "Total entries added to the database: " << count << endl;
-    if(count < 0) {
-        clear();
+
+    QStringList accounts = QSettings().value("accountList").toStringList();
+
+    int totalCount = 0;
+    foreach(QString account, accounts) {
+        setAccount(account);
+        int count = create();
+        if(count >= 0) {
+            totalCount += count;
+        }
     }
-    emit updated(count);
+
+    cancel_operation = false;
+    QTextStream(stdout) << "Total entries added to the database: " << totalCount << endl;
+
+    emit updated(totalCount);
     mutex.unlock();
 }
 

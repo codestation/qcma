@@ -56,8 +56,6 @@ static bool nameLessThan(const QFileInfo &v1, const QFileInfo &v2)
 QListDB::QListDB(QObject *obj_parent) :
     Database(obj_parent)
 {
-    QString uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
-    CMARootObject::uuid  = uuid;
     thread = new QThread();
     moveToThread(thread);
     timer = new QTimer();
@@ -78,10 +76,14 @@ QListDB::~QListDB()
     delete thread;
 }
 
-void QListDB::setUUID(const QString &uuid)
+void QListDB::setAccount(const QString &acct)
 {
-    CMARootObject::uuid = uuid;
-    QSettings().setValue("lastAccountId", uuid);
+    currentAccount = acct;
+}
+
+QString QListDB::getAccount()
+{
+    return currentAccount;
 }
 
 bool QListDB::load()
@@ -93,7 +95,7 @@ bool QListDB::load()
 bool QListDB::rescan()
 {
     if(mutex.tryLock(1000)) {
-        if(CMARootObject::uuid != "ffffffffffffffff") {
+        if(currentAccount != "") {
             timer->start();
             return true;
         } else {
@@ -106,10 +108,16 @@ bool QListDB::rescan()
 
 void QListDB::clear()
 {
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
-        CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());
-        delete first;
-        qDeleteAll(*root);
+    QStringList accounts = QSettings().value("accountList").toStringList();
+
+    foreach(QString account, accounts) {
+        for(map_list::iterator root = object_list[account].begin(); root != object_list[account].end(); ++root) {
+            CMARootObject *first = static_cast<CMARootObject *>((*root).takeFirst());
+            delete first;
+            qDeleteAll(*root);
+        }
+
+        object_list[account].clear();
     }
 
     object_list.clear();
@@ -128,7 +136,7 @@ int QListDB::create()
     QSettings settings;
 
     for(int i = 0, max = sizeof(ohfi_array) / sizeof(int); i < max; i++) {
-        CMARootObject *obj = new CMARootObject(ohfi_array[i]);
+        CMARootObject *obj = new CMARootObject(currentAccount, ohfi_array[i]);
         bool skipCurrent = false;
         int dir_count;
 
@@ -177,8 +185,9 @@ int QListDB::create()
 
         qDebug("Added objects for OHFI 0x%02X: %i", ohfi_array[i], dir_count);
         total_objects += dir_count;
-        object_list[ohfi_array[i]] = list;
+        object_list[currentAccount][ohfi_array[i]] = list;
     }
+
     return total_objects;
 }
 
@@ -320,7 +329,7 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
 
 bool QListDB::find(int ohfi, QListDB::find_data &data)
 {
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+    for(map_list::iterator root = object_list[currentAccount].begin(); root != object_list[currentAccount].end(); ++root) {
         if(findInternal(*root, ohfi, data)) {
             return true;
         }
@@ -415,9 +424,9 @@ bool QListDB::deleteEntry(int ohfi, int root_ohfi)
     QMutexLocker locker(&mutex);
 
     if(root_ohfi) {
-        return removeInternal(object_list[root_ohfi], ohfi);
+        return removeInternal(object_list[currentAccount][root_ohfi], ohfi);
     } else {
-        for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+        for(map_list::iterator root = object_list[currentAccount].begin(); root != object_list[currentAccount].end(); ++root) {
             if(removeInternal(*root, ohfi)) {
                 return true;
             }
@@ -479,7 +488,7 @@ int QListDB::getObjectMetadatas(int parent_ohfi, metadata_t **metadata, int inde
     metadata_t temp = metadata_t();
     metadata_t *tail = &temp;
 
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+    for(map_list::iterator root = object_list[currentAccount].begin(); root != object_list[currentAccount].end(); ++root) {
         for(root_list::iterator object = (*root).begin(); object != (*root).end(); ++object) {
             if(acceptFilteredObject(obj_parent, *object, type)) {
                 if(offset++ >= index) {
@@ -520,7 +529,7 @@ int QListDB::getPathId(const char *name, int ohfi)
 {
     QMutexLocker locker(&mutex);
 
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+    for(map_list::iterator root = object_list[currentAccount].begin(); root != object_list[currentAccount].end(); ++root) {
 
         if(ohfi && (*root).first()->metadata.ohfi != ohfi) {
             continue;
@@ -540,7 +549,7 @@ int QListDB::insertObjectEntry(const QString &path, const QString &name, int par
 
     CMAObject *parent_obj = ohfiToObject(parent_ohfi);
 
-    for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
+    for(map_list::iterator root = object_list[currentAccount].begin(); root != object_list[currentAccount].end(); ++root) {
         root_list *cat_list = &(*root);
         root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), parent_obj, QListDB::lessThanComparator);
 

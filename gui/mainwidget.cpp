@@ -50,6 +50,7 @@ MainWidget::MainWidget(QWidget *obj_parent) :
 void MainWidget::checkSettings()
 {
     QSettings settings;
+
     // make sure that all the paths are set, else show the config dialog
     foreach(const QString &path, path_list) {
         if(!settings.contains(path)) {
@@ -60,6 +61,22 @@ void MainWidget::checkSettings()
     }
     first_run = false;
     managerForm->start();
+}
+
+
+void MainWidget::migrateSettings()
+{
+    QSettings settings;
+    QString lastAccountId = settings.value("lastAccountId").toString();
+
+    if(!lastAccountId.isEmpty()) {
+        qDebug("Migratting old account settings");
+        settings.setValue("accountList", QStringList(lastAccountId));
+        QString lastOnlineId = settings.value("lastOnlineId", "Account #1").toString();
+        settings.setValue(lastAccountId + "/onlineId", lastOnlineId);
+        settings.remove("lastAccountId");
+        settings.remove("lastOnlineId");
+    }
 }
 
 void MainWidget::dialogResult(int result)
@@ -125,6 +142,7 @@ void MainWidget::prepareApplication(bool showSystray)
         createTrayIcon();
     }
 
+    migrateSettings();
     checkSettings();
 }
 
@@ -147,7 +165,7 @@ void MainWidget::setTrayTooltip(QString message)
 
 void MainWidget::openManager()
 {
-    backupForm->loadBackupListing(-1);
+    backupForm->loadBackupListing();
     backupForm->show();
 }
 

@@ -21,10 +21,8 @@
 
 #include <QDir>
 
-QString CMARootObject::uuid = "ffffffffffffffff";
-
-CMARootObject::CMARootObject(int ohfi) :
-    num_filters(0), filters(NULL), root_ohfi(ohfi)
+CMARootObject::CMARootObject(const QString& account, int ohfi) :
+    num_filters(0), filters(NULL), root_ohfi(ohfi), uuid(account)
 {
 }
 

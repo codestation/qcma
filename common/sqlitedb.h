@@ -42,7 +42,8 @@ public:
     void close();
 
     bool reload(bool &prepared);
-    void setUUID(const QString &m_uuid);
+    void setAccount(const QString &account);
+    QString getAccount();
 
     bool open();
     int create();
@@ -95,7 +96,7 @@ private:
     QTimer *timer;
     QThread *thread;
 
-    QString m_uuid;
+    QString currentAccount;
     QSqlDatabase db;
 };
 

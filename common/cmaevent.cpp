@@ -721,7 +721,7 @@ void CmaEvent::vitaEventGetSettingInfo(vita_event_t *cma_event, int eventId)
     QSettings settings;
 
     if(settings.value("lastAccountId").toString() != settingsinfo->current_account.accountId) {
-        m_db->setUUID(settingsinfo->current_account.accountId);
+        m_db->setAccount(settingsinfo->current_account.accountId);
         // set the database to be updated ASAP
         emit refreshDatabase();
     }

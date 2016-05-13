@@ -65,7 +65,8 @@ public:
 
     virtual bool load() = 0;
     virtual bool rescan() = 0;
-    virtual void setUUID(const QString &uuid) = 0;
+    virtual void setAccount(const QString &uuid) = 0;
+    virtual QString getAccount() = 0;
 
     virtual int childObjectCount(int parent_ohfi) = 0;
     virtual bool deleteEntry(int ohfi, int root_ohfi = 0) = 0;

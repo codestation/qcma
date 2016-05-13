@@ -147,7 +147,7 @@ static const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VI
 SQLiteDB::SQLiteDB(QObject *obj_parent) :
     Database(obj_parent)
 {
-    m_uuid = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
+    currentAccount = QSettings().value("lastAccountId", "ffffffffffffffff").toString();
     thread = new QThread();
     moveToThread(thread);
     timer = new QTimer();
@@ -176,10 +176,14 @@ SQLiteDB::~SQLiteDB()
 }
 
 
-void SQLiteDB::setUUID(const QString &uuid)
+void SQLiteDB::setAccount(const QString &uuid)
 {
-    m_uuid = uuid;
-    QSettings().setValue("lastAccountId", uuid);
+    currentAccount = uuid;
+}
+
+QString SQLiteDB::getAccount()
+{
+    return currentAccount;
 }
 
 bool SQLiteDB::load()
@@ -208,7 +212,7 @@ bool SQLiteDB::load()
 bool SQLiteDB::rescan()
 {
     if(mutex.tryLock(1000)) {
-        if(m_uuid != "ffffffffffffffff") {
+        if(currentAccount != "") {
             timer->start();
             return true;
         } else {
@@ -303,22 +307,22 @@ QString SQLiteDB::getBasePath(int root_ohfi)
         base_path = settings.value("photoPath").toString();
         break;
     case VITA_OHFI_BACKUP:
-        base_path = settings.value("appsPath").toString() + "/SYSTEM/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/SYSTEM/" + currentAccount;
         break;
     case VITA_OHFI_VITAAPP:
-        base_path = settings.value("appsPath").toString() + "/APP/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/APP/" + currentAccount;
         break;
     case VITA_OHFI_PSPAPP:
-        base_path = settings.value("appsPath").toString() + "/PGAME/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/PGAME/" + currentAccount;
         break;
     case VITA_OHFI_PSPSAVE:
-        base_path = settings.value("appsPath").toString() + "/PSAVEDATA/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/PSAVEDATA/" + currentAccount;
         break;
     case VITA_OHFI_PSXAPP:
-        base_path = settings.value("appsPath").toString() + "/PSGAME/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/PSGAME/" + currentAccount;
         break;
     case VITA_OHFI_PSMAPP:
-        base_path = settings.value("appsPath").toString() + "/PSM/" + m_uuid;
+        base_path = settings.value("appsPath").toString() + "/PSM/" + currentAccount;
         break;
     }
     return base_path;

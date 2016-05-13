@@ -44,7 +44,8 @@ public:
     void clear();
 
     bool reload(bool &prepared);
-    void setUUID(const QString &uuid);
+    void setAccount(const QString &account);
+    QString getAccount();
 
     int childObjectCount(int parent_ohfi);
     bool deleteEntry(int ohfi, int root_ohfi = 0);
@@ -89,7 +90,8 @@ private:
 
     QTimer *timer;
     QThread *thread;
-    map_list object_list;
+    QMap<QString, map_list> object_list;
+    QString currentAccount;
 };
 
 #endif // QLISTDB_H

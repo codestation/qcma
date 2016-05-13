@@ -29,7 +29,7 @@
 class CMARootObject : public CMAObject
 {
 public:
-    explicit CMARootObject(int ohfi);
+    explicit CMARootObject(const QString& account, int ohfi);
     ~CMARootObject();
 
     void initObject(const QString &path);
@@ -38,12 +38,12 @@ public:
 
     int num_filters;
     metadata_t *filters;
-    static QString uuid;
 
 private:
     void createFilter(metadata_t *filter, const char *name, int type);
 
     int root_ohfi;
+    QString uuid;
 };
 
 #endif // CMAROOTOBJECT_H

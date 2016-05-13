@@ -54,7 +54,7 @@ BackupItem::~BackupItem()
 
 void BackupItem::openDirectory()
 {
-    QDesktopServices::openUrl(QUrl("file:///" + m_path));
+    QDesktopServices::openUrl(QUrl("file://" + m_path));
 }
 
 void BackupItem::removeEntry()

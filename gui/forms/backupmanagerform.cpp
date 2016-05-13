@@ -48,9 +48,18 @@ BackupManagerForm::~BackupManagerForm()
 void BackupManagerForm::setupForm()
 {
     this->resize(800, 480);
-    connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));
+    connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing()));
+    connect(ui->accountBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing()));
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
+
+    QSettings settings;
+    QStringList accounts = settings.value("accountList").toStringList();
+
+    for(int i = 0; i < accounts.size(); ++i) {
+        QString accountName = settings.value(accounts.at(i) + "/onlineId", QString("Account #%1").arg(i+1)).toString();
+        ui->accountBox->addItem(accountName, accounts.at(i));
+    }
 }
 
 void BackupManagerForm::removeEntry(BackupItem *item)
@@ -65,6 +74,8 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     }
 
     QMutexLocker locker(&m_db->mutex);
+    QString currentAccount = m_db->getAccount();
+    m_db->setAccount(ui->accountBox->currentData().toString());
 
     int parent_ohfi = m_db->getParentId(item->ohfi);
     removeRecursively(m_db->getAbsolutePath(item->ohfi));
@@ -81,6 +92,8 @@ void BackupManagerForm::removeEntry(BackupItem *item)
     if(parent_ohfi > 0) {
         setBackupUsage(m_db->getObjectSize(parent_ohfi));
     }
+
+    m_db->setAccount(currentAccount);
 }
 
 void BackupManagerForm::setBackupUsage(qint64 usage_size)
@@ -88,19 +101,20 @@ void BackupManagerForm::setBackupUsage(qint64 usage_size)
     ui->usageLabel->setText(tr("Backup disk usage: %1").arg(readable_size(usage_size, true)));
 }
 
-void BackupManagerForm::loadBackupListing(int index)
+void BackupManagerForm::loadBackupListing()
+{
+    int index = ui->backupComboBox->currentIndex();
+    QString account = ui->accountBox->currentData().toString();
+
+    loadBackupListing(account, index);
+}
+
+void BackupManagerForm::loadBackupListing(const QString &account, int index)
 {
     int ohfi;
     bool sys_dir;
     int img_width;
-
-    //TODO: load all the accounts in the combobox
-    ui->accountBox->clear();
-    ui->accountBox->addItem(QSettings().value("lastOnlineId", tr("Default account")).toString());
-
-    if(index < 0) {
-        index = ui->backupComboBox->currentIndex();
-    }
+    QSettings settings;
 
     ui->tableWidget->clear();
 
@@ -142,6 +156,8 @@ void BackupManagerForm::loadBackupListing(int index)
     }
 
     m_db->mutex.lock();
+    QString currentAccount = m_db->getAccount();
+    m_db->setAccount(account);
 
     // get the item list
     metadata_t *meta = NULL;
@@ -151,6 +167,7 @@ void BackupManagerForm::loadBackupListing(int index)
     // exit if there aren't any items
     if(row_count == 0) {
         setBackupUsage(0);
+        m_db->setAccount(currentAccount);
         m_db->mutex.unlock();
         return;
     }
@@ -235,6 +252,7 @@ void BackupManagerForm::loadBackupListing(int index)
     }
 
     vert_header->setUpdatesEnabled(true);
+    m_db->setAccount(currentAccount);
     m_db->mutex.unlock();
 
     // apply filter
