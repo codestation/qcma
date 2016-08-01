@@ -16,16 +16,13 @@
 %define _pkgconfig pkgconfig
 %define _qt5linguist qt5-linguist
 %define _qt5basedevel qt5-qtbase-devel
-%define _knotifications kf5-knotifications
-%define _knotifications_devel kf5-knotifications-devel
 %else
+%define qmake_qt5 qmake-qt5
 %define _qt5base libqt5-qtbase
 %define _qt5imageformats libqt5-qtimageformats
 %define _pkgconfig pkg-config
 %define _qt5linguist  libqt5-linguist
 %define _qt5basedevel libqt5-qtbase-devel
-%define _knotifications libKF5Notifications5
-%define _knotifications_devel knotifications-devel
 %endif
 
 Name:           qcma
@@ -44,7 +41,6 @@ Requires:       libvitamtp5 >= 2.5.5
 BuildRequires:  gcc-c++ 
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
-BuildRequires:  %{_knotifications_devel}
 BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  %{_qt5linguist}
@@ -60,7 +56,7 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 
 %build
 lrelease-qt5 common/resources/translations/*.ts
-qmake-qt5 PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX"
+%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX"
 make %{?_smp_mflags}
 
 %install
