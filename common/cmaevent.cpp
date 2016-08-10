@@ -396,7 +396,7 @@ void CmaEvent::vitaEventSendNumOfObject(vita_event_t *cma_event, int eventId)
     int items = m_db->childObjectCount(ohfi);
 
     if(VitaMTP_SendNumOfObject(m_device, eventId, items) != PTP_RC_OK) {
-        qWarning("Error occured receiving object count for OHFI parent %d", ohfi);
+        qWarning("Error occurred receiving object count for OHFI parent %d", ohfi);
     } else {
         qDebug("Returned count of %d objects for OHFI parent %d", items, ohfi);
         VitaMTP_ReportResult(m_device, eventId, PTP_RC_OK);
