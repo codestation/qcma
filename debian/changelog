@@ -1,6 +1,6 @@
 qcma (0.3.12) unstable; urgency=low
 
-  * Added support for host endianess.
+  * Added support for host endianness.
   * removed systray plugins compilation build on rpm, too unstable.
 
  -- codestation <codestation404@gmail.com>  Sun, 24 Apr 2016 00:00:00 -0000
