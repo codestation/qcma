@@ -13,7 +13,6 @@
 !define PRODUCT_VERSION_BUILD 12
 !define PRODUCT_PUBLISHER "codestation"
 !define PRODUCT_WEB_SITE "https://github.com/codestation/qcma"
-!define HELPURL "https://github.com/xiannox/qcma/wiki"
 
 ### Macros
 !macro VerifyUserIsAdmin
@@ -105,19 +104,22 @@ section "install"
     SetOutPath $InstDir
 
     # Files added here should be removed by the uninstaller (see section "uninstall")
-    
+
     ${If} ${RunningX64}
         File "win_x86_64\qcma.exe"
         File "win_x86_64\qcma_console.exe"
-        File "win_x86_64\avcodec-56.dll"
-        File "win_x86_64\avformat-56.dll"
-        File "win_x86_64\avutil-54.dll"
+        File "win_x86_64\avcodec-57.dll"
+        File "win_x86_64\avformat-57.dll"
+        File "win_x86_64\avutil-55.dll"
         File "win_x86_64\libfreetype-6.dll"
         File "win_x86_64\libgcc_s_seh-1.dll"
         File "win_x86_64\libglib-2.0-0.dll"
+        File "win_x86_64\libgraphite2.dll"
         File "win_x86_64\libharfbuzz-0.dll"
         File "win_x86_64\libiconv-2.dll"
-        File "win_x86_64\libintl-8.dll"
+        File "win_x86_64\libicudt57.dll"
+        File "win_x86_64\libicuin57.dll"
+        File "win_x86_64\libicuuc57.dll"
         File "win_x86_64\libjpeg-8.dll"
         File "win_x86_64\libpcre-1.dll"
         File "win_x86_64\libpcre16-0.dll"
@@ -129,15 +131,17 @@ section "install"
         File "win_x86_64\libvitamtp-5.dll"
         File "win_x86_64\libwinpthread-1.dll"
         File "win_x86_64\libxml2-2.dll"
-        File "win_x86_64\libbz2-1.dll"
         File "win_x86_64\Qt5Core.dll"
         File "win_x86_64\Qt5Gui.dll"
         File "win_x86_64\Qt5Network.dll"
         File "win_x86_64\Qt5Sql.dll"
         File "win_x86_64\Qt5Widgets.dll"
-        File "win_x86_64\swresample-1.dll"
-        File "win_x86_64\swscale-3.dll"
+        File "win_x86_64\swresample-2.dll"
+        File "win_x86_64\swscale-4.dll"
         File "win_x86_64\zlib1.dll"
+        File "win_x86_64\liblzma-5.dll"
+        File "win_x86_64\libbz2-1.dll"
+        File "win_x86_64\libintl-8.dll"
         
         SetOutPath "$INSTDIR\platforms"
         File "win_x86_64\platforms\qwindows.dll"
@@ -152,15 +156,18 @@ section "install"
     ${Else}
         File "win_i686\qcma.exe"
         File "win_i686\qcma_console.exe"
-        File "win_i686\avcodec-56.dll"
-        File "win_i686\avformat-56.dll"
-        File "win_i686\avutil-54.dll"
+        File "win_i686\avcodec-57.dll"
+        File "win_i686\avformat-57.dll"
+        File "win_i686\avutil-55.dll"
         File "win_i686\libfreetype-6.dll"
-        File "win_i686\libgcc_s_sjlj-1.dll"
+        File "win_i686\libgcc_s_dw2-1.dll"
         File "win_i686\libglib-2.0-0.dll"
+        File "win_i686\libgraphite2.dll"
         File "win_i686\libharfbuzz-0.dll"
         File "win_i686\libiconv-2.dll"
-        File "win_i686\libintl-8.dll"
+        File "win_i686\libicudt57.dll"
+        File "win_i686\libicuin57.dll"
+        File "win_i686\libicuuc57.dll"
         File "win_i686\libjpeg-8.dll"
         File "win_i686\libpcre-1.dll"
         File "win_i686\libpcre16-0.dll"
@@ -172,15 +179,17 @@ section "install"
         File "win_i686\libvitamtp-5.dll"
         File "win_i686\libwinpthread-1.dll"
         File "win_i686\libxml2-2.dll"
-        File "win_i686\libbz2-1.dll"
         File "win_i686\Qt5Core.dll"
         File "win_i686\Qt5Gui.dll"
         File "win_i686\Qt5Sql.dll"
         File "win_i686\Qt5Network.dll"
         File "win_i686\Qt5Widgets.dll"
-        File "win_i686\swresample-1.dll"
-        File "win_i686\swscale-3.dll"
+        File "win_i686\swresample-2.dll"
+        File "win_i686\swscale-4.dll"
         File "win_i686\zlib1.dll"
+        File "win_i686\liblzma-5.dll"
+        File "win_i686\libbz2-1.dll"
+        File "win_i686\libintl-8.dll"
         
         SetOutPath "$INSTDIR\platforms"
         File "win_i686\platforms\qwindows.dll"
@@ -194,6 +203,12 @@ section "install"
         File "win_i686\sqldrivers\qsqlite.dll"
 
     ${EndIf}
+
+    SetOutPath "$INSTDIR\translations"
+    File "translations\qt*.qm"
+
+    SetOutPath $InstDir\driver
+    File "QcmaDriver_libusb0.exe"
 
     # Uninstaller - See function un.onInit and section "uninstall" for configuration
     WriteUninstaller "$InstDir\uninstall.exe"
@@ -214,7 +229,6 @@ section "install"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "InstallLocation"      "$\"$INSTDIR$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon"          "$\"$INSTDIR\qcma.ico$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Publisher"            "${PRODUCT_PUBLISHER}"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "HelpLink"             "$\"${HELPURL}$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "URLInfoAbout"         "$\"${PRODUCT_WEB_SITE}$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayVersion"       "${PRODUCT_VERSION_MAJOR}.${PRODUCT_VERSION_MINOR}.${PRODUCT_VERSION_BUILD}"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "VersionMajor"       ${PRODUCT_VERSION_MAJOR}
@@ -226,9 +240,9 @@ sectionEnd
 
 section "driver"
     SetOutPath $InstDir\driver
-    File "QcmaDriver.exe"
+    File "QcmaDriver_libusbk.exe"
     DetailPrint "Starting the driver installation"     
-    ExecWait "$InstDir\driver\QcmaDriver.exe"   
+    ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
 sectionEnd
  
 ### Uninstaller

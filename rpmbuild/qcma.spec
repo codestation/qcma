@@ -37,7 +37,7 @@ Requires:       libnotify
 Requires:       ffmpeg
 Requires:       %{_qt5base}
 Requires:       %{_qt5imageformats}
-Requires:       libvitamtp5 >= 2.5.5
+Requires:       libvitamtp5 >= 2.5.9
 BuildRequires:  gcc-c++ 
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
