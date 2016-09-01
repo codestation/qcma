@@ -1,3 +1,12 @@
+qcma (0.3.13) unstable; urgency=low
+
+  * Notify the user if an update check is being made.
+  * Bundle libusbK driver by default on windows installer.
+  * Fix build on openSUSE and OSX.
+  * Fix incomplete spanish translations.
+
+ -- codestation <codestation404@gmail.com>  Thu, 01 Sep 2016 00:00:00 -0000
+
 qcma (0.3.12) unstable; urgency=low
 
   * Added support for host endianness.
