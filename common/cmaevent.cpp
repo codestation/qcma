@@ -537,6 +537,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
     if(!file.open(QIODevice::ReadOnly)) {
         if(offlineMode && basename == "psp2-updatelist.xml") {
             qDebug("Found request for update list. Sending cached data");
+            messageSent(tr("The PSVita has requested an update check, sending embedded xml file (version 0.00)"));
             QFile res(":/main/resources/xml/psp2-updatelist.xml");
             res.open(QIODevice::ReadOnly);
             data = res.readAll();
@@ -560,6 +561,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
 
         } else if(!offlineMode) {
             qDebug("URL: %s", url);
+            messageSent(tr("The PSVita has requested an update check, downloading from %1").arg(url));
             HTTPDownloader downloader(url);
             QThread *http_thread = new QThread();
             http_thread->setObjectName("http_thread");
@@ -593,6 +595,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
         }
     } else {
         qDebug("Reading from local file");
+        messageSent(tr("The PSVita has requested an update check, sending local xml file"));
         data = file.readAll();
     }
 

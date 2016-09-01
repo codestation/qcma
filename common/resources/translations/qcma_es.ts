@@ -111,32 +111,35 @@
 <context>
     <name>ClientManager</name>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="64"/>
+        <location filename="../../../gui/clientmanager.cpp" line="65"/>
         <source>Added %1 items to the database</source>
         <translation>Agregadas %1 entradas a la base de datos</translation>
     </message>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="66"/>
+        <location filename="../../../gui/clientmanager.cpp" line="67"/>
         <source>Database indexing aborted by user</source>
         <translation>Actualización de la base de datos cancelada por el usuario</translation>
     </message>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="80"/>
+        <location filename="../../../gui/clientmanager.cpp" line="83"/>
+        <source>Cannot initialize VitaMTP USB library</source>
+        <translation>No se puede inicializar la biblioteca VitaMTP USB</translation>
+    </message>
+    <message>
         <source>Cannot initialize VitaMTP library</source>
-        <translation>No se pudo inicializar VitaMTP</translation>
+        <translation type="vanished">No se pudo inicializar VitaMTP</translation>
     </message>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="101"/>
         <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
-        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+        <translation type="vanished">Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
     </message>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="147"/>
+        <location filename="../../../gui/clientmanager.cpp" line="144"/>
         <source>You must enable at least USB or Wireless monitoring</source>
         <translation>Debe habilitar por lo menos el monitoreo USB o inalámbrico</translation>
     </message>
     <message>
-        <location filename="../../../gui/clientmanager.cpp" line="158"/>
+        <location filename="../../../gui/clientmanager.cpp" line="155"/>
         <source>No PS Vita system has been registered</source>
         <translation>Nigún sistema PS Vita ha sido registrado</translation>
     </message>
@@ -148,6 +151,24 @@
         <location filename="../../cmaclient.cpp" line="154"/>
         <source>Connected to %1 (PS Vita)</source>
         <translation>Conectado a %1 (PS Vita)</translation>
+    </message>
+</context>
+<context>
+    <name>CmaEvent</name>
+    <message>
+        <location filename="../../cmaevent.cpp" line="540"/>
+        <source>The PSVita has requested an update check, sending embedded xml file (version 0.00)</source>
+        <translation>El sistema PS Vita ha solicitado una comprobación de actualización. Enviando archivo xml embebido (versión 0.00)</translation>
+    </message>
+    <message>
+        <location filename="../../cmaevent.cpp" line="564"/>
+        <source>The PSVita has requested an update check, downloading from %1</source>
+        <translation>El sistema PS Vita ha solicitado una comprobación de actualización. Descargando desde %1</translation>
+    </message>
+    <message>
+        <location filename="../../cmaevent.cpp" line="598"/>
+        <source>The PSVita has requested an update check, sending local xml file</source>
+        <translation>El sistema PS Vita ha solicitado una comprobación de actualización. Enviando archivo xml local</translation>
     </message>
 </context>
 <context>
@@ -337,32 +358,32 @@
         <translation>En memoria</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="163"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="169"/>
         <source>Select the folder to be used as a photo source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de fotos</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="168"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="174"/>
         <source>Select the folder to be used as a music source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de música</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="173"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="179"/>
         <source>Select the folder to be used as a video source</source>
         <translation>Seleccione el directorio a ser utilizado como origen de videos</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="178"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="184"/>
         <source>Select the folder to be used to save PS Vita games and backups</source>
         <translation>Seleccione el directorio a ser utilizado para guardar juegos y respaldos</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="183"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="189"/>
         <source>Select the folder to be used to fetch software updates</source>
         <translation>Seleccione el directorio a ser utilizado para extraer actualizaciones de software</translation>
     </message>
     <message>
-        <location filename="../../../gui/forms/configwidget.cpp" line="188"/>
+        <location filename="../../../gui/forms/configwidget.cpp" line="194"/>
         <source>Select the folder to be used to software packages</source>
         <translation>Seleccione el directorio a ser utilizado para almacenar archivos pkg</translation>
     </message>
@@ -395,51 +416,55 @@
 <context>
     <name>HeadlessManager</name>
     <message>
-        <location filename="../../../cli/headlessmanager.cpp" line="97"/>
         <source>This user doesn&apos;t belong to the vitamtp group, there could be a problem while reading the USB bus.</source>
         <translatorcomment>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translatorcomment>
-        <translation>Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+        <translation type="vanished">Este usuario no pertenece al grupo vitamtp, puede haber problemas al leer el bus USB.</translation>
+    </message>
+    <message>
+        <location filename="../../../cli/headlessmanager.cpp" line="76"/>
+        <source>Cannot initialize VitaMTP USB library</source>
+        <translation>No se puede inicializar la biblioteca VitaMTP USB</translation>
     </message>
 </context>
 <context>
     <name>KDENotifierTray</name>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="34"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="35"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="35"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="36"/>
         <source>Refresh database</source>
         <translation>Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="36"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="37"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="37"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="38"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="38"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="39"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="39"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="40"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="69"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="70"/>
         <source>Qcma status</source>
         <translation>Estado de Qcma</translation>
     </message>
     <message>
-        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="71"/>
+        <location filename="../../../kdenotifier/kdenotifiertray.cpp" line="72"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
@@ -582,7 +607,7 @@ Rama de compilación: %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../../gui/main.cpp" line="79"/>
+        <location filename="../../../gui/main.cpp" line="85"/>
         <source>An instance of Qcma is already running</source>
         <translation>Otra instancia de Qcma ya se encuentra en ejecución</translation>
     </message>
@@ -590,32 +615,36 @@ Rama de compilación: %2</translation>
 <context>
     <name>QTrayIcon</name>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="51"/>
+        <location filename="../../../gui/qtrayicon.cpp" line="52"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="52"/>
+        <location filename="../../../gui/qtrayicon.cpp" line="53"/>
         <source>Refresh database</source>
         <translation>Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="53"/>
+        <location filename="../../../gui/qtrayicon.cpp" line="54"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="54"/>
-        <source>About QCMA</source>
-        <translation>Acerca de QCMA</translation>
+        <location filename="../../../gui/qtrayicon.cpp" line="55"/>
+        <source>About Qcma</source>
+        <translation>Acerca de Qcma</translation>
     </message>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="55"/>
+        <source>About QCMA</source>
+        <translation type="vanished">Acerca de QCMA</translation>
+    </message>
+    <message>
+        <location filename="../../../gui/qtrayicon.cpp" line="56"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../../../gui/qtrayicon.cpp" line="56"/>
+        <location filename="../../../gui/qtrayicon.cpp" line="57"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
@@ -623,32 +652,32 @@ Rama de compilación: %2</translation>
 <context>
     <name>UnityIndicator</name>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="105"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="106"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="106"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="107"/>
         <source>Refresh database</source>
         <translation>Refrescar base de datos</translation>
     </message>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="107"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="108"/>
         <source>Backup Manager</source>
         <translation>Gestor de Respaldos</translation>
     </message>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="109"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="110"/>
         <source>About QCMA</source>
         <translation>Acerca de QCMA</translation>
     </message>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="110"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="111"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../../../appindicator/unityindicator.cpp" line="112"/>
+        <location filename="../../../appindicator/unityindicator.cpp" line="113"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
