@@ -4,6 +4,7 @@
 !include LogicLib.nsh
 !include MUI.nsh
 !include x64.nsh
+!include Sections.nsh
 
 ### General information
 !define PRODUCT_NAME "Qcma"
@@ -40,7 +41,7 @@ Var StartMenuFolder
 ### Installer settings
 
 # Set compression
-SetCompressor /FINAL /SOLID lzma
+SetCompressor /solid lzma
 
 # Require admin rights on NT6+ (When UAC is turned on)
 RequestExecutionLevel admin
@@ -61,6 +62,7 @@ InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 !insertmacro MUI_PAGE_LICENSE "COPYING.rtf"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 
 !define MUI_FINISHPAGE_SHOWREADME ""
@@ -84,22 +86,10 @@ InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 !insertmacro MUI_LANGUAGE "Japanese"
 
 ### Installer
-
-function .onInit
-
-    setShellVarContext all
-    !insertmacro VerifyUserIsAdmin
-    !insertmacro MUI_LANGDLL_DISPLAY
-
-    ${If} ${RunningX64}
-        StrCpy $InstDir "$ProgramFiles64\${PRODUCT_NAME}"
-        SetRegView 64
-    ${Else}
-        StrCpy $InstDir "$ProgramFiles32\${PRODUCT_NAME}"
-    ${EndIf}
-functionEnd
  
-section "install"
+section "Qcma (required)"
+    SectionIn RO
+
     # Files for the install directory - to build the installer, these should be in the same directory as the install script (this file)
     SetOutPath $InstDir
 
@@ -153,6 +143,9 @@ section "install"
 
         SetOutPath "$INSTDIR\sqldrivers"
         File "win_x86_64\sqldrivers\qsqlite.dll"
+
+        SetOutPath "$INSTDIR\translations"
+        File "win_x86_64\translations\*.qm"
     ${Else}
         File "win_i686\qcma.exe"
         File "win_i686\qcma_console.exe"
@@ -202,12 +195,13 @@ section "install"
         SetOutPath "$INSTDIR\sqldrivers"
         File "win_i686\sqldrivers\qsqlite.dll"
 
+        SetOutPath "$INSTDIR\translations"
+        File "win_i686\translations\*.qm"
+
     ${EndIf}
 
-    SetOutPath "$INSTDIR\translations"
-    File "translations\qt*.qm"
-
     SetOutPath $InstDir\driver
+    File "QcmaDriver_libusbk.exe"
     File "QcmaDriver_libusb0.exe"
 
     # Uninstaller - See function un.onInit and section "uninstall" for configuration
@@ -238,13 +232,38 @@ section "install"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
 sectionEnd
 
-section "driver"
-    SetOutPath $InstDir\driver
-    File "QcmaDriver_libusbk.exe"
-    DetailPrint "Starting the driver installation"     
-    ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
+Section "libusbK driver" USB0
+   SectionIn 1
+   ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
 sectionEnd
- 
+
+Section /O "libusb0 driver" USBK
+   SectionIn 2
+   ExecWait "$InstDir\driver\QcmaDriver_libusb0.exe"
+sectionEnd
+
+function .onInit
+    setShellVarContext all
+    !insertmacro VerifyUserIsAdmin
+    !insertmacro MUI_LANGDLL_DISPLAY
+
+    ${If} ${RunningX64}
+        StrCpy $InstDir "$ProgramFiles64\${PRODUCT_NAME}"
+        SetRegView 64
+    ${Else}
+        StrCpy $InstDir "$ProgramFiles32\${PRODUCT_NAME}"
+    ${EndIf}
+
+   StrCpy $1 ${USBK}
+functionEnd
+
+Function .onSelChange
+!insertmacro StartRadioButtons $1
+    !insertmacro RadioButton ${USBK}
+    !insertmacro RadioButton ${USB0}
+!insertmacro EndRadioButtons
+FunctionEnd
+
 ### Uninstaller
  
 function un.onInit
