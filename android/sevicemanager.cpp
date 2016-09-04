@@ -25,10 +25,15 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QHostInfo>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextStream>
+
+#ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
+#endif
+
 #include <vitamtp.h>
 
 ServiceManager::ServiceManager(QObject *obj_parent)
@@ -211,9 +216,13 @@ void ServiceManager::loadDefaultSettings()
 
     settings.setValue("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION);
 
+#ifdef Q_OS_ANDROID
     QString deviceName = QAndroidJniObject::getStaticObjectField(
                              "android/os/Build", "MODEL", "Ljava/lang/String;")
                              .toString();
+#else
+    QString deviceName = QHostInfo::localHostName();
+#endif
 
     qDebug("Detected device model: %s", qPrintable(deviceName));
     settings.setValue("hostName", deviceName);

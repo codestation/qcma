@@ -1,21 +1,16 @@
 include(../config.pri)
-include(../common/defines.pri)
 
+QT += qml quick core network sql
+TEMPLATE += app
 TARGET = qcma_android
-TEMPLATE=app
-QT += network sql
+CONFIG += mobility
 
 android {
-  QT += androidextras
+    QT += androidextras
 }
-
-QT -= gui
-LIBS += -L../common -lqcma_common
-CONFIG += mobility
 
 # this library needs to link statically their deps but Qt doesn't pass --static to PKGCONFIG
 QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp)
-LIBS += -lvitamtp -lxml2 -liconv
 
 SOURCES += \
     main_android.cpp \
@@ -34,3 +29,9 @@ DISTFILES += \
     android-src/gradlew.bat
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-src
+
+include(../common/common.pri)
+
+android {
+    LIBS += -lvitamtp -lxml2 -liconv
+}

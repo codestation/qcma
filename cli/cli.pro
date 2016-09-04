@@ -1,31 +1,34 @@
 include(../config.pri)
-include(../common/defines.pri)
 
-TARGET = qcma_cli
+# remove linked gui libs
+QT -= gui
+
+QT += core network sql
 TEMPLATE += app
-QT += network sql core
-
-greaterThan(QT_MAJOR_VERSION, 4): QT -= gui
-
-LIBS += -L../common -lqcma_common
+TARGET = qcma_cli
 
 SOURCES += \
-           main_cli.cpp \
-           singlecoreapplication.cpp \
-           headlessmanager.cpp
+    main_cli.cpp \
+    singlecoreapplication.cpp \
+    headlessmanager.cpp
 
 HEADERS += \
-           singlecoreapplication.h \
-           headlessmanager.h
+    singlecoreapplication.h \
+    headlessmanager.h
 
-DISABLE_FFMPEG {
-    PKGCONFIG = libvitamtp
-} else {
-    # find packages using pkg-config
-    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
-}
+include(../common/common.pri)
+
 # Linux-only config
 unix:!macx {
+    # installation prefix
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+
+    BINDIR = $$PREFIX/bin
+    DATADIR = $$PREFIX/share
+    MANDIR = $$DATADIR/man/man1
+
     man_cli.files = qcma_cli.1
     man_cli.path = $$MANDIR
     target.path = $$BINDIR

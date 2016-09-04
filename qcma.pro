@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 TEMPLATE = subdirs
-CONFIG += ordered
 SUBDIRS = common
 
 unix:!macx:!android {
@@ -13,7 +12,6 @@ unix:!macx:!android {
     SUBDIRS += cli
     cli.depends = common
 
-    # The appindicator and kde extensions are linux only too
     ENABLE_APPINDICATOR {
         SUBDIRS += appindicator
         appindicator.depends = gui
@@ -24,10 +22,14 @@ unix:!macx:!android {
     }
 }
 
-android {
+unix {
+    # Compile the Qt Quick binary only on Android
     SUBDIRS += android
     android.depends = common
-} else {
+}
+
+ !android {
+    # Build the Qt Widgets binary on all platforms, except Android
     SUBDIRS += gui
     gui.depends = common
 }

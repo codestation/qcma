@@ -1,9 +1,8 @@
 include(../config.pri)
-include(../common/defines.pri)
 
-TARGET = qcma
-TEMPLATE += app
 QT += gui widgets network sql
+TEMPLATE += app
+TARGET = qcma
 
 SOURCES += \
     main.cpp \
@@ -51,18 +50,22 @@ OTHER_FILES += \
     resources/qcma.desktop \
     qcma.rc
 
-RESOURCES += gui.qrc
+include(../common/common.pri)
 
-DISABLE_FFMPEG {
-    PKGCONFIG = libvitamtp
-} else {
-    # find packages using pkg-config
-    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
-}
+RESOURCES += gui.qrc
 
 #Linux-only config
 unix:!macx {
     PKGCONFIG += libnotify
+
+    # installation prefix
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+
+    BINDIR = $$PREFIX/bin
+    DATADIR = $$PREFIX/share
+    MANDIR = $$DATADIR/man/man1
 
     # config for desktop file and icon
     desktop.path = $$DATADIR/applications
@@ -84,11 +87,3 @@ win32 {
     # Windows icon
     RC_FILE = qcma.rc
 }
-
-unix|win32: LIBS += -L$$OUT_PWD/../common/ -lqcma_common
-
-INCLUDEPATH += $$PWD/../common
-DEPENDPATH += $$PWD/../common
-
-win32:!win32-g++: PRE_TARGETDEPS += $$OUT_PWD/../common/qcma_common.lib
-else:unix|win32-g++: PRE_TARGETDEPS += $$OUT_PWD/../common/libqcma_common.a

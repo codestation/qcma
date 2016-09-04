@@ -1,9 +1,10 @@
 include(../config.pri)
 
-TARGET = qcma_common
 QT += core network sql
+
 TEMPLATE = lib
 CONFIG += staticlib
+TARGET = qcma_common
 
 SOURCES += \
     capability.cpp \
@@ -36,12 +37,12 @@ HEADERS += \
     qlistdb.h \
     database.h
 
-DISABLE_FFMPEG {
-    PKGCONFIG = libvitamtp
-} else {
+PKGCONFIG += libvitamtp
+
+!DISABLE_FFMPEG {
     DEFINES += FFMPEG_ENABLED
     SOURCES += avdecoder.cpp
-    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
+    PKGCONFIG += libavformat libavcodec libavutil libswscale
 }
 
 OTHER_FILES += \

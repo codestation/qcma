@@ -20,15 +20,6 @@ QMAKE_CXXFLAGS += -Wno-write-strings -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MA
 unix:!macx {
     # largefile support
     DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE
-
-    # installation prefix
-    isEmpty(PREFIX) {
-        PREFIX = /usr/local
-    }
-
-    BINDIR = $$PREFIX/bin
-    DATADIR = $$PREFIX/share
-    MANDIR = $$DATADIR/man/man1
 }
 
 # Windows config
@@ -41,8 +32,6 @@ win32 {
 macx {
     # OS X icon
     ICON = resources/images/qcma.icns
-    # re-enable pkg-config on OS X (brew installs pkg-config files)
-    QT_CONFIG -= no-pkg-config
 }
 
 # try to get the current git version + hash
