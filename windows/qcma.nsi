@@ -201,8 +201,8 @@ section "Qcma (required)"
     ${EndIf}
 
     SetOutPath $InstDir\driver
-    File "QcmaDriver_libusbk.exe"
     File "QcmaDriver_libusb0.exe"
+    File "QcmaDriver_libusbk.exe"
 
     # Uninstaller - See function un.onInit and section "uninstall" for configuration
     WriteUninstaller "$InstDir\uninstall.exe"
@@ -232,14 +232,14 @@ section "Qcma (required)"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
 sectionEnd
 
-Section "libusbK driver" USB0
+Section "libusb0 driver" USBK
    SectionIn 1
-   ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
+   ExecWait "$InstDir\driver\QcmaDriver_libusb0.exe"
 sectionEnd
 
-Section /O "libusb0 driver" USBK
+Section /O "libusbK driver" USB0
    SectionIn 2
-   ExecWait "$InstDir\driver\QcmaDriver_libusb0.exe"
+   ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
 sectionEnd
 
 function .onInit
@@ -259,8 +259,8 @@ functionEnd
 
 Function .onSelChange
 !insertmacro StartRadioButtons $1
-    !insertmacro RadioButton ${USBK}
     !insertmacro RadioButton ${USB0}
+    !insertmacro RadioButton ${USBK}
 !insertmacro EndRadioButtons
 FunctionEnd
 
