@@ -18,12 +18,17 @@
  */
 
 #include "database.h"
+
+#ifdef FFMPEG_ENABLED
 #include "avdecoder.h"
+#endif
 
 #include <QDebug>
 #include <QSettings>
 #include <QTextStream>
 #include <QThread>
+
+#include <inttypes.h>
 
 const file_type audio_list[] = {
     {"mp3", FILE_FORMAT_MP3, CODEC_TYPE_MP3},
@@ -110,12 +115,17 @@ int Database::checkFileType(const QString path, int ohfi_root)
 
 void Database::loadMusicMetadata(const QString &path, metadata_t &metadata)
 {
+#ifndef FFMPEG_ENABLED
+    Q_UNUSED(path);
+    {
+#else
     AVDecoder decoder;
     bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
 
     if(!skipMetadata && decoder.open(path)) {
         decoder.getAudioMetadata(metadata);
     } else {
+#endif
         metadata.data.music.album = strdup("");
         metadata.data.music.artist = strdup("");
         metadata.data.music.title = strdup(metadata.name);
@@ -124,12 +134,17 @@ void Database::loadMusicMetadata(const QString &path, metadata_t &metadata)
 
 void Database::loadVideoMetadata(const QString &path, metadata_t &metadata)
 {
+#ifndef FFMPEG_ENABLED
+    Q_UNUSED(path);
+    {
+#else
     AVDecoder decoder;
     bool skipMetadata = QSettings().value("skipMetadata", false).toBool();
 
     if(!skipMetadata && decoder.open(path)) {
         decoder.getVideoMetadata(metadata);
     } else {
+#endif
         metadata.data.video.title = strdup(metadata.name);
         metadata.data.video.explanation = strdup("");
         metadata.data.video.copyright = strdup("");

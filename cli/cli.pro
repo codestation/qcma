@@ -18,8 +18,12 @@ HEADERS += \
            singlecoreapplication.h \
            headlessmanager.h
 
-PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
-
+DISABLE_FFMPEG {
+    PKGCONFIG = libvitamtp
+} else {
+    # find packages using pkg-config
+    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
+}
 # Linux-only config
 unix:!macx {
     man_cli.files = qcma_cli.1

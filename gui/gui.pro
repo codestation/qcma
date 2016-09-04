@@ -53,8 +53,12 @@ OTHER_FILES += \
 
 RESOURCES += gui.qrc
 
-# find packages using pkg-config
-PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
+DISABLE_FFMPEG {
+    PKGCONFIG = libvitamtp
+} else {
+    # find packages using pkg-config
+    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
+}
 
 #Linux-only config
 unix:!macx {

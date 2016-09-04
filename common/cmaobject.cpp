@@ -19,7 +19,6 @@
 
 #include "cmaobject.h"
 #include "sforeader.h"
-#include "avdecoder.h"
 #include "database.h"
 #include "cmautils.h"
 

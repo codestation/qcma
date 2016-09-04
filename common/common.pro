@@ -13,7 +13,6 @@ SOURCES += \
     sforeader.cpp \
     cmaclient.cpp \
     cmabroadcast.cpp \
-    avdecoder.cpp \
     cmaevent.cpp \
     dds.cpp \
     sqlitedb.cpp \
@@ -37,9 +36,15 @@ HEADERS += \
     qlistdb.h \
     database.h
 
+DISABLE_FFMPEG {
+    PKGCONFIG = libvitamtp
+} else {
+    DEFINES += FFMPEG_ENABLED
+    SOURCES += avdecoder.cpp
+    PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale
+}
+
 OTHER_FILES += \
     resources/xml/psp2-updatelist.xml
 
 RESOURCES += commonrc.qrc translations.qrc
-
-PKGCONFIG = libvitamtp libavformat libavcodec libavutil libswscale

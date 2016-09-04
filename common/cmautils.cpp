@@ -18,7 +18,10 @@
  */
 
 #include "cmautils.h"
+
+#ifdef FFMPEG_ENABLED
 #include "avdecoder.h"
+#endif
 
 #include <QBuffer>
 #include <QDebug>
@@ -100,6 +103,11 @@ bool removeRecursively(const QString &path)
 static QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
 {
     QByteArray data;
+
+#ifndef FFMPEG_ENABLED
+    Q_UNUSED(path);
+    Q_UNUSED(metadata);
+#else
     QDir folder(path);
 
     QStringList files = folder.entryList(QDir::Files | QDir::Readable);
@@ -124,6 +132,7 @@ static QByteArray findFolderAlbumArt(const QString path, metadata_t *metadata)
             }
         }
     }
+#endif
     return data;
 }
 
@@ -137,7 +146,12 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
         if(file.open(QIODevice::ReadOnly)) {
             data = file.readAll();
         }
-    } else if(MASK_SET(type, Photo)) {        
+#ifndef FFMPEG_ENABLED
+    }
+
+    Q_UNUSED(metadata);
+#else
+    } else if(MASK_SET(type, Photo)) {
         AVDecoder decoder;
 
         if(decoder.open(path)) {
@@ -173,6 +187,7 @@ QByteArray getThumbnail(const QString &path, DataType type, metadata_t *metadata
             metadata->data.thumbnail.height = height;
         }
     }
+#endif
     return data;
 }
 

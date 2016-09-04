@@ -20,7 +20,10 @@
 #include "cmautils.h"
 #include "sqlitedb.h"
 #include "sforeader.h"
+
+#ifdef FFMPEG_ENABLED
 #include "avdecoder.h"
+#endif
 
 #include <QDateTime>
 #include <QDebug>
@@ -551,6 +554,14 @@ bool SQLiteDB::insertSourceEntry(uint object_id, const QString &path, const QStr
 
 uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int id_parent, int type)
 {
+#ifndef FFMPEG_ENABLED
+    Q_UNUSED(path);
+    Q_UNUSED(name);
+    Q_UNUSED(id_parent);
+    Q_UNUSED(type);
+
+    return 0;
+#else
     bool ok;
     int ohfi;
     AVDecoder decoder;
@@ -664,10 +675,19 @@ uint SQLiteDB::insertMusicEntry(const QString &path, const QString &name, int id
     }
 
     return ohfi;
+#endif
 }
 
 uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int id_parent, int type)
 {
+#ifndef FFMPEG_ENABLED
+    Q_UNUSED(path);
+    Q_UNUSED(name);
+    Q_UNUSED(id_parent);
+    Q_UNUSED(type);
+
+    return 0;
+#else
     int ohfi;
     AVDecoder decoder;
     quint64 duration;
@@ -735,6 +755,7 @@ uint SQLiteDB::insertVideoEntry(const QString &path, const QString &name, int id
     }
 
     return ohfi;
+#endif
 }
 
 uint SQLiteDB::insertPhotoEntry(const QString &path, const QString &name, int id_parent, int type)

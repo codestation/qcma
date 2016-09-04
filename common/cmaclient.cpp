@@ -19,7 +19,6 @@
 
 #include "cmaclient.h"
 #include "capability.h"
-#include "avdecoder.h"
 #include "cmaevent.h"
 #include "cmautils.h"
 
