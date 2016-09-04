@@ -53,7 +53,7 @@ static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QStrin
 
     switch (type) {
     case QtDebugMsg:
-        __android_log_print(ANDROID_LOG_INFO, "qcma", "%s", message);
+        __android_log_print(ANDROID_LOG_DEBUG, "qcma", "%s", message);
         break;
     case QtWarningMsg:
         __android_log_print(ANDROID_LOG_WARN, "qcma", "%s", message);
@@ -64,6 +64,11 @@ static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QStrin
     case QtFatalMsg:
         __android_log_print(ANDROID_LOG_FATAL, "qcma", "%s", message);
         abort();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    case QtInfoMsg:
+        __android_log_print(ANDROID_LOG_INFO, "qcma", "%s", message);
+        break;
+#endif
     }
 }
 
@@ -88,13 +93,10 @@ int main(int argc, char *argv[])
     QString appname = getAppName();
     qDebug("Class name: %s", qPrintable(appname));
 
-    // set $HOME, Qt/Android doesn't currently do this
-    qputenv("HOME", QString("/data/data/%1").arg(appname).toLocal8Bit());
-
     app.addLibraryPath(appname + "/lib");
 
     QTranslator translator;
-    QString locale = "en"; //QLocale().system().name();
+    QString locale = QLocale().system().name();
     qDebug() << "Current locale:" << locale;
 
     if(app.arguments().contains("--set-locale")) {

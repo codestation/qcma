@@ -31,8 +31,8 @@
 #include <QAndroidJniObject>
 #include <vitamtp.h>
 
-ServiceManager::ServiceManager(QObject *obj_parent) :
-    QObject(obj_parent)
+ServiceManager::ServiceManager(QObject *obj_parent)
+    : QObject(obj_parent)
 {
 }
 
@@ -44,13 +44,13 @@ ServiceManager::~ServiceManager()
 
 void ServiceManager::refreshDatabase()
 {
-    if(m_db->load()) {
+    if (m_db->load()) {
         return;
     }
 
     QTextStream(stdout) << "Database scan has started" << endl;
 
-    if(!m_db->rescan()) {
+    if (!m_db->rescan()) {
         qWarning("No PS Vita system has been registered");
     }
 }
@@ -61,7 +61,7 @@ void ServiceManager::start()
 
     loadDefaultSettings();
 
-    if(QSettings().value("useMemoryStorage", true).toBool()) {
+    if (QSettings().value("useMemoryStorage", true).toBool()) {
         m_db = new QListDB();
     } else {
         m_db = new SQLiteDB();
@@ -78,43 +78,51 @@ void ServiceManager::start()
     CmaClient *client;
     QSettings settings;
 
-    if(!settings.value("disableUSB", false).toBool()) {
-
+    if (!settings.value("disableUSB", false).toBool()) {
         usb_thread = new QThread();
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
         connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-        connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
-        connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
+        connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()),
+                Qt::DirectConnection);
+        connect(usb_thread, SIGNAL(finished()), usb_thread,
+                SLOT(deleteLater()));
         connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
         connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
 
-        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, SIGNAL(refreshDatabase()), this,
+                SLOT(refreshDatabase()));
 
         client->moveToThread(usb_thread);
         usb_thread->start();
         thread_count++;
     }
 
-    if(!settings.value("disableWireless", false).toBool()) {
+    if (!settings.value("disableWireless", false).toBool()) {
         CmaBroadcast *broadcast = new CmaBroadcast(this);
         wireless_thread = new QThread();
         client = new CmaClient(m_db, broadcast);
         wireless_thread->setObjectName("wireless_thread");
-        connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
-        connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
-        connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
-        connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-        connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+        connect(wireless_thread, SIGNAL(started()), client,
+                SLOT(connectWireless()));
+        connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()),
+                Qt::DirectConnection);
+        connect(wireless_thread, SIGNAL(finished()), wireless_thread,
+                SLOT(deleteLater()));
+        connect(wireless_thread, SIGNAL(finished()), this,
+                SLOT(threadStopped()));
+        connect(wireless_thread, SIGNAL(finished()), client,
+                SLOT(deleteLater()));
 
-        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, SIGNAL(refreshDatabase()), this,
+                SLOT(refreshDatabase()));
 
         client->moveToThread(wireless_thread);
         wireless_thread->start();
         thread_count++;
     }
 
-    if(thread_count == 0) {
+    if (thread_count == 0) {
         qCritical("You must enable at least USB or Wireless monitoring");
     }
 }
@@ -126,7 +134,7 @@ void ServiceManager::receiveMessage(QString message)
 
 void ServiceManager::stop()
 {
-    if(CmaClient::stop() < 0) {
+    if (CmaClient::stop() < 0) {
         QCoreApplication::quit();
     }
 }
@@ -134,7 +142,7 @@ void ServiceManager::stop()
 void ServiceManager::threadStopped()
 {
     mutex.lock();
-    if(--thread_count == 0) {
+    if (--thread_count == 0) {
         QCoreApplication::quit();
     }
     mutex.unlock();
@@ -142,43 +150,45 @@ void ServiceManager::threadStopped()
 
 void ServiceManager::loadDefaultSettings()
 {
-    QString defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-
-    // save config to /sdcard, remove when the app works properly
-    qputenv("XDG_CONFIG_HOME", defaultdir.toLocal8Bit());
-
     QSettings settings;
+    qDebug() << "config location:" << settings.fileName();
 
     // skip initialization if some config is already present
-    if(!settings.value("appsPath").isNull())
+    if (!settings.value("appsPath").isNull())
         return;
 
     qDebug("saving to: %s", qPrintable(settings.fileName()));
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     qDebug("photoPath: %s", qPrintable(defaultdir));
     settings.setValue("photoPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     qDebug("musicPath: %s", qPrintable(defaultdir));
     settings.setValue("musicPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     qDebug("photoPath: %s", qPrintable(defaultdir));
     settings.setValue("videoPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    defaultdir.append(QDir::separator()).append("PS Vita");
+    defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    defaultdir.append("/Qcma/PS Vita");
     qDebug("appsPath: %s", qPrintable(defaultdir));
     settings.setValue("appsPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    defaultdir.append(QDir::separator()).append("PSV Updates");
+    defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    defaultdir.append("/Qcma/PSV Updates");
     qDebug("urlPath: %s", qPrintable(defaultdir));
     settings.setValue("urlPath", defaultdir);
 
-    defaultdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    defaultdir.append(QDir::separator()).append("PSV Packages");
+    defaultdir =
+        QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    defaultdir.append("/Qcma/PSV Packages");
     qDebug("pkgPath: %s", qPrintable(defaultdir));
     settings.setValue("pkgPath", defaultdir);
 
@@ -202,7 +212,8 @@ void ServiceManager::loadDefaultSettings()
     settings.setValue("protocolVersion", VITAMTP_PROTOCOL_MAX_VERSION);
 
     QString deviceName = QAndroidJniObject::getStaticObjectField(
-                "android/os/Build", "MODEL", "Ljava/lang/String;").toString();
+                             "android/os/Build", "MODEL", "Ljava/lang/String;")
+                             .toString();
 
     qDebug("Detected device model: %s", qPrintable(deviceName));
     settings.setValue("hostName", deviceName);
