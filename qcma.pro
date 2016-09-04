@@ -11,15 +11,6 @@ unix:!macx:!android {
     # Compile the headless binary only on Linux
     SUBDIRS += cli
     cli.depends = common
-
-    ENABLE_APPINDICATOR {
-        SUBDIRS += appindicator
-        appindicator.depends = gui
-    }
-    ENABLE_KDENOTIFIER {
-        SUBDIRS += kdenotifier
-        kdenotifier.depends = gui
-    }
 }
 
 unix {
