@@ -201,6 +201,7 @@ section "Qcma (required)"
     ${EndIf}
 
     SetOutPath $InstDir\driver
+    File "QcmaDriver_winusb.exe"
     File "QcmaDriver_libusb0.exe"
     File "QcmaDriver_libusbk.exe"
 
@@ -232,13 +233,18 @@ section "Qcma (required)"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
 sectionEnd
 
-Section "libusb0 driver" USBK
+Section "WinUSB driver" WUSB
    SectionIn 1
+   ExecWait "$InstDir\driver\QcmaDriver_winusb.exe"
+sectionEnd
+
+Section /O "libusb0 driver" USBK
+   SectionIn 2
    ExecWait "$InstDir\driver\QcmaDriver_libusb0.exe"
 sectionEnd
 
 Section /O "libusbK driver" USB0
-   SectionIn 2
+   SectionIn 3
    ExecWait "$InstDir\driver\QcmaDriver_libusbk.exe"
 sectionEnd
 
@@ -254,11 +260,12 @@ function .onInit
         StrCpy $InstDir "$ProgramFiles32\${PRODUCT_NAME}"
     ${EndIf}
 
-   StrCpy $1 ${USBK}
+   StrCpy $1 ${WUSB}
 functionEnd
 
 Function .onSelChange
 !insertmacro StartRadioButtons $1
+    !insertmacro RadioButton ${WUSB}
     !insertmacro RadioButton ${USB0}
     !insertmacro RadioButton ${USBK}
 !insertmacro EndRadioButtons
