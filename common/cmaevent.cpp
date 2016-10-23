@@ -21,6 +21,7 @@
 #include "cmautils.h"
 #include <locale.h>
 
+#include <QCryptographicHash>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -30,6 +31,8 @@
 #include <QUrl>
 
 QFile *CmaEvent::m_file = NULL;
+
+const QString hash360 = "8cc2e2666626c4ff8f582bf209473526e825e2a5e38e39b259a8a46e25ef371c";
 
 static metadata_t g_thumbmeta = {0, 0, 0, NULL, NULL, 0, 0, 0, Thumbnail, {{17, 240, 136, 0, 1, 1.0f, 2}}, NULL};
 
@@ -533,11 +536,17 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
     QSettings settings;
 
     bool offlineMode = settings.value("offlineMode", true).toBool();
+    bool ignorexml = settings.value("ignorexml", true).toBool();
+    bool ignorefile = false;
 
-    if(!file.open(QIODevice::ReadOnly)) {
+    // do not try to open the xml file if the flag is set
+    if(basename == "psp2-updatelist.xml" && ignorexml) {
+        ignorefile = true;
+    }
+
+    if(ignorefile || !file.open(QIODevice::ReadOnly)) {
         if(offlineMode && basename == "psp2-updatelist.xml") {
-            qDebug("Found request for update list. Sending cached data");
-            messageSent(tr("The PSVita has requested an update check, sending embedded xml file (version 0.00)"));
+            qDebug("Found request for update list. Sending embedded xml file");
             QFile res(":/main/resources/xml/psp2-updatelist.xml");
             res.open(QIODevice::ReadOnly);
             data = res.readAll();
@@ -553,6 +562,22 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
                 if(countryCode != "us") {
                     QString regionTag = QString("<region id=\"%1\">").arg(countryCode);
                     data.replace("<region id=\"us\">", qPrintable(regionTag));
+                }
+
+                QString versiontype = settings.value("versiontype", "zero").toString();
+
+                if(versiontype == "henkaku") {
+                    qDebug("Setting XML version to 03.600.000");
+                    data.replace("00.000.000", "03.600.000");
+                    data.replace("label=\"0.00\"", "label=\"3.60\"");
+                } else if(versiontype == "custom") {
+                    QString customVersion = settings.value("customversion", "00.000.000").toString();
+                    QString customLabel = QString("label=\"%1\"").arg(customVersion.mid(1, 4));
+                    qDebug("Setting XML version to %s", qPrintable(customVersion));
+                    data.replace("00.000.000", qPrintable(customVersion));
+                    data.replace("label=\"0.00\"", qPrintable(customLabel));
+                } else {
+                    qDebug("Using default XML version: 00.000.000");
                 }
 
             } else {
@@ -595,8 +620,32 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
         }
     } else {
         qDebug("Reading from local file");
-        messageSent(tr("The PSVita has requested an update check, sending local xml file"));
         data = file.readAll();
+
+        if(basename == "psp2-updatelist.xml" && !ignorefile) {
+            messageSent(tr("The PSVita has requested an update check, sending local xml file and ignoring version settings"));
+        } else {
+            QString versiontype = settings.value("versiontype", "zero").toString();
+            QString customVersion = settings.value("customversion", "00.000.000").toString();
+
+            // verify that the update file is really the 3.60 pup
+            if(ignorexml && basename == "PSP2UPDAT.PUP" &&
+                    (versiontype == "henkaku" ||
+                    (versiontype == "custom" &&
+                    customVersion == "03.600.000"))) {
+                QCryptographicHash crypto(QCryptographicHash::Sha256);
+                crypto.addData(data);
+                QString result = crypto.result().toHex();
+
+                if(result != hash360) {
+                    qWarning("3.60 PUP SHA256 mismatch");
+                    qWarning("> Actual:   %s", qPrintable(result));
+                    qWarning("> Expected: %s", qPrintable(hash360));
+                    // notify the user
+                    messageSent(tr("The XML version is set to 3.60 but the PUP file hash doesn't match, cancel the update if you don't want this"));
+                }
+            }
+        }
     }
 
     qDebug("Sending %i bytes of data for HTTP request %s", data.size(), url);

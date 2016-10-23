@@ -48,6 +48,7 @@ private:
 
 private slots:
     void protocolModeChanged(int index);
+    void versionModeChanged(int index);
     void browseBtnPressed(int from);
     void accept();
 };

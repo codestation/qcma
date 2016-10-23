@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>519</width>
-    <height>525</height>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -306,16 +306,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_3">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Update database automatically when files on the PC are changed</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QFormLayout" name="formLayout">
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -368,6 +358,16 @@
             </widget>
            </item>
            <item>
+            <widget class="QCheckBox" name="ignorexmlCheck">
+             <property name="text">
+              <string>Ignore local file psp2-updatelist.xml on update folder</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4"/>
            </item>
            <item>
@@ -375,6 +375,32 @@
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
              </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>CMA protocol selection</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="protocolModeBox">
+               <item>
+                <property name="text">
+                 <string>Latest</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Manual</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Custom</string>
+                </property>
+               </item>
+              </widget>
+             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
@@ -445,6 +471,13 @@
                </item>
               </widget>
              </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>CMA custom version</string>
+               </property>
+              </widget>
+             </item>
              <item row="2" column="1">
               <widget class="QLineEdit" name="protocolEdit">
                <property name="inputMask">
@@ -455,23 +488,37 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_11">
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_13">
                <property name="text">
-                <string>CMA protocol selection</string>
+                <string>Custom PS Vita version</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="protocolModeBox">
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="psversionEdit">
+               <property name="text">
+                <string notr="true">03.600.000</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Use this version for updates</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="psversionBox">
                <item>
                 <property name="text">
-                 <string>Latest</string>
+                 <string>FW 0.00 (Always up-to-date)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>Manual</string>
+                 <string>FW 3.60 (HENkaku)</string>
                 </property>
                </item>
                <item>
@@ -479,13 +526,6 @@
                  <string>Custom</string>
                 </property>
                </item>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>CMA custom version</string>
-               </property>
               </widget>
              </item>
             </layout>

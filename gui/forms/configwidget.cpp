@@ -64,6 +64,7 @@ void ConfigWidget::connectSignals()
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     connect(ui->protocolModeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(protocolModeChanged(int)));
+    connect(ui->psversionBox, SIGNAL(currentIndexChanged(int)), this, SLOT(versionModeChanged(int)));
 }
 
 void ConfigWidget::protocolModeChanged(int index)
@@ -87,7 +88,25 @@ void ConfigWidget::protocolModeChanged(int index)
         ui->protocolEdit->setEnabled(false);
         break;
     }
+}
 
+void ConfigWidget::versionModeChanged(int index)
+{
+    switch(index)
+    {
+    case 0:
+        ui->psversionEdit->setEnabled(false);
+        break;
+    case 1:
+        ui->psversionEdit->setEnabled(false);
+        break;
+    case 2:
+        ui->psversionEdit->setEnabled(true);
+        break;
+    default:
+        ui->psversionEdit->setEnabled(false);
+        break;
+    }
 }
 
 void ConfigWidget::setDefaultData()
@@ -151,6 +170,23 @@ void ConfigWidget::setDefaultData()
         ui->protocolEdit->setText(QString::number(protocol_version));
     else
         ui->protocolEdit->setText(QString::number(VITAMTP_PROTOCOL_MAX_VERSION));
+
+    bool ignorexml = settings.value("ignorexml", true).toBool();
+    ui->ignorexmlCheck->setChecked(ignorexml);
+
+    QString versiontype = settings.value("versiontype", "zero").toString();
+    QString customVersion = settings.value("customversion", "00.000.000").toString();
+
+    if(versiontype == "custom")
+        ui->psversionBox->setCurrentIndex(2);
+    else if(versiontype == "henkaku")
+        ui->psversionBox->setCurrentIndex(1);
+    else
+        ui->psversionBox->setCurrentIndex(0);
+
+   versionModeChanged(ui->psversionBox->currentIndex());
+
+    ui->psversionEdit->setText(customVersion);
 }
 
 ConfigWidget::~ConfigWidget()
@@ -240,6 +276,17 @@ void ConfigWidget::accept()
         settings.setValue("protocolMode", "manual");
     else if(ui->protocolModeBox->currentIndex() == 2)
         settings.setValue("protocolMode", "custom");
+
+    if(ui->psversionBox->currentIndex() == 0)
+        settings.setValue("versiontype", "zero");
+    else if(ui->psversionBox->currentIndex() == 1)
+        settings.setValue("versiontype", "henkaku");
+    else if(ui->psversionBox->currentIndex() == 2)
+        settings.setValue("versiontype", "custom");
+
+    settings.setValue("ignorexml", ui->ignorexmlCheck->isChecked());
+
+    settings.setValue("customversion", ui->psversionEdit->text());
 
     bool ok;
     int protocol = ui->protocolEdit->text().toInt(&ok);
