@@ -629,6 +629,7 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
             QString customVersion = settings.value("customversion", "00.000.000").toString();
 
             // verify that the update file is really the 3.60 pup
+            // to prevent people updating to the wrong version and lose henkaku.
             if(ignorexml && basename == "PSP2UPDAT.PUP" &&
                     (versiontype == "henkaku" ||
                     (versiontype == "custom" &&
