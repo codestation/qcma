@@ -39,6 +39,7 @@ public:
     void setDirectory(const QString &m_path);
     const QPixmap *getIconPixmap();
     int getIconWidth();
+    QString getPath();
 
     static bool lessThan(const BackupItem *s1, const BackupItem *s2);
 

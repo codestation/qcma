@@ -28,6 +28,8 @@
 #include <QDebug>
 #include <QDialogButtonBox>
 #include <QDir>
+#include <QFileDialog>
+#include <QJsonDocument>
 #include <QSettings>
 
 #include <vitamtp.h>
@@ -49,8 +51,37 @@ void BackupManagerForm::setupForm()
 {
     this->resize(800, 480);
     connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));
+    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveListing()));
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
+}
+
+void BackupManagerForm::saveListing()
+{
+    int rows = ui->tableWidget->rowCount();
+    QVariantList items;
+
+    for(int i = 0; i < rows; ++i) {
+        BackupItem *item = static_cast<BackupItem *>(ui->tableWidget->cellWidget(i, 0));
+
+        QVariantMap entry;
+        entry.insert("title", item->title);
+        entry.insert("gameid", QFileInfo(item->getPath()).fileName());
+        entry.insert("path", item->getPath());
+
+        items.append(entry);
+    }
+
+    QString output = QFileDialog::getSaveFileName(
+            this, tr("Select save location"), QDir::homePath() + "/listing.json",
+                "JSON (*.json)");
+
+    if(!output.isEmpty()) {
+        QJsonDocument doc = QJsonDocument::fromVariant(items);
+        QFile jsonFile(output);
+        jsonFile.open(QFile::WriteOnly);
+        jsonFile.write(doc.toJson());
+    }
 }
 
 void BackupManagerForm::removeEntry(BackupItem *item)

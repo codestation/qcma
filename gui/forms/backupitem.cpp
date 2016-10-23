@@ -84,6 +84,11 @@ int BackupItem::getIconWidth()
     return ui->itemPicture->width();
 }
 
+QString BackupItem::getPath()
+{
+    return m_path;
+}
+
 void BackupItem::setItemIcon(const QString &path, int item_width, bool try_dds)
 {
     ui->itemPicture->setMinimumWidth(item_width);
