@@ -29,11 +29,14 @@
 #include <QStandardPaths>
 
 #include <inttypes.h>
+#include <signal.h>
 #include <unistd.h>
 
 #include <vitamtp.h>
 
+#ifdef Q_OS_ANDROID
 #include <android/log.h>
+#endif
 
 #include "servicemanager.h"
 
@@ -45,7 +48,7 @@ static QString getAppName()
     return file.open(QIODevice::ReadOnly) ? file.readLine() : "";
 }
 
-
+#ifdef Q_OS_ANDROID
 static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
@@ -71,7 +74,7 @@ static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QStrin
 #endif
     }
 }
-
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -86,7 +89,9 @@ int main(int argc, char *argv[])
     // stdout goes to /dev/null on android
     VitaMTP_Set_Logging(VitaMTP_NONE);
 
+#ifdef Q_OS_ANDROID
     qInstallMessageHandler(cleanOutput);
+#endif
 
     qDebug("Starting Qcma %s", QCMA_VER);
 
