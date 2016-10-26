@@ -174,6 +174,9 @@ void ConfigWidget::setDefaultData()
     bool ignorexml = settings.value("ignorexml", true).toBool();
     ui->ignorexmlCheck->setChecked(ignorexml);
 
+    bool autorefresh = settings.value("autorefresh", false).toBool();
+    ui->refreshCheck->setChecked(autorefresh);
+
     QString versiontype = settings.value("versiontype", "zero").toString();
     QString customVersion = settings.value("customversion", "00.000.000").toString();
 
@@ -285,7 +288,7 @@ void ConfigWidget::accept()
         settings.setValue("versiontype", "custom");
 
     settings.setValue("ignorexml", ui->ignorexmlCheck->isChecked());
-
+    settings.setValue("autorefresh", ui->refreshCheck->isChecked());
     settings.setValue("customversion", ui->psversionEdit->text());
 
     bool ok;

@@ -74,6 +74,7 @@ private:
     typedef QMap<int, root_list> map_list;
 
     int create();
+    int createFromOhfi(int ohfi);
     int scanRootDirectory(root_list &list,int ohfi_type);
     int recursiveScanRootDirectory(root_list &list, CMAObject *parent, int ohfi_type);
     bool hasFilter(const CMARootObject *object,int ohfi);

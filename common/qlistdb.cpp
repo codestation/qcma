@@ -29,6 +29,15 @@
 #include <QThread>
 #include <QDebug>
 
+#include <algorithm>
+
+const int ohfi_array[] = {
+    VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VIDEO,
+    VITA_OHFI_PACKAGE, VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP,
+    VITA_OHFI_PSPAPP, VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP,
+    VITA_OHFI_PSMAPP
+ };
+
 static bool nameLessThan(const QFileInfo &v1, const QFileInfo &v2)
 {
     if(v1.isDir() && v2.isDir()) {
@@ -115,70 +124,74 @@ void QListDB::clear()
     object_list.clear();
 }
 
+int QListDB::createFromOhfi(int ohfi)
+{
+    QSettings settings;
+
+    CMARootObject *obj = new CMARootObject(ohfi);
+    bool skipCurrent = false;
+    int dir_count;
+
+    switch(ohfi) {
+    case VITA_OHFI_MUSIC:
+        obj->initObject(settings.value("musicPath").toString());
+        skipCurrent = settings.value("musicSkip", false).toBool();
+        break;
+
+    case VITA_OHFI_PHOTO:
+        obj->initObject(settings.value("photoPath").toString());
+        skipCurrent = settings.value("photoSkip", false).toBool();
+        break;
+
+    case VITA_OHFI_VIDEO:
+        obj->initObject(settings.value("videoPath").toString());
+        skipCurrent = settings.value("videoSkip", false).toBool();
+        break;
+
+    case VITA_OHFI_BACKUP:
+    case VITA_OHFI_VITAAPP:
+    case VITA_OHFI_PSPAPP:
+    case VITA_OHFI_PSPSAVE:
+    case VITA_OHFI_PSXAPP:
+    case VITA_OHFI_PSMAPP:
+        obj->initObject(settings.value("appsPath").toString());
+        break;
+
+    case VITA_OHFI_PACKAGE:
+        obj->initObject(settings.value("pkgPath").toString());
+    }
+
+    root_list list;
+    list << obj;
+    emit directoryAdded(obj->m_path);
+
+    if(!skipCurrent) {
+        dir_count = recursiveScanRootDirectory(list, obj, ohfi);
+    } else {
+        dir_count = 0;
+    }
+
+    if(dir_count < 0) {
+        return -1;
+    }
+
+    qDebug("Added objects for OHFI 0x%02X: %i", ohfi, dir_count);
+    object_list[ohfi] = list;
+
+    return dir_count;
+}
+
 int QListDB::create()
 {
     int total_objects = 0;
     //QMutexLocker locker(&mutex);
-    const int ohfi_array[] = { VITA_OHFI_MUSIC, VITA_OHFI_PHOTO, VITA_OHFI_VIDEO,
-                               VITA_OHFI_PACKAGE, VITA_OHFI_BACKUP, VITA_OHFI_VITAAPP,
-                               VITA_OHFI_PSPAPP, VITA_OHFI_PSPSAVE, VITA_OHFI_PSXAPP,
-                               VITA_OHFI_PSMAPP
-                             };
+
     CMAObject::resetOhfiCounter();
-    QSettings settings;
 
     for(int i = 0, max = sizeof(ohfi_array) / sizeof(int); i < max; i++) {
-        CMARootObject *obj = new CMARootObject(ohfi_array[i]);
-        bool skipCurrent = false;
-        int dir_count;
-
-        switch(ohfi_array[i]) {
-        case VITA_OHFI_MUSIC:
-            obj->initObject(settings.value("musicPath").toString());
-            skipCurrent = settings.value("musicSkip", false).toBool();
-            break;
-
-        case VITA_OHFI_PHOTO:
-            obj->initObject(settings.value("photoPath").toString());
-            skipCurrent = settings.value("photoSkip", false).toBool();
-            break;
-
-        case VITA_OHFI_VIDEO:
-            obj->initObject(settings.value("videoPath").toString());
-            skipCurrent = settings.value("videoSkip", false).toBool();
-            break;
-
-        case VITA_OHFI_BACKUP:
-        case VITA_OHFI_VITAAPP:
-        case VITA_OHFI_PSPAPP:
-        case VITA_OHFI_PSPSAVE:
-        case VITA_OHFI_PSXAPP:
-        case VITA_OHFI_PSMAPP:
-            obj->initObject(settings.value("appsPath").toString());
-            break;
-
-        case VITA_OHFI_PACKAGE:
-            obj->initObject(settings.value("pkgPath").toString());
-        }
-
-        root_list list;
-        list << obj;
-        emit directoryAdded(obj->m_path);
-
-        if(!skipCurrent) {
-            dir_count = recursiveScanRootDirectory(list, obj, ohfi_array[i]);
-        } else {
-            dir_count = 0;
-        }
-
-        if(dir_count < 0) {
-            return -1;
-        }
-
-        qDebug("Added objects for OHFI 0x%02X: %i", ohfi_array[i], dir_count);
-        total_objects += dir_count;
-        object_list[ohfi_array[i]] = list;
+        total_objects += createFromOhfi(ohfi_array[i]);
     }
+
     return total_objects;
 }
 
@@ -320,6 +333,16 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
 
 bool QListDB::find(int ohfi, QListDB::find_data &data)
 {
+    // reescan when accessing a root element
+    if(std::binary_search(ohfi_array, ohfi_array + sizeof(ohfi_array)/sizeof(ohfi_array[0]), ohfi)) {
+        QSettings settings;
+
+        if(settings.value("autorefresh", false).toBool()) {
+            qDebug("Reescanning root for ohfi: %i", ohfi);
+            createFromOhfi(ohfi);
+        }
+    }
+
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         if(findInternal(*root, ohfi, data)) {
             return true;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>519</width>
-    <height>559</height>
+    <height>577</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -354,6 +354,16 @@
             <widget class="QCheckBox" name="musicSkipCheck">
              <property name="text">
               <string>Skip music scanning</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="refreshCheck">
+             <property name="text">
+              <string>Automatic database refresh (experimental)</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
