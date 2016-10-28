@@ -13,13 +13,13 @@ unix:!macx:!android {
     cli.depends = common
 }
 
-unix {
+ENABLE_ANDROID:unix {
     # Compile the Qt Quick binary only on Android
     SUBDIRS += android
     android.depends = common
 }
 
- !android {
+!android {
     # Build the Qt Widgets binary on all platforms, except Android
     SUBDIRS += gui
     gui.depends = common
