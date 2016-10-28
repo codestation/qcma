@@ -1,0 +1,10 @@
+{
+  "title": "Qcma Installer",
+  "icon": "installer.icns",
+  "background": "installer-bg.png",
+  "icon-size": 80,
+  "contents": [
+    { "x": 456, "y": 344, "type": "link", "path": "/Applications" },
+    { "x": 182, "y": 344, "type": "file", "path": "Qcma.app" }
+  ]
+}
