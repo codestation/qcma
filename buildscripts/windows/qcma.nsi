@@ -48,7 +48,7 @@ RequestExecutionLevel admin
 
 # This will be in the installer/uninstaller title bar
 Name "${PRODUCT_NAME}"
-OutFile "${PRODUCT_NAME}_setup_${PRODUCT_VERSION_MAJOR}.${PRODUCT_VERSION_MINOR}.${PRODUCT_VERSION_BUILD}.exe"
+OutFile "${PRODUCT_NAME}_setup.exe"
 InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 
 !define MUI_LANGDLL_ALLLANGUAGES

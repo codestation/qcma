@@ -1,4 +1,6 @@
 qcma.pro.user*
 *.o
 *.qm
+*.bundle
 org.qcma.*.xml
+
