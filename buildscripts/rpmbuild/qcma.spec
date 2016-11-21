@@ -11,15 +11,11 @@
 %endif
 
 %if 0%{?fedora}
-%define _qt5base qt5-qtbase
-%define _qt5imageformats qt5-qtimageformats
 %define _pkgconfig pkgconfig
 %define _qt5linguist qt5-linguist
 %define _qt5basedevel qt5-qtbase-devel
 %else
 %define qmake_qt5 qmake-qt5
-%define _qt5base libqt5-qtbase
-%define _qt5imageformats libqt5-qtimageformats
 %define _pkgconfig pkg-config
 %define _qt5linguist  libqt5-linguist
 %define _qt5basedevel libqt5-qtbase-devel
@@ -33,18 +29,20 @@ Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
-Requires:       libnotify
-Requires:       ffmpeg
-Requires:       %{_qt5base}
-Requires:       %{_qt5imageformats}
 Requires:       libvitamtp5 >= 2.5.9
 BuildRequires:  gcc-c++ 
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
-BuildRequires:  ffmpeg-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  %{_qt5linguist}
 BuildRequires:  %{_qt5basedevel}
+BuildRequires:  desktop-file-utils
+%if ! 0%{?fedora}
+BuildRequires:  libavformat-devel
+BuildRequires:  libavcodec-devel
+BuildRequires:  libavutil-devel
+BuildRequires:  libswscale-devel
+%endif
 
 %description
 QCMA is an cross-platform application to provide a Open Source implementation
@@ -56,25 +54,34 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 
 %build
 lrelease-qt5 common/resources/translations/*.ts
-%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX"
+%if 0%{?fedora}
+%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" CONFIG+="DISABLE_FFMPEG" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%else
+%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%endif
 make %{?_smp_mflags}
 
 %install
 make install INSTALL_ROOT=%{buildroot}
+desktop-file-edit --remove-key=Categories --add-category=System --add-category=FileManager --remove-key=Path --set-icon=qcma %{buildroot}%{_prefix}/share/applications/qcma.desktop
 
 %files
 %defattr(-,root,root)
-%{_bindir}/qcma
-%{_prefix}/share/applications/qcma.desktop
-%{_prefix}/share/icons/hicolor/64x64/apps/qcma.png
-%{_prefix}/share/man/man1/qcma.1.gz
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor
+%{_mandir}/man1/qcma.1.*
+
 
 %changelog
 
+
 %package cli
-Summary: Content Manager Assistant for the PS Vita (headless version)
+Summary: Content Manager Assistant for the PS Vita (headless)
+
 %description cli
-Headless version of Qcma
+Headless version of Content Manager Assistant for the PS Vita.
+
 %files cli
 %{_bindir}/qcma_cli
 %{_prefix}/share/man/man1/qcma_cli.1.gz
