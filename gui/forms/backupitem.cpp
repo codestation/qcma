@@ -89,6 +89,11 @@ QString BackupItem::getPath()
     return m_path;
 }
 
+QString BackupItem::getSize()
+{
+    return ui->sizeLabel->text();
+}
+
 void BackupItem::setItemIcon(const QString &path, int item_width, bool try_dds)
 {
     ui->itemPicture->setMinimumWidth(item_width);

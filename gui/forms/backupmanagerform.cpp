@@ -68,6 +68,7 @@ void BackupManagerForm::saveListing()
         entry.insert("title", item->title);
         entry.insert("gameid", QFileInfo(item->getPath()).fileName());
         entry.insert("path", item->getPath());
+        entry.insert("size", item->getSize());
 
         items.append(entry);
     }

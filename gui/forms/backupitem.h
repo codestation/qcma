@@ -40,6 +40,7 @@ public:
     const QPixmap *getIconPixmap();
     int getIconWidth();
     QString getPath();
+    QString getSize();
 
     static bool lessThan(const BackupItem *s1, const BackupItem *s2);
 
