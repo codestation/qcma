@@ -1,19 +1,32 @@
 #!/bin/bash
 
-set -ex
+set -eu
+
+show_usage() {
+    echo -e "Usage: $0 <host>"
+}
+
+if [ $# -lt 1 ]
+then
+    show_usage
+    exit 1
+fi
 
 SERVER_HOST=$1
+QCMA_SOURCES=~/projects/qcma
 
-VERSION=$(git describe --tags --abbrev=8)
+VERSION=$(git -C "${QCMA_SOURCES}" describe --tags --abbrev=8)
+VERSION=${VERSION#v*}
 
-scp windows/driver/*.exe ${SERVER_HOST}:
-scp windows/qcma.nsi ${SERVER_HOST}:qcma.nsi
-scp COPYING ${SERVER_HOST}:COPYING.rtf
-scp gui/resources/images/qcma.ico ${SERVER_HOST}:qcma.ico
+ssh ${SERVER_HOST} "rm -rf qcma_output && mkdir qcma_output"
+scp ${QCMA_SOURCES}/buildscripts/windows/driver/*.exe ${SERVER_HOST}:qcma_output
+scp ${QCMA_SOURCES}/buildscripts/windows/qcma.nsi ${SERVER_HOST}:qcma_output/qcma.nsi
+scp ${QCMA_SOURCES}/COPYING ${SERVER_HOST}:qcma_output/COPYING.rtf
+scp ${QCMA_SOURCES}/gui/resources/images/qcma.ico ${SERVER_HOST}:qcma_output/qcma.ico
 
-ssh -T "${SERVER_HOST}" << EOSSH
+ssh -T ${SERVER_HOST} << EOSSH
 #!/bin/bash
-set -ex
+set -eu
 
 for arch in i686 x86_64; do
   if [ "\$arch" == "i686" ]; then
@@ -23,9 +36,10 @@ for arch in i686 x86_64; do
     bits=64
     seh=libgcc_s_seh-1.dll
   fi
-  rm -rf win_\${arch}
-  mkdir win_\${arch}
-  OUT=\$(pwd)
+
+  OUT="\${PWD}/qcma_output"
+  rm -rf "\${OUT}/win_\${arch}"
+  mkdir "\${OUT}/win_\${arch}"
 
   pushd /cygdrive/c/ffmpeg-3.1.4-win\${bits}-shared/bin
   cp avcodec-57.dll "\${OUT}/win_\${arch}/"
@@ -86,6 +100,11 @@ for arch in i686 x86_64; do
   popd
   popd
 done
-"/cygdrive/c/Program Files (x86)/NSIS/makensis" qcma.nsi
+
+pushd "\${OUT}"
+"/cygdrive/c/Program Files (x86)/NSIS/makensis" "qcma.nsi"
+popd
+
 EOSSH
-scp ${SERVER_HOST}:Qcma_setup.exe Qcma_setup-${VERSION}.exe
+
+scp ${SERVER_HOST}:qcma_output/Qcma_setup.exe Qcma_setup-${VERSION}.exe
