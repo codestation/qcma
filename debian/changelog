@@ -1,3 +1,16 @@
+qcma (0.4.0) unstable; urgency=low
+
+  * Allow driver selection in components page.
+  * Make ffmpeg optional for macOS builds.
+  * Removed system tray plugins.
+  * Added button to save current listing to json.
+  * Inject version info into embedded xml and ignore local xml file by default.
+  * Added check for 3.60 update pup.
+  * Fix folder open button in backup manager.
+  * Implement automatic database refresh on root category listing.
+
+ -- codestation <codestation404@gmail.com>  Thu, 01 Sep 2016 00:00:00 -0000
+
 qcma (0.3.13) unstable; urgency=low
 
   * Notify the user if an update check is being made.
