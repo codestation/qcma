@@ -1,0 +1,1 @@
+Use libusbK inf wizard to generate the drivers.
