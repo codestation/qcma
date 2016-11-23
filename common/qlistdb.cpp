@@ -333,16 +333,6 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
 
 bool QListDB::find(int ohfi, QListDB::find_data &data)
 {
-    // reescan when accessing a root element
-    if(std::binary_search(ohfi_array, ohfi_array + sizeof(ohfi_array)/sizeof(ohfi_array[0]), ohfi)) {
-        QSettings settings;
-
-        if(settings.value("autorefresh", false).toBool()) {
-            qDebug("Reescanning root for ohfi: %i", ohfi);
-            createFromOhfi(ohfi);
-        }
-    }
-
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         if(findInternal(*root, ohfi, data)) {
             return true;
@@ -430,6 +420,16 @@ bool QListDB::getObjectMetadata(int ohfi, metadata_t &metadata)
 
 int QListDB::childObjectCount(int parent_ohfi)
 {
+    // reescan when accessing a root element
+    if(std::binary_search(ohfi_array, ohfi_array + sizeof(ohfi_array)/sizeof(ohfi_array[0]), parent_ohfi)) {
+        QSettings settings;
+
+        if(settings.value("autorefresh", false).toBool()) {
+            qDebug("Reescanning root for ohfi: %i", parent_ohfi);
+            createFromOhfi(parent_ohfi);
+        }
+    }
+
     return getObjectMetadatas(parent_ohfi, NULL);
 }
 
