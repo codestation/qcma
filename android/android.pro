@@ -5,10 +5,6 @@ TEMPLATE += app
 TARGET = qcma_android
 CONFIG += mobility
 
-android {
-    QT += androidextras
-}
-
 # this library needs to link statically their deps but Qt doesn't pass --static to PKGCONFIG
 QMAKE_CXXFLAGS += $$system(pkg-config --static --cflags libvitamtp)
 

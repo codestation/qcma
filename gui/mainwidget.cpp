@@ -158,9 +158,9 @@ void MainWidget::showAboutDialog()
     about.setText(QString("Qcma ") + QCMA_VER);
     about.setWindowTitle(tr("About Qcma"));
 #ifndef QCMA_BUILD_HASH
-    about.setInformativeText(tr("Copyright (C) 2015  Codestation") + "\n");
+    about.setInformativeText(tr("Copyright (C) 2016  Codestation") + "\n");
 #else
-    about.setInformativeText(tr("Copyright (C) 2015  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
+    about.setInformativeText(tr("Copyright (C) 2016  Codestation\n\nbuild hash: %1\nbuild branch: %2").arg(QCMA_BUILD_HASH).arg(QCMA_BUILD_BRANCH));
 #endif
     about.setStandardButtons(QMessageBox::Ok);
     about.setIconPixmap(QPixmap(":/main/resources/images/qcma.png"));
