@@ -11,7 +11,7 @@
 !define PRODUCT_EXE_NAME "qcma.exe"
 !define PRODUCT_VERSION_MAJOR 0
 !define PRODUCT_VERSION_MINOR 4
-!define PRODUCT_VERSION_BUILD 0
+!define PRODUCT_VERSION_BUILD 1
 !define PRODUCT_PUBLISHER "codestation"
 !define PRODUCT_WEB_SITE "https://github.com/codestation/qcma"
 

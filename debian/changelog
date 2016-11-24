@@ -1,3 +1,9 @@
+qcma (0.4.1) unstable; urgency=low
+
+  * Do not reescan database automatically while transferring files.
+
+ -- codestation <codestation404@gmail.com>  Thu, 24 Nov 2016 00:00:00 -0000
+
 qcma (0.4.0) unstable; urgency=low
 
   * Allow driver selection in components page.
@@ -9,7 +15,7 @@ qcma (0.4.0) unstable; urgency=low
   * Fix folder open button in backup manager.
   * Implement automatic database refresh on root category listing.
 
- -- codestation <codestation404@gmail.com>  Thu, 01 Sep 2016 00:00:00 -0000
+ -- codestation <codestation404@gmail.com>  Tue, 2 Nov 2016 00:00:00 -0000
 
 qcma (0.3.13) unstable; urgency=low
 
