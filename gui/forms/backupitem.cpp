@@ -24,6 +24,7 @@
 
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextDocument>
 
 const QString BackupItem::gameTemplate = "<html><head/><body>"
         "<p><span style=\" font-size:13pt; font-weight:600;\">%1</span></p>"
@@ -91,7 +92,9 @@ QString BackupItem::getPath()
 
 QString BackupItem::getSize()
 {
-    return ui->sizeLabel->text();
+    QTextDocument doc;
+    doc.setHtml(ui->sizeLabel->text());
+    return doc.toPlainText();
 }
 
 void BackupItem::setItemIcon(const QString &path, int item_width, bool try_dds)
