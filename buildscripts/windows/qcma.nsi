@@ -84,6 +84,7 @@ InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "Spanish"
 !insertmacro MUI_LANGUAGE "Japanese"
+!insertmacro MUI_LANGUAGE "Italiano"
 
 ### Installer
  
