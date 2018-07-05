@@ -350,7 +350,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 
     pOCodecCtx->mb_lmin        = pOCodecCtx->qmin * FF_QP2LAMBDA;
     pOCodecCtx->mb_lmax        = pOCodecCtx->qmax * FF_QP2LAMBDA;
-    pOCodecCtx->flags          = CODEC_FLAG_QSCALE;
+    pOCodecCtx->flags          = AV_CODEC_FLAG_QSCALE;
     pOCodecCtx->global_quality = pOCodecCtx->qmin * FF_QP2LAMBDA;
 
     pFrame->pts     = 1;
