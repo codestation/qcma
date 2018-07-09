@@ -28,4 +28,5 @@ ENABLE_ANDROID:unix {
 TRANSLATIONS += \
     common/resources/translations/qcma_es.ts \
     common/resources/translations/qcma_fr.ts \
-    common/resources/translations/qcma_ja.ts
+    common/resources/translations/qcma_ja.ts \
+    common/resources/translations/qcma_cn.ts
