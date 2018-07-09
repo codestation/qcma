@@ -3,5 +3,6 @@
         <file>resources/translations/qcma_es.qm</file>
         <file>resources/translations/qcma_fr.qm</file>
         <file>resources/translations/qcma_ja.qm</file>
+        <file>resources/translations/qcma_cn.qm</file>
     </qresource>
 </RCC>
