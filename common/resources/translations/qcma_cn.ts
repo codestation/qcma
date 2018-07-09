@@ -430,7 +430,7 @@
         <location filename="../../../gui/filterlineedit.cpp" line="50"/>
         <location filename="../../../gui/filterlineedit.cpp" line="71"/>
         <source>Filter</source>
-        <translation>分类</translation>
+        <translation>过滤</translation>
     </message>
 </context>
 <context>
