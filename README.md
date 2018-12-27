@@ -19,13 +19,6 @@ official CMA and also offer some features missing in the original one.
 * Easy wireless pairing (show PIN to the user when a Vita is detected).
 * Ability to restart the connection if the Vita is reconnected.
 
-#### TODO:
-* Complete categories for music.
-* SQLite backend for database.
-
-#### Planned features
-* **Android version**: port of Qcma to Android.
-
 ## Headless version
 
 There is a qcma_cli binary that doesn't need a X session running (useful for servers).
@@ -43,18 +36,22 @@ kill -HUP $(pgrep qcma_cli)
 kill $(pgrep qcma_cli)
 ```
 
+## Downloads (Linux)
+
+Packages for Ubuntu, Fedora, Debian and openSUSE are available [here](https://software.opensuse.org/download/package?project=home:codestation&package=qcma).
+
+## Downloads (Windows and macOS)
+
+Installers for Windows and macOS are available [here](https://github.com/codestation/qcma/releases/latest).
+
 ## Dependencies
-* [Qt 4.x or 5.x](http://www.qt.io/)
+* [Qt 5.x](http://www.qt.io/)
 
 * [VitaMTP fork](https://github.com/codestation/vitamtp)
 
 * [FFmpeg](http://www.ffmpeg.org/)
 
 * [libnotify](http://library.gnome.org/devel/notification-spec/)
-
-* [libappindicator (optional)](https://launchpad.net/libappindicator)
-
-* [KNotifications (optional)](https://projects.kde.org/projects/frameworks/knotifications)
 
 #### Where do I get the source code?
 Check the GitHub repo here: https://github.com/codestation/qcma
