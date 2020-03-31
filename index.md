@@ -54,7 +54,7 @@ Contact me on [GitHub](https://github.com/codestation/)
 [Yifan Lu](https://github.com/yifanlu/vitamtp/) - for the vitamtp library and
 the reference implementation of OpenCMA.
 
-[Xian Nox] (https://github.com/xiannox) - for the Wiki and various contributions.
+[Xian Nox](https://github.com/xiannox) - for the Wiki and various contributions.
 
 #### License
 GPL v3: since some parts of QCMA are based on the reference implementation of
