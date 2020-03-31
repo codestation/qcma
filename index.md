@@ -21,13 +21,6 @@ official CMA and also offer some features missing in the original one.
 * Easy wireless pairing (show PIN to the user when a Vita is detected).
 * Ability to restart the connection if the Vita is reconnected.
 
-#### TODO:
-* Complete categories for music.
-* Persistent backend for database.
-
-#### Planned features
-* **Android version**: port of Qcma to Android.
-
 ## Headless version
 
 There is a qcma_cli binary that doesn't need a X session running (useful for servers).
@@ -43,37 +36,13 @@ The daemon provides minimal interaction via UNIX signals.
 
 * [FFmpeg](hhttp://www.ffmpeg.org/)
 
-## Downloads (Latest version: **0.4.0**)
+## Downloads (Latest version: **0.4.1**)
 
-### Linux
+[Linux repos (0.4.1)](https://software.opensuse.org/download/package.iframe?project=home:codestation&package=qcma)
 
-**Ubuntu PPA**
+[Windows Installer (0.4.1)](https://github.com/codestation/qcma/releases/download/v0.4.1/Qcma_setup-0.4.1.exe)
 
-``` sh
-sudo add-apt-repository ppa:codestation404/qcma
-sudo apt-get update
-sudo apt-get install qcma
-```
-
-[Archlinux AUR](https://aur.archlinux.org/packages/qcma)
-
-[Ubuntu 14.04 (64 bits)](http://codestation.nekmo.com/qcma/0.3.12/ubuntu_trusty)
-
-[Ubuntu 16.04 (64 bits)](http://codestation.nekmo.com/qcma/0.3.12/ubuntu_xenial)
-
-[Debian Jessie (64 bits)](http://codestation.nekmo.com/qcma/0.3.12/debian_jessie/)
-
-[Fedora 24 (64 bits)](http://codestation.nekmo.com/qcma/0.3.12/fedora_24/)
-
-[openSUSE Leap 42.1 (64 bits)](http://codestation.nekmo.com/qcma/0.3.12/opensuse_42.1/)
-
-### Windows
-
-[Windows Installer (0.3.13-2)](http://codestation.nekmo.com/qcma/0.3.13/windows/Qcma_setup_0.3.13-2.exe)
-
-### OS X
-
-[OS X dmg (0.3.12-2)](http://codestation.nekmo.com/qcma/0.3.12/osx/qcma-0.3.12-2.dmg)
+[macOS dmg (0.4.1-1)](https://github.com/codestation/qcma/releases/download/v0.4.1/Qcma_0.4.1-1.dmg)
 
 #### Where do I get the source code?
 Check the GitHub repo here: https://github.com/codestation/qcma
