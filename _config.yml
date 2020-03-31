@@ -1,0 +1,8 @@
+title: Qcma
+description: Cross-platform content manager assistant for the PS Vita
+google_analytics: UA-51066428-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
