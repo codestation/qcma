@@ -1,4 +1,4 @@
-**Note: The downloads at the top are the source code. Go near the bottom of this page for Windows/OSX installers**
+**Note: The downloads at the top are the source code. Go near the bottom of this page for Windows/macOS installers**
 
 Qcma
 ====
