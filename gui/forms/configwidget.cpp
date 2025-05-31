@@ -26,14 +26,7 @@ extern "C" {
 
 #include <QFileDialog>
 #include <QSettings>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QStandardPaths>
-#else
-#include <QDesktopServices>
-#define QStandardPaths QDesktopServices
-#define writableLocation storageLocation
-#endif
 
 ConfigWidget::ConfigWidget(QWidget *obj_parent) :
     QDialog(obj_parent),

@@ -37,7 +37,7 @@ public:
     void setItemInfo(const QString &name, const QString &size, const QString &extra);
     void setItemIcon(const QString &m_path, int width = 48, bool try_dds = false);
     void setDirectory(const QString &m_path);
-    const QPixmap *getIconPixmap();
+    const QPixmap getIconPixmap();
     int getIconWidth();
     QString getPath();
     QString getSize();

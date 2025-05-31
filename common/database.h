@@ -88,7 +88,7 @@ public:
     static void loadPhotoMetadata(const QString &path, metadata_t &metadata);
     static void loadVideoMetadata(const QString &path, metadata_t &metadata);
 
-    QMutex mutex;
+    QRecursiveMutex mutex;
 
 protected:
     bool continueOperation();

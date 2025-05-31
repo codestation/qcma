@@ -25,12 +25,6 @@
 
 #include "trayindicator_global.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-// in Qt4 signals are protected
-#undef signals
-#define signals public
-#endif
-
 class TrayIndicator : public QWidget
 {
     Q_OBJECT

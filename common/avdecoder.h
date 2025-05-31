@@ -72,7 +72,6 @@ public:
     {
     public:
         AvInit() {
-            av_register_all();
             // hide warning logs
             av_log_set_level(AV_LOG_ERROR);
         }
@@ -87,7 +86,7 @@ private:
     AVFormatContext *pFormatCtx;
     AVCodecContext *pCodecCtx;
     AVStream *av_stream;
-    AVCodec *av_codec;
+    const AVCodec *av_codec;
     int stream_index;
     bool codec_loaded;
 };

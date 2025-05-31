@@ -24,7 +24,6 @@
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QLocale>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
 #include <QTranslator>
@@ -34,14 +33,9 @@
 #include "singleapplication.h"
 #include "mainwidget.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 static void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
 {
     const char * msg = str.toStdString().c_str();
-#else
-static void noMessageOutput(QtMsgType type, const char *msg)
-{
-#endif
     Q_UNUSED(type);
     Q_UNUSED(msg);
 }
@@ -102,18 +96,10 @@ int main(int argc, char *argv[])
         VitaMTP_Set_Logging(VitaMTP_VERBOSE);
     } else {
         VitaMTP_Set_Logging(VitaMTP_NONE);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qInstallMessageHandler(noMessageOutput);
-#else
-        qInstallMsgHandler(noMessageOutput);
-#endif
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-#endif
-
-    QTextStream(stdout) << "Starting Qcma " << QCMA_VER << endl;
+    QTextStream(stdout) << "Starting Qcma " << QCMA_VER << Qt::endl;
 
     QTranslator translator;
     QString locale = QLocale().system().name();
@@ -134,8 +120,11 @@ int main(int argc, char *argv[])
     }
 
     QTranslator system_translator;
-    system_translator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&system_translator);
+    if(!system_translator.load("qt_" + locale, QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        qWarning() << "Cannot load system translation for locale:" << locale;
+    } else {
+        app.installTranslator(&system_translator);
+    }
 
     qDebug("Starting main thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 

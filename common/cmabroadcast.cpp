@@ -62,11 +62,7 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QHostAddress host_address(QHostAddress::Any);
-#else
     QHostAddress host_address(QHostAddress::AnyIPv4);
-#endif
 
     if(!socket->bind(host_address, QCMA_REQUEST_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
         qCritical() << "Failed to bind address for UDP broadcast";
@@ -88,7 +84,7 @@ void CmaBroadcast::readPendingDatagrams()
             QMutexLocker locker(&mutex);
             socket->writeDatagram(reply, cma_sender, senderPort);
         } else {
-            qWarning("Unknown request: %.*s\n", datagram.length(), datagram.constData());
+            qWarning() << "Unknown request, length: " << datagram.length() << "data: " << datagram.constData();
         }
     }
 }
@@ -103,7 +99,7 @@ void CmaBroadcast::setAvailable()
                  .arg(broadcast_ok, uuid, "win", hostname)
                  .arg(protocol_version, 8, 10, QChar('0'))
                  .arg(QCMA_REQUEST_PORT)
-                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')).toStdString());
     reply.append('\0');
 }
 
@@ -117,6 +113,6 @@ void CmaBroadcast::setUnavailable()
                  .arg(broadcast_unavailable, uuid, "win", hostname)
                  .arg(protocol_version, 8, 10, QChar('0'))
                  .arg(QCMA_REQUEST_PORT)
-                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')));
+                 .arg(VITAMTP_WIRELESS_MAX_VERSION, 8, 10, QChar('0')).toStdString());
     reply.append('\0');
 }

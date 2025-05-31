@@ -52,7 +52,7 @@ const file_type video_list[] = {
 
 Database::Database(QObject *obj_parent) :
     QObject(obj_parent),
-    mutex(QMutex::Recursive)
+    mutex()
 {
 }
 
@@ -63,7 +63,7 @@ void Database::process()
     cancel_operation = false;
     int count = create();
     cancel_operation = false;
-    QTextStream(stdout) << "Total entries added to the database: " << count << endl;
+    QTextStream(stdout) << "Total entries added to the database: " << count << Qt::endl;
     if(count < 0) {
         clear();
     }

@@ -128,11 +128,7 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
 
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     AVFrame *pFrame = av_frame_alloc();
-#else
-    AVFrame *pFrame = avcodec_alloc_frame();
-#endif
 
     AVPacket packet;
     int frame_finished = 0;
@@ -141,21 +137,13 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
         if(packet.stream_index == frame_stream_index) {
             avcodec_decode_video2(codec_ctx, pFrame, &frame_finished, &packet);
         }
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57,7,0)
         av_packet_unref(&packet);
-#else
-        av_free_packet(&packet);
-#endif
     }
 
     if(frame_finished) {
         return pFrame;
     } else {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrame);
-#else
-        avcodec_free_frame(&pFrame);
-#endif
         return NULL;
     }
 }
@@ -215,11 +203,7 @@ QByteArray AVDecoder::getThumbnail(int &width, int &height)
                                        width, height);
 
         data = WriteJPEG(pCodecCtx, pFrame, width, height);
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrame);
-#else
-        avcodec_free_frame(&pFrame);
-#endif
     }
 
     return data;
@@ -249,44 +233,24 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
         return data;
     }
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     AVFrame *pFrameRGB = av_frame_alloc();
-#else
-    AVFrame *pFrameRGB = avcodec_alloc_frame();
-#endif
 
     if(pFrameRGB == NULL) {
         sws_freeContext(sws_ctx);
         return data;
     }
 
-    // detect ffmpeg (>= 100) or libav (< 100)
-#if (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,63,100)) || \
-    (LIBAVUTIL_VERSION_MICRO < 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54,6,0))
     int numBytes = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, width, height, 16);
-#else
-    int numBytes = avpicture_get_size(PIX_FMT_YUVJ420P, width, height);
-#endif
 
     uint8_t *buffer = (uint8_t *)av_malloc(numBytes);
 
     if(!buffer) {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
-#else
-        avcodec_free_frame(&pFrameRGB);
-#endif
         sws_freeContext(sws_ctx);
         return data;
     }
 
-    // detect ffmpeg (>= 100) or libav (< 100)
-#if (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,63,100)) || \
-    (LIBAVUTIL_VERSION_MICRO < 100 && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54,6,0))
     av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, AV_PIX_FMT_YUV420P, width, height, 1);
-#else
-    avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_YUVJ420P, width, height);
-#endif
 
     sws_scale(
         sws_ctx,
@@ -301,18 +265,9 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
     pOCodecCtx = avcodec_alloc_context3(pOCodec);
 
     if(pOCodecCtx == NULL) {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,52,0)
         avcodec_free_context(&pOCodecCtx);
-#else
-        avcodec_close(pOCodecCtx);
-        av_free(pOCodecCtx);
-#endif
         av_free(buffer);
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
-#else
-        avcodec_free_frame(&pFrameRGB);
-#endif
         sws_freeContext(sws_ctx);
         return  0;
     }
@@ -329,18 +284,9 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 
     AVDictionary *opts = NULL;
     if(avcodec_open2(pOCodecCtx, pOCodec, &opts) < 0) {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,52,0)
         avcodec_free_context(&pOCodecCtx);
-#else
-        avcodec_close(pOCodecCtx);
-        av_free(pOCodecCtx);
-#endif
         av_free(buffer);
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
         av_frame_free(&pFrameRGB);
-#else
-        avcodec_free_frame(&pFrameRGB);
-#endif
         sws_freeContext(sws_ctx);
          return  0;
     }
@@ -367,18 +313,9 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 
     QByteArray buffer2(reinterpret_cast<char *>(pkt.data), pkt.size);
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,52,0)
         avcodec_free_context(&pOCodecCtx);
-#else
-        avcodec_close(pOCodecCtx);
-        av_free(pOCodecCtx);
-#endif
     av_free(buffer);
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
     av_frame_free(&pFrameRGB);
-#else
-    avcodec_free_frame(&pFrameRGB);
-#endif
     avcodec_close(pOCodecCtx);
     sws_freeContext(sws_ctx);
 

@@ -253,7 +253,7 @@ int QListDB::recursiveScanRootDirectory(root_list &list, CMAObject *obj_parent, 
     QFileInfoList qsl = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Time);
 
     if(obj_parent && !obj_parent->parent) {
-        qSort(qsl.begin(), qsl.end(), nameLessThan);
+        std::sort(qsl.begin(), qsl.end(), nameLessThan);
     }
 
     foreach(const QFileInfo &info, qsl) {
@@ -325,7 +325,7 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
     } else {
         CMAObject obj;
         obj.setOhfi(ohfi);
-        data.it = qBinaryFind(list.begin(), list.end(), &obj, QListDB::lessThanComparator);
+        data.it = std::lower_bound(list.begin(), list.end(), &obj, QListDB::lessThanComparator);
     }
     data.end = list.end();
     return data.it != data.end;
@@ -565,7 +565,7 @@ int QListDB::insertObjectEntry(const QString &path, const QString &name, int par
 
     for(map_list::iterator root = object_list.begin(); root != object_list.end(); ++root) {
         root_list *cat_list = &(*root);
-        root_list::const_iterator it = qBinaryFind(cat_list->begin(), cat_list->end(), parent_obj, QListDB::lessThanComparator);
+        root_list::iterator it = std::lower_bound(cat_list->begin(), cat_list->end(), parent_obj, QListDB::lessThanComparator);
 
         if(it != cat_list->end()) {
             CMAObject *newobj = new CMAObject(parent_obj);

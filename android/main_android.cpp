@@ -67,11 +67,9 @@ static void cleanOutput(QtMsgType type, const QMessageLogContext &, const QStrin
     case QtFatalMsg:
         __android_log_print(ANDROID_LOG_FATAL, "qcma", "%s", message);
         abort();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     case QtInfoMsg:
         __android_log_print(ANDROID_LOG_INFO, "qcma", "%s", message);
         break;
-#endif
     }
 }
 #endif

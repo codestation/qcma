@@ -61,7 +61,7 @@ void HeadlessManager::refreshDatabase()
         return;
     }
 
-    QTextStream(stdout) << "Database scan has started" << endl;
+    QTextStream(stdout) << "Database scan has started" << Qt::endl;
 
     if(!m_db->rescan()) {
         qWarning("No PS Vita system has been registered");
@@ -136,7 +136,7 @@ void HeadlessManager::start()
 
 void HeadlessManager::receiveMessage(QString message)
 {
-    QTextStream(stdout) << message << endl;
+    QTextStream(stdout) << message << Qt::endl;
 }
 
 void HeadlessManager::stop()

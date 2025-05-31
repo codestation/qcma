@@ -25,7 +25,6 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QStringList>
-#include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
 
@@ -35,15 +34,10 @@
 #include "singlecoreapplication.h"
 #include "headlessmanager.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 static void noDebugOutput(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
     const char *message = localMsg.constData();
-#else
-static void noDebugOutput(QtMsgType type, const char *message)
-{
-#endif
     switch (type) {
     case QtDebugMsg:
         break;
@@ -57,11 +51,9 @@ static void noDebugOutput(QtMsgType type, const char *message)
         fprintf(stderr, "Fatal: %s\n", message);
         abort();
         break;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     case QtInfoMsg:
         fprintf(stderr, "Info: %s\n", message);
         break;
-#endif
     }
 }
 
@@ -105,7 +97,7 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(translations);
 
     if(SingleCoreApplication::sendMessage("Another instance of Qcma tried to start")) {
-        QTextStream(stdout) << "An instance of Qcma is already running" << endl;
+        QTextStream(stdout) << "An instance of Qcma is already running" << Qt::endl;
         return 0;
     }
 
@@ -125,18 +117,10 @@ int main(int argc, char *argv[])
         VitaMTP_Set_Logging(VitaMTP_VERBOSE);
     } else {
         VitaMTP_Set_Logging(VitaMTP_NONE);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qInstallMessageHandler(noDebugOutput);
-#else
-        qInstallMsgHandler(noDebugOutput);
-#endif
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-#endif
-
-    QTextStream(stdout) << "Starting Qcma " << QCMA_VER << endl;
+    QTextStream(stdout) << "Starting Qcma " << QCMA_VER << Qt::endl;
 
     QTranslator translator;
     QString locale = QLocale().system().name();
@@ -157,8 +141,11 @@ int main(int argc, char *argv[])
     }
 
     QTranslator system_translator;
-    system_translator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&system_translator);
+    if(!system_translator.load("qt_" + locale, QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        qWarning() << "Cannot load system translation for locale:" << locale;
+    } else {
+        app.installTranslator(&system_translator);
+    }
 
     qDebug("Starting main thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 

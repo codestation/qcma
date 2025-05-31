@@ -70,31 +70,7 @@ bool removeRecursively(const QString &path)
     QFileInfo file_info(path);
 
     if(file_info.isDir()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         return QDir(path).removeRecursively();
-#else
-        bool result = false;
-        QDir dir(path);
-
-        QDir::Filters filter = QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files;
-
-        if(dir.exists(path)) {
-            foreach(QFileInfo info, dir.entryInfoList(filter, QDir::DirsFirst)) {
-                if(info.isDir()) {
-                    result = removeRecursively(info.absoluteFilePath());
-                } else {
-                    result = QFile::remove(info.absoluteFilePath());
-                }
-
-                if(!result) {
-                    return result;
-                }
-            }
-            result = dir.rmdir(path);
-        }
-
-        return result;
-#endif
     } else {
         return QFile::remove(path);
     }

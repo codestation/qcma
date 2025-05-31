@@ -62,7 +62,7 @@ void BackupItem::removeEntry()
     emit deleteEntry(this);
 }
 
-const QPixmap *BackupItem::getIconPixmap()
+const QPixmap BackupItem::getIconPixmap()
 {
     return ui->itemPicture->pixmap();
 }

@@ -31,6 +31,8 @@
 #include <QSettings>
 #include <QUrl>
 
+#include <random>
+
 QMutex CmaClient::mutex;
 QMutex CmaClient::runner;
 QWaitCondition CmaClient::usbcondition;
@@ -92,9 +94,6 @@ void CmaClient::connectWireless()
     wireless_host_info_t host = {NULL, NULL, NULL, QCMA_REQUEST_PORT};
     typedef CmaClient CC;
 
-    QTime now = QTime::currentTime();
-    qsrand(now.msec());
-
     qDebug("Starting wireless_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
 
     setActive(true);
@@ -132,7 +131,7 @@ void CmaClient::processNewConnection(vita_device_t *device)
     QMutexLocker locker(&mutex);
     in_progress = true;
 
-    QTextStream(stdout) << "Vita connected, id: " << VitaMTP_Get_Identification(device) << endl;
+    QTextStream(stdout) << "Vita connected, id: " << VitaMTP_Get_Identification(device) << Qt::endl;
     DeviceCapability vita_info;
 
     if(!vita_info.exchangeInfo(device)) {
@@ -189,6 +188,10 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
 
     QString staticPin = QSettings().value("staticPin").toString();
 
+    static std::mt19937 rng(std::random_device{}());
+
+    std::uniform_int_distribution<int> dist(0, 99999999);
+
     int pin;
 
     if(!staticPin.isNull() && staticPin.length() == 8) {
@@ -196,17 +199,17 @@ int CmaClient::generatePin(wireless_vita_info_t *info, int *p_err)
         pin = staticPin.toInt(&ok);
 
         if(!ok) {
-            pin = rand() % 10000 * 10000 | rand() % 10000;
+            pin = dist(rng);
         }
     } else {
-        pin = rand() % 10000 * 10000 | rand() % 10000;
+        pin = dist(rng);
     }
 
     QTextStream out(stdout);
     out << "Your registration PIN for " << info->name << " is: ";
     out.setFieldWidth(8);
     out.setPadChar('0');
-    out << pin << endl;
+    out << pin << Qt::endl;
 
     qDebug("PIN: %08i", pin);
 
@@ -262,7 +265,7 @@ void CmaClient::enterEventLoop(vita_device_t *device)
 
 int CmaClient::stop()
 {
-    QTextStream(stdout) << "Stopping Qcma" << endl;
+    QTextStream(stdout) << "Stopping Qcma" << Qt::endl;
 
     if(!isActive()) {
         return -1;
