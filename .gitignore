@@ -5,3 +5,5 @@ qcma.pro.user*
 org.qcma.*.xml
 buildscripts/windows/driver/QcmaDriver_*.exe
 build/
+repo/
+.flatpak-builder/

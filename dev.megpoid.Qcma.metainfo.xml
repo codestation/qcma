@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dev.megpoid.Qcma</id>
+  
+  <name>Qcma</name>
+  <summary>Open Source implementation of the Content Manager Assistant for the PS Vita.</summary>
+  <developer_name>Codestation</developer_name>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  
+  <description>
+    <p>
+      QCMA is a cross-platform application to provide a Open Source implementation of the original Content Manager Assistant that comes with the PS Vita. QCMA is meant to be compatible with Linux, Windows and macOS.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">dev.megpoid.Qcma.desktop</launchable>
+
+  <releases>
+    <release version="0.5.0" type="release" date="2025-07-14" />
+  </releases>
+</component>

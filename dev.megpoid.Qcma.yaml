@@ -1,0 +1,76 @@
+id: dev.megpoid.Qcma
+runtime: org.kde.Platform
+runtime-version: "6.9"
+sdk: org.kde.Sdk
+command: qcma
+finish-args:
+  - --require-version=1.14.6
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --share=network
+  - --device=all
+  # requires 1.16
+  # - --device=usb
+  # - --usb=vnd:054c
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --filesystem=home
+modules:
+  - name: libusb
+    config-opts:
+      - --disable-static
+    cleanup:
+      - /lib/*.la
+      - /lib/pkgconfig
+      - /include
+    sources:
+      - type: archive
+        url: https://github.com/libusb/libusb/releases/download/v1.0.29/libusb-1.0.29.tar.bz2
+        sha256: 5977fc950f8d1395ccea9bd48c06b3f808fd3c2c961b44b0c2e6e29fc3a70a85
+    post-install:
+      - install -Dm644 COPYING ${FLATPAK_DEST}/share/licenses/libusb/COPYING
+
+  - name: libvitamtp
+    buildsystem: simple
+    build-commands:
+      - ./autogen.sh
+      - autoreconf -fvi -I /usr/share/gettext/m4
+      - ./configure --prefix=/app
+      - make
+      - make install
+    cleanup:
+      - /lib/*.la
+      - /lib/pkgconfig
+      - /include
+    sources:
+      - type: git
+        url: https://github.com/codestation/vitamtp.git
+        commit: 7ab537a4f45e34984cbeb9cf1b1af543a75a3dc0
+
+  - name: qcma
+    buildsystem: qmake
+    build-options:
+      prepend-pkg-config-path: /app/lib/pkgconfig:/app/lib64/pkgconfig
+    config-opts:
+      - QMAKE_LIBS+=-L/app/lib
+    sources:
+      # uncomment git, update tag and comment dir if distributed from flathub
+      # - type: git
+      #   url: https://github.com/codestation/qcma.git
+      #   tag v0.5.0
+      - type: dir
+        path: .
+      - type: shell
+        commands:
+          - lrelease common/resources/translations/*.ts
+    post-install:
+      # install metainfo
+      - install -Dm644 ${FLATPAK_ID}.metainfo.xml ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml
+      - install -Dm644 COPYING ${FLATPAK_DEST}/share/licenses/qcma/COPYING
+      - sed -i "s/Icon=qcma/Icon=${FLATPAK_ID}/g" $FLATPAK_DEST/share/applications/qcma.desktop
+      - mv $FLATPAK_DEST/share/applications/qcma.desktop $FLATPAK_DEST/share/applications/dev.megpoid.Qcma.desktop
+      - rename "qcma" "${FLATPAK_ID}" $FLATPAK_DEST/share/icons/hicolor/*/*/*.png
