@@ -33,11 +33,11 @@
 #include "singleapplication.h"
 #include "mainwidget.h"
 
-static void noMessageOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
+static void noMessageOutput(QtMsgType type, const QMessageLogContext &ctx, const QString &str)
 {
-    const char * msg = str.toStdString().c_str();
     Q_UNUSED(type);
-    Q_UNUSED(msg);
+    Q_UNUSED(ctx);
+    Q_UNUSED(str);
 }
 
 #ifndef Q_OS_WIN32
