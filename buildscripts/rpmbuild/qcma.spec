@@ -2,7 +2,7 @@
 # qcma spec file
 # 
 
-%define _version 0.4.2
+%define _version 0.5.0
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
 %define _verprefix %{_version}
@@ -12,13 +12,13 @@
 
 %if 0%{?fedora}
 %define _pkgconfig pkgconfig
-%define _qt5linguist qt5-linguist
-%define _qt5basedevel qt5-qtbase-devel
+%define _qt6linguist qt6-linguist
+%define _qt6basedevel qt6-qtbase-devel
 %else
-%define qmake_qt5 qmake-qt5
+%define qmake_qt6 qmake-qt6
 %define _pkgconfig pkg-config
-%define _qt5linguist  libqt5-linguist
-%define _qt5basedevel libqt5-qtbase-devel
+%define _qt6linguist  qt6-tools-linguist
+%define _qt6basedevel qt6-base-devel
 %endif
 
 Name:           qcma
@@ -34,8 +34,8 @@ BuildRequires:  gcc-c++
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
 BuildRequires:  libvitamtp-devel
-BuildRequires:  %{_qt5linguist}
-BuildRequires:  %{_qt5basedevel}
+BuildRequires:  %{_qt6linguist}
+BuildRequires:  %{_qt6basedevel}
 BuildRequires:  desktop-file-utils
 %if ! 0%{?fedora}
 BuildRequires:  libavformat-devel
@@ -53,11 +53,11 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 %setup -n %{name}-%{version}
 
 %build
-lrelease-qt5 common/resources/translations/*.ts
+lrelease-qt6 common/resources/translations/*.ts
 %if 0%{?fedora}
-%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" CONFIG+="DISABLE_FFMPEG" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%{qmake_qt6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" CONFIG+="DISABLE_FFMPEG" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %else
-%{qmake_qt5} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%{qmake_qt6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %endif
 make %{?_smp_mflags}
 
