@@ -15,7 +15,6 @@
 %define _qt6linguist qt6-linguist
 %define _qt6basedevel qt6-qtbase-devel
 %else
-%define qmake_qt6 qmake-qt6
 %define _pkgconfig pkg-config
 %define _qt6linguist  qt6-tools-linguist
 %define _qt6basedevel qt6-base-devel
@@ -53,11 +52,12 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 %setup -n %{name}-%{version}
 
 %build
-lrelease-qt6 common/resources/translations/*.ts
 %if 0%{?fedora}
+lrelease-qt6 common/resources/translations/*.ts
 %{qmake_qt6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" CONFIG+="DISABLE_FFMPEG" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %else
-%{qmake_qt6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+lrelease6 common/resources/translations/*.ts
+%{qmake6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %endif
 make %{?_smp_mflags}
 
