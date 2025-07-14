@@ -39,7 +39,7 @@ PinForm::PinForm(QWidget *obj_parent) :
     }
     setFixedSize(size());
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->cancelButton, &QPushButton::clicked, this, &PinForm::hide);
 }
 
 void PinForm::setPin(QString name, int pin)
@@ -54,7 +54,7 @@ void PinForm::startCountdown()
 {
     timer.setInterval(1000);
     counter = 300;
-    connect(&timer, SIGNAL(timeout()), this, SLOT(decreaseTimer()));
+    connect(&timer, &QTimer::timeout, this, &PinForm::decreaseTimer);
     timer.start();
 }
 

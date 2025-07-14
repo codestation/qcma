@@ -34,8 +34,8 @@ FilterLineEdit::FilterLineEdit(QWidget *obj_parent) :
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border:none; padding:0px; }");
     clearButton->hide();
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(updateCloseButton(const QString&)));
+    connect(clearButton, &QAbstractButton::clicked, this, &FilterLineEdit::clear);
+    connect(this, &QLineEdit::textChanged, this, &FilterLineEdit::updateCloseButton);
 
     setStyleSheet(QString("LineEdit { color:black; font-style:normal; padding-right:%1px; }").arg(
                       clearButton->sizeHint().width() + frame_width + 1));

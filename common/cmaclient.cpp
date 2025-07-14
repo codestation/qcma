@@ -229,10 +229,10 @@ void CmaClient::enterEventLoop(vita_device_t *device)
     obj_thread.setObjectName("event_thread");
 
     eventLoop.moveToThread(&obj_thread);
-    connect(&obj_thread, SIGNAL(started()), &eventLoop, SLOT(process()));
-    connect(&eventLoop, SIGNAL(refreshDatabase()), this, SIGNAL(refreshDatabase()), Qt::DirectConnection);
-    connect(&eventLoop, SIGNAL(finishedEventLoop()), &obj_thread, SLOT(quit()), Qt::DirectConnection);
-    connect(&eventLoop, SIGNAL(messageSent(QString)), this, SIGNAL(messageSent(QString)), Qt::DirectConnection);
+    connect(&obj_thread, &QThread::started, &eventLoop, &CmaEvent::process);
+    connect(&eventLoop, &CmaEvent::refreshDatabase, this, &CmaClient::refreshDatabase, Qt::DirectConnection);
+    connect(&eventLoop, &CmaEvent::finishedEventLoop, &obj_thread, &QThread::quit, Qt::DirectConnection);
+    connect(&eventLoop, &CmaEvent::messageSent, this, &CmaClient::messageSent, Qt::DirectConnection);
     obj_thread.start();
 
     while(isActive()) {

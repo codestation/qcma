@@ -62,6 +62,7 @@ signals:
     void messageSent(QString);
 
 public slots:
+    void receiveMessage(QString message);
     void refreshDatabase();
     void stop();
 
@@ -71,7 +72,6 @@ public slots:
 
 private slots:
     void threadStopped();
-    void receiveMessage(QString message);
 };
 
 #endif // HEADLESSMANAGER_H

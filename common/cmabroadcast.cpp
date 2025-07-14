@@ -60,7 +60,7 @@ CmaBroadcast::CmaBroadcast(QObject *obj_parent) :
     setAvailable();
 
     socket = new QUdpSocket(this);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+    connect(socket, &QUdpSocket::readyRead, this, &CmaBroadcast::readPendingDatagrams);
 
     QHostAddress host_address(QHostAddress::AnyIPv4);
 

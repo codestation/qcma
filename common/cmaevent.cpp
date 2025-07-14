@@ -590,8 +590,8 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
             HTTPDownloader downloader(url);
             QThread *http_thread = new QThread();
             http_thread->setObjectName("http_thread");
-            connect(http_thread, SIGNAL(started()), &downloader, SLOT(downloadFile()));
-            connect(&downloader, SIGNAL(messageSent(QString)), SIGNAL(messageSent(QString)), Qt::DirectConnection);
+            connect(http_thread, &QThread::started, &downloader, &HTTPDownloader::downloadFile);
+            connect(&downloader, &HTTPDownloader::messageSent, this, &CmaEvent::messageSent, Qt::DirectConnection);
             downloader.moveToThread(http_thread);
             http_thread->start();
 

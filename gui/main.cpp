@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
     widget.prepareApplication(showSystray);
 
     // receive the message from another process
-    QObject::connect(&app, SIGNAL(messageAvailable(QString)), &widget, SLOT(receiveMessage(QString)));
+    QObject::connect(&app, &SingleApplication::messageAvailable, &widget, &MainWidget::receiveMessage);
 
     return app.exec();
 }

@@ -130,12 +130,12 @@ void MainWidget::prepareApplication(bool showSystray)
 
 void MainWidget::connectSignals()
 {
-    connect(configForm, SIGNAL(finished(int)), this, SLOT(dialogResult(int)));
-    connect(managerForm, SIGNAL(stopped()), qApp, SLOT(quit()));
-    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SIGNAL(deviceConnected(QString)));
-    connect(managerForm, SIGNAL(deviceDisconnected()), this, SIGNAL(deviceDisconnected()));
-    connect(managerForm, SIGNAL(messageSent(QString)), this, SIGNAL(messageReceived(QString)));
-    connect(managerForm, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
+    connect(configForm, &QDialog::finished, this, &MainWidget::dialogResult);
+    connect(managerForm, &ClientManager::stopped, qApp, &QCoreApplication::quit);
+    connect(managerForm, &ClientManager::deviceConnected, this, &MainWidget::deviceConnected);
+    connect(managerForm, &ClientManager::deviceDisconnected, this, &MainWidget::deviceDisconnected);
+    connect(managerForm, &ClientManager::messageSent, this, &MainWidget::messageReceived);
+    connect(managerForm, &ClientManager::updated, this, &MainWidget::databaseUpdated);
 }
 
 void MainWidget::setTrayTooltip(QString message)
@@ -247,16 +247,16 @@ void MainWidget::createTrayIcon()
 #endif
     trayIcon->show();
 
-    connect(trayIcon, SIGNAL(openConfig()), this, SLOT(openConfig()));
-    connect(trayIcon, SIGNAL(openManager()), this, SLOT(openManager()));
-    connect(trayIcon, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
-    connect(trayIcon, SIGNAL(showAboutDialog()), this, SLOT(showAboutDialog()));
-    connect(trayIcon, SIGNAL(showAboutQt()), this, SLOT(showAboutQt()));
-    connect(trayIcon, SIGNAL(stopServer()), this, SLOT(stopServer()));
+    connect(trayIcon, &QTrayIcon::openConfig, this, &MainWidget::openConfig);
+    connect(trayIcon, &QTrayIcon::openManager, this, &MainWidget::openManager);
+    connect(trayIcon, &QTrayIcon::refreshDatabase, this, &MainWidget::refreshDatabase);
+    connect(trayIcon, &QTrayIcon::showAboutDialog, this, &MainWidget::showAboutDialog);
+    connect(trayIcon, &QTrayIcon::showAboutQt, this, &MainWidget::showAboutQt);
+    connect(trayIcon, &QTrayIcon::stopServer, this, &MainWidget::stopServer);
 
-    connect(managerForm, SIGNAL(deviceConnected(QString)), this, SLOT(deviceConnect(QString)));
-    connect(managerForm, SIGNAL(deviceDisconnected()), this, SLOT(deviceDisconnect()));
-    connect(managerForm, SIGNAL(messageSent(QString)), this, SLOT(receiveMessage(QString)));
+    connect(managerForm, &ClientManager::deviceConnected, this, &MainWidget::deviceConnect);
+    connect(managerForm, &ClientManager::deviceDisconnected, this, &MainWidget::deviceDisconnect);
+    connect(managerForm, &ClientManager::messageSent, this, &MainWidget::receiveMessage);
 }
 
 void MainWidget::receiveMessage(QString message)

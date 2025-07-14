@@ -34,7 +34,7 @@ ProgressForm::ProgressForm(QWidget *obj_parent) :
     }
     setFixedSize(size());
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelConfirm()));
+    connect(ui->cancelButton, &QPushButton::clicked, this, &ProgressForm::cancelConfirm);
 }
 
 ProgressForm::~ProgressForm()
@@ -70,7 +70,7 @@ void ProgressForm::showDelayed(int msec)
 {
     timer.setSingleShot(true);
     timer.setInterval(msec);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(show()));
+    connect(&timer, &QTimer::timeout, this, &ProgressForm::show);
     timer.start();
 }
 

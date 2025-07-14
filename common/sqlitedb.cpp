@@ -149,7 +149,7 @@ SQLiteDB::SQLiteDB(QObject *obj_parent) :
     thread->start();
     timer->setInterval(0);
     timer->setSingleShot(true);
-    connect(timer, SIGNAL(timeout()), this, SLOT(process()));
+    connect(timer, &QTimer::timeout, this, &SQLiteDB::process);
 
     // fetch a configured database path if it exists
     QString db_path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);

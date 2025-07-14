@@ -74,7 +74,7 @@ QListDB::QListDB(QObject *obj_parent) :
 
     timer->setInterval(0);
     timer->setSingleShot(true);
-    connect(timer, SIGNAL(timeout()), this, SLOT(process()));
+    connect(timer, &QTimer::timeout, this, &QListDB::process);
 }
 
 QListDB::~QListDB()

@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     HeadlessManager manager;
 
     // receive the message from another process
-    QObject::connect(&app, SIGNAL(messageAvailable(QString)), &manager, SLOT(receiveMessage(QString)));
+    QObject::connect(&app, &SingleCoreApplication::messageAvailable, &manager, &HeadlessManager::receiveMessage);
 
     manager.start();
 

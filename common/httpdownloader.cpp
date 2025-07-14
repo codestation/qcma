@@ -52,12 +52,11 @@ void HTTPDownloader::downloadFile()
     qDebug("Starting http_thread: 0x%016" PRIxPTR, (uintptr_t)QThread::currentThreadId());
     request = new QNetworkAccessManager(this);
     reply = request->get(QNetworkRequest(QUrl(remote_url)));
-    connect(reply, SIGNAL(metaDataChanged()), this, SLOT(metadataChanged()));
-    connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(error(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
-    connect(reply, SIGNAL(finished()), request, SLOT(deleteLater()));
+    connect(reply, &QNetworkReply::metaDataChanged, this, &HTTPDownloader::metadataChanged);
+    connect(reply, &QNetworkReply::readyRead, this, &HTTPDownloader::readyRead);
+    connect(reply, &QNetworkReply::errorOccurred, this, &HTTPDownloader::error);
+    connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
+    connect(reply, &QNetworkReply::finished, request, &QObject::deleteLater);
 }
 
 void HTTPDownloader::metadataChanged()

@@ -76,6 +76,7 @@ public slots:
     void openManager();
     void showAboutQt();
     void showAboutDialog();
+    void receiveMessage(QString message);
     void refreshDatabase();
     void stopServer();
 
@@ -83,7 +84,6 @@ private slots:
     void deviceConnect(QString message);
     void deviceDisconnect();
     void dialogResult(int result);
-    void receiveMessage(QString message);
     void setTrayTooltip(QString message);
 };
 

@@ -28,7 +28,7 @@ SingleApplication::SingleApplication(int &s_argc, char **s_argv) :
     QApplication(s_argc, s_argv)
 {
     server = new QLocalServer(this);
-    connect(server, SIGNAL(newConnection()), this, SLOT(receiveMessage()));
+    connect(server, &QLocalServer::newConnection, this, &SingleApplication::receiveMessage);
     QLocalServer::removeServer(SHARED_KEY);
     server->listen(SHARED_KEY);
 }

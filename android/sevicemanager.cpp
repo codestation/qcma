@@ -53,7 +53,7 @@ void ServiceManager::refreshDatabase()
         return;
     }
 
-    QTextStream(stdout) << "Database scan has started" << endl;
+    QTextStream(stdout) << "Database scan has started" << Qt::endl;
 
     if (!m_db->rescan()) {
         qWarning("No PS Vita system has been registered");
@@ -76,7 +76,7 @@ void ServiceManager::start()
     refreshDatabase();
 
     // send a signal when the update is finished
-    connect(m_db, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
+    connect(m_db, &QListDB::updated, this, &ServiceManager::databaseUpdated);
 
     thread_count = 0;
     qDebug("Starting cma threads");
@@ -87,16 +87,13 @@ void ServiceManager::start()
         usb_thread = new QThread();
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
-        connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-        connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()),
-                Qt::DirectConnection);
-        connect(usb_thread, SIGNAL(finished()), usb_thread,
-                SLOT(deleteLater()));
-        connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-        connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+        connect(usb_thread, &QThread::started, client, &CmaClient::connectUsb);
+        connect(client, &CmaClient::finished, usb_thread, &QThread::quit, Qt::DirectConnection);
+        connect(usb_thread, &QThread::finished, usb_thread, &QObject::deleteLater);
+        connect(usb_thread, &QThread::finished, this, &ServiceManager::threadStopped);
+        connect(usb_thread, &QThread::finished, client, &QObject::deleteLater);
 
-        connect(client, SIGNAL(refreshDatabase()), this,
-                SLOT(refreshDatabase()));
+        connect(client, &CmaClient::refreshDatabase, this, &ServiceManager::refreshDatabase);
 
         client->moveToThread(usb_thread);
         usb_thread->start();
@@ -108,19 +105,13 @@ void ServiceManager::start()
         wireless_thread = new QThread();
         client = new CmaClient(m_db, broadcast);
         wireless_thread->setObjectName("wireless_thread");
-        connect(wireless_thread, SIGNAL(started()), client,
-                SLOT(connectWireless()));
-        connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()),
-                Qt::DirectConnection);
-        connect(wireless_thread, SIGNAL(finished()), wireless_thread,
-                SLOT(deleteLater()));
-        connect(wireless_thread, SIGNAL(finished()), this,
-                SLOT(threadStopped()));
-        connect(wireless_thread, SIGNAL(finished()), client,
-                SLOT(deleteLater()));
+        connect(wireless_thread, &QThread::started, client, &CmaClient::connectWireless);
+        connect(client, &CmaClient::finished, wireless_thread, &QThread::quit, Qt::DirectConnection);
+        connect(wireless_thread, &QThread::finished, wireless_thread, &QObject::deleteLater);
+        connect(wireless_thread, &QThread::finished, this, &ServiceManager::threadStopped);
+        connect(wireless_thread, &QThread::finished, client, &QObject::deleteLater);
 
-        connect(client, SIGNAL(refreshDatabase()), this,
-                SLOT(refreshDatabase()));
+        connect(client, &CmaClient::refreshDatabase, this, &ServiceManager::refreshDatabase);
 
         client->moveToThread(wireless_thread);
         wireless_thread->start();
@@ -134,7 +125,7 @@ void ServiceManager::start()
 
 void ServiceManager::receiveMessage(QString message)
 {
-    QTextStream(stdout) << message << endl;
+    QTextStream(stdout) << message << Qt::endl;
 }
 
 void ServiceManager::stop()

@@ -43,9 +43,9 @@ HeadlessManager::HeadlessManager(QObject *obj_parent) :
        qFatal("Couldn't create TERM socketpair");
 
     sn_hup = new QSocketNotifier(sighup_fd[1], QSocketNotifier::Read, this);
-    connect(sn_hup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
+    connect(sn_hup, &QSocketNotifier::activated, this, &HeadlessManager::handleSigHup);
     sn_term = new QSocketNotifier(sigterm_fd[1], QSocketNotifier::Read, this);
-    connect(sn_term, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
+    connect(sn_term, &QSocketNotifier::activated, this, &HeadlessManager::handleSigTerm);
 }
 
 HeadlessManager::~HeadlessManager()
@@ -87,7 +87,7 @@ void HeadlessManager::start()
     refreshDatabase();
 
     // send a signal when the update is finished
-    connect(m_db, SIGNAL(updated(int)), this, SIGNAL(databaseUpdated(int)));
+    connect(m_db, &QListDB::updated, this, &HeadlessManager::databaseUpdated);
 
     thread_count = 0;
     qDebug("Starting cma threads");
@@ -98,13 +98,13 @@ void HeadlessManager::start()
         usb_thread = new QThread();
         client = new CmaClient(m_db);
         usb_thread->setObjectName("usb_thread");
-        connect(usb_thread, SIGNAL(started()), client, SLOT(connectUsb()));
-        connect(client, SIGNAL(finished()), usb_thread, SLOT(quit()), Qt::DirectConnection);
-        connect(usb_thread, SIGNAL(finished()), usb_thread, SLOT(deleteLater()));
-        connect(usb_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-        connect(usb_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+        connect(usb_thread, &QThread::started, client, &CmaClient::connectUsb);
+        connect(client, &CmaClient::finished, usb_thread, &QThread::quit, Qt::DirectConnection);
+        connect(usb_thread, &QThread::finished, usb_thread, &QObject::deleteLater);
+        connect(usb_thread, &QThread::finished, this, &HeadlessManager::threadStopped);
+        connect(usb_thread, &QThread::finished, client, &QObject::deleteLater);
 
-        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, &CmaClient::refreshDatabase, this, &HeadlessManager::refreshDatabase);
 
         client->moveToThread(usb_thread);
         usb_thread->start();
@@ -116,13 +116,13 @@ void HeadlessManager::start()
         wireless_thread = new QThread();
         client = new CmaClient(m_db, broadcast);
         wireless_thread->setObjectName("wireless_thread");
-        connect(wireless_thread, SIGNAL(started()), client, SLOT(connectWireless()));
-        connect(client, SIGNAL(finished()), wireless_thread, SLOT(quit()), Qt::DirectConnection);
-        connect(wireless_thread, SIGNAL(finished()), wireless_thread, SLOT(deleteLater()));
-        connect(wireless_thread, SIGNAL(finished()), this, SLOT(threadStopped()));
-        connect(wireless_thread, SIGNAL(finished()), client, SLOT(deleteLater()));
+        connect(wireless_thread, &QThread::started, client, &CmaClient::connectWireless);
+        connect(client, &CmaClient::finished, wireless_thread, &QThread::quit, Qt::DirectConnection);
+        connect(wireless_thread, &QThread::finished, wireless_thread, &QObject::deleteLater);
+        connect(wireless_thread, &QThread::finished, this, &HeadlessManager::threadStopped);
+        connect(wireless_thread, &QThread::finished, client, &QObject::deleteLater);
 
-        connect(client, SIGNAL(refreshDatabase()), this, SLOT(refreshDatabase()));
+        connect(client, &CmaClient::refreshDatabase, this, &HeadlessManager::refreshDatabase);
 
         client->moveToThread(wireless_thread);
         wireless_thread->start();

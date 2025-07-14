@@ -49,8 +49,8 @@ BackupManagerForm::~BackupManagerForm()
 void BackupManagerForm::setupForm()
 {
     this->resize(800, 480);
-    connect(ui->backupComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadBackupListing(int)));
-    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveListing()));
+    connect(ui->backupComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &BackupManagerForm::loadBackupListing);
+    connect(ui->saveButton, &QPushButton::clicked, this, &BackupManagerForm::saveListing);
     ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidget->horizontalHeader()->hide();
 }
@@ -214,7 +214,7 @@ void BackupManagerForm::loadBackupListing(int index)
         item->ohfi = meta->ohfi;
         item->title = game_name;
 
-        connect(item, SIGNAL(deleteEntry(BackupItem*)), this, SLOT(removeEntry(BackupItem*)));
+        connect(item, &BackupItem::deleteEntry, this, &BackupManagerForm::removeEntry);
 
         // show better size info for multi GiB backups
         bool use_gb = ohfi == VITA_OHFI_BACKUP && meta->size > 1024*1024*1024;

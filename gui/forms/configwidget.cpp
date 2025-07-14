@@ -46,18 +46,18 @@ void ConfigWidget::connectSignals()
     mapper->setMapping(ui->appBtn, BTN_APPS);
     mapper->setMapping(ui->urlBtn, BTN_URL);
     mapper->setMapping(ui->pkgBtn, BTN_PKG);
-    connect(ui->photoBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(ui->musicBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(ui->videoBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(ui->appBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(ui->urlBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(ui->pkgBtn, SIGNAL(clicked()), mapper, SLOT(map()));
-    connect(mapper, SIGNAL(mapped(int)), this, SLOT(browseBtnPressed(int)));
-    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(ui->photoBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(ui->musicBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(ui->videoBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(ui->appBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(ui->urlBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(ui->pkgBtn, &QPushButton::clicked, mapper, qOverload<>(&QSignalMapper::map));
+    connect(mapper, &QSignalMapper::mappedInt, this, &ConfigWidget::browseBtnPressed);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ConfigWidget::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ConfigWidget::reject);
 
-    connect(ui->protocolModeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(protocolModeChanged(int)));
-    connect(ui->psversionBox, SIGNAL(currentIndexChanged(int)), this, SLOT(versionModeChanged(int)));
+    connect(ui->protocolModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ConfigWidget::protocolModeChanged);
+    connect(ui->psversionBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ConfigWidget::versionModeChanged);
 }
 
 void ConfigWidget::protocolModeChanged(int index)

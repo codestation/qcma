@@ -56,12 +56,12 @@ void QTrayIcon::init()
     about_qt = new QAction(tr("About Qt"), this);
     quit = new QAction(tr("Quit"), this);
 
-    connect(options, SIGNAL(triggered()), this, SIGNAL(openConfig()));
-    connect(backup, SIGNAL(triggered()), this, SIGNAL(openManager()));
-    connect(reload, SIGNAL(triggered()), this, SIGNAL(refreshDatabase()));
-    connect(about, SIGNAL(triggered()), this, SIGNAL(showAboutDialog()));
-    connect(about_qt, SIGNAL(triggered()), this, SIGNAL(showAboutQt()));
-    connect(quit, SIGNAL(triggered()), this, SIGNAL(stopServer()));
+    connect(options, &QAction::triggered, this, &QTrayIcon::openConfig);
+    connect(backup, &QAction::triggered, this, &QTrayIcon::openManager);
+    connect(reload, &QAction::triggered, this, &QTrayIcon::refreshDatabase);
+    connect(about, &QAction::triggered, this, &QTrayIcon::showAboutDialog);
+    connect(about_qt, &QAction::triggered, this, &QTrayIcon::showAboutQt);
+    connect(quit, &QAction::triggered, this, &QTrayIcon::stopServer);
 
     QMenu *tray_icon_menu = new QMenu(this);
 

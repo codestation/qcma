@@ -81,11 +81,9 @@ signals:
     void finished();
 
 public slots:
-    static int stop();
-
-private slots:
     void connectUsb();
     void connectWireless();
+    static int stop();
 };
 
 #endif // CMACLIENT_H
