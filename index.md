@@ -5,7 +5,7 @@ Qcma
 
 Qcma is a cross-platform application to provide a Open Source implementation
 of the original Content Manager Assistant that comes with the PS Vita. Qcma is
-meant to be compatible with Linux, Windows and MAC OS X.
+meant to be compatible with Linux, Windows and macOS.
 
 ## Features
 
@@ -30,15 +30,15 @@ The daemon provides minimal interaction via UNIX signals.
 * **SIGTERM** or **SIGINT**: Shuts down the process but waits until the current event is finished.
 
 ## Dependencies
-* [Qt 5.x](http://qt-project.org/)
+* [Qt 6.x](http://qt-project.org/)
 
 * [VitaMTP fork](https://github.com/codestation/vitamtp)
 
 * [FFmpeg](hhttp://www.ffmpeg.org/)
 
-## Downloads (Latest version: **0.4.1**)
+## Downloads (Latest version: **0.5.0**)
 
-[Linux repos (0.4.1)](https://software.opensuse.org/download/package.iframe?project=home:codestation&package=qcma)
+[Linux repos (0.5.0)](https://software.opensuse.org/download/package.iframe?project=home:codestation&package=qcma)
 
 [Windows Installer (0.4.1)](https://github.com/codestation/qcma/releases/download/v0.4.1/Qcma_setup-0.4.1.exe)
 
