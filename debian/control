@@ -12,7 +12,6 @@ Build-Depends:
  qt6-base-dev,
  qt6-tools-dev,
  libnotify-dev,
- libgtk3.0-dev,
  pkg-config,
  libvitamtp-dev (>= 2.5.9)
 
