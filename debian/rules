@@ -4,7 +4,7 @@
 #export DH_VERBOSE=1
 
 # see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=773686
-export QT_SELECT=qt5
+export QT_SELECT=qt6
 
 %:
 	dh $@ --buildsystem=qmake

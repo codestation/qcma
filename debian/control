@@ -1,7 +1,7 @@
 Source: qcma
 Section: utils
 Priority: extra
-Maintainer: codestation <codestation404@gmail.com>
+Maintainer: codestation <codestation@megpoid.dev>
 Standards-Version: 3.9.6
 Homepage: http://github.com/codestation/qcma
 Vcs-Git: git://github.com/codestation/qcma.git
@@ -9,16 +9,16 @@ Build-Depends:
  debhelper (>= 9),
  libavformat-dev,
  libswscale-dev,
- qtbase5-dev,
- qttools5-dev-tools,
+ qt6-base-dev,
+ qt6-tools-dev,
  libnotify-dev,
- libgtk2.0-dev,
+ libgtk3.0-dev,
  pkg-config,
- libvitamtp-dev (>= 2.5.5)
+ libvitamtp-dev (>= 2.5.9)
 
 Package: qcma
 Architecture: any
-Depends: libvitamtp5 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp5 (>= 2.5.9), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita
  QCMA will allow you to backup your PS Vita games & manage
  your songs, videos & photos.
@@ -26,7 +26,7 @@ Description: Content Manager Assistant for the PS Vita
 
 Package: qcma-cli
 Architecture: any
-Depends: libvitamtp5 (>= 2.5.5), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp5 (>= 2.5.9), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (headless version)
  Command-line client to backup your PS Vita games & manage
  your songs, videos & photos.
