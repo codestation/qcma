@@ -137,19 +137,20 @@ void AVDecoder::getVideoMetadata(metadata_t &metadata)
 AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_index)
 {
     AVFrame *pFrame = av_frame_alloc();
-    AVPacket packet;
+    AVPacket *packet = av_packet_alloc();
     int ret = 0;
 
-    while (av_read_frame(pFormatCtx, &packet) >= 0) {
-        if (packet.stream_index == frame_stream_index) {
-            ret = avcodec_send_packet(codec_ctx, &packet);
-            av_packet_unref(&packet);
+    while (av_read_frame(pFormatCtx, packet) >= 0) {
+        if (packet->stream_index == frame_stream_index) {
+            ret = avcodec_send_packet(codec_ctx, packet);
+            av_packet_unref(packet);
             if (ret < 0) {
                 break;
             }
             ret = avcodec_receive_frame(codec_ctx, pFrame);
             if (ret == 0) {
                 // Frame successfully decoded
+                av_packet_free(&packet);
                 return pFrame;
             } else if (ret == AVERROR(EAGAIN)) {
                 // Need more packets
@@ -159,10 +160,11 @@ AVFrame *AVDecoder::getDecodedFrame(AVCodecContext *codec_ctx, int frame_stream_
                 break;
             }
         } else {
-            av_packet_unref(&packet);
+            av_packet_unref(packet);
         }
     }
 
+    av_packet_free(&packet);
     av_frame_free(&pFrame);
     return NULL;
 }
@@ -246,7 +248,7 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
                 pCodecCtx->pix_fmt,
                 width, height,
                 AV_PIX_FMT_YUV420P, SWS_BICUBIC,
-                NULL, NULL, NULL);
+                nullptr, nullptr, nullptr);
 
     if(!sws_ctx) {
         return data;
@@ -271,15 +273,13 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
 
     av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, AV_PIX_FMT_YUV420P, width, height, 1);
 
-    sws_scale(
-        sws_ctx,
-        pFrame->data,
-        pFrame->linesize,
-        0,
-        pCodecCtx->height,
-        pFrameRGB->data,
-        pFrameRGB->linesize
-    );
+    int result = sws_scale_frame(sws_ctx, pFrameRGB, pFrame);
+    if(result < 0) {
+        av_free(buffer);
+        av_frame_free(&pFrameRGB);
+        sws_freeContext(sws_ctx);
+        return data;
+    }
 
     pOCodecCtx = avcodec_alloc_context3(pOCodec);
 
@@ -297,11 +297,12 @@ QByteArray AVDecoder::WriteJPEG(AVCodecContext *pCodecCtx, AVFrame *pFrame, int 
     pOCodecCtx->color_range   = AVCOL_RANGE_JPEG;
     pOCodecCtx->codec_id      = AV_CODEC_ID_MJPEG;
     pOCodecCtx->codec_type    = AVMEDIA_TYPE_VIDEO;
-    pOCodecCtx->time_base.num = pCodecCtx->time_base.num;
-    pOCodecCtx->time_base.den = pCodecCtx->time_base.den;
+    pOCodecCtx->time_base.num = 1;
+    pOCodecCtx->time_base.den = 25;
 
     AVDictionary *opts = NULL;
-    if(avcodec_open2(pOCodecCtx, pOCodec, &opts) < 0) {
+    int res = avcodec_open2(pOCodecCtx, pOCodec, &opts);
+    if(res < 0) {
         avcodec_free_context(&pOCodecCtx);
         av_free(buffer);
         av_frame_free(&pFrameRGB);
