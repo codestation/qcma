@@ -1,4 +1,3 @@
 usr/bin/qcma
-gui/resources/qcma.desktop usr/share/applications
-gui/resources/images/qcma.png usr/share/icons/hicolor/64x64/apps
-
+usr/share/applications/qcma.desktop
+usr/share/icons/hicolor/64x64/apps/qcma.png

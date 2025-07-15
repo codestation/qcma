@@ -11,7 +11,7 @@ export QMAKE=qmake6
 
 override_dh_auto_configure:
 	/usr/lib/qt6/bin/lrelease common/resources/translations/qcma_*.ts
-	qmake6 qcma.pro
+	qmake6 qcma.pro PREFIX=/usr
 
 override_dh_auto_clean:
 	dh_auto_clean
