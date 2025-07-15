@@ -2,16 +2,18 @@ Source: qcma
 Section: utils
 Priority: extra
 Maintainer: codestation <codestation@megpoid.dev>
-Standards-Version: 4.2.1
+Standards-Version: 4.6.2
 Homepage: http://github.com/codestation/qcma
 Vcs-Git: git://github.com/codestation/qcma.git
 Build-Depends:
- debhelper (>= 10),
+ debhelper-compat (= 13),
  libavcodec-dev,
  libavformat-dev,
  libswscale-dev,
- qt6-tools-dev,
- qt6-tools-dev-tools,
+ qmake6,
+ qt6-base-dev,
+ qt6-base-dev-tools,
+ qt6-l10n-tools,
  libnotify-dev,
  pkg-config,
  libvitamtp-dev (>= 2.5.9)

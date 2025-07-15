@@ -3,14 +3,16 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=773686
 export QT_SELECT=qt6
+export QMAKE=qmake6
 
 %:
 	dh $@ --buildsystem=qmake
 
 override_dh_auto_configure:
-	lrelease common/resources/translations/qcma_*.ts
-	dh_auto_configure -- qcma.pro
+	/usr/lib/qt6/bin/lrelease common/resources/translations/qcma_*.ts
+	qmake6 qcma.pro
 
-.PHONY: override_dh_auto_configure
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f src/translations/*.qm
