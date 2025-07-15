@@ -1,9 +1,6 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-
-!android {
-    PKGCONFIG += libvitamtp
-}
+PKGCONFIG += libvitamtp
 
 !DISABLE_FFMPEG {
     PKGCONFIG += libavformat libavcodec libavutil libswscale
