@@ -30,11 +30,11 @@ The daemon provides minimal interaction via UNIX signals.
 * **SIGTERM** or **SIGINT**: Shuts down the process but waits until the current event is finished.
 
 ## Dependencies
-* [Qt 6.x](http://qt-project.org/)
+* [Qt 6.x](https://qt-project.org/)
 
 * [VitaMTP fork](https://github.com/codestation/vitamtp)
 
-* [FFmpeg](hhttp://www.ffmpeg.org/)
+* [FFmpeg](https://www.ffmpeg.org/)
 
 ## Downloads (Latest version: **0.5.0**)
 
