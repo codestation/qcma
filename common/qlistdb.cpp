@@ -328,7 +328,7 @@ bool QListDB::findInternal(const root_list &list, int ohfi, find_data &data)
         data.it = std::lower_bound(list.begin(), list.end(), &obj, QListDB::lessThanComparator);
     }
     data.end = list.end();
-    return data.it != data.end;
+    return data.it != data.end && (*data.it)->metadata.ohfi == ohfi;
 }
 
 bool QListDB::find(int ohfi, QListDB::find_data &data)
