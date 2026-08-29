@@ -1,0 +1,17 @@
+Format: 3.0 (quilt)
+Source: qcma
+Binary: qcma, qcma-cli
+Architecture: any
+Version: @VERSION@
+Maintainer: codestation <codestation@megpoid.dev>
+Homepage: https://github.com/codestation/qcma
+Standards-Version: 4.7.0
+Vcs-Browser: https://github.com/codestation/qcma
+Vcs-Git: https://github.com/codestation/qcma.git
+DEBTRANSFORM-RELEASE: 1
+DEBTRANSFORM-TAR: qcma-0.5.2.tar.gz
+DEBTRANSFORM-FILES-TAR: debian.tar.xz
+Build-Depends: debhelper-compat (= 13), libavcodec-dev, libavformat-dev, libswscale-dev, qmake6, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.11)
+Package-List:
+ qcma deb utils optional arch=any
+ qcma-cli deb utils optional arch=any

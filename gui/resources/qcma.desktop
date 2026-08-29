@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Exec=qcma
 GenericName=Content Manager Assistant
 GenericName[es]=Asistente del Gestor de Contenido
@@ -15,4 +14,4 @@ Type=Application
 Version=1.0
 X-KDE-SubstituteUID=false
 X-Desktop-File-Install-Version=0.22
-Categories=System;FileManager;
+Categories=System;FileTools;

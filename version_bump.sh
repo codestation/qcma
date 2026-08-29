@@ -1,7 +1,9 @@
 #!/bin/sh
+set -eu
 
 [ $# -eq 0 ] && { echo "Usage: $0 <version>"; exit 1; }
 
-sed -i "s/%define _version.*/%define _version $1/" buildscripts/rpmbuild/qcma.spec
-sed -i "s/VERSION = .*/VERSION = $1/"     config.pri
-echo "Don't forget to update the changelog and nsis script"
+version=$1
+sed -i "s/%define _version.*/%define _version ${version}/" buildscripts/rpmbuild/qcma.spec
+sed -i "s/VERSION = .*/VERSION = ${version}/" config.pri
+echo "Remember to update debian/changelog, AppStream metadata and release manifests."

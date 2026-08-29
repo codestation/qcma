@@ -1,0 +1,5 @@
+Prefer: libavformat59 libavcodec59
+Prefer: libavformat60 libavcodec60
+Prefer: libavformat61 libavcodec61
+Prefer: libavformat62 libavcodec62
+Prefer: libjpeg-dev

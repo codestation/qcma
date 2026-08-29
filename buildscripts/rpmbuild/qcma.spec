@@ -2,7 +2,7 @@
 # qcma spec file
 # 
 
-%define _version 0.5.0
+%define _version 0.5.2
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
 %define _verprefix %{_version}
@@ -22,21 +22,23 @@
 
 Name:           qcma
 Summary:        PSVita Content Manager Assistant
-License:        GPL-3.0
+License:        GPL-3.0-or-later
 Release:        1
 Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
-Requires:       libvitamtp5 >= 2.5.9
-BuildRequires:  gcc-c++ 
+Requires:       libvitamtp5 >= 2.5.11
+BuildRequires:  gcc-c++
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  %{_qt6linguist}
 BuildRequires:  %{_qt6basedevel}
 BuildRequires:  desktop-file-utils
-%if ! 0%{?fedora}
+%if 0%{?fedora}
+BuildRequires:  ffmpeg-free-devel
+%else
 BuildRequires:  libavformat-devel
 BuildRequires:  libavcodec-devel
 BuildRequires:  libavutil-devel
@@ -49,24 +51,24 @@ of the original Content Manager Assistant that comes with the PS Vita. QCMA
 is meant to be compatible with Linux, Windows and MAC OS X.
 
 %prep
-%setup -n %{name}-%{version}
+%autosetup -n %{name}-%{version}
 
 %build
 %if 0%{?fedora}
 lrelease-qt6 common/resources/translations/*.ts
-%{qmake_qt6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" CONFIG+="DISABLE_FFMPEG" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%{qmake_qt6} PREFIX=%{_prefix} qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %else
 lrelease6 common/resources/translations/*.ts
-%{qmake6} PREFIX=/usr qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%{qmake6} PREFIX=%{_prefix} qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
 %endif
-make %{?_smp_mflags}
+%make_build
 
 %install
-make install INSTALL_ROOT=%{buildroot}
-desktop-file-edit --remove-key=Categories --add-category=System --add-category=FileManager --remove-key=Path --set-icon=qcma %{buildroot}%{_prefix}/share/applications/qcma.desktop
+%make_install INSTALL_ROOT=%{buildroot}
+desktop-file-validate %{buildroot}%{_datadir}/applications/qcma.desktop
 
 %files
-%defattr(-,root,root)
+%license COPYING
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor
@@ -84,4 +86,4 @@ Headless version of Content Manager Assistant for the PS Vita.
 
 %files cli
 %{_bindir}/qcma_cli
-%{_prefix}/share/man/man1/qcma_cli.1.gz
+%{_mandir}/man1/qcma_cli.1.*

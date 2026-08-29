@@ -3,11 +3,13 @@
   <id>dev.megpoid.Qcma</id>
   
   <name>Qcma</name>
-  <summary>Open Source implementation of the Content Manager Assistant for the PS Vita.</summary>
-  <developer_name>Codestation</developer_name>
+  <summary>Content manager for the PlayStation Vita</summary>
+  <developer id="dev.megpoid">
+    <name>Codestation</name>
+  </developer>
 
   <metadata_license>MIT</metadata_license>
-  <project_license>GPL-3.0-only</project_license>
+  <project_license>GPL-3.0-or-later</project_license>
   
   <description>
     <p>
@@ -16,8 +18,12 @@
   </description>
   
   <launchable type="desktop-id">dev.megpoid.Qcma.desktop</launchable>
+  <url type="homepage">https://github.com/codestation/qcma</url>
+  <url type="bugtracker">https://github.com/codestation/qcma/issues</url>
+  <content_rating type="oars-1.1" />
 
   <releases>
-    <release version="0.5.0" type="release" date="2025-07-14" />
+    <release version="0.5.2" type="stable" date="2026-08-29" />
+    <release version="0.5.1" type="stable" date="2025-07-14" />
   </releases>
 </component>

@@ -1,0 +1,7 @@
+-------------------------------------------------------------------
+Sat Aug 29 19:30:00 UTC 2026 - codestation <codestation@megpoid.dev>
+
+- Update to version 0.5.2
+  * Refresh RPM, Debian, Flatpak and AppImage packaging.
+  * Enable FFmpeg support on Fedora.
+  * Include the latest content-list lookup fix.

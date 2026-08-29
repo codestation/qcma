@@ -1,0 +1,14 @@
+app: qcma
+binpatch: true
+
+ingredients:
+  packages:
+    - qcma
+    - libvitamtp5
+
+script:
+  - cd "$BUILD_APPDIR"
+  - cp usr/share/applications/qcma.desktop .
+  - cp usr/share/icons/hicolor/64x64/apps/qcma.png .
+  - ln -s usr/bin/qcma AppRun
+  - cp usr/lib/udev/rules.d/60-psvita.rules . || true

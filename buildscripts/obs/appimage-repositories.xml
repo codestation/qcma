@@ -1,0 +1,10 @@
+<!-- Add these repositories inside the existing home:codestation project. -->
+<repository name="openSUSE_Leap_16.0">
+  <path project="openSUSE:Leap:16.0" repository="standard"/>
+  <arch>x86_64</arch>
+</repository>
+<repository name="AppImage">
+  <path project="home:codestation" repository="openSUSE_Leap_16.0"/>
+  <path project="OBS:AppImage" repository="AppImage"/>
+  <arch>x86_64</arch>
+</repository>

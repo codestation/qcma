@@ -1,3 +1,10 @@
+qcma (0.5.2) unstable; urgency=medium
+
+  * Refresh RPM, Debian, Flatpak and AppImage packaging.
+  * Enable FFmpeg support in Fedora builds.
+
+ -- codestation <codestation@megpoid.dev>  Sat, 29 Aug 2026 14:30:00 -0500
+
 qcma (0.5.1) unstable; urgency=low
 
   * Remove android support
