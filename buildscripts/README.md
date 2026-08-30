@@ -7,7 +7,8 @@ Each directory is an entry point for one package family or operating system:
 - `fedora`: Fedora 44 x86_64 and aarch64 RPMs.
 - `opensuse`: openSUSE Tumbleweed x86_64 RPMs.
 - `appimage`: self-contained x86_64 AppImage build.
-- `windows` and `macos`: legacy native release scripts, pending Qt 6 modernization.
+- `windows`: native Windows x86_64 installer using MSYS2 UCRT64, Qt 6 and NSIS.
+- `macos`: native macOS 13+ Apple Silicon DMG using Homebrew and Qt 6.
 - `obs`: reproducible source preparation for the local OBS checkout.
 - `common`: shared implementation used by distribution wrappers.
 
@@ -17,3 +18,7 @@ target; Debian 13 armhf/arm64 provide its local architecture preflight.
 All Linux containers build as a non-root user whose UID/GID match the host;
 root is used only through `sudo` for package installation tests inside the
 throwaway package containers.
+
+Windows and macOS are intentionally excluded from `build-all.sh`. Their
+`prepare` and `build` entry points run directly on native hosts, build VitaMTP
+first and write unsigned release artifacts under `artifacts/`.
