@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 cd "$repo_dir"
 
 version=${1:-}
@@ -40,6 +40,7 @@ sha256=$(sha256sum "$tmpdir/$archive" | cut -d' ' -f1)
 md5=$(md5sum "$tmpdir/$archive" | cut -d' ' -f1)
 
 sed -e "s/^Version:.*/Version: $version/" \
+    -e "s/^DEBTRANSFORM-TAR:.*/DEBTRANSFORM-TAR: qcma-$version.tar.gz/" \
     -e "s/^Build-Depends:.*libvitamtp-dev (>= [^)]*)/Build-Depends: debhelper-compat (= 13), libavcodec-dev, libavformat-dev, libswscale-dev, qmake6, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.11)/" \
     buildscripts/debian/qcma.dsc.in >"$tmpdir/qcma.dsc"
 cat >>"$tmpdir/qcma.dsc" <<EOF
@@ -54,8 +55,8 @@ EOF
 install -m644 "$tmpdir/$archive" "$obs_package/$archive"
 install -m644 "$tmpdir/debian.tar.xz" "$obs_package/debian.tar.xz"
 install -m644 "$tmpdir/qcma.dsc" "$obs_package/qcma.dsc"
-install -m644 buildscripts/rpmbuild/qcma.spec "$obs_package/qcma.spec"
-install -m644 buildscripts/rpmbuild/qcma.changes "$obs_package/qcma.changes"
+install -m644 buildscripts/common/rpm/qcma.spec "$obs_package/qcma.spec"
+install -m644 buildscripts/opensuse/qcma.changes "$obs_package/qcma.changes"
 install -m644 buildscripts/appimage/appimage.yml "$obs_package/appimage.yml"
 install -m644 buildscripts/appimage/_service "$obs_package/_service"
 

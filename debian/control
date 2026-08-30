@@ -16,11 +16,11 @@ Build-Depends:
  qt6-l10n-tools,
  libnotify-dev,
  pkg-config,
- libvitamtp-dev (>= 2.5.9)
+ libvitamtp-dev (>= 2.5.11)
 
 Package: qcma
 Architecture: any
-Depends: libvitamtp5 (>= 2.5.9), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp5 (>= 2.5.11), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita
  QCMA will allow you to backup your PS Vita games & manage
  your songs, videos & photos.
@@ -28,7 +28,7 @@ Description: Content Manager Assistant for the PS Vita
 
 Package: qcma-cli
 Architecture: any
-Depends: libvitamtp5 (>= 2.5.9), ${shlibs:Depends}, ${misc:Depends}
+Depends: libvitamtp5 (>= 2.5.11), ${shlibs:Depends}, ${misc:Depends}
 Description: Content Manager Assistant for the PS Vita (headless version)
  Command-line client to backup your PS Vita games & manage
  your songs, videos & photos.

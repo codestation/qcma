@@ -16,3 +16,9 @@ created. `appimage-repositories.xml` contains the x86_64 repositories to add
 to the project metadata when enabling AppImage. Leap 16 is deliberately used
 as the RPM base instead of Tumbleweed to avoid bundling binaries that require
 a newer glibc than Ubuntu 24.04.
+
+`update-local.sh [checkout]` prepares both vitamtp and qcma in an existing OBS
+checkout, then runs `osc addremove` and `osc status`. It never commits or
+publishes. The checkout defaults to `$OBS_CHECKOUT`, then
+`$HOME/obs/home:codestation`; set `VITAMTP_SOURCE` when the repositories are not
+siblings.

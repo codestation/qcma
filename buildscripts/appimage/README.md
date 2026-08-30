@@ -14,18 +14,12 @@ linuxdeploy and linuxdeploy-plugin-qt, so neither tool is required on the host.
 Building on the oldest supported distribution keeps the resulting glibc
 requirement portable.
 
-From the qcma repository, build and run it with:
+From the qcma repository, build it with:
 
 ```sh
-docker build -t qcma-appimage:ubuntu24 -f buildscripts/appimage/Dockerfile.ubuntu24 .
-mkdir -p /tmp/qcma-appimage-output
-docker run --rm \
-  -v "$PWD:/qcma:ro" \
-  -v "/path/to/vitamtp:/vitamtp:ro" \
-  -v "/tmp/qcma-appimage-output:/out" \
-  qcma-appimage:ubuntu24 sh -c \
-  'git config --global --add safe.directory /qcma && \
-   git config --global --add safe.directory /vitamtp && \
-   /qcma/buildscripts/appimage/build-appimage.sh \
-     /vitamtp /out/qcma-0.5.2-x86_64.AppImage'
+buildscripts/appimage/build.sh
 ```
+
+The wrapper maps the host UID/GID into the image, mounts both repositories
+read-only and writes the result to `artifacts/appimage/x86_64`. Set
+`VITAMTP_SOURCE` or pass an alternate output directory when needed.

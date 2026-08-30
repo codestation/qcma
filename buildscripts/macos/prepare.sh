@@ -13,6 +13,7 @@ then
 fi
 
 SERVER_HOST=$1
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 QT_VERSION=5.7
 QT_REVISION=${QT_VERSION}.0
@@ -21,10 +22,10 @@ QT_PKG=qt-opensource-mac-x64-clang-5.7.0.dmg
 NODE_PKG=node-v7.1.0.pkg
 XCODE_PKG=Xcode_8.xip
 
-scp ${NODE_PKG} ${SERVER_HOST}:
-scp ${QT_PKG} ${SERVER_HOST}:
-scp ${XCODE_PKG} ${SERVER_HOST}:
-scp qt-noninteractive.qs ${SERVER_HOST}:
+scp "${SCRIPT_DIR}/${NODE_PKG}" ${SERVER_HOST}:
+scp "${SCRIPT_DIR}/${QT_PKG}" ${SERVER_HOST}:
+scp "${SCRIPT_DIR}/${XCODE_PKG}" ${SERVER_HOST}:
+scp "${SCRIPT_DIR}/qt-noninteractive.qs" ${SERVER_HOST}:
 
 read -n1 -r -p "Unpack Xcode, then press space to continue..." key
 

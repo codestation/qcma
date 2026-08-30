@@ -13,7 +13,7 @@ then
 fi
 
 SERVER_HOST=$1
-QCMA_SOURCES=~/projects/qcma
+QCMA_SOURCES=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 
 VERSION=$(git -C "${QCMA_SOURCES}" describe --tags --abbrev=8)
 VERSION=${VERSION#v*}

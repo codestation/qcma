@@ -6,7 +6,7 @@ show_usage() {
     echo -e "Usage: $0 <host> <branch> [config]"
 }
 
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
     show_usage
     exit 1
@@ -17,7 +17,7 @@ BRANCH=$2
 
 QT_VERSION=5.7
 QT_REVISION=${QT_VERSION}.0
-QCMA_SOURCES=~/projects/qcma
+QCMA_SOURCES=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 
 VERSION=$(git -C "${QCMA_SOURCES}" describe --tags --abbrev=8)
 VERSION=${VERSION#v*}

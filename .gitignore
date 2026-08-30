@@ -9,6 +9,7 @@ repo/
 .flatpak-builder/
 .flatpak-repo/
 build-flatpak/
+artifacts/
 ui_*.h
 moc_*.cpp
 moc_*.h

@@ -1,5 +1,7 @@
 FROM ubuntu:24.04
 
+ARG HOST_UID=1000
+ARG HOST_GID=1000
 ARG LINUXDEPLOY_VERSION=1-alpha-20251107-1
 ARG LINUXDEPLOY_SHA256=c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d
 ARG LINUXDEPLOY_QT_VERSION=1-alpha-20250213-1
@@ -24,3 +26,11 @@ RUN mkdir -p /opt/linuxdeploy \
 ENV APPIMAGE_EXTRACT_AND_RUN=1
 ENV LINUXDEPLOY=/opt/linuxdeploy/linuxdeploy-x86_64.AppImage
 ENV LINUXDEPLOY_PLUGIN_QT=/opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage
+
+RUN group_name="$(getent group "$HOST_GID" | cut -d: -f1)" \
+    && if [ -z "$group_name" ]; then groupadd --gid "$HOST_GID" builder; group_name=builder; fi \
+    && user_name="$(getent passwd "$HOST_UID" | cut -d: -f1)" \
+    && if [ -z "$user_name" ]; then useradd --uid "$HOST_UID" --gid "$group_name" --home-dir /home/builder --create-home builder; else mkdir -p /home/builder; chown "$HOST_UID:$HOST_GID" /home/builder; fi
+
+USER ${HOST_UID}:${HOST_GID}
+ENV HOME=/home/builder
