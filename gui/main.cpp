@@ -29,6 +29,7 @@
 #include <QTranslator>
 
 #include <inttypes.h>
+#include <cstring>
 
 #include "singleapplication.h"
 #include "mainwidget.h"
@@ -73,8 +74,14 @@ static bool setup_handlers()
 
 int main(int argc, char *argv[])
 {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--version") == 0) {
+            QTextStream(stdout) << "qcma " << QCMA_VER << Qt::endl;
+            return 0;
+        }
+    }
+
     Q_INIT_RESOURCE(commonrc);
-    Q_INIT_RESOURCE(translations);
 
     if(SingleApplication::sendMessage(QObject::tr("An instance of Qcma is already running"))) {
         return 0;

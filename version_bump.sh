@@ -5,5 +5,5 @@ set -eu
 
 version=$1
 sed -i "s/%define _version.*/%define _version ${version}/" buildscripts/common/rpm/qcma.spec
-sed -i "s/VERSION = .*/VERSION = ${version}/" config.pri
+sed -i "s/project(qcma VERSION [^ ]*/project(qcma VERSION ${version}/" CMakeLists.txt
 echo "Remember to update debian/changelog, AppStream metadata and release manifests."

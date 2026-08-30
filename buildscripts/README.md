@@ -15,9 +15,9 @@ Each directory is an entry point for one package family or operating system:
 Run `build-all.sh [output]` for the full Linux package matrix. It builds
 vitamtp before qcma and never publishes artifacts. Raspbian remains an OBS
 target; Debian 13 armhf/arm64 provide its local architecture preflight.
-All Linux containers build as a non-root user whose UID/GID match the host;
-root is used only through `sudo` for package installation tests inside the
-throwaway package containers.
+The Linux packaging containers run as root so they can install and exercise
+the packages they produce. Git archives are created as the unprivileged
+`builder` user, and artifacts are returned to the invoking host UID/GID.
 
 Windows and macOS are intentionally excluded from `build-all.sh`. Their
 `prepare` and `build` entry points run directly on native hosts, build VitaMTP

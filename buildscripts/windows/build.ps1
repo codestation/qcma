@@ -2,8 +2,7 @@
 param(
     [string]$VitaMtpSource,
     [string]$OutputDirectory,
-    [string]$DriverDirectory,
-    [switch]$DisableFfmpeg
+    [string]$DriverDirectory
 )
 
 $ErrorActionPreference = 'Stop'
@@ -54,11 +53,9 @@ $msysScript = ConvertTo-MsysPath (Join-Path $scriptDirectory 'build-msys2.sh')
 $msysQcma = ConvertTo-MsysPath $qcmaSource
 $msysVitaMtp = ConvertTo-MsysPath $VitaMtpSource
 $msysOutput = ConvertTo-MsysPath $OutputDirectory
-$ffmpegMode = if ($DisableFfmpeg) { 'disabled' } else { 'enabled' }
-
 $env:CHERE_INVOKING = '1'
 $env:MSYSTEM = 'UCRT64'
-& $bash -lc 'exec /usr/bin/bash "$1" "$2" "$3" "$4" "$5"' -- $msysScript $msysQcma $msysVitaMtp $msysOutput $ffmpegMode
+& $bash -lc 'exec /usr/bin/bash "$1" "$2" "$3" "$4"' -- $msysScript $msysQcma $msysVitaMtp $msysOutput
 if ($LASTEXITCODE -ne 0) {
     throw 'The MSYS2/UCRT64 build failed'
 }
@@ -71,8 +68,7 @@ if ([string]::IsNullOrWhiteSpace($numericVersion)) {
     throw "Could not derive a numeric version from '$version'"
 }
 $parts = $numericVersion.Split('.')
-$suffix = if ($DisableFfmpeg) { '-noffmpeg' } else { '' }
-$installer = Join-Path $OutputDirectory "Qcma-$version-windows-x86_64$suffix-setup.exe"
+$installer = Join-Path $OutputDirectory "Qcma-$version-windows-x86_64-setup.exe"
 
 $makensisCandidates = @(
     (Get-Command makensis.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue),

@@ -4,7 +4,7 @@ set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 vitamtp_source=${VITAMTP_SOURCE:-"$(dirname "$root")/vitamtp"}
 output_dir=${1:-"$root/artifacts/appimage/x86_64"}
-version=$(sed -n 's/^VERSION = //p' "$root/config.pri")
+version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$root/CMakeLists.txt")
 
 test -d "$vitamtp_source/.git"
 git -C "$root" diff --quiet

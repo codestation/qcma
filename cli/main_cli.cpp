@@ -29,6 +29,7 @@
 #include <QTranslator>
 
 #include <inttypes.h>
+#include <cstring>
 #include <vitamtp.h>
 
 #include "singlecoreapplication.h"
@@ -93,8 +94,14 @@ static bool setup_handlers()
 
 int main(int argc, char *argv[])
 {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--version") == 0) {
+            QTextStream(stdout) << "qcma_cli " << QCMA_VER << Qt::endl;
+            return 0;
+        }
+    }
+
     Q_INIT_RESOURCE(commonrc);
-    Q_INIT_RESOURCE(translations);
 
     if(SingleCoreApplication::sendMessage("Another instance of Qcma tried to start")) {
         QTextStream(stdout) << "An instance of Qcma is already running" << Qt::endl;

@@ -4,7 +4,7 @@ set -euo pipefail
 
 usage() {
     cat <<'EOF'
-usage: build.sh [--vitamtp-source PATH] [--output-dir PATH] [--disable-ffmpeg]
+usage: build.sh [--vitamtp-source PATH] [--output-dir PATH]
 EOF
 }
 
@@ -16,7 +16,6 @@ else
     vitamtp_source=
 fi
 output=$qcma_source/artifacts/macos
-ffmpeg=enabled
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -30,10 +29,6 @@ while [[ $# -gt 0 ]]; do
             mkdir -p -- "$2"
             output=$(CDPATH='' cd -- "$2" && pwd)
             shift 2
-            ;;
-        --disable-ffmpeg)
-            ffmpeg=disabled
-            shift
             ;;
         -h|--help)
             usage
@@ -55,19 +50,13 @@ done
 }
 command -v brew >/dev/null 2>&1 || { echo 'Homebrew is missing; run prepare.sh first.' >&2; exit 1; }
 
-for tool in autoreconf create-dmg dylibbundler make pkg-config; do
+for tool in autoreconf cmake create-dmg dylibbundler ninja pkg-config; do
     command -v "$tool" >/dev/null 2>&1 || { echo "missing build tool: $tool; run prepare.sh" >&2; exit 1; }
 done
 
 qt_prefix=$(brew --prefix qt)
-qmake_bin=$qt_prefix/bin/qmake
-lrelease_bin=$qt_prefix/bin/lrelease
 macdeployqt_bin=$qt_prefix/bin/macdeployqt
-for tool in "$qmake_bin" "$lrelease_bin" "$macdeployqt_bin"; do
-    [[ -x $tool ]] || { echo "missing Qt tool: $tool" >&2; exit 1; }
-done
-qt_version=$($qmake_bin -query QT_VERSION)
-[[ $qt_version == 6.* ]] || { echo "Qt 6 is required, found $qt_version" >&2; exit 1; }
+[[ -x $macdeployqt_bin ]] || { echo "missing Qt tool: $macdeployqt_bin" >&2; exit 1; }
 
 mkdir -p -- "$output"
 work=$output/.work
@@ -84,12 +73,10 @@ mkdir -p -- "$vitamtp_build" "$vitamtp_work_source" "$vitamtp_prefix" "$qcma_bui
 version=$(git -C "$qcma_source" describe --tags --always --dirty 2>/dev/null || true)
 version=${version#v}
 if [[ -z $version ]]; then
-    version=$(sed -n 's/^VERSION[[:space:]]*=[[:space:]]*//p' "$qcma_source/qcma.pro" | head -n1)
+    version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$qcma_source/CMakeLists.txt")
 fi
 version=${version//\//-}
-suffix=
-[[ $ffmpeg == enabled ]] || suffix=-noffmpeg
-dmg=$output/Qcma-$version-macos-arm64$suffix.dmg
+dmg=$output/Qcma-$version-macos-arm64.dmg
 
 gettext_prefix=$(brew --prefix gettext)
 libtool_prefix=$(brew --prefix libtool)
@@ -101,7 +88,7 @@ export PATH="$qt_prefix/bin:$gettext_prefix/bin:$libtool_prefix/bin:$PATH"
 export MACOSX_DEPLOYMENT_TARGET=13.0
 export PKG_CONFIG_PATH="$vitamtp_prefix/lib/pkgconfig:$libusb_prefix/lib/pkgconfig:$libxml2_prefix/lib/pkgconfig:$ffmpeg_prefix/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
-echo "Building on macOS $(sw_vers -productVersion) arm64 with Qt $qt_version"
+echo "Building on macOS $(sw_vers -productVersion) arm64 with Qt 6"
 brew list --versions qt ffmpeg libusb libxml2 dylibbundler create-dmg
 
 rsync -a --exclude=.git --exclude=autom4te.cache "$vitamtp_source/" "$vitamtp_work_source/"
@@ -116,21 +103,13 @@ rsync -a --exclude=.git --exclude=autom4te.cache "$vitamtp_source/" "$vitamtp_wo
     make install
 )
 
-"$lrelease_bin" "$qcma_source/qcma.pro"
-qmake_args=(
-    "$qcma_source/qcma.pro"
-    'CONFIG+=release'
-    'QMAKE_APPLE_DEVICE_ARCHS=arm64'
-    'QMAKE_MACOSX_DEPLOYMENT_TARGET=13.0'
-)
-[[ $ffmpeg == enabled ]] || qmake_args+=('CONFIG+=DISABLE_FFMPEG')
-(
-    cd "$qcma_build"
-    "$qmake_bin" "${qmake_args[@]}"
-    make -j"$(sysctl -n hw.logicalcpu)"
-)
+cmake -S "$qcma_source" -B "$qcma_build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 \
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DBUILD_TESTING=ON
+cmake --build "$qcma_build"
+ctest --test-dir "$qcma_build" --output-on-failure
 
-built_app=$(find "$qcma_build/gui" -maxdepth 3 -type d -iname 'qcma.app' -print -quit)
+built_app=$(find "$qcma_build" -maxdepth 4 -type d -iname 'qcma.app' -print -quit)
 [[ -n $built_app ]] || { echo 'Qcma.app was not produced.' >&2; exit 1; }
 ditto "$built_app" "$app"
 

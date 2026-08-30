@@ -3,16 +3,11 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export QT_SELECT=qt6
-export QMAKE=qmake6
-
 %:
-	dh $@ --buildsystem=qmake
+	dh $@ --buildsystem=cmake+ninja --builddirectory=build
 
 override_dh_auto_configure:
-	/usr/lib/qt6/bin/lrelease common/resources/translations/qcma_*.ts
-	qmake6 qcma.pro PREFIX=/usr
+	dh_auto_configure --buildsystem=cmake+ninja -- -DBUILD_TESTING=ON
 
-override_dh_auto_clean:
-	dh_auto_clean
-	rm -f src/translations/*.qm
+override_dh_auto_test:
+	ctest --test-dir build --output-on-failure

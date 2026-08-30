@@ -39,12 +39,14 @@ for ($pass = 1; $pass -le 2; $pass++) {
 
 $packages = @(
     'base-devel'
+    'cmake'
     'git'
     'autoconf'
     'automake'
     'gettext-devel'
     'libtool'
     'make'
+    'ninja'
     'pkgconf'
     'mingw-w64-ucrt-x86_64-toolchain'
     'mingw-w64-ucrt-x86_64-ffmpeg'

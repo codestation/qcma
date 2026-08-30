@@ -10,10 +10,12 @@ Build-Depends:
  libavcodec-dev,
  libavformat-dev,
  libswscale-dev,
- qmake6,
+ cmake (>= 3.21),
+ ninja-build,
  qt6-base-dev,
  qt6-base-dev-tools,
  qt6-l10n-tools,
+ qt6-tools-dev,
  libnotify-dev,
  pkg-config,
  libvitamtp-dev (>= 2.5.11)

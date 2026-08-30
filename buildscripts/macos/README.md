@@ -20,7 +20,6 @@ expects VitaMTP in a sibling `vitamtp` checkout and writes the DMG to
 ./buildscripts/macos/build.sh \
   --vitamtp-source /path/to/vitamtp \
   --output-dir /path/to/artifacts \
-  --disable-ffmpeg
 ```
 
 `macdeployqt` deploys Qt frameworks and plugins. `dylibbundler` adds the

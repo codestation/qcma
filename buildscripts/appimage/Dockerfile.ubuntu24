@@ -8,10 +8,10 @@ ARG LINUXDEPLOY_QT_VERSION=1-alpha-20250213-1
 ARG LINUXDEPLOY_QT_SHA256=15106be885c1c48a021198e7e1e9a48ce9d02a86dd0a1848f00bdbf3c1c92724
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    appstream autoconf automake build-essential ca-certificates curl desktop-file-utils file gettext git \
+    appstream autoconf automake build-essential ca-certificates cmake ninja-build curl desktop-file-utils file gettext git \
     libavcodec-dev libavformat-dev libavutil-dev libfuse2t64 libnotify-dev \
     libswscale-dev libtool libusb-1.0-0-dev libxml2-dev pkg-config \
-    qt6-base-dev qt6-tools-dev-tools \
+    qt6-base-dev qt6-tools-dev qt6-tools-dev-tools \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /opt/linuxdeploy \

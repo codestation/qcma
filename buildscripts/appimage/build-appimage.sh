@@ -2,7 +2,7 @@
 set -eu
 
 vitamtp_source=${1:-}
-output=${2:-qcma-0.5.2-x86_64.AppImage}
+output=${2:-qcma-0.5.3-x86_64.AppImage}
 linuxdeploy=${LINUXDEPLOY:-/opt/linuxdeploy/linuxdeploy-x86_64.AppImage}
 qt_plugin=${LINUXDEPLOY_PLUGIN_QT:-/opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage}
 if [ -z "$vitamtp_source" ]; then
@@ -32,16 +32,11 @@ make -j"$(nproc)"
 make install
 
 cd "$work_dir/qcma"
-if command -v lrelease6 >/dev/null 2>&1; then
-    lrelease6 common/resources/translations/*.ts
-elif [ -x /usr/lib/qt6/bin/lrelease ]; then
-    /usr/lib/qt6/bin/lrelease common/resources/translations/*.ts
-else
-    lrelease common/resources/translations/*.ts
-fi
-PKG_CONFIG_PATH="$prefix/lib/pkgconfig" qmake6 PREFIX=/usr CONFIG+=QT5_SUFFIX qcma.pro
-PKG_CONFIG_PATH="$prefix/lib/pkgconfig" make -j"$(nproc)"
-make install INSTALL_ROOT="$appdir"
+PKG_CONFIG_PATH="$prefix/lib/pkgconfig" cmake -S . -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON
+PKG_CONFIG_PATH="$prefix/lib/pkgconfig" cmake --build build
+PKG_CONFIG_PATH="$prefix/lib/pkgconfig" ctest --test-dir build --output-on-failure
+DESTDIR="$appdir" cmake --install build
 
 cp -a "$prefix/lib/libvitamtp.so."* "$appdir/usr/lib/"
 usb_libdir=$(pkg-config --variable=libdir libusb-1.0)
@@ -57,7 +52,7 @@ test -x "$qt_plugin"
 tool_path=$(dirname "$qt_plugin")
 
 cd "$work_dir"
-PATH="$tool_path:$PATH" APPIMAGE_EXTRACT_AND_RUN=1 QMAKE=qmake6 \
+PATH="$tool_path:$PATH" APPIMAGE_EXTRACT_AND_RUN=1 \
 LD_LIBRARY_PATH="$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
 LDAI_OUTPUT="$output" "$linuxdeploy" --appdir "$appdir" \
     --desktop-file "$appdir/usr/share/applications/dev.megpoid.Qcma.desktop" \
@@ -65,4 +60,5 @@ LDAI_OUTPUT="$output" "$linuxdeploy" --appdir "$appdir" \
     --plugin qt --output appimage
 
 test -x "$output"
+APPIMAGE_EXTRACT_AND_RUN=1 "$output" --version | grep -Fx 'qcma 0.5.3'
 echo "Created $output"

@@ -2,7 +2,7 @@
 # qcma spec file
 # 
 
-%define _version 0.5.2
+%define _version 0.5.3
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
 %define _verprefix %{_version}
@@ -14,10 +14,14 @@
 %define _pkgconfig pkgconfig
 %define _qt6linguist qt6-linguist
 %define _qt6basedevel qt6-qtbase-devel
+%define _qt6toolsdevel qt6-qttools-devel
+%define _ninja ninja-build
 %else
 %define _pkgconfig pkg-config
 %define _qt6linguist  qt6-tools-linguist
 %define _qt6basedevel qt6-base-devel
+%define _qt6toolsdevel qt6-linguist-devel
+%define _ninja ninja
 %endif
 
 Name:           qcma
@@ -30,11 +34,14 @@ Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%
 Group:          Productivity/File utilities
 Requires:       libvitamtp5 >= 2.5.11
 BuildRequires:  gcc-c++
+BuildRequires:  cmake >= 3.21
+BuildRequires:  %{_ninja}
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
 BuildRequires:  libvitamtp-devel
 BuildRequires:  %{_qt6linguist}
 BuildRequires:  %{_qt6basedevel}
+BuildRequires:  %{_qt6toolsdevel}
 BuildRequires:  desktop-file-utils
 %if 0%{?fedora}
 BuildRequires:  ffmpeg-free-devel
@@ -54,17 +61,21 @@ is meant to be compatible with Linux, Windows and MAC OS X.
 %autosetup -n %{name}-%{version}
 
 %build
+%cmake -G Ninja -DBUILD_TESTING=ON
 %if 0%{?fedora}
-lrelease-qt6 common/resources/translations/*.ts
-%{qmake_qt6} PREFIX=%{_prefix} qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+%cmake_build
+%ctest
 %else
-lrelease6 common/resources/translations/*.ts
-%{qmake6} PREFIX=%{_prefix} qcma.pro CONFIG+="QT5_SUFFIX" QMAKE_CXXFLAGS="%{optflags}" QMAKE_CFLAGS="%{optflags}"
+cmake --build . --parallel %{_smp_build_ncpus}
+ctest --test-dir . --output-on-failure
 %endif
-%make_build
 
 %install
-%make_install INSTALL_ROOT=%{buildroot}
+%if 0%{?fedora}
+%cmake_install
+%else
+DESTDIR=%{buildroot} cmake --install build
+%endif
 desktop-file-validate %{buildroot}%{_datadir}/applications/qcma.desktop
 
 %files

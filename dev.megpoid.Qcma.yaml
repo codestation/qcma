@@ -50,19 +50,16 @@ modules:
         tag: v2.5.11
 
   - name: qcma
-    buildsystem: qmake
+    buildsystem: cmake-ninja
     build-options:
       prepend-pkg-config-path: /app/lib/pkgconfig:/app/lib64/pkgconfig
     config-opts:
-      - PREFIX=/app
-      - CONFIG+=QT5_SUFFIX
+      - -DBUILD_TESTING=ON
     sources:
       - type: git
         url: https://github.com/codestation/qcma.git
-        tag: v0.5.2
-      - type: shell
-        commands:
-          - lrelease common/resources/translations/*.ts
+        tag: v0.5.3
     post-install:
+      - ctest --test-dir . --output-on-failure
       - install -Dm644 dev.megpoid.Qcma.metainfo.xml /app/share/metainfo/dev.megpoid.Qcma.metainfo.xml
       - install -Dm644 COPYING /app/share/licenses/qcma/COPYING

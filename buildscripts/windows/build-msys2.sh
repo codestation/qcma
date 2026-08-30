@@ -2,23 +2,16 @@
 
 set -euo pipefail
 
-if [[ $# -ne 4 ]]; then
-    echo "usage: $0 <qcma-source> <vitamtp-source> <output> <enabled|disabled>" >&2
+if [[ $# -ne 3 ]]; then
+    echo "usage: $0 <qcma-source> <vitamtp-source> <output>" >&2
     exit 2
 fi
 
 qcma_source=$1
 vitamtp_source=$2
 output=$3
-ffmpeg_mode=$4
-
-if [[ $ffmpeg_mode != enabled && $ffmpeg_mode != disabled ]]; then
-    echo "invalid FFmpeg mode: $ffmpeg_mode" >&2
-    exit 2
-fi
-
 export PATH="/ucrt64/bin:/usr/bin:$PATH"
-for tool in autoreconf make pkg-config ntldd objdump; do
+for tool in autoreconf cmake ninja pkg-config ntldd objdump; do
     command -v "$tool" >/dev/null || { echo "missing build tool: $tool" >&2; exit 1; }
 done
 
@@ -33,12 +26,7 @@ find_tool() {
     return 1
 }
 
-qmake_bin=$(find_tool qmake6 qmake-qt6 qmake) || { echo 'Qt 6 qmake was not found' >&2; exit 1; }
-lrelease_bin=$(find_tool lrelease6 lrelease-qt6 lrelease) || { echo 'Qt 6 lrelease was not found' >&2; exit 1; }
 windeployqt_bin=$(find_tool windeployqt6 windeployqt-qt6 windeployqt) || { echo 'windeployqt was not found' >&2; exit 1; }
-
-qt_version=$($qmake_bin -query QT_VERSION)
-[[ $qt_version == 6.* ]] || { echo "Qt 6 is required, found $qt_version" >&2; exit 1; }
 
 work=$output/.work
 vitamtp_build=$work/vitamtp-build
@@ -53,12 +41,12 @@ mkdir -p -- "$vitamtp_build" "$vitamtp_work_source" "$vitamtp_prefix" "$qcma_bui
 version=$(git -C "$qcma_source" describe --tags --always --dirty 2>/dev/null || true)
 version=${version#v}
 if [[ -z $version ]]; then
-    version=$(sed -n 's/^VERSION[[:space:]]*=[[:space:]]*//p' "$qcma_source/qcma.pro" | head -n1)
+    version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$qcma_source/CMakeLists.txt")
 fi
 version=${version//\//-}
 printf '%s\n' "$version" > "$work/version.txt"
 
-echo "Building with MSYS2 $(uname -sr), Qt $qt_version and $($qmake_bin -query QMAKE_XSPEC)"
+echo "Building with MSYS2 $(uname -sr) and Qt 6"
 pacman -Q | grep -E '^(mingw-w64-ucrt-x86_64-(qt6|ffmpeg|libusb|libxml2)|gcc|make) ' || true
 
 cp -a "$vitamtp_source/." "$vitamtp_work_source/"
@@ -78,19 +66,12 @@ rm -rf -- "$vitamtp_work_source/.git" "$vitamtp_work_source/autom4te.cache"
 )
 
 export PKG_CONFIG_PATH="$vitamtp_prefix/lib/pkgconfig:/ucrt64/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-"$lrelease_bin" "$qcma_source/qcma.pro"
+cmake -S "$qcma_source" -B "$qcma_build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+cmake --build "$qcma_build"
+ctest --test-dir "$qcma_build" --output-on-failure
 
-qmake_args=("$qcma_source/qcma.pro" 'CONFIG+=release')
-if [[ $ffmpeg_mode == disabled ]]; then
-    qmake_args+=('CONFIG+=DISABLE_FFMPEG')
-fi
-(
-    cd "$qcma_build"
-    "$qmake_bin" "${qmake_args[@]}"
-    make -j"${NUMBER_OF_PROCESSORS:-2}"
-)
-
-qcma_exe=$(find "$qcma_build/gui" -type f -iname qcma.exe -print -quit)
+qcma_exe=$(find "$qcma_build" -type f -iname qcma.exe -print -quit)
 [[ -n $qcma_exe ]] || { echo 'qcma.exe was not produced' >&2; exit 1; }
 install -m755 "$qcma_exe" "$payload/qcma.exe"
 install -m644 "$qcma_source/COPYING" "$payload/COPYING.txt"

@@ -24,7 +24,8 @@ image="qcma-package-${target}-$(printf '%s' "$platform" | tr '/:' '--')"
 docker buildx build --platform "$platform" --load \
     --build-arg "HOST_UID=$(id -u)" --build-arg "HOST_GID=$(id -g)" \
     -t "$image" -f "$dockerfile" "$qcma_source"
-docker run --rm --platform "$platform" \
+docker run --rm --platform "$platform" --user 0:0 --env HOME=/root \
+    --env "BUILD_OUTPUT_UID=$(id -u)" --env "BUILD_OUTPUT_GID=$(id -g)" \
     -v "$qcma_source:/qcma:ro" \
     -v "$vitamtp_source:/vitamtp:ro" \
     -v "$output:/out" \
