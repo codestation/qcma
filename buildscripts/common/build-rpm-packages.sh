@@ -19,7 +19,7 @@ mkdir -p "$topdir"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS} "$output"
 build_user=$(getent passwd "${BUILD_OUTPUT_UID:?}" | cut -d: -f1)
 [ -n "$build_user" ] || { echo "No build user exists for UID $BUILD_OUTPUT_UID" >&2; exit 1; }
 
-vitamtp_version=$(sed -n 's/^AC_INIT(\[vitamtp\], \[\([^]]*\)\].*/\1/p' "$vitamtp_source/configure.ac")
+vitamtp_version=$(sed -n 's/^project(VitaMTP VERSION \([^ ]*\).*/\1/p' "$vitamtp_source/CMakeLists.txt")
 qcma_version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$qcma_source/CMakeLists.txt")
 
 runuser -u "$build_user" -- git -C "$vitamtp_source" archive --format=tar --prefix="vitamtp-${vitamtp_version}/" HEAD |

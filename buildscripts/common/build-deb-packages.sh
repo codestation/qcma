@@ -35,7 +35,7 @@ build_source() {
     dpkg-buildpackage --no-sign -b
 }
 
-vitamtp_version=$(sed -n 's/^AC_INIT(\[vitamtp\], \[\([^]]*\)\].*/\1/p' "$vitamtp_source/configure.ac")
+vitamtp_version=$(sed -n 's/^project(VitaMTP VERSION \([^ ]*\).*/\1/p' "$vitamtp_source/CMakeLists.txt")
 qcma_version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$qcma_source/CMakeLists.txt")
 
 build_source vitamtp "$vitamtp_version" "$vitamtp_source"

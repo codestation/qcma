@@ -34,12 +34,9 @@ modules:
       - install -Dm644 COPYING /app/share/licenses/libusb/COPYING
 
   - name: libvitamtp
-    buildsystem: simple
-    build-commands:
-      - ./autogen.sh
-      - ./configure --prefix=/app --disable-static
-      - make -j${FLATPAK_BUILDER_N_JOBS}
-      - make install
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_TESTING=OFF
     cleanup:
       - /lib/*.la
       - /lib/pkgconfig
@@ -47,7 +44,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/codestation/vitamtp.git
-        tag: v2.5.11
+        tag: v2.5.12
 
   - name: qcma
     buildsystem: cmake-ninja

@@ -41,7 +41,7 @@ md5=$(md5sum "$tmpdir/$archive" | cut -d' ' -f1)
 
 sed -e "s/^Version:.*/Version: $version/" \
     -e "s/^DEBTRANSFORM-TAR:.*/DEBTRANSFORM-TAR: qcma-$version.tar.gz/" \
-    -e "s/^Build-Depends:.*libvitamtp-dev (>= [^)]*)/Build-Depends: debhelper-compat (= 13), cmake (>= 3.21), ninja-build, libavcodec-dev, libavformat-dev, libswscale-dev, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, qt6-tools-dev, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.11)/" \
+    -e "s/^Build-Depends:.*libvitamtp-dev (>= [^)]*)/Build-Depends: debhelper-compat (= 13), cmake (>= 3.21), ninja-build, libavcodec-dev, libavformat-dev, libswscale-dev, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, qt6-tools-dev, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.12)/" \
     buildscripts/debian/qcma.dsc.in >"$tmpdir/qcma.dsc"
 cat >>"$tmpdir/qcma.dsc" <<EOF
 Checksums-Sha1:

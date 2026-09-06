@@ -44,13 +44,13 @@ done
 
 [[ $(uname -s) == Darwin ]] || { echo 'This script must run on macOS.' >&2; exit 1; }
 [[ $(uname -m) == arm64 ]] || { echo 'This build supports Apple Silicon (arm64) only.' >&2; exit 1; }
-[[ -n $vitamtp_source && -f $vitamtp_source/configure.ac ]] || {
+[[ -n $vitamtp_source && -f $vitamtp_source/CMakeLists.txt ]] || {
     echo 'VitaMTP was not found. Place it beside qcma or pass --vitamtp-source.' >&2
     exit 1
 }
 command -v brew >/dev/null 2>&1 || { echo 'Homebrew is missing; run prepare.sh first.' >&2; exit 1; }
 
-for tool in autoreconf cmake create-dmg dylibbundler ninja pkg-config; do
+for tool in cmake create-dmg dylibbundler ninja pkg-config; do
     command -v "$tool" >/dev/null 2>&1 || { echo "missing build tool: $tool; run prepare.sh" >&2; exit 1; }
 done
 
@@ -61,14 +61,13 @@ macdeployqt_bin=$qt_prefix/bin/macdeployqt
 mkdir -p -- "$output"
 work=$output/.work
 vitamtp_build=$work/vitamtp-build
-vitamtp_work_source=$work/vitamtp-source
 vitamtp_prefix=$work/vitamtp-prefix
 qcma_build=$work/qcma-build
 stage=$work/dmg-root
 app=$stage/Qcma.app
 
-rm -rf -- "$vitamtp_build" "$vitamtp_work_source" "$vitamtp_prefix" "$qcma_build" "$stage"
-mkdir -p -- "$vitamtp_build" "$vitamtp_work_source" "$vitamtp_prefix" "$qcma_build" "$stage"
+rm -rf -- "$vitamtp_build" "$vitamtp_prefix" "$qcma_build" "$stage"
+mkdir -p -- "$vitamtp_build" "$vitamtp_prefix" "$qcma_build" "$stage"
 
 version=$(git -C "$qcma_source" describe --tags --always --dirty 2>/dev/null || true)
 version=${version#v}
@@ -78,34 +77,27 @@ fi
 version=${version//\//-}
 dmg=$output/Qcma-$version-macos-arm64.dmg
 
-gettext_prefix=$(brew --prefix gettext)
-libtool_prefix=$(brew --prefix libtool)
 libusb_prefix=$(brew --prefix libusb)
 libxml2_prefix=$(brew --prefix libxml2)
 ffmpeg_prefix=$(brew --prefix ffmpeg)
 
-export PATH="$qt_prefix/bin:$gettext_prefix/bin:$libtool_prefix/bin:$PATH"
+export PATH="$qt_prefix/bin:$PATH"
 export MACOSX_DEPLOYMENT_TARGET=13.0
 export PKG_CONFIG_PATH="$vitamtp_prefix/lib/pkgconfig:$libusb_prefix/lib/pkgconfig:$libxml2_prefix/lib/pkgconfig:$ffmpeg_prefix/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
 echo "Building on macOS $(sw_vers -productVersion) arm64 with Qt 6"
 brew list --versions qt ffmpeg libusb libxml2 dylibbundler create-dmg
 
-rsync -a --exclude=.git --exclude=autom4te.cache "$vitamtp_source/" "$vitamtp_work_source/"
-(
-    cd "$vitamtp_work_source"
-    autoreconf -fi
-)
-(
-    cd "$vitamtp_build"
-    "$vitamtp_work_source/configure" --prefix="$vitamtp_prefix" --disable-static
-    make -j"$(sysctl -n hw.logicalcpu)"
-    make install
-)
+cmake -S "$vitamtp_source" -B "$vitamtp_build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$vitamtp_prefix" \
+    -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DBUILD_TESTING=ON
+cmake --build "$vitamtp_build"
+ctest --test-dir "$vitamtp_build" --output-on-failure
+cmake --install "$vitamtp_build"
 
 cmake -S "$qcma_source" -B "$qcma_build" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 \
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DBUILD_TESTING=ON
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DCMAKE_PREFIX_PATH="$vitamtp_prefix" -DBUILD_TESTING=ON
 cmake --build "$qcma_build"
 ctest --test-dir "$qcma_build" --output-on-failure
 

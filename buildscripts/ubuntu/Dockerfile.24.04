@@ -3,15 +3,36 @@ FROM ubuntu:24.04
 ARG HOST_UID=1000
 ARG HOST_GID=1000
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    autoconf automake build-essential cmake ninja-build debhelper devscripts dh-autoreconf dpkg-dev fakeroot file gettext git lintian \
-    libavcodec-dev libavformat-dev libavutil-dev libnotify-dev libswscale-dev libtool \
-    libusb-1.0-0-dev libxml2-dev pkg-config qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-tools-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && group_name="$(getent group "$HOST_GID" | cut -d: -f1)" \
-    && if [ -z "$group_name" ]; then groupadd --gid "$HOST_GID" builder; group_name=builder; fi \
-    && user_name="$(getent passwd "$HOST_UID" | cut -d: -f1)" \
-    && if [ -z "$user_name" ]; then useradd --uid "$HOST_UID" --gid "$group_name" --home-dir /home/builder --create-home builder; else mkdir -p /home/builder; chown "$HOST_UID:$HOST_GID" /home/builder; fi
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        ninja-build \
+        debhelper \
+        devscripts \
+        dpkg-dev \
+        fakeroot \
+        file \
+        git \
+        lintian \
+        libavcodec-dev \
+        libavformat-dev \
+        libavutil-dev \
+        libnotify-dev \
+        libswscale-dev \
+        libusb-1.0-0-dev \
+        libxml2-dev \
+        pkg-config \
+        qt6-base-dev \
+        qt6-base-dev-tools \
+        qt6-l10n-tools \
+        qt6-tools-dev; \
+    rm -rf /var/lib/apt/lists/*; \
+    group_name="$(getent group "$HOST_GID" | cut -d: -f1)"; \
+    if [ -z "$group_name" ]; then groupadd --gid "$HOST_GID" builder; group_name=builder; fi; \
+    user_name="$(getent passwd "$HOST_UID" | cut -d: -f1)"; \
+    if [ -z "$user_name" ]; then useradd --uid "$HOST_UID" --gid "$group_name" --home-dir /home/builder --create-home builder; else mkdir -p /home/builder; chown "$HOST_UID:$HOST_GID" /home/builder; fi
 
 USER ${HOST_UID}:${HOST_GID}
 ENV HOME=/home/builder

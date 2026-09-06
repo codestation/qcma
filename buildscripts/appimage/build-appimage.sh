@@ -25,14 +25,14 @@ prefix="$work_dir/prefix"
 appdir="$work_dir/AppDir"
 mkdir -p "$prefix" "$appdir/usr/lib" "$appdir/usr/share/metainfo"
 
-cd "$work_dir/vitamtp"
-./autogen.sh
-./configure --prefix="$prefix" --disable-static
-make -j"$(nproc)"
-make install
+cmake -S "$work_dir/vitamtp" -B "$work_dir/vitamtp-build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$prefix" -DBUILD_TESTING=ON
+cmake --build "$work_dir/vitamtp-build"
+ctest --test-dir "$work_dir/vitamtp-build" --output-on-failure
+cmake --install "$work_dir/vitamtp-build"
 
 cd "$work_dir/qcma"
-PKG_CONFIG_PATH="$prefix/lib/pkgconfig" cmake -S . -B build -G Ninja \
+cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH="$prefix" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON
 PKG_CONFIG_PATH="$prefix/lib/pkgconfig" cmake --build build
 PKG_CONFIG_PATH="$prefix/lib/pkgconfig" ctest --test-dir build --output-on-failure

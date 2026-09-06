@@ -7,30 +7,51 @@ ARG LINUXDEPLOY_SHA256=c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce
 ARG LINUXDEPLOY_QT_VERSION=1-alpha-20250213-1
 ARG LINUXDEPLOY_QT_SHA256=15106be885c1c48a021198e7e1e9a48ce9d02a86dd0a1848f00bdbf3c1c92724
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    appstream autoconf automake build-essential ca-certificates cmake ninja-build curl desktop-file-utils file gettext git \
-    libavcodec-dev libavformat-dev libavutil-dev libfuse2t64 libnotify-dev \
-    libswscale-dev libtool libusb-1.0-0-dev libxml2-dev pkg-config \
-    qt6-base-dev qt6-tools-dev qt6-tools-dev-tools \
-    && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        appstream \
+        build-essential \
+        ca-certificates \
+        cmake \
+        ninja-build \
+        curl \
+        desktop-file-utils \
+        file \
+        git \
+        libavcodec-dev \
+        libavformat-dev \
+        libavutil-dev \
+        libfuse2t64 \
+        libnotify-dev \
+        libswscale-dev \
+        libusb-1.0-0-dev \
+        libxml2-dev \
+        pkg-config \
+        qt6-base-dev \
+        qt6-tools-dev \
+        qt6-tools-dev-tools; \
+    rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/linuxdeploy \
-    && curl -fsSL "https://github.com/linuxdeploy/linuxdeploy/releases/download/${LINUXDEPLOY_VERSION}/linuxdeploy-x86_64.AppImage" \
-        -o /opt/linuxdeploy/linuxdeploy-x86_64.AppImage \
-    && echo "${LINUXDEPLOY_SHA256}  /opt/linuxdeploy/linuxdeploy-x86_64.AppImage" | sha256sum -c - \
-    && curl -fsSL "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/${LINUXDEPLOY_QT_VERSION}/linuxdeploy-plugin-qt-x86_64.AppImage" \
-        -o /opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage \
-    && echo "${LINUXDEPLOY_QT_SHA256}  /opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage" | sha256sum -c - \
-    && chmod 0755 /opt/linuxdeploy/*.AppImage
+RUN set -eux; \
+    mkdir -p /opt/linuxdeploy; \
+    curl -fsSL "https://github.com/linuxdeploy/linuxdeploy/releases/download/${LINUXDEPLOY_VERSION}/linuxdeploy-x86_64.AppImage" \
+        -o /opt/linuxdeploy/linuxdeploy-x86_64.AppImage; \
+    echo "${LINUXDEPLOY_SHA256}  /opt/linuxdeploy/linuxdeploy-x86_64.AppImage" | sha256sum -c -; \
+    curl -fsSL "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/${LINUXDEPLOY_QT_VERSION}/linuxdeploy-plugin-qt-x86_64.AppImage" \
+        -o /opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage; \
+    echo "${LINUXDEPLOY_QT_SHA256}  /opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage" | sha256sum -c -; \
+    chmod 0755 /opt/linuxdeploy/*.AppImage
 
 ENV APPIMAGE_EXTRACT_AND_RUN=1
 ENV LINUXDEPLOY=/opt/linuxdeploy/linuxdeploy-x86_64.AppImage
 ENV LINUXDEPLOY_PLUGIN_QT=/opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage
 
-RUN group_name="$(getent group "$HOST_GID" | cut -d: -f1)" \
-    && if [ -z "$group_name" ]; then groupadd --gid "$HOST_GID" builder; group_name=builder; fi \
-    && user_name="$(getent passwd "$HOST_UID" | cut -d: -f1)" \
-    && if [ -z "$user_name" ]; then useradd --uid "$HOST_UID" --gid "$group_name" --home-dir /home/builder --create-home builder; else mkdir -p /home/builder; chown "$HOST_UID:$HOST_GID" /home/builder; fi
+RUN set -eux; \
+    group_name="$(getent group "$HOST_GID" | cut -d: -f1)"; \
+    if [ -z "$group_name" ]; then groupadd --gid "$HOST_GID" builder; group_name=builder; fi; \
+    user_name="$(getent passwd "$HOST_UID" | cut -d: -f1)"; \
+    if [ -z "$user_name" ]; then useradd --uid "$HOST_UID" --gid "$group_name" --home-dir /home/builder --create-home builder; else mkdir -p /home/builder; chown "$HOST_UID:$HOST_GID" /home/builder; fi
 
 USER ${HOST_UID}:${HOST_GID}
 ENV HOME=/home/builder

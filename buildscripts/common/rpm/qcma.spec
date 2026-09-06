@@ -32,13 +32,13 @@ Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
-Requires:       libvitamtp5 >= 2.5.11
+Requires:       libvitamtp5 >= 2.5.12
 BuildRequires:  gcc-c++
 BuildRequires:  cmake >= 3.21
 BuildRequires:  %{_ninja}
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
-BuildRequires:  libvitamtp-devel
+BuildRequires:  libvitamtp-devel >= 2.5.12
 BuildRequires:  %{_qt6linguist}
 BuildRequires:  %{_qt6basedevel}
 BuildRequires:  %{_qt6toolsdevel}

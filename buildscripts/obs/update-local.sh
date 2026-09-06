@@ -6,7 +6,7 @@ vitamtp_source=${VITAMTP_SOURCE:-"$(dirname "$qcma_source")/vitamtp"}
 obs_checkout=${1:-${OBS_CHECKOUT:-"$HOME/obs/home:codestation"}}
 
 qcma_version=$(sed -n 's/^project(qcma VERSION \([^ ]*\).*/\1/p' "$qcma_source/CMakeLists.txt")
-vitamtp_version=$(sed -n 's/^AC_INIT(\[vitamtp\], \[\([^]]*\)\].*/\1/p' "$vitamtp_source/configure.ac")
+vitamtp_version=$(sed -n 's/^project(VitaMTP VERSION \([^ ]*\).*/\1/p' "$vitamtp_source/CMakeLists.txt")
 
 test -d "$obs_checkout/qcma/.osc"
 test -d "$obs_checkout/vitamtp/.osc"

@@ -15,7 +15,12 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network Sql Widgets LinguistTools)
-find_package(PkgConfig REQUIRED)
+find_package(VitaMTP 2.5.12 CONFIG REQUIRED)
+if(WIN32)
+    find_package(FFMPEG REQUIRED)
+else()
+    find_package(PkgConfig REQUIRED)
+endif()
 
 set(QCMA_VERSION "${PROJECT_VERSION}")
 if(QCMA_INCLUDE_GIT_REVISION)
@@ -30,9 +35,6 @@ endif()
 add_compile_definitions(QCMA_VER="${QCMA_VERSION}" __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 if(UNIX AND NOT APPLE)
     add_compile_definitions(_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE)
-endif()
-if(MINGW)
-    add_compile_options(-mno-ms-bitfields)
 endif()
 
 set(QCMA_TS_FILES

@@ -7,7 +7,7 @@ Each directory is an entry point for one package family or operating system:
 - `fedora`: Fedora 44 x86_64 and aarch64 RPMs.
 - `opensuse`: openSUSE Tumbleweed x86_64 RPMs.
 - `appimage`: self-contained x86_64 AppImage build.
-- `windows`: native Windows x86_64 installer using MSYS2 UCRT64, Qt 6 and NSIS.
+- `windows`: native Windows x64 installer using Visual Studio 2022, vcpkg, Qt 6 for MSVC and NSIS.
 - `macos`: native macOS 13+ Apple Silicon DMG using Homebrew and Qt 6.
 - `obs`: reproducible source preparation for the local OBS checkout.
 - `common`: shared implementation used by distribution wrappers.

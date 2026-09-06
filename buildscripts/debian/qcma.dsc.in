@@ -11,7 +11,7 @@ Vcs-Git: https://github.com/codestation/qcma.git
 DEBTRANSFORM-RELEASE: 1
 DEBTRANSFORM-TAR: qcma-0.5.3.tar.gz
 DEBTRANSFORM-FILES-TAR: debian.tar.xz
-Build-Depends: debhelper-compat (= 13), cmake (>= 3.21), ninja-build, libavcodec-dev, libavformat-dev, libswscale-dev, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, qt6-tools-dev, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.11)
+Build-Depends: debhelper-compat (= 13), cmake (>= 3.21), ninja-build, libavcodec-dev, libavformat-dev, libswscale-dev, qt6-base-dev, qt6-base-dev-tools, qt6-l10n-tools, qt6-tools-dev, libnotify-dev, pkg-config, libvitamtp-dev (>= 2.5.12)
 Package-List:
  qcma deb utils optional arch=any
  qcma-cli deb utils optional arch=any
