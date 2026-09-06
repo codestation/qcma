@@ -1,7 +1,0 @@
-Optional driver installers generated outside this repository go here:
-
-QcmaDriver_winusb.exe
-QcmaDriver_libusb0.exe
-QcmaDriver_libusbk.exe
-
-See ../README.md for the driver-free build behavior.

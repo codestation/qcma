@@ -1,0 +1,9 @@
+Qcma bundles qcma-winusb.exe, built without modifications from libwdi's
+examples/wdi-simple.c at version 1.5.1.
+
+Source code: https://github.com/pbatard/libwdi/tree/v1.5.1
+License: GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later).
+
+The corresponding source checkout is obtained during the Qcma Windows build:
+
+  git clone --branch v1.5.1 --depth 1 https://github.com/pbatard/libwdi ..\libwdi

@@ -1,7 +1,6 @@
 Unicode true
 
 !include "MUI2.nsh"
-!include "x64.nsh"
 
 !ifndef PRODUCT_VERSION
   !error "PRODUCT_VERSION must be supplied by build.ps1"
@@ -22,7 +21,6 @@ Unicode true
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${OUTPUT_FILE}"
 InstallDir "$PROGRAMFILES64\${PRODUCT_NAME}"
-InstallDirRegKey HKLM "${UNINSTALL_KEY}" "InstallLocation"
 RequestExecutionLevel admin
 SetCompressor /SOLID lzma
 SetRegView 64
@@ -53,11 +51,21 @@ VIAddVersionKey /LANG=1033 "LegalCopyright" "GPL-3.0-or-later"
 !insertmacro MUI_LANGUAGE "Japanese"
 !insertmacro MUI_LANGUAGE "Italian"
 
+Function .onInit
+  SetRegView 64
+  ReadRegStr $0 HKLM "${UNINSTALL_KEY}" "InstallLocation"
+  StrCmp $0 "" +2
+  StrCpy $INSTDIR $0
+FunctionEnd
+
 Section "Qcma (required)" SecQcma
   SectionIn RO
   SetShellVarContext all
   SetOutPath "$INSTDIR"
   File /r "${PAYLOAD_DIR}\*"
+  FileOpen $0 "$INSTDIR\.qcma-install" w
+  FileWrite $0 "${PRODUCT_NAME}$\r$\n"
+  FileClose $0
 
   WriteUninstaller "$INSTDIR\uninstall.exe"
   CreateDirectory "$SMPROGRAMS\Qcma"
@@ -76,42 +84,29 @@ Section "Qcma (required)" SecQcma
   WriteRegDWORD HKLM "${UNINSTALL_KEY}" "NoRepair" 1
 SectionEnd
 
-!ifdef HAVE_DRIVER_WINUSB
-Section "WinUSB driver" SecWinUsb
-  SetOutPath "$INSTDIR\driver"
-  File "${DRIVER_DIR}\QcmaDriver_winusb.exe"
-  ExecWait '$"$INSTDIR\driver\QcmaDriver_winusb.exe$"' $0
+Section /o "Install PS Vita WinUSB driver" SecWinUsb
+  DetailPrint "Installing the PS Vita WinUSB driver..."
+  ExecWait '$"$INSTDIR\driver\qcma-winusb.exe$"' $0
   IntCmp $0 0 +2
   MessageBox MB_ICONEXCLAMATION "The WinUSB driver installer returned exit code $0."
 SectionEnd
-!endif
 
-!ifdef HAVE_DRIVER_LIBUSB0
-Section /o "libusb0 driver" SecLibusb0
-  SetOutPath "$INSTDIR\driver"
-  File "${DRIVER_DIR}\QcmaDriver_libusb0.exe"
-  ExecWait '$"$INSTDIR\driver\QcmaDriver_libusb0.exe$"' $0
-  IntCmp $0 0 +2
-  MessageBox MB_ICONEXCLAMATION "The libusb0 driver installer returned exit code $0."
-SectionEnd
-!endif
-
-!ifdef HAVE_DRIVER_LIBUSBK
-Section /o "libusbK driver" SecLibusbK
-  SetOutPath "$INSTDIR\driver"
-  File "${DRIVER_DIR}\QcmaDriver_libusbk.exe"
-  ExecWait '$"$INSTDIR\driver\QcmaDriver_libusbk.exe$"' $0
-  IntCmp $0 0 +2
-  MessageBox MB_ICONEXCLAMATION "The libusbK driver installer returned exit code $0."
-SectionEnd
-!endif
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecWinUsb} "Installs the PS Vita WinUSB driver. If the Vita is connected, Windows applies it immediately; otherwise it is applied when the Vita is connected. This creates a one-use local certificate so Windows can trust the driver package."
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section "Uninstall"
   SetShellVarContext all
   SetRegView 64
+  IfFileExists "$INSTDIR\.qcma-install" marker_found
+  MessageBox MB_ICONSTOP "Qcma's installation marker is missing. No files were removed."
+  Abort
+marker_found:
   Delete "$SMPROGRAMS\Qcma\Qcma.lnk"
   Delete "$SMPROGRAMS\Qcma\Uninstall Qcma.lnk"
   RMDir "$SMPROGRAMS\Qcma"
   DeleteRegKey HKLM "${UNINSTALL_KEY}"
+  Delete "$INSTDIR\.qcma-install"
+  SetOutPath "$TEMP"
   RMDir /r "$INSTDIR"
 SectionEnd
