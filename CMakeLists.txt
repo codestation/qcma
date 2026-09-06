@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(qcma VERSION 0.5.3 LANGUAGES CXX)
+project(qcma VERSION 0.5.4 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CTest)
@@ -52,9 +52,9 @@ endif()
 
 if(BUILD_TESTING)
     add_test(NAME qcma_version COMMAND qcma --version)
-    set_tests_properties(qcma_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma 0.5.3")
+    set_tests_properties(qcma_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma 0.5.4")
     if(TARGET qcma_cli)
         add_test(NAME qcma_cli_version COMMAND qcma_cli --version)
-        set_tests_properties(qcma_cli_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma_cli 0.5.3")
+        set_tests_properties(qcma_cli_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma_cli 0.5.4")
     endif()
 endif()
