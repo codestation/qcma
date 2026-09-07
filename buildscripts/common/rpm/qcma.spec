@@ -2,7 +2,7 @@
 # qcma spec file
 # 
 
-%define _version 0.5.4
+%define _version 0.5.5
 
 %if "%{_version}" == "testing" || "%{_version}" == "master"
 %define _verprefix %{_version}
@@ -32,13 +32,13 @@ Version:        %{_version}
 URL:            https://github.com/codestation/qcma
 Source:         https://github.com/codestation/qcma/archive/%{_verprefix}/qcma-%{_version}.tar.gz
 Group:          Productivity/File utilities
-Requires:       libvitamtp5 >= 2.5.12
+Requires:       libvitamtp5 >= 2.5.13
 BuildRequires:  gcc-c++
 BuildRequires:  cmake >= 3.21
 BuildRequires:  %{_ninja}
 BuildRequires:  %{_pkgconfig}
 BuildRequires:  libnotify-devel
-BuildRequires:  libvitamtp-devel >= 2.5.12
+BuildRequires:  libvitamtp-devel >= 2.5.13
 BuildRequires:  %{_qt6linguist}
 BuildRequires:  %{_qt6basedevel}
 BuildRequires:  %{_qt6toolsdevel}

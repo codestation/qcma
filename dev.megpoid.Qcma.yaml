@@ -44,7 +44,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/codestation/vitamtp.git
-        tag: v2.5.12
+        tag: v2.5.13
 
   - name: qcma
     buildsystem: cmake-ninja
@@ -55,7 +55,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/codestation/qcma.git
-        tag: v0.5.4
+        tag: v0.5.5
     post-install:
       - ctest --test-dir . --output-on-failure
       - install -Dm644 dev.megpoid.Qcma.metainfo.xml /app/share/metainfo/dev.megpoid.Qcma.metainfo.xml

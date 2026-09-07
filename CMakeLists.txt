@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(qcma VERSION 0.5.4 LANGUAGES CXX)
+project(qcma VERSION 0.5.5 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CTest)
@@ -15,7 +15,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network Sql Widgets LinguistTools)
-find_package(VitaMTP 2.5.12 CONFIG REQUIRED)
+find_package(VitaMTP 2.5.13 CONFIG REQUIRED)
 if(WIN32)
     find_package(FFMPEG REQUIRED)
 else()
@@ -52,9 +52,9 @@ endif()
 
 if(BUILD_TESTING)
     add_test(NAME qcma_version COMMAND qcma --version)
-    set_tests_properties(qcma_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma 0.5.4")
+    set_tests_properties(qcma_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma ${PROJECT_VERSION}")
     if(TARGET qcma_cli)
         add_test(NAME qcma_cli_version COMMAND qcma_cli --version)
-        set_tests_properties(qcma_cli_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma_cli 0.5.4")
+        set_tests_properties(qcma_cli_version PROPERTIES PASS_REGULAR_EXPRESSION "qcma_cli ${PROJECT_VERSION}")
     endif()
 endif()

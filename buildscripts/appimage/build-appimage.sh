@@ -2,7 +2,7 @@
 set -eu
 
 vitamtp_source=${1:-}
-output=${2:-qcma-0.5.4-x86_64.AppImage}
+output=${2:-qcma-0.5.5-x86_64.AppImage}
 linuxdeploy=${LINUXDEPLOY:-/opt/linuxdeploy/linuxdeploy-x86_64.AppImage}
 qt_plugin=${LINUXDEPLOY_PLUGIN_QT:-/opt/linuxdeploy/linuxdeploy-plugin-qt-x86_64.AppImage}
 if [ -z "$vitamtp_source" ]; then
@@ -60,5 +60,5 @@ LDAI_OUTPUT="$output" "$linuxdeploy" --appdir "$appdir" \
     --plugin qt --output appimage
 
 test -x "$output"
-APPIMAGE_EXTRACT_AND_RUN=1 "$output" --version | grep -Fx 'qcma 0.5.4'
+APPIMAGE_EXTRACT_AND_RUN=1 "$output" --version | grep -Fx 'qcma 0.5.5'
 echo "Created $output"
