@@ -23,11 +23,11 @@ OutFile "${OUTPUT_FILE}"
 InstallDir "$PROGRAMFILES64\${PRODUCT_NAME}"
 RequestExecutionLevel admin
 SetCompressor /SOLID lzma
-SetRegView 64
 
 VIProductVersion "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.0"
 VIAddVersionKey /LANG=1033 "ProductName" "${PRODUCT_NAME}"
 VIAddVersionKey /LANG=1033 "ProductVersion" "${PRODUCT_VERSION}"
+VIAddVersionKey /LANG=1033 "FileVersion" "${PRODUCT_VERSION}"
 VIAddVersionKey /LANG=1033 "CompanyName" "${PRODUCT_PUBLISHER}"
 VIAddVersionKey /LANG=1033 "FileDescription" "Qcma installer"
 VIAddVersionKey /LANG=1033 "LegalCopyright" "GPL-3.0-or-later"
@@ -60,6 +60,7 @@ FunctionEnd
 
 Section "Qcma (required)" SecQcma
   SectionIn RO
+  SetRegView 64
   SetShellVarContext all
   SetOutPath "$INSTDIR"
   File /r "${PAYLOAD_DIR}\*"
@@ -78,17 +79,28 @@ Section "Qcma (required)" SecQcma
   WriteRegStr HKLM "${UNINSTALL_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegStr HKLM "${UNINSTALL_KEY}" "URLInfoAbout" "${PRODUCT_URL}"
   WriteRegStr HKLM "${UNINSTALL_KEY}" "InstallLocation" "$INSTDIR"
-  WriteRegStr HKLM "${UNINSTALL_KEY}" "UninstallString" '$"$INSTDIR\uninstall.exe$"'
-  WriteRegStr HKLM "${UNINSTALL_KEY}" "QuietUninstallString" '$"$INSTDIR\uninstall.exe$" /S'
+  WriteRegStr HKLM "${UNINSTALL_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  WriteRegStr HKLM "${UNINSTALL_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
   WriteRegDWORD HKLM "${UNINSTALL_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${UNINSTALL_KEY}" "NoRepair" 1
 SectionEnd
 
-Section /o "Install PS Vita WinUSB driver" SecWinUsb
+Section "Install PS Vita WinUSB driver" SecWinUsb
   DetailPrint "Installing the PS Vita WinUSB driver..."
-  ExecWait '$"$INSTDIR\driver\qcma-winusb.exe$"' $0
-  IntCmp $0 0 +2
+  InitPluginsDir
+  CreateDirectory "$PLUGINSDIR\qcma-winusb"
+  nsExec::Exec '"$INSTDIR\driver\qcma-winusb.exe" remove'
+  Pop $0
+  StrCmp $0 "0" driver_old_removed
+  MessageBox MB_ICONSTOP "The previous PS Vita WinUSB driver could not be removed (exit code $0)."
+  Abort
+driver_old_removed:
+  nsExec::Exec '"$INSTDIR\driver\qcma-winusb.exe" install "$PLUGINSDIR\qcma-winusb"'
+  Pop $0
+  StrCmp $0 "0" driver_installed
   MessageBox MB_ICONEXCLAMATION "The WinUSB driver installer returned exit code $0."
+  Abort
+driver_installed:
 SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -102,6 +114,12 @@ Section "Uninstall"
   MessageBox MB_ICONSTOP "Qcma's installation marker is missing. No files were removed."
   Abort
 marker_found:
+  nsExec::Exec '"$INSTDIR\driver\qcma-winusb.exe" remove'
+  Pop $0
+  StrCmp $0 "0" driver_removed
+  MessageBox MB_ICONSTOP "The PS Vita WinUSB driver could not be removed (exit code $0). Qcma remains installed."
+  Abort
+driver_removed:
   Delete "$SMPROGRAMS\Qcma\Qcma.lnk"
   Delete "$SMPROGRAMS\Qcma\Uninstall Qcma.lnk"
   RMDir "$SMPROGRAMS\Qcma"

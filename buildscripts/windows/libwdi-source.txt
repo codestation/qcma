@@ -1,5 +1,7 @@
-Qcma bundles qcma-winusb.exe, built without modifications from libwdi's
-examples/wdi-simple.c at version 1.5.1.
+Qcma bundles qcma-winusb.exe, a fixed-purpose PS Vita installer built from
+buildscripts/windows/qcma-winusb.c and libwdi version 1.5.1. The helper uses
+libwdi to prepare and sign the driver package, then uses SetupAPI to obtain
+the exact published oemNN.inf name.
 
 Source code: https://github.com/pbatard/libwdi/tree/v1.5.1
 License: GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later).

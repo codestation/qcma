@@ -4,28 +4,43 @@ Qcma's supported Windows toolchain is Visual Studio 2022 (MSVC), vcpkg and
 Qt 6 MSVC 2022 64-bit and libwdi. MinGW and MSYS2 are not used.
 
 Run `prepare.ps1` from an elevated PowerShell to install/check Visual Studio
-Build Tools, CMake, Git, NSIS 3.12 or later, the official Qt installer and
-vcpkg. In the Qt installer select Qt 6 MSVC 2022 64-bit, then build with:
+Build Tools, Redistributable WDK 8 Components, CMake, Git, NSIS 3.12 or later,
+Python, Qt and vcpkg. If PowerShell blocks local scripts, allow them for the
+current session only with:
 
 ```powershell
-$env:VCPKG_ROOT = "$env:USERPROFILE\vcpkg"
-.\build.ps1 -QtRoot C:\Qt\<version>\msvc2022_64
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-The build expects an unmodified libwdi source checkout next to qcma, or an
-explicit `-LibWdiSource` path. It is not a submodule. Clone the pinned source
-release with:
+Qt is installed unattended with `aqtinstall`, which downloads the public
+Qt 6.10.2 MSVC 2022 x64 packages and does not require a Qt Account. The 
+Visual C++ Build Tools workload is installed explicitly. Then build with:
 
 ```powershell
-git clone --branch v1.5.1 --depth 1 https://github.com/pbatard/libwdi ..\libwdi
+.\build.ps1
 ```
 
-The bundled `qcma-winusb.exe` is libwdi's unmodified `examples/wdi-simple.c`.
-The installer includes libwdi's LGPL-3.0 license and a source-location notice.
+The `qcma-winusb.exe` helper is built from libwdi with WinUSB x64 support. It
+requires the [Redistributable WDK 8 Components](https://github.com/pbatard/libwdi/wiki/Install)
+at `C:\Program Files (x86)\Windows Kits\8.0`; use `-WdkRoot` if installed
+elsewhere. ARM64 support is intentionally not included.
 
-The script builds and tests VitaMTP and qcma, deploys Qt and vcpkg DLLs,
-runs `qcma.exe --version`, builds libwdi's WinUSB installer helper, and creates
-the NSIS installer in `artifacts\windows`.
+To install Qt somewhere else or use a later Qt patch release, pass `-QtRoot`
+or `-QtVersion` to `prepare.ps1`, then pass the resulting
+`<QtRoot>\<QtVersion>\msvc2022_64` directory to `build.ps1` with `-QtRoot`.
+Likewise, pass `-VcpkgRoot` to both scripts when vcpkg is not installed under
+`%USERPROFILE%\vcpkg`.
+`prepare.ps1` checks out vcpkg at the commit pinned by `vcpkg.json`; override
+that commit only when updating the manifest baseline with `-VcpkgCommit`.
+
+`prepare.ps1` clones the pinned libwdi v1.5.1 source release beside qcma (for
+example, `Z:\libwdi` when qcma is in `Z:\qcma`) if it is absent. It is not a
+submodule. To use an existing checkout elsewhere, pass its path to both
+scripts with `-LibWdiSource`.
+
+`qcma-winusb.exe` is a small, fixed-purpose PS Vita helper. It uses libwdi to
+prepare and sign the driver. The installer includes libwdi's LGPL-3.0 license
+and source location notice.
 
 The installer offers an optional **Install PS Vita WinUSB driver** component.
 It creates a device-specific driver package and a one-use local signing

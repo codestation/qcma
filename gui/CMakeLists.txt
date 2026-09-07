@@ -9,6 +9,7 @@ add_executable(qcma
 target_include_directories(qcma PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(WIN32)
+    set_target_properties(qcma PROPERTIES WIN32_EXECUTABLE TRUE)
     target_sources(qcma PRIVATE qcma.rc)
 endif()
 if(APPLE)

@@ -24,6 +24,7 @@
 
 #include <QDir>
 #include <QDirIterator>
+#include <QByteArray>
 #include <QSettings>
 #include <QTextStream>
 #include <QThread>
@@ -353,7 +354,7 @@ CMAObject *QListDB::pathToObjectInternal(const root_list &list, const char *path
     root_list::const_iterator skipped_first = ++list.begin();
 
     for(root_list::const_iterator obj = skipped_first; obj != list.end(); ++obj) {
-        if(strcasecmp(path, (*obj)->metadata.path) == 0) {
+        if(qstricmp(path, (*obj)->metadata.path) == 0) {
             return (*obj);
         }
     }
