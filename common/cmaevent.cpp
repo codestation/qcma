@@ -548,7 +548,11 @@ void CmaEvent::vitaEventSendHttpObjectFromURL(vita_event_t *cma_event, int event
         if(offlineMode && basename == "psp2-updatelist.xml") {
             qDebug("Found request for update list. Sending embedded xml file");
             QFile res(":/main/resources/xml/psp2-updatelist.xml");
-            res.open(QIODevice::ReadOnly);
+            if(!res.open(QIODevice::ReadOnly)) {
+                qWarning() << "Failed to open embedded update list:" << res.errorString();
+                free(url);
+                return;
+            }
             data = res.readAll();
 
             // fetch country code from url

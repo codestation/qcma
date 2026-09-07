@@ -178,20 +178,25 @@ void ClientManager::threadStopped()
 void ClientManager::hupSignalHandler(int)
 {
     char a = 1;
-    ::write(sighup_fd[0], &a, sizeof(a));
+    const ssize_t bytes_written = ::write(sighup_fd[0], &a, sizeof(a));
+    Q_UNUSED(bytes_written);
 }
 
 void ClientManager::termSignalHandler(int)
 {
     char a = 1;
-    ::write(sigterm_fd[0], &a, sizeof(a));
+    const ssize_t bytes_written = ::write(sigterm_fd[0], &a, sizeof(a));
+    Q_UNUSED(bytes_written);
 }
 
 void ClientManager::handleSigTerm()
 {
     sn_term->setEnabled(false);
     char tmp;
-    ::read(sigterm_fd[1], &tmp, sizeof(tmp));
+    if(::read(sigterm_fd[1], &tmp, sizeof(tmp)) != sizeof(tmp)) {
+        sn_term->setEnabled(true);
+        return;
+    }
 
     stop();
 
@@ -202,7 +207,10 @@ void ClientManager::handleSigHup()
 {
     sn_hup->setEnabled(false);
     char tmp;
-    ::read(sighup_fd[1], &tmp, sizeof(tmp));
+    if(::read(sighup_fd[1], &tmp, sizeof(tmp)) != sizeof(tmp)) {
+        sn_hup->setEnabled(true);
+        return;
+    }
 
     refreshDatabase();
 

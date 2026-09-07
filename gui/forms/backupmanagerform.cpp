@@ -79,8 +79,14 @@ void BackupManagerForm::saveListing()
     if(!output.isEmpty()) {
         QJsonDocument doc = QJsonDocument::fromVariant(items);
         QFile jsonFile(output);
-        jsonFile.open(QFile::WriteOnly);
-        jsonFile.write(doc.toJson());
+        if(!jsonFile.open(QFile::WriteOnly)) {
+            qWarning() << "Failed to open backup listing:" << jsonFile.errorString();
+            return;
+        }
+
+        if(jsonFile.write(doc.toJson()) < 0) {
+            qWarning() << "Failed to write backup listing:" << jsonFile.errorString();
+        }
     }
 }
 

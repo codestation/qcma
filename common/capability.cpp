@@ -104,26 +104,36 @@ capability_info_t *DeviceCapability::generate_pc_capability_info()
     typedef capability_info::capability_info_function tfunction;
     typedef tfunction::capability_info_format tformat;
 
+    static char capability_version[] = "1.0";
+    static char vita_app[] = "vitaApp";
+    static char psp_game[] = "PSPGame";
+    static char psp_save_data[] = "PSPSaveData";
+    static char ps_game[] = "PSGame";
+    static char psm_app[] = "PSMApp";
+    static char game[] = "game";
+    static char backup[] = "backup";
+    static char system_update[] = "systemUpdate";
+
     // TODO: Actually do this based on QCMA capabilities
     capability_info_t *pc_capabilities = new capability_info_t;
-    pc_capabilities->version = "1.0";
+    pc_capabilities->version = capability_version;
     tfunction *functions = new tfunction[3]();
     tformat *game_formats = new tformat[5]();
-    game_formats[0].contentType = "vitaApp";
+    game_formats[0].contentType = vita_app;
     game_formats[0].next_item = &game_formats[1];
-    game_formats[1].contentType = "PSPGame";
+    game_formats[1].contentType = psp_game;
     game_formats[1].next_item = &game_formats[2];
-    game_formats[2].contentType = "PSPSaveData";
+    game_formats[2].contentType = psp_save_data;
     game_formats[2].next_item = &game_formats[3];
-    game_formats[3].contentType = "PSGame";
+    game_formats[3].contentType = ps_game;
     game_formats[3].next_item = &game_formats[4];
-    game_formats[4].contentType = "PSMApp";
-    functions[0].type = "game";
+    game_formats[4].contentType = psm_app;
+    functions[0].type = game;
     functions[0].formats = game_formats[0];
     functions[0].next_item = &functions[1];
-    functions[1].type = "backup";
+    functions[1].type = backup;
     functions[1].next_item = &functions[2];
-    functions[2].type = "systemUpdate";
+    functions[2].type = system_update;
     pc_capabilities->functions = functions[0];
     return pc_capabilities;
 }
